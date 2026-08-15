@@ -74,6 +74,27 @@ def seed_worker(worker_id):
 def get_checkpoint_path(args):
     return os.path.join(args.save_folder, args.checkpoint_name)
 
+def get_model_kwargs(args):
+    """Build architecture arguments without changing the official defaults."""
+    rectifier_type = getattr(args, 'rectifier', 'hfrm').lower()
+    model_kwargs = {'rectifier_type': rectifier_type}
+    if rectifier_type == 'hst':
+        variant = getattr(args, 'hst_variant', 'a1').lower()
+        transition_enabled = getattr(args, 'hst_transition_enabled', None)
+        if transition_enabled is None:
+            transition_enabled = variant in {'a2', 'a3'}
+        hli_mode = getattr(args, 'hst_hli_mode', None)
+        if hli_mode is None:
+            hli_mode = 'mlp' if variant == 'a3' else 'identity'
+        model_kwargs['hst_config'] = {
+            'variant': variant,
+            'latent_dim': getattr(args, 'hst_latent_dim', 256),
+            'context_kernel': getattr(args, 'hst_context_kernel', 15),
+            'transition_enabled': transition_enabled,
+            'hli_mode': hli_mode,
+        }
+    return model_kwargs
+
 def get_infer_thr(args):
     return args.infer_thr if args.infer_thr is not None else None
 
@@ -163,7 +184,9 @@ def train_phase(args):
     global time_test
 
     set_seed(args.seed)
-    model = getattr(importlib.import_module(args.network), 'Net')(n_class=args.n_class).cuda()
+    model = getattr(importlib.import_module(args.network), 'Net')(
+        n_class=args.n_class, **get_model_kwargs(args)
+    ).cuda()
 
     loss_weights = None
     amp_dtype = get_amp_dtype(args)
@@ -298,7 +321,9 @@ def train_phase(args):
 
 
 def test_phase(args, dataroot=None, split_name='test', checkpoint_path=None, state_dict=None):
-    model = getattr(importlib.import_module(args.network), 'Net_CAM')(n_class=args.n_class)
+    model = getattr(importlib.import_module(args.network), 'Net_CAM')(
+        n_class=args.n_class, **get_model_kwargs(args)
+    )
     model = model.cuda()
     if dataroot is None:
         dataroot = args.testroot
@@ -319,6 +344,27 @@ if __name__ == '__main__':
     parser.add_argument("--batch_size", default=20, type=int)
     parser.add_argument("--max_epoches", default=24, type=int)
     parser.add_argument("--network", default="network.resnet38_cls", type=str)
+    parser.add_argument("--rectifier", default="hfrm", choices=["hfrm", "hst"])
+    parser.add_argument(
+        "--hst_variant", "--hst-variant",
+        default="a1", choices=["a1", "a2", "a3"],
+    )
+    parser.add_argument("--hst_latent_dim", "--hst-latent-dim", default=256, type=int)
+    parser.add_argument(
+        "--hst_context_kernel", "--hst-context-kernel", default=15, type=int
+    )
+    parser.add_argument(
+        "--hst_transition_enabled", "--hst-transition-enabled",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help="Override the transition default (A1=false, A2/A3=true).",
+    )
+    parser.add_argument(
+        "--hst_hli_mode", "--hst-hli-mode",
+        default=None,
+        choices=["identity", "mlp"],
+        help="Override the HLI default (A1/A2=identity, A3=mlp).",
+    )
     parser.add_argument("--lr", default=0.01, type=float)
     parser.add_argument("--num_workers", default=8, type=int)
     parser.add_argument("--wt_dec", default=5e-4, type=float)
