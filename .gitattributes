@@ -1,0 +1,6 @@
+* text=auto
+
+# These two upstream files intentionally contain CRLF or mixed line endings.
+# Preserve their bytes so the imported snapshot remains identical to upstream.
+tool/GenDataset.py -text
+tool/infer_fun.py -text
