@@ -21,6 +21,23 @@ Experiments on the LUAD-HistoSeg and BCSS datasets demonstrate that SSHR outperf
   <img src="assets/main_flow.png" width="700" alt="WaveDiT architecture">
 </p>
 
+## Research Development
+
+The official SSHR implementation remains the default A0 baseline. Innovation 1
+is delivered as one HST implementation with three selectable ablation stages:
+
+- A1: progressive-only correction-state propagation;
+- A2: target-conditioned stage-specific transitions;
+- A3: lightweight hierarchy-token interaction.
+
+Use `--rectifier hfrm` (the default) for the unchanged official model. Use
+`--rectifier hst --hst-variant a1|a2|a3` for progressive-only, stage-transition,
+or full hierarchy-interaction HST. The official optimizer, loss, 25-epoch
+schedule, final-checkpoint rule, TTA inference, and metrics are unchanged.
+
+See [`docs/innovation1_hst_migration.md`](docs/innovation1_hst_migration.md)
+for the architecture mapping, validation evidence, and runnable commands.
+
 ## Directory Structure
 
 ```text
