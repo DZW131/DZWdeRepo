@@ -162,10 +162,28 @@ gradient connectivity, and finite outputs.
 
 ### 6.2 Optimization readiness
 
-CPU structural smokes passed for all variants. In both A2 and A3, transition
-MLPs and target projectors had finite nonzero gradients by step 2. A3's HLI path
-also had finite nonzero gradients by step 2. The current branch still requires
-a fresh CUDA smoke before any full HST training.
+Fresh CUDA smokes were run from commit `6338bc0` on the 5090 while the A0
+baseline queue remained isolated in another working copy:
+
+| Variant | Steps | Path activation | All finite | Peak allocated CUDA memory |
+|---|---:|---:|---:|---:|
+| A1 | 2 | deep projector and all gates active at step 2 | yes | 1.615 GiB |
+| A2 | 10 | transitions and target projectors active at step 2 | yes | 1.722 GiB |
+| A3 | 10 | HLI, transitions, and target projectors active at step 2 | yes | 1.724 GiB |
+
+The A2/A3 runs confirmed `rho=0.01` at initialization. No NaN, Inf, OOM, or
+missing-gradient readiness failure occurred.
+
+An additional official-path A3 smoke used batch size 20 and bf16. Its full
+forward/backward/optimizer step was finite with 3.234 GiB peak allocated memory.
+`Net_CAM.forward_cam` then returned finite CAM56, CAM28_1, CAM28_2, CAMdeep, and
+classification probabilities with the expected shapes; its peak was 1.499 GiB.
+
+The pretrained conversion produced 191 keys and no unexpected keys. The only
+backbone-classified missing keys were the already audited `bn45` and `bn52`
+parameters/buffers; HST introduces no additional missing backbone key. The
+weight SHA256 remained
+`f668a2add80e33dfa8f1a0695df91f6d8cfad5ffbb26d1dc7bcd35903a1f6e16`.
 
 ### 6.3 Complexity
 
@@ -179,8 +197,9 @@ Parameter counts from the migrated code:
 | A3 | 109,637,757 | 4,540,209 | -2.73% |
 
 The 64 x 64 structural FLOP counter reports all HST variants within 0.07% of
-A0. Current-branch CUDA latency and peak memory are reported separately after
-server validation; old measurements are not reused.
+A0. CUDA smoke peak memory is reported above. Reliable latency profiling is
+deferred until the A0 baseline queue is idle because concurrent GPU load would
+invalidate a latency comparison; old measurements are not reused.
 
 ## 7. Official-protocol command index
 
