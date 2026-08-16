@@ -86,8 +86,8 @@ point.
 
 On the RTX 5090 environment (`PyTorch 2.11.0+cu128`), all 21 SC-MPR tests pass,
 including CUDA, batch-20 BF16, and released-pretrained conversion controls.
-The full local repository suite passes 64 tests, with only the three
-CUDA/pretrained tests skipped on the Windows host.
+The full local repository suite reports 64 tests total: 61 pass and the three
+CUDA/pretrained tests are skipped on the Windows host.
 
 ## 6. Five-step official-loss gradient audit
 
