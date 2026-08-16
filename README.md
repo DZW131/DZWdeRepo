@@ -54,6 +54,12 @@ for the active design and validation evidence, and
 [`docs/innovation1_hst_migration.md`](docs/innovation1_hst_migration.md) for the
 archived HST record.
 
+The first frozen BCSS seed-42 final-checkpoint experiment produced 70.0390%
+mIoU and 82.1946% mDice, versus A0 at 69.9795% / 82.1400%. This +0.0596 mIoU
+change is effectively neutral, while training time increased by 93.6%. See
+[`docs/fampr_bcss_seed42_final25_result.md`](docs/fampr_bcss_seed42_final25_result.md)
+for the full controlled comparison and artifact locations.
+
 ## Directory Structure
 
 ```text
