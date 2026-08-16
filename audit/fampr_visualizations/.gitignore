@@ -1,0 +1,8 @@
+# Legacy duplicate/raster-heavy output from the first diagnostic render.
+# The reproducible tool now keeps one compact PNG per unique selected case;
+# ranking membership is recorded in ../fampr_visualization_selection.csv.
+/most_improved/
+/most_harmed/
+/class3_improvement/
+/class01_degradation/
+/selected_cases/*.jpg
