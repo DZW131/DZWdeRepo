@@ -27,7 +27,6 @@ class SCMPRConfig:
     beta_max: float = 0.5
     beta_init: float = 0.1
     semantic_stop_gradient: bool = True
-    residual_spatial_demean: bool = True
 
     def __post_init__(self):
         expected = {
@@ -43,7 +42,6 @@ class SCMPRConfig:
             "beta_max": 0.5,
             "beta_init": 0.1,
             "semantic_stop_gradient": True,
-            "residual_spatial_demean": True,
         }
         if asdict(self) != expected:
             raise ValueError(
@@ -116,12 +114,16 @@ class SCMPRContext(nn.Module):
         cls, diagnostics: Mapping[str, torch.Tensor]
     ) -> Dict[str, Any]:
         context_rms = diagnostics["original_ch"].detach().float().square().mean().sqrt()
+        denominator = context_rms + 1e-6
         correction_rms = (
             diagnostics["scmpr_context"].detach().float()
             - diagnostics["original_ch"].detach().float()
         ).square().mean().sqrt()
-        residual_rms = diagnostics["delta_zero_mean"].detach().float().square().mean().sqrt()
-        residual_mean = diagnostics["delta_zero_mean"].detach().float().mean()
+        delta_sc = diagnostics["delta_sc"].detach().float()
+        residual_spatial_mean = delta_sc.mean(dim=(-2, -1))
+        scaled_residual_rms = (
+            diagnostics["beta"].detach().float() * delta_sc
+        ).square().mean().sqrt()
         return {
             "gate_fine": cls._tensor_stats(diagnostics["gate_fine"]),
             "gate_morphology": cls._tensor_stats(
@@ -136,12 +138,12 @@ class SCMPRContext(nn.Module):
             "variation": cls._tensor_stats(diagnostics["variation"]),
             "compatibility": cls._tensor_stats(diagnostics["compatibility"]),
             "beta": diagnostics["beta"].detach().float().item(),
-            "residual_rms": residual_rms.item(),
-            "residual_mean": residual_mean.item(),
-            "context_drift_rms": correction_rms.item(),
-            "context_drift_ratio": (
-                correction_rms / context_rms.clamp_min(1e-12)
+            "signed_residual_mean": delta_sc.mean().item(),
+            "residual_mean_ratio": (
+                residual_spatial_mean.abs().mean() / denominator
             ).item(),
+            "residual_rms_ratio": (scaled_residual_rms / denominator).item(),
+            "context_shift_ratio": (correction_rms / denominator).item(),
             "all_finite": bool(diagnostics["all_finite"]),
         }
 
@@ -182,8 +184,8 @@ class SCMPRContext(nn.Module):
             gate_fine * residuals["fine"]
             + gate_morphology * residuals["morphology"]
         )
-        delta_zero_mean = delta - delta.mean(dim=(-2, -1), keepdim=True)
-        scmpr_context = original_ch + self.beta * delta_zero_mean
+        delta_sc = delta
+        scmpr_context = original_ch + self.beta * delta_sc
 
         if not return_diagnostics:
             return scmpr_context
@@ -200,7 +202,7 @@ class SCMPRContext(nn.Module):
             gate_fine,
             gate_morphology,
             delta,
-            delta_zero_mean,
+            delta_sc,
             original_ch,
             scmpr_context,
         )
@@ -217,7 +219,7 @@ class SCMPRContext(nn.Module):
             "gate_morphology": gate_morphology,
             "beta": self.beta,
             "delta": delta,
-            "delta_zero_mean": delta_zero_mean,
+            "delta_sc": delta_sc,
             "original_ch": original_ch,
             "scmpr_context": scmpr_context,
             "all_finite": all(

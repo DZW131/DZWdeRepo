@@ -1,4 +1,11 @@
-# SC-MPR Implementation and Readiness Report
+# SC-MPR Initial Implementation Review (Archived Blocker Record)
+
+> Status update (2026-08-16): the exact de-meaning blocker documented below
+> was removed by the explicitly approved minimal patch. The patched design,
+> CUDA gradient audit, batch-20 BF16 smoke, and current readiness decision are
+> recorded in [`scmpr_readiness_patch_report.md`](scmpr_readiness_patch_report.md).
+> This file is retained as the evidence that motivated that correction; its
+> pre-patch formulas and stop decision are historical, not the current design.
 
 ## 1. Executive conclusion
 

@@ -59,11 +59,11 @@ class OperationCounter:
         classes = inputs[3].shape[1]
         # Explicit estimate for operations outside Conv2d/Linear hooks:
         # LP3/LP15, residual/quality normalization, probability softmax and
-        # LP3 variation, interpolation/cosine, gates, demeaning, and addition.
+        # LP3 variation, interpolation/cosine, gates, scaling, and addition.
         lowpasses = elements * (3 * 3 + 15 * 15)
         residual_quality = elements * 10
         semantic_maps = spatial * (classes * 16 + 32 * 8)
-        rectification = elements * 9
+        rectification = elements * 7
         self.scmpr_functional_flops += (
             lowpasses + residual_quality + semantic_maps + rectification
         )

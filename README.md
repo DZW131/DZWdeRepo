@@ -36,12 +36,12 @@ semantic conditions.
   both active and archived HFRM-context candidates.
 
 SC-MPR does not change the backbone, GSR branch, CH15, CAM heads, loss,
-optimizer, training schedule, inference, or metrics. Its v1.0 forward design
-is frozen in code. Engineering review found that exact per-channel spatial
-de-meaning makes the SC-MPR residual invisible to SSHR's linear CAM plus global
-average-pooling classification objective. Therefore **formal training is not
-authorized yet**; see the implementation report for the proof and decision
-options.
+optimizer, training schedule, inference, or metrics. Engineering review found
+that exact per-channel spatial de-meaning made the initial residual invisible
+to SSHR's linear CAM plus global-average-pooling classification objective. The
+approved minimal readiness patch removed only that de-meaning operation. The
+patched design is DC-safe/amplitude-controlled, passes the five-step gradient
+gate and batch-20 BF16 smoke, and has not yet been trained on BCSS or LUAD.
 
 The earlier HST candidate is archived with three selectable stages:
 
@@ -53,8 +53,10 @@ Their BCSS seed-42 final-checkpoint results did not improve over A0. Full
 FA-MPR likewise failed its validation go/no-go criterion. Both candidates are
 archived without deleting their source, tests, or experiment record.
 
-See [`docs/scmpr_implementation_report.md`](docs/scmpr_implementation_report.md)
+See [`docs/scmpr_readiness_patch_report.md`](docs/scmpr_readiness_patch_report.md)
 for the current engineering audit,
+[`docs/scmpr_implementation_report.md`](docs/scmpr_implementation_report.md)
+for the archived blocker proof,
 [`docs/archive/innovation1_fampr.md`](docs/archive/innovation1_fampr.md) for
 the FA-MPR archival record, and
 [`docs/innovation1_hst_migration.md`](docs/innovation1_hst_migration.md) for the
@@ -154,10 +156,9 @@ SC-MPR is selectable for engineering smoke tests with:
 --rectifier hfrm --context-mode sc-mpr
 ```
 
-Do not start a formal SC-MPR run until the optimization blocker documented in
-`docs/scmpr_implementation_report.md` is resolved and reviewed. Do not combine
-`--rectifier hst` with an alternative HFRM context; the parser/model rejects
-that combination to keep archived candidates isolated.
+Do not start a formal SC-MPR run without an explicit experiment approval. Do
+not combine `--rectifier hst` with an alternative HFRM context; the
+parser/model rejects that combination to keep archived candidates isolated.
 
 ### Evaluation
 

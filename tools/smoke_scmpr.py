@@ -12,19 +12,32 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
-from network.resnet38_cls import Net_CAM
+from network.resnet38_cls import Net, Net_CAM
 from tool.torchutils import PolyOptimizer
 
 
 def gradient_record(parameter):
     gradient = parameter.grad
     if gradient is None:
-        return {"present": False, "finite": None, "norm": None}
+        return {
+            "present": False,
+            "finite": None,
+            "norm": None,
+            "abs_sum": None,
+            "max_abs": None,
+            "nonzero_count": None,
+        }
     gradient = gradient.detach().float()
+    absolute = gradient.abs()
     return {
         "present": True,
         "finite": bool(torch.isfinite(gradient).all().item()),
-        "norm": gradient.norm().item(),
+        # Accumulate in float64 so gradients near 1e-25 do not report an
+        # artificial zero after float32 square-and-sum underflow.
+        "norm": gradient.double().norm().item(),
+        "abs_sum": absolute.sum().item(),
+        "max_abs": absolute.max().item(),
+        "nonzero_count": int(torch.count_nonzero(gradient).item()),
     }
 
 
@@ -58,7 +71,7 @@ def stage_record(hfrm, diagnostics):
     ch_norm = diagnostics["original_ch"].detach().float().norm()
     correction_norm = (
         context.beta.detach().float()
-        * diagnostics["delta_zero_mean"].detach().float()
+        * diagnostics["delta_sc"].detach().float()
     ).norm()
     return {
         "gamma_sem": hfrm.gamma_veto.detach().float().item(),
@@ -90,9 +103,7 @@ def run_steps(model, optimizer, images, labels, steps, amp_enabled):
         with torch.autocast(
             "cuda", dtype=torch.bfloat16, enabled=amp_enabled
         ):
-            outputs, diagnostics = model._forward_impl(
-                images, return_diagnostics=True
-            )
+            outputs, diagnostics = model.forward_with_diagnostics(images)
             loss = classification_loss(outputs, labels)
         loss.backward()
 
@@ -143,7 +154,7 @@ def main():
     torch.manual_seed(42)
     torch.cuda.manual_seed_all(42)
     device = torch.device("cuda")
-    model = Net_CAM(n_class=4, context_mode="sc-mpr").to(device)
+    model = Net(n_class=4, context_mode="sc-mpr").to(device)
     model.train()
     optimizer = make_optimizer(model, max_step=args.steps)
     images = torch.randn(
@@ -159,11 +170,13 @@ def main():
     records = run_steps(
         model, optimizer, images, labels, args.steps, amp_enabled
     )
-    model.eval()
+    cam_model = Net_CAM(n_class=4, context_mode="sc-mpr").to(device)
+    cam_model.load_state_dict(model.state_dict())
+    cam_model.eval()
     with torch.no_grad(), torch.autocast(
         "cuda", dtype=torch.bfloat16, enabled=amp_enabled
     ):
-        cams = model.forward_cam(images[:1])
+        cams = cam_model.forward_cam(images[:1])
     forward_cam_finite = all(
         bool(torch.isfinite(tensor).all().item()) for tensor in cams
     )
@@ -176,8 +189,11 @@ def main():
         ] + [
             record["stages"][stage]["target_projector_gradient"]
             for stage in ("stage1", "stage2", "stage3")
+        ] + [
+            record["stages"][stage]["beta_logit_gradient"]
+            for stage in ("stage1", "stage2", "stage3")
         ]
-        if all(item["present"] and item["norm"] > 0.0 for item in watched):
+        if all(item["present"] and item["abs_sum"] > 0.0 for item in watched):
             active_by_step = record["step"]
             break
     result = {
@@ -190,7 +206,7 @@ def main():
         "transition_path_active_by_step": active_by_step,
         "optimization_readiness_pass": (
             active_by_step is not None
-            and active_by_step <= 3
+            and active_by_step <= 5
             and forward_cam_finite
         ),
         "forward_cam_finite": forward_cam_finite,

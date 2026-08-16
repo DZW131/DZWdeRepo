@@ -12,6 +12,7 @@ from network.scmpr.compatibility_policy import SharedSCMPRPolicy
 from network.scmpr.frequency_proposal import FixedFrequencyProposal, fixed_lowpass
 from network.scmpr.scmpr_context import SCMPRContext
 from network.scmpr.semantic_condition import StageSemanticCondition
+from tool.torchutils import PolyOptimizer
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
@@ -34,6 +35,31 @@ def make_stage(channels=8, deep_channels=16, spatial=9, batch=2, device="cpu"):
     context = SCMPRContext(channels).to(device)
     original_ch = torch.randn_like(feature)
     return feature, deep, logits, shared, context, original_ch
+
+
+def classification_loss(outputs, labels):
+    return sum(
+        weight * F.multilabel_soft_margin_loss(output, labels)
+        for weight, output in zip((0.10, 0.15, 0.25, 0.50), outputs[:4])
+    )
+
+
+def make_official_optimizer(model, max_step):
+    groups = model.get_parameter_groups()
+    learning_rate = 0.01
+    weight_decay = 5e-4
+    parameters = [
+        {"params": groups[0], "lr": learning_rate, "weight_decay": weight_decay},
+        {"params": groups[1], "lr": 2 * learning_rate, "weight_decay": 0.0},
+        {"params": groups[2], "lr": 10 * learning_rate, "weight_decay": weight_decay},
+        {"params": groups[3], "lr": 20 * learning_rate, "weight_decay": 0.0},
+    ]
+    return PolyOptimizer(
+        parameters,
+        lr=learning_rate,
+        weight_decay=weight_decay,
+        max_step=max_step,
+    )
 
 
 class SCMPRFrozenControlsTest(unittest.TestCase):
@@ -131,13 +157,25 @@ class SCMPRFrozenControlsTest(unittest.TestCase):
         }
         self.assertEqual(policy_ids, {id(model.scmpr_shared)})
 
-    def test_11_residual_is_spatially_demeaned(self):
-        feature, deep, logits, shared, context, original_ch = make_stage()
-        _, diagnostics = context(
-            feature, original_ch, deep, logits, shared, return_diagnostics=True
+    def test_11_constant_input_is_dc_safe_and_exact_ch(self):
+        feature = torch.full((2, 8, 9, 9), 2.5)
+        deep = torch.randn(2, 16, 5, 5)
+        logits = torch.randn(2, 4, 5, 5)
+        shared = SharedSCMPRPolicy(deep_channels=16)
+        context = SCMPRContext(8)
+        original_ch = torch.randn_like(feature)
+        output, diagnostics = context(
+            feature,
+            original_ch,
+            deep,
+            logits,
+            shared,
+            return_diagnostics=True,
         )
-        spatial_mean = diagnostics["delta_zero_mean"].float().mean(dim=(-2, -1))
-        self.assertLess(spatial_mean.abs().max().item(), 1e-6)
+        self.assertTrue(torch.equal(diagnostics["residual_fine"], torch.zeros_like(feature)))
+        self.assertTrue(torch.equal(diagnostics["residual_morphology"], torch.zeros_like(feature)))
+        self.assertTrue(torch.equal(diagnostics["delta_sc"], torch.zeros_like(feature)))
+        self.assertTrue(torch.equal(output, original_ch))
 
     def test_12_beta_initialization_and_bound(self):
         context = SCMPRContext(8)
@@ -198,17 +236,25 @@ class SCMPRFrozenControlsTest(unittest.TestCase):
         device = "cuda"
         hfrm = HFRM(8, deep_channels=16, context_mode="sc-mpr").to(device)
         shared = SharedSCMPRPolicy(deep_channels=16).to(device)
+        cam_head = torch.nn.Conv2d(8, 4, kernel_size=1).to(device)
         optimizer = torch.optim.SGD(
-            list(hfrm.parameters()) + list(shared.parameters()), lr=0.05, momentum=0.9
+            list(hfrm.parameters())
+            + list(shared.parameters())
+            + list(cam_head.parameters()),
+            lr=0.05,
+            momentum=0.9,
         )
         feature = torch.randn(2, 8, 9, 9, device=device)
         deep = torch.randn(2, 16, 5, 5, device=device)
         logits = torch.randn(2, 4, 5, 5, device=device)
+        labels = torch.randint(0, 2, (2, 4), device=device).float()
         active_step = None
         for step in range(1, 6):
             optimizer.zero_grad(set_to_none=True)
             output = hfrm(feature, deep, logits, shared)
-            output.square().mean().backward()
+            pooled_logits = cam_head(output).mean(dim=(-2, -1))
+            loss = F.multilabel_soft_margin_loss(pooled_logits, labels)
+            loss.backward()
             watched = (
                 hfrm.scmpr_context.semantic_condition.target_projector.weight,
                 shared.deep_projector.weight,
@@ -219,6 +265,8 @@ class SCMPRFrozenControlsTest(unittest.TestCase):
             for parameter in watched:
                 if parameter.grad is not None:
                     self.assertTrue(torch.isfinite(parameter.grad).all())
+            if step == 1:
+                self.assertGreater(hfrm.gamma_context.grad.abs().sum().item(), 0.0)
             if all(parameter.grad is not None and parameter.grad.abs().sum().item() > 0 for parameter in watched):
                 active_step = active_step or step
             optimizer.step()
@@ -227,30 +275,54 @@ class SCMPRFrozenControlsTest(unittest.TestCase):
 
     @unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
     def test_19_batch20_bf16_official_path_smoke(self):
-        model = Net_CAM(n_class=4, context_mode="sc-mpr").cuda()
+        torch.manual_seed(42)
+        torch.cuda.manual_seed_all(42)
+        model = Net(n_class=4, context_mode="sc-mpr").cuda()
         model.train()
-        optimizer = torch.optim.SGD(
-            [parameter for parameter in model.parameters() if parameter.requires_grad],
-            lr=0.001,
-            momentum=0.0005,
-        )
+        optimizer = make_official_optimizer(model, max_step=5)
         images = torch.randn(20, 3, 224, 224, device="cuda")
         labels = torch.randint(0, 2, (20, 4), device="cuda").float()
-        optimizer.zero_grad(set_to_none=True)
-        with torch.autocast("cuda", dtype=torch.bfloat16):
-            outputs = model(images)
-            loss = sum(
-                weight * F.multilabel_soft_margin_loss(output, labels)
-                for weight, output in zip((0.10, 0.15, 0.25, 0.50), outputs[:4])
-            )
-        loss.backward()
-        optimizer.step()
-        self.assertTrue(torch.isfinite(loss))
-        model.eval()
+        watched = (
+            model.hfrm_56.scmpr_context.beta_logit,
+            model.hfrm_28_1.scmpr_context.beta_logit,
+            model.hfrm_28_2.scmpr_context.beta_logit,
+            model.hfrm_56.scmpr_context.semantic_condition.target_projector.weight,
+            model.hfrm_28_1.scmpr_context.semantic_condition.target_projector.weight,
+            model.hfrm_28_2.scmpr_context.semantic_condition.target_projector.weight,
+            model.scmpr_shared.deep_projector.weight,
+            model.scmpr_shared.gate_policy[0].weight,
+            model.scmpr_shared.gate_policy[-1].weight,
+        )
+        active_step = None
+        last_gradient_sums = None
+        for step in range(1, 6):
+            optimizer.zero_grad(set_to_none=True)
+            with torch.autocast("cuda", dtype=torch.bfloat16):
+                outputs = model(images)
+                loss = classification_loss(outputs, labels)
+            loss.backward()
+            self.assertTrue(torch.isfinite(loss))
+            for parameter in watched:
+                if parameter.grad is not None:
+                    self.assertTrue(torch.isfinite(parameter.grad).all())
+            last_gradient_sums = [
+                None
+                if parameter.grad is None
+                else parameter.grad.detach().float().abs().sum().item()
+                for parameter in watched
+            ]
+            if all(value is not None and value > 0.0 for value in last_gradient_sums):
+                active_step = active_step or step
+            optimizer.step()
+        self.assertIsNotNone(active_step, msg=str(last_gradient_sums))
+        self.assertLessEqual(active_step, 5)
+        cam_model = Net_CAM(n_class=4, context_mode="sc-mpr").cuda()
+        cam_model.load_state_dict(model.state_dict())
+        cam_model.eval()
         with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16):
-            cams = model.forward_cam(images[:1])
+            cams = cam_model.forward_cam(images[:1])
         self.assertTrue(all(torch.isfinite(tensor).all() for tensor in cams))
-        del model, optimizer, images, labels, outputs, cams
+        del model, cam_model, optimizer, images, labels, outputs, cams
         torch.cuda.empty_cache()
 
     def test_20_pretrained_conversion_has_no_new_backbone_missing_keys(self):
@@ -274,15 +346,44 @@ class SCMPRFrozenControlsTest(unittest.TestCase):
         self.assertEqual(unexpected_backbone, [])
         self.assertEqual(incompatible.unexpected_keys, [])
 
-    def test_21_demeaned_context_cancels_under_linear_cam_gap_loss(self):
-        """Regression proof for the frozen-spec optimization blocker."""
-        feature = torch.randn(2, 8, 11, 9)
-        delta = torch.randn_like(feature)
-        delta = delta - delta.mean(dim=(-2, -1), keepdim=True)
+    def test_21_classification_loss_sees_dc_safe_residual(self):
+        """Prevent any future transform that makes SC-MPR GAP-invisible."""
+        feature, deep, logits, shared, context, original_ch = make_stage()
+        hfrm = HFRM(8, deep_channels=16, context_mode="sc-mpr")
+        hfrm.scmpr_context.load_state_dict(context.state_dict())
         cam_head = torch.nn.Conv2d(8, 4, kernel_size=1)
-        baseline = cam_head(feature).mean(dim=(-2, -1))
-        rectified = cam_head(feature + 0.37 * delta).mean(dim=(-2, -1))
-        self.assertLess((baseline - rectified).abs().max().item(), 1e-6)
+        labels = torch.randint(0, 2, (feature.shape[0], 4)).float()
+        with torch.no_grad():
+            hfrm.gamma_context.fill_(0.1)
+        optimizer = torch.optim.SGD(
+            list(hfrm.parameters())
+            + list(shared.parameters())
+            + list(cam_head.parameters()),
+            lr=0.05,
+        )
+        watched = (
+            hfrm.scmpr_context.beta_logit,
+            shared.gate_policy[-1].weight,
+            shared.gate_policy[0].weight,
+            hfrm.scmpr_context.semantic_condition.target_projector.weight,
+            shared.deep_projector.weight,
+        )
+        active_step = None
+        for step in range(1, 4):
+            optimizer.zero_grad(set_to_none=True)
+            output = hfrm(feature, deep, logits, shared)
+            pooled_logits = cam_head(output).mean(dim=(-2, -1))
+            loss = F.multilabel_soft_margin_loss(pooled_logits, labels)
+            loss.backward()
+            if all(
+                parameter.grad is not None
+                and parameter.grad.abs().sum().item() > 0.0
+                for parameter in watched
+            ):
+                active_step = active_step or step
+            optimizer.step()
+        self.assertIsNotNone(active_step)
+        self.assertLessEqual(active_step, 3)
 
 
 if __name__ == "__main__":
