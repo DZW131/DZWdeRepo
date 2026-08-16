@@ -2,17 +2,34 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import network.resnet38d
-from network.hst.context import (
+from network.context import (
     apply_contextual_homogenization,
     build_context_conv,
+)
+from network.fampr.adaptive_kernel import AdaptiveKernelSpectrum
+from network.fampr.fampr_context import (
+    FAMPRConfig,
+    FrequencyAdaptiveMorphologyContext,
 )
 from network.hst.hst_rectifier import HSTConfig, HSTRectifier
 
 
 class HFRM(nn.Module):
-    def __init__(self, in_channels, deep_channels=4096, context_kernel=15):
+    def __init__(
+        self,
+        in_channels,
+        deep_channels=4096,
+        context_kernel=15,
+        context_mode="ch",
+        fampr_config=None,
+    ):
         super(HFRM, self).__init__()
-        
+        self.context_mode = context_mode.lower()
+        if self.context_mode not in {"ch", "fampr"}:
+            raise ValueError(
+                "context_mode must be either 'ch' or 'fampr', "
+                f"got {context_mode!r}"
+            )
 
         self.veto_mlp = nn.Sequential(
             nn.Linear(deep_channels, deep_channels // 8, bias=False),
@@ -23,12 +40,16 @@ class HFRM(nn.Module):
         
 
         self.context_conv = build_context_conv(in_channels, context_kernel)
-        
+        if self.context_mode == "fampr":
+            self.fampr_context = FrequencyAdaptiveMorphologyContext(
+                channels=in_channels,
+                config=FAMPRConfig.from_value(fampr_config),
+            )
 
         self.gamma_veto = nn.Parameter(torch.zeros(1))
         self.gamma_context = nn.Parameter(torch.zeros(1))
 
-    def forward(self, feat_nong, feat_deep):
+    def _forward_impl(self, feat_nong, feat_deep, return_diagnostics=False):
         B, C, H, W = feat_nong.size()
         
 
@@ -43,19 +64,57 @@ class HFRM(nn.Module):
         feat_smoothed = apply_contextual_homogenization(
             self.context_conv, feat_nong
         )
+        fampr_diagnostics = None
+        if self.context_mode == "fampr":
+            if return_diagnostics:
+                feat_context, fampr_diagnostics = self.fampr_context(
+                    feat_nong, feat_smoothed, return_diagnostics=True
+                )
+            else:
+                feat_context = self.fampr_context(feat_nong, feat_smoothed)
+        else:
+            feat_context = feat_smoothed
         
         # 3. (Residual sum)
         feat_rectified = feat_nong + \
                          self.gamma_veto * feat_vetoed + \
-                         self.gamma_context * feat_smoothed
-                         
+                         self.gamma_context * feat_context
+
+        if return_diagnostics:
+            diagnostics = {
+                "context_mode": self.context_mode,
+                "semantic_feature": feat_vetoed,
+                "original_ch": feat_smoothed,
+                "context_feature": feat_context,
+                "gamma_sem": self.gamma_veto,
+                "gamma_context": self.gamma_context,
+                "fampr": fampr_diagnostics,
+            }
+            return feat_rectified, diagnostics
         return feat_rectified
+
+    def forward(self, feat_nong, feat_deep):
+        return self._forward_impl(
+            feat_nong, feat_deep, return_diagnostics=False
+        )
+
+    def forward_with_diagnostics(self, feat_nong, feat_deep):
+        return self._forward_impl(
+            feat_nong, feat_deep, return_diagnostics=True
+        )
 
 # =========================================================================
 # 2.  (Main Training Network)
 # =========================================================================
 class Net(network.resnet38d.Net):
-    def __init__(self, n_class, rectifier_type="hfrm", hst_config=None):
+    def __init__(
+        self,
+        n_class,
+        rectifier_type="hfrm",
+        hst_config=None,
+        context_mode="ch",
+        fampr_config=None,
+    ):
         super().__init__()
 
         self.rectifier_type = rectifier_type.lower()
@@ -64,13 +123,42 @@ class Net(network.resnet38d.Net):
                 "rectifier_type must be either 'hfrm' or 'hst', "
                 f"got {rectifier_type!r}"
             )
+        self.context_mode = context_mode.lower()
+        if self.context_mode not in {"ch", "fampr"}:
+            raise ValueError(
+                "context_mode must be either 'ch' or 'fampr', "
+                f"got {context_mode!r}"
+            )
+        if self.rectifier_type == "hst" and self.context_mode != "ch":
+            raise ValueError(
+                "FA-MPR is only defined for rectifier_type='hfrm'; "
+                "archived HST cannot use context_mode='fampr'"
+            )
 
         self.dropout7 = torch.nn.Dropout2d(0.5)
 
         if self.rectifier_type == "hfrm":
-            self.hfrm_56 = HFRM(in_channels=256, deep_channels=4096, context_kernel=15)
-            self.hfrm_28_1 = HFRM(in_channels=512, deep_channels=4096, context_kernel=15)
-            self.hfrm_28_2 = HFRM(in_channels=1024, deep_channels=4096, context_kernel=15)
+            self.hfrm_56 = HFRM(
+                in_channels=256,
+                deep_channels=4096,
+                context_kernel=15,
+                context_mode=self.context_mode,
+                fampr_config=fampr_config,
+            )
+            self.hfrm_28_1 = HFRM(
+                in_channels=512,
+                deep_channels=4096,
+                context_kernel=15,
+                context_mode=self.context_mode,
+                fampr_config=fampr_config,
+            )
+            self.hfrm_28_2 = HFRM(
+                in_channels=1024,
+                deep_channels=4096,
+                context_kernel=15,
+                context_mode=self.context_mode,
+                fampr_config=fampr_config,
+            )
             rectifier_layers = [self.hfrm_56, self.hfrm_28_1, self.hfrm_28_2]
         else:
             self.hst_rectifier = HSTRectifier(HSTConfig.from_value(hst_config))
@@ -120,12 +208,35 @@ class Net(network.resnet38d.Net):
         return feat_56, feat_28_1, feat_28_2, feat_deep
 
     def _rectify_features(
-        self, feat_56, feat_28_1, feat_28_2, feat_deep
+        self,
+        feat_56,
+        feat_28_1,
+        feat_28_2,
+        feat_deep,
+        return_diagnostics=False,
     ):
         if self.rectifier_type == "hfrm":
-            feat_56_rectified = self.hfrm_56(feat_56, feat_deep)
-            feat_28_1_rectified = self.hfrm_28_1(feat_28_1, feat_deep)
-            feat_28_2_rectified = self.hfrm_28_2(feat_28_2, feat_deep)
+            if return_diagnostics:
+                feat_56_rectified, diag_56 = \
+                    self.hfrm_56.forward_with_diagnostics(feat_56, feat_deep)
+                feat_28_1_rectified, diag_28_1 = \
+                    self.hfrm_28_1.forward_with_diagnostics(
+                        feat_28_1, feat_deep
+                    )
+                feat_28_2_rectified, diag_28_2 = \
+                    self.hfrm_28_2.forward_with_diagnostics(
+                        feat_28_2, feat_deep
+                    )
+                stage_diagnostics = {
+                    "stage1": diag_56,
+                    "stage2": diag_28_1,
+                    "stage3": diag_28_2,
+                }
+            else:
+                feat_56_rectified = self.hfrm_56(feat_56, feat_deep)
+                feat_28_1_rectified = self.hfrm_28_1(feat_28_1, feat_deep)
+                feat_28_2_rectified = self.hfrm_28_2(feat_28_2, feat_deep)
+                stage_diagnostics = {}
             diagnostics = {
                 "base_features": {
                     "stage1": feat_56,
@@ -140,8 +251,20 @@ class Net(network.resnet38d.Net):
                     "deep": feat_deep,
                 },
                 "correction_states": {},
-                "semantic_gates": {},
-                "context_features": {},
+                "semantic_gates": {
+                    stage: values["semantic_feature"]
+                    for stage, values in stage_diagnostics.items()
+                },
+                "context_features": {
+                    stage: values["context_feature"]
+                    for stage, values in stage_diagnostics.items()
+                },
+                "hfrm_stages": stage_diagnostics,
+                "fampr": {
+                    stage: values["fampr"]
+                    for stage, values in stage_diagnostics.items()
+                    if values["fampr"] is not None
+                },
             }
         else:
             diagnostics = self.hst_rectifier(
@@ -168,7 +291,11 @@ class Net(network.resnet38d.Net):
             feat_28_2_rectified,
             diagnostics,
         ) = self._rectify_features(
-            feat_56, feat_28_1, feat_28_2, feat_deep
+            feat_56,
+            feat_28_1,
+            feat_28_2,
+            feat_deep,
+            return_diagnostics=return_diagnostics,
         )
 
 
@@ -243,6 +370,10 @@ class Net(network.resnet38d.Net):
             elif isinstance(m, HFRM):
                 groups[2].append(m.gamma_veto)
                 groups[2].append(m.gamma_context)
+            elif isinstance(m, FrequencyAdaptiveMorphologyContext):
+                groups[2].append(m.anchor_logit)
+            elif isinstance(m, AdaptiveKernelSpectrum):
+                groups[2].append(m.base_kernel)
             elif isinstance(m, HSTRectifier):
                 groups[2].extend(m.residual_scale_parameters())
                 
@@ -258,11 +389,20 @@ class Net(network.resnet38d.Net):
                 nn.init.constant_(m.bias, 0)
 
 class Net_CAM(Net):
-    def __init__(self, n_class, rectifier_type="hfrm", hst_config=None):
+    def __init__(
+        self,
+        n_class,
+        rectifier_type="hfrm",
+        hst_config=None,
+        context_mode="ch",
+        fampr_config=None,
+    ):
         super().__init__(
             n_class,
             rectifier_type=rectifier_type,
             hst_config=hst_config,
+            context_mode=context_mode,
+            fampr_config=fampr_config,
         )
 
     def forward(self, x):
