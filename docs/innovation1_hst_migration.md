@@ -1,5 +1,13 @@
 # Innovation 1 HST Migration Report
 
+> **Archived negative result (2026-08-16).** HST is no longer the active
+> Innovation 1. Under the controlled BCSS seed-42 final-checkpoint protocol,
+> A0 reached 69.9795 mIoU / 82.1400 mDice, while A1 reached
+> 69.1161 / 81.5110, A2 reached 69.6575 / 81.9148, and A3 reached
+> 69.2772 / 81.6505. The implementation, tests, and this report are retained
+> for reproducibility. New work uses the isolated FA-MPR path documented in
+> `docs/fampr_implementation_report.md`.
+
 ## 1. Delivery scope
 
 This branch migrates the complete, previously reviewed Innovation 1 design onto
