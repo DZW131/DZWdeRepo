@@ -152,6 +152,7 @@ class SCMPRContext(nn.Module):
         deep_feature: torch.Tensor,
         deep_cam_logits: torch.Tensor,
         shared_policy: SharedSCMPRPolicy,
+        shared_semantic=None,
         return_diagnostics: bool = False,
     ):
         residuals, qualities = self.frequency_proposal(feature)
@@ -160,6 +161,7 @@ class SCMPRContext(nn.Module):
             deep_feature,
             deep_cam_logits,
             shared_policy.deep_projector,
+            shared_semantic=shared_semantic,
         )
         policy_input = torch.cat(
             (

@@ -71,6 +71,7 @@ class HFRM(nn.Module):
         feat_deep,
         semantic_cam_logits=None,
         scmpr_shared=None,
+        scmpr_shared_semantic=None,
         return_diagnostics=False,
     ):
         B, C, H, W = feat_nong.size()
@@ -108,6 +109,7 @@ class HFRM(nn.Module):
                     feat_deep,
                     semantic_cam_logits,
                     scmpr_shared,
+                    shared_semantic=scmpr_shared_semantic,
                     return_diagnostics=True,
                 )
             else:
@@ -117,6 +119,7 @@ class HFRM(nn.Module):
                     feat_deep,
                     semantic_cam_logits,
                     scmpr_shared,
+                    shared_semantic=scmpr_shared_semantic,
                 )
         else:
             feat_context = feat_smoothed
@@ -141,24 +144,36 @@ class HFRM(nn.Module):
         return feat_rectified
 
     def forward(
-        self, feat_nong, feat_deep, semantic_cam_logits=None, scmpr_shared=None
+        self,
+        feat_nong,
+        feat_deep,
+        semantic_cam_logits=None,
+        scmpr_shared=None,
+        scmpr_shared_semantic=None,
     ):
         return self._forward_impl(
             feat_nong,
             feat_deep,
             semantic_cam_logits=semantic_cam_logits,
             scmpr_shared=scmpr_shared,
+            scmpr_shared_semantic=scmpr_shared_semantic,
             return_diagnostics=False,
         )
 
     def forward_with_diagnostics(
-        self, feat_nong, feat_deep, semantic_cam_logits=None, scmpr_shared=None
+        self,
+        feat_nong,
+        feat_deep,
+        semantic_cam_logits=None,
+        scmpr_shared=None,
+        scmpr_shared_semantic=None,
     ):
         return self._forward_impl(
             feat_nong,
             feat_deep,
             semantic_cam_logits=semantic_cam_logits,
             scmpr_shared=scmpr_shared,
+            scmpr_shared_semantic=scmpr_shared_semantic,
             return_diagnostics=True,
         )
 
@@ -289,6 +304,11 @@ class Net(network.resnet38d.Net):
             scmpr_shared = (
                 self.scmpr_shared if self.context_mode == "sc-mpr" else None
             )
+            scmpr_shared_semantic = (
+                scmpr_shared.prepare_semantic(feat_deep, semantic_cam_logits)
+                if scmpr_shared is not None
+                else None
+            )
             if return_diagnostics:
                 feat_56_rectified, diag_56 = \
                     self.hfrm_56.forward_with_diagnostics(
@@ -296,6 +316,7 @@ class Net(network.resnet38d.Net):
                         feat_deep,
                         semantic_cam_logits=semantic_cam_logits,
                         scmpr_shared=scmpr_shared,
+                        scmpr_shared_semantic=scmpr_shared_semantic,
                     )
                 feat_28_1_rectified, diag_28_1 = \
                     self.hfrm_28_1.forward_with_diagnostics(
@@ -303,6 +324,7 @@ class Net(network.resnet38d.Net):
                         feat_deep,
                         semantic_cam_logits=semantic_cam_logits,
                         scmpr_shared=scmpr_shared,
+                        scmpr_shared_semantic=scmpr_shared_semantic,
                     )
                 feat_28_2_rectified, diag_28_2 = \
                     self.hfrm_28_2.forward_with_diagnostics(
@@ -310,6 +332,7 @@ class Net(network.resnet38d.Net):
                         feat_deep,
                         semantic_cam_logits=semantic_cam_logits,
                         scmpr_shared=scmpr_shared,
+                        scmpr_shared_semantic=scmpr_shared_semantic,
                     )
                 stage_diagnostics = {
                     "stage1": diag_56,
@@ -322,18 +345,21 @@ class Net(network.resnet38d.Net):
                     feat_deep,
                     semantic_cam_logits=semantic_cam_logits,
                     scmpr_shared=scmpr_shared,
+                    scmpr_shared_semantic=scmpr_shared_semantic,
                 )
                 feat_28_1_rectified = self.hfrm_28_1(
                     feat_28_1,
                     feat_deep,
                     semantic_cam_logits=semantic_cam_logits,
                     scmpr_shared=scmpr_shared,
+                    scmpr_shared_semantic=scmpr_shared_semantic,
                 )
                 feat_28_2_rectified = self.hfrm_28_2(
                     feat_28_2,
                     feat_deep,
                     semantic_cam_logits=semantic_cam_logits,
                     scmpr_shared=scmpr_shared,
+                    scmpr_shared_semantic=scmpr_shared_semantic,
                 )
                 stage_diagnostics = {}
             diagnostics = {

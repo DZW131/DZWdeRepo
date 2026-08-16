@@ -44,3 +44,17 @@ class SharedSCMPRPolicy(nn.Module):
 
     def forward(self, conditions: torch.Tensor) -> torch.Tensor:
         return self.gate_policy(conditions)
+
+    def prepare_semantic(
+        self,
+        deep_feature: torch.Tensor,
+        deep_cam_logits: torch.Tensor,
+    ):
+        """Compute shared read-only anchors once before the three stages."""
+        logits = deep_cam_logits.detach()
+        probabilities = torch.softmax(logits.float(), dim=1).to(logits.dtype)
+        deep_projection = self.deep_projector(deep_feature.detach())
+        return {
+            "probabilities": probabilities,
+            "deep_projection": deep_projection,
+        }

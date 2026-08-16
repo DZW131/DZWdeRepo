@@ -39,13 +39,19 @@ class StageSemanticCondition(nn.Module):
         deep_feature: torch.Tensor,
         deep_cam_logits: torch.Tensor,
         deep_projector: nn.Conv2d,
+        shared_semantic=None,
     ) -> Dict[str, torch.Tensor]:
         spatial_size = target_feature.shape[-2:]
 
         # The semantic anchor and backbone features are read-only. Projector
         # weights remain learnable because detach is applied only to inputs.
-        logits = deep_cam_logits.detach()
-        probabilities = torch.softmax(logits.float(), dim=1).to(logits.dtype)
+        if shared_semantic is None:
+            logits = deep_cam_logits.detach()
+            probabilities = torch.softmax(logits.float(), dim=1).to(logits.dtype)
+            deep_projection = deep_projector(deep_feature.detach())
+        else:
+            probabilities = shared_semantic["probabilities"]
+            deep_projection = shared_semantic["deep_projection"]
         probabilities = self._resize(probabilities, spatial_size)
         confidence = probabilities.max(dim=1, keepdim=True).values
 
@@ -64,7 +70,6 @@ class StageSemanticCondition(nn.Module):
         ).abs().mean(dim=1, keepdim=True)
 
         target_projection = self.target_projector(target_feature.detach())
-        deep_projection = deep_projector(deep_feature.detach())
         deep_projection = self._resize(deep_projection, spatial_size)
         target_projection = F.normalize(
             target_projection, p=2, dim=1, eps=self.eps

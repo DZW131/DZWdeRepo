@@ -274,6 +274,16 @@ class SCMPRFrozenControlsTest(unittest.TestCase):
         self.assertEqual(unexpected_backbone, [])
         self.assertEqual(incompatible.unexpected_keys, [])
 
+    def test_21_demeaned_context_cancels_under_linear_cam_gap_loss(self):
+        """Regression proof for the frozen-spec optimization blocker."""
+        feature = torch.randn(2, 8, 11, 9)
+        delta = torch.randn_like(feature)
+        delta = delta - delta.mean(dim=(-2, -1), keepdim=True)
+        cam_head = torch.nn.Conv2d(8, 4, kernel_size=1)
+        baseline = cam_head(feature).mean(dim=(-2, -1))
+        rectified = cam_head(feature + 0.37 * delta).mean(dim=(-2, -1))
+        self.assertLess((baseline - rectified).abs().max().item(), 1e-6)
+
 
 if __name__ == "__main__":
     unittest.main()

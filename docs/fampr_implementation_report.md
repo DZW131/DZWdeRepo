@@ -1,5 +1,13 @@
 # FA-MPR Implementation Report
 
+> **Archived 2026-08-16.** Full FA-MPR is no longer the active Innovation 1.
+> Its BCSS seed-42 validation result did not improve A0, and its apparent
+> test-only class-3 redistribution was not stable across validation. The code,
+> tests, report, and checkpoints are retained for reproducibility. See
+> `docs/archive/innovation1_fampr.md` and diagnosis PR #5 for the archival
+> decision. No statement below should be read as authorization for new FA-MPR
+> training.
+
 ## 1. Executive conclusion
 
 Full Frequency-Adaptive Morphology-Preserving Rectification (FA-MPR) v1.0 is
