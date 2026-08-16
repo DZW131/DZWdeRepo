@@ -23,20 +23,36 @@ Experiments on the LUAD-HistoSeg and BCSS datasets demonstrate that SSHR outperf
 
 ## Research Development
 
-The official SSHR implementation remains the default A0 baseline. Innovation 1
-is delivered as one HST implementation with three selectable ablation stages:
+The official SSHR implementation remains the exact default A0 baseline. The
+active Innovation 1 is **Frequency-Adaptive Morphology-Preserving
+Rectification (FA-MPR)**. It replaces only the Contextual Homogenization (CH)
+signal inside each HFRM with a fixed full configuration combining multi-band
+frequency selection, morphology-conditioned spatial sampling, adaptive
+low/high kernel spectra, and a learnable CH anchor.
+
+- `--rectifier hfrm --context-mode ch`: exact A0 (default);
+- `--rectifier hfrm --context-mode fampr`: Full FA-MPR;
+- `--rectifier hst`: archived negative-result implementation, isolated from
+  FA-MPR and retained only for reproducibility.
+
+FA-MPR does not change the backbone, GSR branch, CAM heads, loss, optimizer,
+training schedule, inference, or metrics. Its v1.0 configuration is frozen in
+code; the first controlled experiment is BCSS seed 42 against A0.
+
+The earlier HST candidate is archived with three selectable stages:
 
 - A1: progressive-only correction-state propagation;
 - A2: target-conditioned stage-specific transitions;
 - A3: lightweight hierarchy-token interaction.
 
-Use `--rectifier hfrm` (the default) for the unchanged official model. Use
-`--rectifier hst --hst-variant a1|a2|a3` for progressive-only, stage-transition,
-or full hierarchy-interaction HST. The official optimizer, loss, 25-epoch
-schedule, final-checkpoint rule, TTA inference, and metrics are unchanged.
+Their BCSS seed-42 final-checkpoint results did not improve over A0, so HST is
+not part of the active Innovation 1 path. The source and tests remain available
+to preserve the complete experimental record.
 
-See [`docs/innovation1_hst_migration.md`](docs/innovation1_hst_migration.md)
-for the architecture mapping, validation evidence, and runnable commands.
+See [`docs/fampr_implementation_report.md`](docs/fampr_implementation_report.md)
+for the active design and validation evidence, and
+[`docs/innovation1_hst_migration.md`](docs/innovation1_hst_migration.md) for the
+archived HST record.
 
 ## Directory Structure
 
@@ -125,6 +141,15 @@ python train_sshr.py \
 ```
 
 The final checkpoint is saved as `stage1_last.pth`.
+
+For the controlled Full FA-MPR BCSS seed-42 run, use the same command and add:
+
+```bash
+--rectifier hfrm --context-mode fampr
+```
+
+Do not combine `--rectifier hst` with `--context-mode fampr`; the parser/model
+rejects that combination to prevent archived HST code from entering FA-MPR.
 
 ### Evaluation
 

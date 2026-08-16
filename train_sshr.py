@@ -1,9 +1,12 @@
 import os
 import math
+import hashlib
 import numpy as np
 import argparse
 import importlib
 import json
+import platform
+import subprocess
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -74,10 +77,144 @@ def seed_worker(worker_id):
 def get_checkpoint_path(args):
     return os.path.join(args.save_folder, args.checkpoint_name)
 
+
+def _sha256_file(path):
+    digest = hashlib.sha256()
+    with open(path, 'rb') as input_file:
+        for chunk in iter(lambda: input_file.read(1024 * 1024), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _git_commit():
+    try:
+        return subprocess.run(
+            ['git', 'rev-parse', 'HEAD'],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        return None
+
+
+def write_experiment_config(
+    args, model, optimizer, train_dataset, max_step, load_result
+):
+    """Persist a self-contained run manifest without changing training."""
+    weights_path = os.path.abspath(args.weights)
+    config = {
+        'git_commit': _git_commit(),
+        'command_args': vars(args),
+        'resolved_model_kwargs': get_model_kwargs(args),
+        'dataset_size': len(train_dataset),
+        'max_step': max_step,
+        'model_parameter_count': sum(
+            parameter.numel() for parameter in model.parameters()
+        ),
+        'trainable_parameter_count': sum(
+            parameter.numel()
+            for parameter in model.parameters()
+            if parameter.requires_grad
+        ),
+        'optimizer_param_groups': [
+            {
+                'index': index,
+                'parameter_tensor_count': len(group['params']),
+                'parameter_count': sum(
+                    parameter.numel() for parameter in group['params']
+                ),
+                'lr': group['lr'],
+                'momentum': group.get('momentum', 0.0),
+                'weight_decay': group.get('weight_decay', 0.0),
+            }
+            for index, group in enumerate(optimizer.param_groups)
+        ],
+        'pretrained_load': load_result,
+        'pretrained_weights': {
+            'path': weights_path,
+            'size_bytes': (
+                os.path.getsize(weights_path)
+                if os.path.isfile(weights_path)
+                else None
+            ),
+            'sha256': (
+                _sha256_file(weights_path)
+                if os.path.isfile(weights_path)
+                else None
+            ),
+        },
+        'environment': {
+            'python': platform.python_version(),
+            'pytorch': torch.__version__,
+            'cuda_runtime': torch.version.cuda,
+            'cudnn': torch.backends.cudnn.version(),
+            'gpu': torch.cuda.get_device_name(0) if torch.cuda.is_available() else None,
+        },
+    }
+    if getattr(args, 'context_mode', 'ch') == 'fampr':
+        config['fampr_config'] = model.hfrm_56.fampr_context.config.to_dict()
+    path = os.path.join(args.save_folder, 'experiment_config.json')
+    with open(path, 'w', encoding='utf-8') as output_file:
+        json.dump(config, output_file, indent=2, sort_keys=True, default=str)
+        output_file.write('\n')
+    print('[ExperimentConfig]', path, flush=True)
+
+
+def _gradient_record(parameter):
+    gradient = parameter.grad
+    if gradient is None:
+        return {'present': False, 'finite': None, 'norm': None}
+    gradient = gradient.detach().float()
+    return {
+        'present': True,
+        'finite': bool(torch.isfinite(gradient).all().item()),
+        'norm': gradient.norm().item(),
+    }
+
+
+def collect_fampr_epoch_record(model, diagnostics, epoch):
+    """Summarize the first training batch for observability only."""
+    stages = {
+        'stage1': model.hfrm_56,
+        'stage2': model.hfrm_28_1,
+        'stage3': model.hfrm_28_2,
+    }
+    record = {'epoch': epoch, 'sample': 'first_training_batch', 'stages': {}}
+    for stage, hfrm in stages.items():
+        fampr = hfrm.fampr_context
+        stage_diagnostics = diagnostics['fampr'][stage]
+        record['stages'][stage] = {
+            **stage_diagnostics['summary'],
+            'gamma_veto': hfrm.gamma_veto.detach().float().item(),
+            'gamma_context': hfrm.gamma_context.detach().float().item(),
+            'gamma_veto_gradient': _gradient_record(hfrm.gamma_veto),
+            'gamma_context_gradient': _gradient_record(hfrm.gamma_context),
+            'anchor_logit_gradient': _gradient_record(fampr.anchor_logit),
+            'band_predictor_gradient': _gradient_record(
+                fampr.frequency_selector.band_weight_network[-1].weight
+            ),
+            'base_kernel_gradient': _gradient_record(
+                fampr.adaptive_kernel.base_kernel
+            ),
+            'kernel_gate_gradient': _gradient_record(
+                fampr.adaptive_kernel.gate_network[-1].weight
+            ),
+        }
+    return record
+
 def get_model_kwargs(args):
     """Build architecture arguments without changing the official defaults."""
     rectifier_type = getattr(args, 'rectifier', 'hfrm').lower()
     model_kwargs = {'rectifier_type': rectifier_type}
+    context_mode = getattr(args, 'context_mode', 'ch').lower()
+    if rectifier_type == 'hfrm':
+        model_kwargs['context_mode'] = context_mode
+    elif context_mode != 'ch':
+        raise ValueError(
+            "--context-mode=fampr requires --rectifier=hfrm; "
+            "archived HST is isolated from FA-MPR"
+        )
     if rectifier_type == 'hst':
         variant = getattr(args, 'hst_variant', 'a1').lower()
         transition_enabled = getattr(args, 'hst_transition_enabled', None)
@@ -184,6 +321,7 @@ def train_phase(args):
     global time_test
 
     set_seed(args.seed)
+    os.makedirs(args.save_folder, exist_ok=True)
     model = getattr(importlib.import_module(args.network), 'Net')(
         n_class=args.n_class, **get_model_kwargs(args)
     ).cuda()
@@ -226,9 +364,19 @@ def train_phase(args):
     
     if args.weights[-7:] == '.params':
         weights_dict = importlib.import_module('network.resnet38d').convert_mxnet_to_torch(args.weights)
-        model.load_state_dict(weights_dict, strict=False)
+        incompatible = model.load_state_dict(weights_dict, strict=False)
     elif args.weights[-4:] == '.pth':
-        model.load_state_dict(torch.load(args.weights), strict=False)
+        incompatible = model.load_state_dict(torch.load(args.weights), strict=False)
+    else:
+        raise ValueError(f'Unsupported weights file: {args.weights}')
+
+    load_result = {
+        'missing_keys': list(incompatible.missing_keys),
+        'unexpected_keys': list(incompatible.unexpected_keys),
+    }
+    write_experiment_config(
+        args, model, optimizer, train_dataset, max_step, load_result
+    )
         
     avg_meter = pyutils.AverageMeter('loss_cls', 'loss_adapt', 'avg_ep_EM', 'avg_ep_acc')
     timer = pyutils.Timer("Session started: ")
@@ -239,15 +387,24 @@ def train_phase(args):
     for ep in range(args.max_epoches):
         model.train()
         ep_count = ep_EM = ep_acc = 0
-        
+        fampr_epoch_record = None
 
         
         for iter, (filename, img, label) in enumerate(train_data_loader):
             img = img.cuda(non_blocking=True)
             label = label.cuda(non_blocking=True)
+            collect_diagnostics = (
+                getattr(args, 'context_mode', 'ch') == 'fampr' and iter == 0
+            )
             
             with torch.autocast(device_type='cuda', dtype=amp_dtype, enabled=use_amp):
-                out_56, out_28_1, out_28_2, out_deep, y_deep, cam_56, cam_28_1, cam_28_2, cam_deep, feat_56 = model(img)
+                if collect_diagnostics:
+                    model_outputs, model_diagnostics = \
+                        model.forward_with_diagnostics(img)
+                else:
+                    model_outputs = model(img)
+                    model_diagnostics = None
+                out_56, out_28_1, out_28_2, out_deep, y_deep, cam_56, cam_28_1, cam_28_2, cam_deep, feat_56 = model_outputs
                 loss_w_56, loss_w_28_1, loss_w_28_2, loss_w_deep = get_loss_weights(args)
                 loss_cls = (
                     loss_w_56 * F.multilabel_soft_margin_loss(out_56, label, weight=loss_weights)
@@ -274,12 +431,21 @@ def train_phase(args):
             optimizer.zero_grad()
             if scaler.is_enabled():
                 scaler.scale(loss).backward()
+                scaler.unscale_(optimizer)
+                if collect_diagnostics:
+                    fampr_epoch_record = collect_fampr_epoch_record(
+                        model, model_diagnostics, ep + 1
+                    )
                 scaler.step(optimizer)
                 scaler.update()
             else:
                 loss.backward()
+                if collect_diagnostics:
+                    fampr_epoch_record = collect_fampr_epoch_record(
+                        model, model_diagnostics, ep + 1
+                    )
                 optimizer.step()
-            
+
             if (optimizer.global_step) % 100 == 0 and (optimizer.global_step) != 0:
                 timer.update_progress(optimizer.global_step / max_step)
                 print('Epoch:%2d' % ep,
@@ -291,6 +457,20 @@ def train_phase(args):
                       'lr: %.4f' % optimizer.param_groups[0]['lr'],
                       'Fin:%s' % timer.str_est_finish(), flush=True)
 
+
+        if fampr_epoch_record is not None:
+            diagnostics_path = os.path.join(
+                args.save_folder, 'fampr_diagnostics.jsonl'
+            )
+            with open(diagnostics_path, 'a', encoding='utf-8') as output_file:
+                output_file.write(
+                    json.dumps(fampr_epoch_record, sort_keys=True) + '\n'
+                )
+            print(
+                '[FAMPRDiagnostics]',
+                json.dumps(fampr_epoch_record, sort_keys=True),
+                flush=True,
+            )
 
         checkpoint_path = get_checkpoint_path(args)
         if args.save_checkpoints:
@@ -345,6 +525,14 @@ if __name__ == '__main__':
     parser.add_argument("--max_epoches", default=24, type=int)
     parser.add_argument("--network", default="network.resnet38_cls", type=str)
     parser.add_argument("--rectifier", default="hfrm", choices=["hfrm", "hst"])
+    parser.add_argument(
+        "--context_mode", "--context-mode",
+        default="ch", choices=["ch", "fampr"],
+        help=(
+            "Contextual branch for HFRM. 'ch' is the exact official SSHR "
+            "default; 'fampr' enables Full FA-MPR."
+        ),
+    )
     parser.add_argument(
         "--hst_variant", "--hst-variant",
         default="a1", choices=["a1", "a2", "a3"],

@@ -27,6 +27,10 @@ def main():
     parser.add_argument("weights", type=Path)
     parser.add_argument("--rectifier", default="hst", choices=["hfrm", "hst"])
     parser.add_argument(
+        "--context_mode", "--context-mode",
+        default="ch", choices=["ch", "fampr"],
+    )
+    parser.add_argument(
         "--hst_variant", default="a1", choices=["a1", "a2", "a3"]
     )
     args = parser.parse_args()
@@ -36,7 +40,10 @@ def main():
         raise FileNotFoundError(weights_path)
 
     converted = convert_mxnet_to_torch(str(weights_path))
-    model_kwargs = {"rectifier_type": args.rectifier}
+    model_kwargs = {
+        "rectifier_type": args.rectifier,
+        "context_mode": args.context_mode,
+    }
     if args.rectifier == "hst":
         model_kwargs["hst_config"] = {"variant": args.hst_variant}
     model = Net(n_class=4, **model_kwargs)
@@ -62,6 +69,7 @@ def main():
         "weights_size_bytes": weights_path.stat().st_size,
         "weights_sha256": sha256(weights_path),
         "rectifier": args.rectifier,
+        "context_mode": args.context_mode,
         "hst_variant": args.hst_variant if args.rectifier == "hst" else None,
         "converted_key_count": len(converted),
         "missing_keys": incompatible.missing_keys,
