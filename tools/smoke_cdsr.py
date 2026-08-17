@@ -75,12 +75,11 @@ def load_pretrained_state(path):
 
 
 def alpha_parameters(model):
-    parameters = {}
-    for stage, attribute in STAGES.items():
-        gate = getattr(model, attribute).selective_gate
-        parameters[f"{stage}.alpha_sem"] = gate.alpha_sem_logit
-        parameters[f"{stage}.alpha_ctx"] = gate.alpha_ctx_logit
-    return parameters
+    gate = model.cdsr_selective_gate
+    return {
+        "shared.alpha_sem": gate.alpha_sem_logit,
+        "shared.alpha_ctx": gate.alpha_ctx_logit,
+    }
 
 
 def make_optimizer(model, lr, weight_decay, max_step):
@@ -170,7 +169,7 @@ def main():
     expected_alpha_keys = {
         name
         for name, _ in model.named_parameters()
-        if ".selective_gate." in name
+        if name.startswith("cdsr_selective_gate.")
     }
     baseline_missing = set(baseline_load.missing_keys)
     cdsr_missing = set(cdsr_load.missing_keys)
@@ -414,7 +413,7 @@ def main():
             and shadow_lr_matched
             and all_finite
             and task_excess_pass
-            and len(alpha_map) == 6
+            and len(alpha_map) == 2
         ),
     }
     args.output_json.parent.mkdir(parents=True, exist_ok=True)
@@ -423,8 +422,8 @@ def main():
         encoding="utf-8",
     )
     print(
-        "CDSR_READINESS_PASS" if result["readiness_pass"]
-        else "CDSR_READINESS_FAIL",
+        "CDSR_V2_READINESS_PASS" if result["readiness_pass"]
+        else "CDSR_FINAL_NOGO",
         flush=True,
     )
 

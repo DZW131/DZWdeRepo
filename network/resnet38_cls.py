@@ -61,9 +61,6 @@ class HFRM(nn.Module):
                 channels=in_channels,
                 config=FAMPRConfig.from_value(fampr_config),
             )
-        if self.rectification_mode == "cdsr":
-            self.selective_gate = SelectiveRectificationGate(alpha_init=0.10)
-
         self.gamma_veto = nn.Parameter(torch.zeros(1))
         self.gamma_context = nn.Parameter(torch.zeros(1))
 
@@ -72,6 +69,7 @@ class HFRM(nn.Module):
         feat_nong,
         feat_deep,
         need_signal=None,
+        selective_gate=None,
         return_diagnostics=False,
     ):
         B, C, H, W = feat_nong.size()
@@ -109,7 +107,9 @@ class HFRM(nn.Module):
         else:
             if need_signal is None:
                 raise ValueError("CDSR requires a detached analytical need signal")
-            semantic_gate, context_gate = self.selective_gate(
+            if selective_gate is None:
+                raise ValueError("CDSR requires the hierarchy-shared selective gate")
+            semantic_gate, context_gate = selective_gate(
                 need_signal["need_map"]
             )
             semantic_gate_feature = semantic_gate.to(dtype=feat_vetoed.dtype)
@@ -125,8 +125,8 @@ class HFRM(nn.Module):
                 "context_gate": context_gate,
                 "effective_semantic": effective_semantic,
                 "effective_context": effective_context,
-                "alpha_sem": self.selective_gate.alpha_sem,
-                "alpha_ctx": self.selective_gate.alpha_ctx,
+                "alpha_sem": selective_gate.alpha_sem,
+                "alpha_ctx": selective_gate.alpha_ctx,
             }
 
         if return_diagnostics:
@@ -144,21 +144,29 @@ class HFRM(nn.Module):
             return feat_rectified, diagnostics
         return feat_rectified
 
-    def forward(self, feat_nong, feat_deep, need_signal=None):
-        return self._forward_impl(
-            feat_nong,
-            feat_deep,
-            need_signal=need_signal,
-            return_diagnostics=False,
-        )
-
-    def forward_with_diagnostics(
-        self, feat_nong, feat_deep, need_signal=None
+    def forward(
+        self, feat_nong, feat_deep, need_signal=None, selective_gate=None
     ):
         return self._forward_impl(
             feat_nong,
             feat_deep,
             need_signal=need_signal,
+            selective_gate=selective_gate,
+            return_diagnostics=False,
+        )
+
+    def forward_with_diagnostics(
+        self,
+        feat_nong,
+        feat_deep,
+        need_signal=None,
+        selective_gate=None,
+    ):
+        return self._forward_impl(
+            feat_nong,
+            feat_deep,
+            need_signal=need_signal,
+            selective_gate=selective_gate,
             return_diagnostics=True,
         )
 
@@ -256,6 +264,9 @@ class Net(network.resnet38d.Net):
         torch.nn.init.xavier_uniform_(self.fc8.weight)
         if self.rectification_mode == "cdsr":
             self.cdsr_need = AnalyticalRectificationNeed()
+            self.cdsr_selective_gate = SelectiveRectificationGate(
+                alpha_init=0.10
+            )
         
         self.not_training = [self.conv1a, self.b2, self.b2_1, self.b2_2]
         
@@ -329,18 +340,27 @@ class Net(network.resnet38d.Net):
                         feat_56,
                         feat_deep,
                         need_signal=need_signals.get("stage1"),
+                        selective_gate=getattr(
+                            self, "cdsr_selective_gate", None
+                        ),
                     )
                 feat_28_1_rectified, diag_28_1 = \
                     self.hfrm_28_1.forward_with_diagnostics(
                         feat_28_1,
                         feat_deep,
                         need_signal=need_signals.get("stage2"),
+                        selective_gate=getattr(
+                            self, "cdsr_selective_gate", None
+                        ),
                     )
                 feat_28_2_rectified, diag_28_2 = \
                     self.hfrm_28_2.forward_with_diagnostics(
                         feat_28_2,
                         feat_deep,
                         need_signal=need_signals.get("stage3"),
+                        selective_gate=getattr(
+                            self, "cdsr_selective_gate", None
+                        ),
                     )
                 stage_diagnostics = {
                     "stage1": diag_56,
@@ -352,16 +372,25 @@ class Net(network.resnet38d.Net):
                     feat_56,
                     feat_deep,
                     need_signal=need_signals.get("stage1"),
+                    selective_gate=getattr(
+                        self, "cdsr_selective_gate", None
+                    ),
                 )
                 feat_28_1_rectified = self.hfrm_28_1(
                     feat_28_1,
                     feat_deep,
                     need_signal=need_signals.get("stage2"),
+                    selective_gate=getattr(
+                        self, "cdsr_selective_gate", None
+                    ),
                 )
                 feat_28_2_rectified = self.hfrm_28_2(
                     feat_28_2,
                     feat_deep,
                     need_signal=need_signals.get("stage3"),
+                    selective_gate=getattr(
+                        self, "cdsr_selective_gate", None
+                    ),
                 )
                 stage_diagnostics = {}
             diagnostics = {

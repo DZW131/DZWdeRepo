@@ -214,7 +214,7 @@ def profile_mode(mode, args, device):
         "learnable_cdsr_scalars": sum(
             parameter.numel()
             for name, parameter in model.named_parameters()
-            if ".selective_gate." in name
+            if name.startswith("cdsr_selective_gate.")
         ),
         "module_flops_per_image": counter.module_flops / args.batch_size,
         "estimated_cdsr_functional_flops_per_image": (
@@ -296,7 +296,7 @@ def main():
     }
     deltas = comparison["cdsr_vs_a0"]
     comparison["budget"] = {
-        "additional_parameters_eq_6": deltas["additional_parameters"] == 6,
+        "additional_parameters_eq_2": deltas["additional_parameters"] == 2,
         "estimated_flops_lt_0_1_percent": (
             deltas["estimated_flops_percent"] < 0.1
         ),

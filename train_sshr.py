@@ -159,7 +159,8 @@ def write_experiment_config(
             'need_formula': 'R * (1 - (1-D) * (1-U))',
             'alpha_init': 0.10,
             'target_stages': ['stage1', 'stage2', 'stage3'],
-            'new_learnable_scalars': 6,
+            'shared_across_hierarchies': True,
+            'new_learnable_scalars': 2,
         }
     path = os.path.join(args.save_folder, 'experiment_config.json')
     with open(path, 'w', encoding='utf-8') as output_file:
@@ -234,6 +235,7 @@ def collect_cdsr_epoch_record(model, diagnostics, epoch):
         'stage3': model.hfrm_28_2,
     }
     record = {'epoch': epoch, 'sample': 'first_training_batch', 'stages': {}}
+    shared_gate = model.cdsr_selective_gate
     for stage, hfrm in stages.items():
         values = diagnostics['cdsr'][stage]
         need_map = values['need_map'].detach().float()
@@ -252,17 +254,17 @@ def collect_cdsr_epoch_record(model, diagnostics, epoch):
                 ).float().mean().item(),
                 'ge_0_75': (need_map >= 0.75).float().mean().item(),
             },
-            'alpha_sem': hfrm.selective_gate.alpha_sem.detach().item(),
-            'alpha_ctx': hfrm.selective_gate.alpha_ctx.detach().item(),
+            'alpha_sem': shared_gate.alpha_sem.detach().item(),
+            'alpha_ctx': shared_gate.alpha_ctx.detach().item(),
             'gamma_sem': hfrm.gamma_veto.detach().float().item(),
             'gamma_context': hfrm.gamma_context.detach().float().item(),
             'gamma_sem_gradient': _gradient_record(hfrm.gamma_veto),
             'gamma_context_gradient': _gradient_record(hfrm.gamma_context),
             'alpha_sem_logit_gradient': _gradient_record(
-                hfrm.selective_gate.alpha_sem_logit
+                shared_gate.alpha_sem_logit
             ),
             'alpha_ctx_logit_gradient': _gradient_record(
-                hfrm.selective_gate.alpha_ctx_logit
+                shared_gate.alpha_ctx_logit
             ),
             'semantic_gate': _tensor_summary(values['semantic_gate']),
             'context_gate': _tensor_summary(values['context_gate']),

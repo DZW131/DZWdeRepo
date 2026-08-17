@@ -24,7 +24,7 @@ def _cdsr_parameter_names(model):
     return [
         name
         for name, _ in model.named_parameters()
-        if ".selective_gate." in name
+        if name.startswith("cdsr_selective_gate.")
     ]
 
 
@@ -115,17 +115,21 @@ def test_gate_initialization_and_range():
         assert value.max().item() <= 1.0
 
 
-def test_cdsr_has_exactly_six_new_learnable_scalars():
+def test_cdsr_has_exactly_two_shared_learnable_scalars():
     uniform = Net(n_class=4)
     cdsr = Net(n_class=4, rectification_mode="cdsr")
     new_names = sorted(set(dict(cdsr.named_parameters())) - set(dict(uniform.named_parameters())))
 
     assert new_names == sorted(_cdsr_parameter_names(cdsr))
-    assert len(new_names) == 6
+    assert new_names == [
+        "cdsr_selective_gate.alpha_ctx_logit",
+        "cdsr_selective_gate.alpha_sem_logit",
+    ]
+    assert len(new_names) == 2
     assert all(dict(cdsr.named_parameters())[name].numel() == 1 for name in new_names)
 
 
-def test_uniform_state_loads_into_cdsr_with_only_six_expected_missing_keys():
+def test_uniform_state_loads_into_cdsr_with_only_two_expected_missing_keys():
     uniform = Net(n_class=4)
     cdsr = Net(n_class=4, rectification_mode="cdsr")
     incompatible = cdsr.load_state_dict(uniform.state_dict(), strict=False)
@@ -174,8 +178,10 @@ def test_alpha_zero_exactly_degenerates_to_original_hfrm():
         uniform.gamma_context.fill_(-0.17)
         cdsr.gamma_veto.copy_(uniform.gamma_veto)
         cdsr.gamma_context.copy_(uniform.gamma_context)
-        cdsr.selective_gate.alpha_sem_logit.fill_(-torch.inf)
-        cdsr.selective_gate.alpha_ctx_logit.fill_(-torch.inf)
+    shared_gate = SelectiveRectificationGate(alpha_init=0.10)
+    with torch.no_grad():
+        shared_gate.alpha_sem_logit.fill_(-torch.inf)
+        shared_gate.alpha_ctx_logit.fill_(-torch.inf)
     feature = torch.randn(2, 8, 9, 9)
     deep = torch.randn(2, 16, 5, 5)
     need_signal = {
@@ -186,8 +192,38 @@ def test_alpha_zero_exactly_degenerates_to_original_hfrm():
     }
 
     reference = uniform(feature, deep)
-    candidate = cdsr(feature, deep, need_signal=need_signal)
+    candidate = cdsr(
+        feature,
+        deep,
+        need_signal=need_signal,
+        selective_gate=shared_gate,
+    )
     assert torch.equal(reference, candidate)
+
+
+def test_same_alpha_parameter_objects_are_used_by_all_stages():
+    model = Net(n_class=4, rectification_mode="cdsr")
+    model.eval()
+    seen_sem = []
+    seen_ctx = []
+
+    def record_shared_parameters(module, _inputs, _output):
+        seen_sem.append(id(module.alpha_sem_logit))
+        seen_ctx.append(id(module.alpha_ctx_logit))
+
+    handle = model.cdsr_selective_gate.register_forward_hook(
+        record_shared_parameters
+    )
+    with torch.no_grad():
+        model(torch.randn(1, 3, 64, 64))
+    handle.remove()
+
+    assert seen_sem == [id(model.cdsr_selective_gate.alpha_sem_logit)] * 3
+    assert seen_ctx == [id(model.cdsr_selective_gate.alpha_ctx_logit)] * 3
+    assert not any(
+        hasattr(hfrm, "selective_gate")
+        for hfrm in (model.hfrm_56, model.hfrm_28_1, model.hfrm_28_2)
+    )
 
 
 def test_existing_cam_heads_are_reused_as_detached_raw_probes():
@@ -238,6 +274,12 @@ def test_stage_shapes_and_forward_cam_are_finite():
     expected = {"stage1": (16, 16), "stage2": (8, 8), "stage3": (8, 8)}
     for stage, spatial in expected.items():
         assert diagnostics["cdsr"][stage]["need_map"].shape[-2:] == spatial
+    need_maps = [
+        diagnostics["cdsr"][stage]["need_map"]
+        for stage in ("stage1", "stage2", "stage3")
+    ]
+    assert len({value.data_ptr() for value in need_maps}) == 3
+    assert not torch.equal(need_maps[1], need_maps[2])
     assert all(torch.isfinite(value).all() for value in outputs)
     assert all(torch.isfinite(value).all() for value in cams)
 
@@ -252,7 +294,7 @@ def test_optimizer_groups_cover_alpha_logits_exactly_once():
     alpha_ids = {
         id(parameter)
         for name, parameter in model.named_parameters()
-        if ".selective_gate." in name
+        if name.startswith("cdsr_selective_gate.")
     }
 
     assert len(grouped_ids) == len(set(grouped_ids))

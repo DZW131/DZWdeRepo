@@ -1,4 +1,4 @@
-"""Verify exact A0 checkpoint compatibility and the six-key CDSR delta."""
+"""Verify exact A0 compatibility and the two-key shared-CDSR delta."""
 
 import argparse
 import hashlib
@@ -43,7 +43,7 @@ def main():
     expected_missing = sorted(
         name
         for name, _ in cdsr.named_parameters()
-        if ".selective_gate." in name
+        if name.startswith("cdsr_selective_gate.")
     )
     uniform_parameters = sum(
         parameter.numel() for parameter in uniform.parameters()
@@ -63,7 +63,7 @@ def main():
         "pass": (
             sorted(incompatible.missing_keys) == expected_missing
             and not incompatible.unexpected_keys
-            and cdsr_parameters - uniform_parameters == 6
+            and cdsr_parameters - uniform_parameters == 2
         ),
     }
     args.output_json.parent.mkdir(parents=True, exist_ok=True)
