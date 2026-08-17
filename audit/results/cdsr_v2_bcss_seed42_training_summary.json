@@ -1,0 +1,34 @@
+{
+  "cuda_peak_memory_allocated_bytes": 5004373504,
+  "cuda_peak_memory_reserved_bytes": 5383389184,
+  "epochs_completed": 25,
+  "evaluation_calls_during_training": 0,
+  "final_cdsr_parameters": {
+    "alpha_ctx": 0.23053008317947388,
+    "alpha_ctx_logit": -1.2053205966949463,
+    "alpha_sem": 0.24991533160209656,
+    "alpha_sem_logit": -1.0990639925003052,
+    "stages": {
+      "stage1": {
+        "gamma_ctx": 1.5781662464141846,
+        "gamma_sem": 0.7262488603591919
+      },
+      "stage2": {
+        "gamma_ctx": 1.5844296216964722,
+        "gamma_sem": 0.5531933903694153
+      },
+      "stage3": {
+        "gamma_ctx": 1.2845302820205688,
+        "gamma_sem": 0.5628553032875061
+      }
+    }
+  },
+  "final_checkpoint": {
+    "path": "/home/duyanhong/experiments/EXP_CDSR_V2_BCSS_SEED42_FINAL25/stage1_last.pth",
+    "sha256": "f0483a22e3332a630b92b7bf8fc31920521e7fb0ed1dc49ffdfa54084fb52395",
+    "size_bytes": 451130915
+  },
+  "max_step": 29275,
+  "optimizer_global_step": 29275,
+  "training_seconds": 2746.7218856450054
+}

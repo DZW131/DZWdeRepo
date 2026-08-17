@@ -1,0 +1,285 @@
+{
+  "checkpoint": {
+    "path": "/home/duyanhong/experiments/EXP_CDSR_V2_BCSS_SEED42_FINAL25/stage1_last.pth",
+    "sha256": "f0483a22e3332a630b92b7bf8fc31920521e7fb0ed1dc49ffdfa54084fb52395",
+    "size_bytes": 451130915
+  },
+  "environment": {
+    "cuda_runtime": "12.8",
+    "cudnn": 91900,
+    "gpu": "NVIDIA GeForce RTX 5090 D v2",
+    "precision": "BF16 autocast",
+    "python": "3.10.20",
+    "pytorch": "2.11.0+cu128"
+  },
+  "mechanism": {
+    "alpha_ctx": 0.23053008317947388,
+    "alpha_sem": 0.24991533160209656,
+    "sample_count": 3418,
+    "seconds": 8.478784648992587,
+    "stages": {
+      "stage1": {
+        "context_gate": {
+          "count": 10718848,
+          "finite": true,
+          "mean": 0.9030300964723796,
+          "std": 0.06055188867706993
+        },
+        "effective_context_residual_rms": 0.6289523835081268,
+        "effective_semantic_residual_rms": 0.15504883657455043,
+        "gamma_ctx": 1.5781662464141846,
+        "gamma_sem": 0.7262488603591919,
+        "gated_context_feature": {
+          "count": 2744025088,
+          "finite": true,
+          "rms": 0.3985336683870885
+        },
+        "gated_semantic_feature": {
+          "count": 2744025088,
+          "finite": true,
+          "rms": 0.21349270895635633
+        },
+        "need": {
+          "count": 10718848,
+          "finite": true,
+          "mean": 0.5793611740553328,
+          "p10": 0.20383688062429428,
+          "p50": 0.6062028408050537,
+          "p90": 0.9032912254333496,
+          "std": 0.2626637176745518
+        },
+        "semantic_gate": {
+          "count": 10718848,
+          "finite": true,
+          "mean": 0.894875908326447,
+          "std": 0.06564369009649312
+        }
+      },
+      "stage2": {
+        "context_gate": {
+          "count": 2679712,
+          "finite": true,
+          "mean": 0.8736426215886653,
+          "std": 0.06808520597240436
+        },
+        "effective_context_residual_rms": 0.5713461293708206,
+        "effective_semantic_residual_rms": 0.0681505740598254,
+        "gamma_ctx": 1.5844296216964722,
+        "gamma_sem": 0.5531933903694153,
+        "gated_context_feature": {
+          "count": 1372012544,
+          "finite": true,
+          "rms": 0.36060050982830777
+        },
+        "gated_semantic_feature": {
+          "count": 1372012544,
+          "finite": true,
+          "rms": 0.12319484514143479
+        },
+        "need": {
+          "count": 2679712,
+          "finite": true,
+          "mean": 0.45188334338161323,
+          "p10": 0.050393247604370126,
+          "p50": 0.4366377294063568,
+          "p90": 0.8650096476078033,
+          "std": 0.29534195731972557
+        },
+        "semantic_gate": {
+          "count": 2679712,
+          "finite": true,
+          "mean": 0.8630172440401636,
+          "std": 0.0738104831397006
+        }
+      },
+      "stage3": {
+        "context_gate": {
+          "count": 2679712,
+          "finite": true,
+          "mean": 0.838344578744094,
+          "std": 0.05569166969287655
+        },
+        "effective_context_residual_rms": 0.4321732579253027,
+        "effective_semantic_residual_rms": 0.07838279768463266,
+        "gamma_ctx": 1.2845302820205688,
+        "gamma_sem": 0.5628553032875061,
+        "gated_context_feature": {
+          "count": 2744025088,
+          "finite": true,
+          "rms": 0.3364445852109405
+        },
+        "gated_semantic_feature": {
+          "count": 2744025088,
+          "finite": true,
+          "rms": 0.1392592327491934
+        },
+        "need": {
+          "count": 2679712,
+          "finite": true,
+          "mean": 0.2987664815764774,
+          "p10": 0.007467865943908691,
+          "p50": 0.2740707993507385,
+          "p90": 0.6499771893024443,
+          "std": 0.24158092069797216
+        },
+        "semantic_gate": {
+          "count": 2679712,
+          "finite": true,
+          "mean": 0.8247509928189372,
+          "std": 0.060374775797437
+        }
+      }
+    }
+  },
+  "protocol": {
+    "class_presence_thresholds": [
+      0.8,
+      0.9,
+      0.8,
+      0.6
+    ],
+    "metric": "tool.iouutils.scores",
+    "official_fusion_cam56_cam28_1_cam28_2_camdeep": [
+      0.0,
+      0.6,
+      0.2,
+      0.2
+    ],
+    "tta": "identity + horizontal flip + vertical flip"
+  },
+  "runtime": {
+    "cuda_peak_memory_allocated_bytes": 2220319232,
+    "cuda_peak_memory_reserved_bytes": 2692743168,
+    "mechanism_audit_seconds": 8.478784648992587,
+    "official_fused_seconds": 52.514718930004165,
+    "stage_cam_audit_seconds": 72.57691141299438
+  },
+  "scope": "BCSS validation only",
+  "test_evaluated": false,
+  "validation": {
+    "image_count": 3418,
+    "independent_official_fusion_score": {
+      "Class IoU": {
+        "0": 0.7653558040462016,
+        "1": 0.7059591416582859,
+        "2": 0.5807610836907523,
+        "3": 0.6415725745841335
+      },
+      "Dice Coefficients": {
+        "0": 0.8670839071557173,
+        "1": 0.8276389796440903,
+        "2": 0.7347866666033991,
+        "3": 0.7816560589734094
+      },
+      "Frequency Weighted IoU": 0.7089718879233355,
+      "Mean Accuracy": 0.781815565796218,
+      "Mean Dice": 0.8027914030941539,
+      "Mean IoU": 0.6734121509948434,
+      "Pixel Accuracy": 0.8294347155808037
+    },
+    "mask_count": 3418,
+    "official_fused_score": {
+      "Class IoU": {
+        "0": 0.7653558040462016,
+        "1": 0.7059591416582859,
+        "2": 0.5807610836907523,
+        "3": 0.6415725745841335
+      },
+      "Dice Coefficients": {
+        "0": 0.8670839071557173,
+        "1": 0.8276389796440903,
+        "2": 0.7347866666033991,
+        "3": 0.7816560589734094
+      },
+      "Frequency Weighted IoU": 0.7089718879233355,
+      "Mean Accuracy": 0.781815565796218,
+      "Mean Dice": 0.8027914030941539,
+      "Mean IoU": 0.6734121509948434,
+      "Pixel Accuracy": 0.8294347155808037
+    },
+    "official_inference_parity": {
+      "mean_dice_absolute_difference": 0.0,
+      "mean_iou_absolute_difference": 0.0,
+      "pass": true
+    },
+    "root": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/val",
+    "stage_cam_scores": {
+      "cam28_1": {
+        "Class IoU": {
+          "0": 0.7636071866833388,
+          "1": 0.7050907443125568,
+          "2": 0.5782535147773484,
+          "3": 0.6348377354315687
+        },
+        "Dice Coefficients": {
+          "0": 0.8659606203118142,
+          "1": 0.8270418998688882,
+          "2": 0.7327764638102837,
+          "3": 0.7766369978779364
+        },
+        "Frequency Weighted IoU": 0.7072026870907133,
+        "Mean Accuracy": 0.7781681486595508,
+        "Mean Dice": 0.8006039954672306,
+        "Mean IoU": 0.6704472953012032,
+        "Pixel Accuracy": 0.8283903655804933
+      },
+      "cam28_2": {
+        "Class IoU": {
+          "0": 0.7489321499833441,
+          "1": 0.6956391177295558,
+          "2": 0.5772910738515128,
+          "3": 0.6400436048372314
+        },
+        "Dice Coefficients": {
+          "0": 0.8564450599075287,
+          "1": 0.8205037386268957,
+          "2": 0.7320032217539315,
+          "3": 0.7805202287908114
+        },
+        "Frequency Weighted IoU": 0.697684550086333,
+        "Mean Accuracy": 0.7765329251566567,
+        "Mean Dice": 0.7973680622697918,
+        "Mean IoU": 0.665476486600411,
+        "Pixel Accuracy": 0.8216422729178565
+      },
+      "cam56": {
+        "Class IoU": {
+          "0": 0.7309001928894455,
+          "1": 0.6814351955230759,
+          "2": 0.5420254112426138,
+          "3": 0.5059517750157577
+        },
+        "Dice Coefficients": {
+          "0": 0.8445318752542642,
+          "1": 0.8105399450867197,
+          "2": 0.7030045124948132,
+          "3": 0.6719362245321084
+        },
+        "Frequency Weighted IoU": 0.6722098214304496,
+        "Mean Accuracy": 0.7198645118866039,
+        "Mean Dice": 0.7575031393419764,
+        "Mean IoU": 0.6150781436677233,
+        "Pixel Accuracy": 0.8055893322050718
+      },
+      "camdeep": {
+        "Class IoU": {
+          "0": 0.7367987936494796,
+          "1": 0.6848975156460133,
+          "2": 0.5554569633294143,
+          "3": 0.6202633312337722
+        },
+        "Dice Coefficients": {
+          "0": 0.8484561324472917,
+          "1": 0.8129841836503794,
+          "2": 0.7142042196274893,
+          "3": 0.7656327453408008
+        },
+        "Frequency Weighted IoU": 0.6844228595321575,
+        "Mean Accuracy": 0.7611051747854206,
+        "Mean Dice": 0.7853193202664902,
+        "Mean IoU": 0.6493541509646699,
+        "Pixel Accuracy": 0.8127257333292696
+      }
+    }
+  }
+}
