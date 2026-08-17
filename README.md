@@ -129,6 +129,31 @@ python train_sshr.py \
   --amp-dtype bf16
 ```
 
+## Isolated CLRR-v3 Phase-0 Audit
+
+The `feature/innovation2-clrr-v3-phase0` branch is based directly on the
+frozen official A0 baseline (`4e9a288`) and contains no Innovation 1 model
+code. It performs a BCSS validation-only analytical audit with no training
+and no test-set access. The only v3 mechanism change relative to the frozen
+v2 probe is `d_i = relu(rho_i - r_i)`.
+
+```bash
+python tools/audit_clrr_v3_phase0.py \
+  --val-root /path/to/BCSS-WSSS/val \
+  --checkpoint /path/to/a0_seed42_final.pth \
+  --output-json audit/results/clrr_v3_phase0_summary.json \
+  --num-workers 4
+```
+
+The frozen audit returned `CLRR_V3_SIGNAL_NOGO`: stage-level gates passed,
+but the official fused mIoU gain was only +0.0042 percentage points versus
+the preregistered +0.05 threshold. Therefore, no CLRR training architecture
+or training run was introduced.
+
+- [Phase-0 report](docs/clrr_v3_phase0_reliability_dominance_audit.md)
+- [Raw results](audit/results/clrr_v3_phase0_summary.json)
+- [Classifier structure audit](docs/clrr_v2_phase_minus1_structure_audit.md)
+
 ## Acknowledgement
 
 We thank the authors of [ESFAN](https://github.com/OceanPetal/ESFAN), whose codebase provided a valuable foundation for this repository.
