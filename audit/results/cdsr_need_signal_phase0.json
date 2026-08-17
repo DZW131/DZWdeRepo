@@ -1,0 +1,741 @@
+{
+  "decision": {
+    "go_stage_count": 3,
+    "major_reverse_stage_count": 0,
+    "signal_go": true,
+    "stage_decisions": {
+      "stage1": {
+        "condition_count": 4,
+        "conditions": {
+          "corrected_harmed_auroc_ge_0_55": true,
+          "corrected_harmed_d_ge_0_20": true,
+          "raw_error_auroc_ge_0_60": true,
+          "top_bottom_net_gap_ci_above_zero": true
+        },
+        "major_reverse": false,
+        "stage_go": true,
+        "strong_go": true
+      },
+      "stage2": {
+        "condition_count": 3,
+        "conditions": {
+          "corrected_harmed_auroc_ge_0_55": true,
+          "corrected_harmed_d_ge_0_20": false,
+          "raw_error_auroc_ge_0_60": true,
+          "top_bottom_net_gap_ci_above_zero": true
+        },
+        "major_reverse": false,
+        "stage_go": true,
+        "strong_go": false
+      },
+      "stage3": {
+        "condition_count": 2,
+        "conditions": {
+          "corrected_harmed_auroc_ge_0_55": false,
+          "corrected_harmed_d_ge_0_20": false,
+          "raw_error_auroc_ge_0_60": true,
+          "top_bottom_net_gap_ci_above_zero": true
+        },
+        "major_reverse": false,
+        "stage_go": true,
+        "strong_go": false
+      }
+    },
+    "strong_go": false,
+    "strong_go_stage_count": 1,
+    "token": "CDSR_SIGNAL_GO"
+  },
+  "protocol": {
+    "amp_dtype": "bf16",
+    "background_handling": "exclude GT label 4; analyze foreground 0-3",
+    "batch_size": 20,
+    "bootstrap_repeats": 2000,
+    "checkpoint": "/home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth",
+    "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+    "dataset": "BCSS validation",
+    "device": "NVIDIA GeForce RTX 5090 D v2",
+    "gt_alignment": "nearest resize to native stage resolution",
+    "image_size": 224,
+    "pytorch": "2.11.0+cu128",
+    "risk_dtype": "float32",
+    "seed": 42,
+    "validation_samples": 3418
+  },
+  "stages": {
+    "stage1": {
+      "corrected_vs_harmed": {
+        "aupr": 0.8407210765734884,
+        "auroc": 0.6414213221830696,
+        "cohens_d_corrected_minus_harmed": 0.4732051860701347,
+        "corrected": {
+          "count": 2107395,
+          "mean": 0.7586569903736881,
+          "median": 0.8396539688110352,
+          "std": 0.21069751559809557
+        },
+        "harmed": {
+          "count": 616729,
+          "mean": 0.6564824358244085,
+          "median": 0.7145025134086609,
+          "std": 0.23288379953687185
+        }
+      },
+      "need": {
+        "count": 9915516,
+        "mean": 0.6190822088948924,
+        "median": 0.6594480276107788,
+        "std": 0.24650516512014647
+      },
+      "per_class": {
+        "0": {
+          "corrected_vs_harmed": {
+            "aupr": 0.9882988596195164,
+            "auroc": 0.5800197673394254,
+            "cohens_d_corrected_minus_harmed": 0.23748255078730104,
+            "corrected": {
+              "count": 1377314,
+              "mean": 0.7484264278395316,
+              "median": 0.8307867646217346,
+              "std": 0.2095094086969416
+            },
+            "harmed": {
+              "count": 19200,
+              "mean": 0.6986440584046553,
+              "median": 0.773901641368866,
+              "std": 0.2177728815481302
+            }
+          },
+          "name": "Tumor",
+          "pixels": 3860914,
+          "raw_error": {
+            "aupr": 0.6610021518261127,
+            "auroc": 0.6597093584913628,
+            "cohens_d_wrong_minus_correct": 0.4329162788588111,
+            "correct": {
+              "count": 2039118,
+              "mean": 0.6264099368480013,
+              "median": 0.6668491959571838,
+              "std": 0.20259862936597006
+            },
+            "wrong": {
+              "count": 1821796,
+              "mean": 0.7192555426968501,
+              "median": 0.8160557746887207,
+              "std": 0.22701330569331982
+            }
+          }
+        },
+        "1": {
+          "corrected_vs_harmed": {
+            "aupr": 0.23603087578431836,
+            "auroc": 0.6053548759082729,
+            "cohens_d_corrected_minus_harmed": 0.4030466314601361,
+            "corrected": {
+              "count": 149138,
+              "mean": 0.7451269780770722,
+              "median": 0.8023242950439453,
+              "std": 0.18159260249602993
+            },
+            "harmed": {
+              "count": 582896,
+              "mean": 0.6551114037049408,
+              "median": 0.7116768062114716,
+              "std": 0.23281885431914945
+            }
+          },
+          "name": "Stroma",
+          "pixels": 4178186,
+          "raw_error": {
+            "aupr": 0.3152072205213305,
+            "auroc": 0.6529621981196239,
+            "cohens_d_wrong_minus_correct": 0.5287095135602208,
+            "correct": {
+              "count": 3349087,
+              "mean": 0.5291432519853122,
+              "median": 0.5245954394340515,
+              "std": 0.23476633623589632
+            },
+            "wrong": {
+              "count": 829099,
+              "mean": 0.6538566671863172,
+              "median": 0.737727165222168,
+              "std": 0.24033900498589608
+            }
+          }
+        },
+        "2": {
+          "corrected_vs_harmed": {
+            "aupr": 0.9799486944181749,
+            "auroc": 0.6420395941106449,
+            "cohens_d_corrected_minus_harmed": 0.45614148276191696,
+            "corrected": {
+              "count": 410258,
+              "mean": 0.749834858807325,
+              "median": 0.8535996973514557,
+              "std": 0.22477228312073866
+            },
+            "harmed": {
+              "count": 13644,
+              "mean": 0.6469689811616163,
+              "median": 0.7208739221096039,
+              "std": 0.2467365805447431
+            }
+          },
+          "name": "Inflammatory",
+          "pixels": 1294215,
+          "raw_error": {
+            "aupr": 0.7942705562711474,
+            "auroc": 0.6857281812557542,
+            "cohens_d_wrong_minus_correct": 0.6877822492384605,
+            "correct": {
+              "count": 442469,
+              "mean": 0.49182400387848624,
+              "median": 0.494941383600235,
+              "std": 0.28099645878930507
+            },
+            "wrong": {
+              "count": 851746,
+              "mean": 0.6691847695876496,
+              "median": 0.7341085970401764,
+              "std": 0.24500124579903085
+            }
+          }
+        },
+        "3": {
+          "corrected_vs_harmed": {
+            "aupr": 0.9936656284199015,
+            "auroc": 0.5783624734842147,
+            "cohens_d_corrected_minus_harmed": 0.5664331754029445,
+            "corrected": {
+              "count": 170685,
+              "mean": 0.8742376567018052,
+              "median": 0.9365295171737671,
+              "std": 0.17063363164796969
+            },
+            "harmed": {
+              "count": 989,
+              "mean": 0.7772787555287562,
+              "median": 0.9050302505493164,
+              "std": 0.24727715887705498
+            }
+          },
+          "name": "Necrosis",
+          "pixels": 582201,
+          "raw_error": {
+            "aupr": 0.9727016417137883,
+            "auroc": 0.4603740714803237,
+            "cohens_d_wrong_minus_correct": -0.34101084262062065,
+            "correct": {
+              "count": 15404,
+              "mean": 0.8549340070863511,
+              "median": 0.9088019728660583,
+              "std": 0.15904124080739576
+            },
+            "wrong": {
+              "count": 566797,
+              "mean": 0.7689498615912983,
+              "median": 0.9094504117965698,
+              "std": 0.25419923931708016
+            }
+          }
+        }
+      },
+      "pixels": 9915516,
+      "quartiles": {
+        "bottom": {
+          "corrected_rate": 0.0943874227019552,
+          "count": 2478879,
+          "harmed_rate": 0.0485497678587781,
+          "net_correction_rate": 0.0458376548431771,
+          "raw_error_rate": 0.28300534233417607
+        },
+        "net_correction_rate_gap": 0.32160746853718963,
+        "paired_image_net_gap": {
+          "bootstrap_ci95": [
+            0.23544998348960602,
+            0.25045311939183934
+          ],
+          "mean_difference": 0.24302100239256802,
+          "paired_images": 3411
+        },
+        "q25": 0.42060987651348114,
+        "q75": 0.8346926122903824,
+        "raw_error_rate_gap": 0.4048273433273669,
+        "top": {
+          "corrected_rate": 0.43927033146837746,
+          "count": 2478879,
+          "harmed_rate": 0.07182520808801075,
+          "net_correction_rate": 0.3674451233803667,
+          "raw_error_rate": 0.687832685661543
+        }
+      },
+      "raw_error": {
+        "aupr": 0.6239473760996611,
+        "auroc": 0.6811207663231206,
+        "cohens_d_wrong_minus_correct": 0.5973131758811188,
+        "correct": {
+          "count": 5846078,
+          "mean": 0.5611038447630401,
+          "median": 0.579768568277359,
+          "std": 0.2336612011575793
+        },
+        "wrong": {
+          "count": 4069438,
+          "mean": 0.7023728350273489,
+          "median": 0.7987650632858276,
+          "std": 0.2405372194001964
+        }
+      }
+    },
+    "stage2": {
+      "corrected_vs_harmed": {
+        "aupr": 0.8657515528143463,
+        "auroc": 0.5683972636407817,
+        "cohens_d_corrected_minus_harmed": 0.16340596406586833,
+        "corrected": {
+          "count": 325670,
+          "mean": 0.7146418797484395,
+          "median": 0.8015352189540863,
+          "std": 0.23492377140174037
+        },
+        "harmed": {
+          "count": 68931,
+          "mean": 0.6766166020514537,
+          "median": 0.7444862127304077,
+          "std": 0.2219149775290236
+        }
+      },
+      "need": {
+        "count": 2479143,
+        "mean": 0.47455532796957456,
+        "median": 0.4680781364440918,
+        "std": 0.29233796254955097
+      },
+      "per_class": {
+        "0": {
+          "corrected_vs_harmed": {
+            "aupr": 0.7161604295623298,
+            "auroc": 0.4914969965801872,
+            "cohens_d_corrected_minus_harmed": -0.05689687096168161,
+            "corrected": {
+              "count": 66056,
+              "mean": 0.6658518407495099,
+              "median": 0.7429326772689819,
+              "std": 0.233070189741497
+            },
+            "harmed": {
+              "count": 26357,
+              "mean": 0.6788948028101024,
+              "median": 0.753486692905426,
+              "std": 0.21933308228306378
+            }
+          },
+          "name": "Tumor",
+          "pixels": 965133,
+          "raw_error": {
+            "aupr": 0.35062873982531007,
+            "auroc": 0.734705407542812,
+            "cohens_d_wrong_minus_correct": 0.8728965690135424,
+            "correct": {
+              "count": 809490,
+              "mean": 0.3755406745915344,
+              "median": 0.3370571732521057,
+              "std": 0.2689855868307891
+            },
+            "wrong": {
+              "count": 155643,
+              "mean": 0.6084008749599472,
+              "median": 0.6643238663673401,
+              "std": 0.2549167943165554
+            }
+          }
+        },
+        "1": {
+          "corrected_vs_harmed": {
+            "aupr": 0.7315269661626765,
+            "auroc": 0.49844652477143514,
+            "cohens_d_corrected_minus_harmed": 0.027008705234881324,
+            "corrected": {
+              "count": 113895,
+              "mean": 0.6819636232836603,
+              "median": 0.7638348937034607,
+              "std": 0.21894569801861832
+            },
+            "harmed": {
+              "count": 36496,
+              "mean": 0.6760069248550443,
+              "median": 0.7380978167057037,
+              "std": 0.22546666440004534
+            }
+          },
+          "name": "Stroma",
+          "pixels": 1044692,
+          "raw_error": {
+            "aupr": 0.3720612026570402,
+            "auroc": 0.6599856748348134,
+            "cohens_d_wrong_minus_correct": 0.5645783845922009,
+            "correct": {
+              "count": 789364,
+              "mean": 0.43917073035406595,
+              "median": 0.43649791181087494,
+              "std": 0.2800702088311518
+            },
+            "wrong": {
+              "count": 255328,
+              "mean": 0.595050046050711,
+              "median": 0.6574607789516449,
+              "std": 0.2634406521191473
+            }
+          }
+        },
+        "2": {
+          "corrected_vs_harmed": {
+            "aupr": 0.953313953067536,
+            "auroc": 0.5601402361963976,
+            "cohens_d_corrected_minus_harmed": 0.08739943432913086,
+            "corrected": {
+              "count": 81743,
+              "mean": 0.6880221386117249,
+              "median": 0.7720383405685425,
+              "std": 0.24285920263529515
+            },
+            "harmed": {
+              "count": 5620,
+              "mean": 0.6669812461282367,
+              "median": 0.7320823669433594,
+              "std": 0.20750647904069006
+            }
+          },
+          "name": "Inflammatory",
+          "pixels": 323515,
+          "raw_error": {
+            "aupr": 0.7144023195028549,
+            "auroc": 0.6763362566954213,
+            "cohens_d_wrong_minus_correct": 0.634164952501383,
+            "correct": {
+              "count": 147085,
+              "mean": 0.43697780419801263,
+              "median": 0.41696685552597046,
+              "std": 0.2803884883146498
+            },
+            "wrong": {
+              "count": 176430,
+              "mean": 0.610384286338496,
+              "median": 0.651928037405014,
+              "std": 0.2675089628773162
+            }
+          }
+        },
+        "3": {
+          "corrected_vs_harmed": {
+            "aupr": 0.996370477527901,
+            "auroc": 0.7333773295444307,
+            "cohens_d_corrected_minus_harmed": 0.7362313764083809,
+            "corrected": {
+              "count": 63976,
+              "mean": 0.8572069406448349,
+              "median": 0.9374313652515411,
+              "std": 0.19637169076342012
+            },
+            "harmed": {
+              "count": 458,
+              "mean": 0.7123260820796916,
+              "median": 0.8144423961639404,
+              "std": 0.24773240189266044
+            }
+          },
+          "name": "Necrosis",
+          "pixels": 145803,
+          "raw_error": {
+            "aupr": 0.8684871305399302,
+            "auroc": 0.5180602438559352,
+            "cohens_d_wrong_minus_correct": -0.24312708611126962,
+            "correct": {
+              "count": 24782,
+              "mean": 0.7895685051042927,
+              "median": 0.8538132309913635,
+              "std": 0.1788473537965793
+            },
+            "wrong": {
+              "count": 121021,
+              "mean": 0.7244378428213273,
+              "median": 0.8771843910217285,
+              "std": 0.2826796536736184
+            }
+          }
+        }
+      },
+      "pixels": 2479143,
+      "quartiles": {
+        "bottom": {
+          "corrected_rate": 0.020471582126734066,
+          "count": 619786,
+          "harmed_rate": 0.0035996295495542008,
+          "net_correction_rate": 0.016871952577179865,
+          "raw_error_rate": 0.11419425414578581
+        },
+        "net_correction_rate_gap": 0.2400344635083723,
+        "paired_image_net_gap": {
+          "bootstrap_ci95": [
+            0.19308825956658113,
+            0.2055633264232777
+          ],
+          "mean_difference": 0.19924950076571574,
+          "paired_images": 3411
+        },
+        "q25": 0.2162133827805519,
+        "q75": 0.7392123639583588,
+        "raw_error_rate_gap": 0.39591891394771744,
+        "top": {
+          "corrected_rate": 0.3133855879287367,
+          "count": 619786,
+          "harmed_rate": 0.056479171843184586,
+          "net_correction_rate": 0.25690641608555215,
+          "raw_error_rate": 0.5101131680935033
+        }
+      },
+      "raw_error": {
+        "aupr": 0.5136398445236662,
+        "auroc": 0.7076820626916395,
+        "cohens_d_wrong_minus_correct": 0.7558234945033078,
+        "correct": {
+          "count": 1770721,
+          "mean": 0.4148038861538704,
+          "median": 0.3933738172054291,
+          "std": 0.2792805976260322
+        },
+        "wrong": {
+          "count": 708422,
+          "mean": 0.6239057614729746,
+          "median": 0.689773291349411,
+          "std": 0.2699779435243342
+        }
+      }
+    },
+    "stage3": {
+      "corrected_vs_harmed": {
+        "aupr": 0.7199893722342686,
+        "auroc": 0.49212672126418905,
+        "cohens_d_corrected_minus_harmed": -0.018287377492636155,
+        "corrected": {
+          "count": 161624,
+          "mean": 0.49372350625966516,
+          "median": 0.4779534339904785,
+          "std": 0.20011779933750556
+        },
+        "harmed": {
+          "count": 63921,
+          "mean": 0.4973446536845798,
+          "median": 0.490303635597229,
+          "std": 0.19258702440958664
+        }
+      },
+      "need": {
+        "count": 2479143,
+        "mean": 0.32586349142703247,
+        "median": 0.30969446897506714,
+        "std": 0.24733770051537093
+      },
+      "per_class": {
+        "0": {
+          "corrected_vs_harmed": {
+            "aupr": 0.8976030971396215,
+            "auroc": 0.3448642844091938,
+            "cohens_d_corrected_minus_harmed": -0.5370461386129579,
+            "corrected": {
+              "count": 89245,
+              "mean": 0.4718815523493838,
+              "median": 0.45148175954818726,
+              "std": 0.19255878460827153
+            },
+            "harmed": {
+              "count": 7005,
+              "mean": 0.5747141770933416,
+              "median": 0.6055077314376831,
+              "std": 0.17710568282147524
+            }
+          },
+          "name": "Tumor",
+          "pixels": 965133,
+          "raw_error": {
+            "aupr": 0.3235314899814129,
+            "auroc": 0.6611765965396315,
+            "cohens_d_wrong_minus_correct": 0.5427045013397215,
+            "correct": {
+              "count": 735658,
+              "mean": 0.2902253720316478,
+              "median": 0.2289348542690277,
+              "std": 0.25834606032067814
+            },
+            "wrong": {
+              "count": 229475,
+              "mean": 0.42512081400006446,
+              "median": 0.41641831398010254,
+              "std": 0.21420031198354844
+            }
+          }
+        },
+        "1": {
+          "corrected_vs_harmed": {
+            "aupr": 0.39654002766214336,
+            "auroc": 0.6290260280706759,
+            "cohens_d_corrected_minus_harmed": 0.4562700140396676,
+            "corrected": {
+              "count": 22198,
+              "mean": 0.5663926994174272,
+              "median": 0.5838685929775238,
+              "std": 0.18224767458516541
+            },
+            "harmed": {
+              "count": 50680,
+              "mean": 0.4796694412867323,
+              "median": 0.4651470333337784,
+              "std": 0.1933929551077058
+            }
+          },
+          "name": "Stroma",
+          "pixels": 1044692,
+          "raw_error": {
+            "aupr": 0.30471205232180576,
+            "auroc": 0.6906310427243793,
+            "cohens_d_wrong_minus_correct": 0.7425276383393364,
+            "correct": {
+              "count": 891959,
+              "mean": 0.26879110481993107,
+              "median": 0.23884350061416626,
+              "std": 0.22097926193507839
+            },
+            "wrong": {
+              "count": 152733,
+              "mean": 0.4363435027396829,
+              "median": 0.4519954323768616,
+              "std": 0.2512056850310275
+            }
+          }
+        },
+        "2": {
+          "corrected_vs_harmed": {
+            "aupr": 0.8234315819350068,
+            "auroc": 0.38936991279054045,
+            "cohens_d_corrected_minus_harmed": -0.365229231262974,
+            "corrected": {
+              "count": 31373,
+              "mean": 0.4638086443592876,
+              "median": 0.44386568665504456,
+              "std": 0.17912059558997034
+            },
+            "harmed": {
+              "count": 5453,
+              "mean": 0.5277648799130944,
+              "median": 0.5391939878463745,
+              "std": 0.14994913925444497
+            }
+          },
+          "name": "Inflammatory",
+          "pixels": 323515,
+          "raw_error": {
+            "aupr": 0.4193177017850903,
+            "auroc": 0.5354936407507418,
+            "cohens_d_wrong_minus_correct": 0.1440155687714176,
+            "correct": {
+              "count": 199223,
+              "mean": 0.3747574343687304,
+              "median": 0.38337433338165283,
+              "std": 0.22698631549308382
+            },
+            "wrong": {
+              "count": 124292,
+              "mean": 0.40679488133685254,
+              "median": 0.39977262914180756,
+              "std": 0.21499960976189927
+            }
+          }
+        },
+        "3": {
+          "corrected_vs_harmed": {
+            "aupr": 0.936807340518053,
+            "auroc": 0.2925436813116671,
+            "cohens_d_corrected_minus_harmed": -0.7194206101308686,
+            "corrected": {
+              "count": 18808,
+              "mean": 0.5614975061218307,
+              "median": 0.5755370259284973,
+              "std": 0.2467720176021085
+            },
+            "harmed": {
+              "count": 783,
+              "mean": 0.737350731871613,
+              "median": 0.7958109378814697,
+              "std": 0.1790234706539966
+            }
+          },
+          "name": "Necrosis",
+          "pixels": 145803,
+          "raw_error": {
+            "aupr": 0.412190417614814,
+            "auroc": 0.5216563075124259,
+            "cohens_d_wrong_minus_correct": 0.07710551340015451,
+            "correct": {
+              "count": 84438,
+              "mean": 0.43799202148657096,
+              "median": 0.43765789270401,
+              "std": 0.29864785625463963
+            },
+            "wrong": {
+              "count": 61365,
+              "mean": 0.45956914983295094,
+              "median": 0.4536754786968231,
+              "std": 0.25166549506891883
+            }
+          }
+        }
+      },
+      "pixels": 2479143,
+      "quartiles": {
+        "bottom": {
+          "corrected_rate": 0.00284453020881401,
+          "count": 619786,
+          "harmed_rate": 0.0012488181404549312,
+          "net_correction_rate": 0.0015957120683590788,
+          "raw_error_rate": 0.08631527656320084
+        },
+        "net_correction_rate_gap": 0.06534502725014872,
+        "paired_image_net_gap": {
+          "bootstrap_ci95": [
+            0.05683302030581718,
+            0.06546134641346536
+          ],
+          "mean_difference": 0.0611114591630023,
+          "paired_images": 3397
+        },
+        "q25": 0.08992471918463707,
+        "q75": 0.5205921530723572,
+        "raw_error_rate_gap": 0.24184100938664968,
+        "top": {
+          "corrected_rate": 0.1133792738473056,
+          "count": 619787,
+          "harmed_rate": 0.046438534528797794,
+          "net_correction_rate": 0.0669407393185078,
+          "raw_error_rate": 0.3281562859498505
+        }
+      },
+      "raw_error": {
+        "aupr": 0.33068431210748656,
+        "auroc": 0.6571161942427522,
+        "cohens_d_wrong_minus_correct": 0.548895120567587,
+        "correct": {
+          "count": 1911278,
+          "mean": 0.2955617824616113,
+          "median": 0.2594646066427231,
+          "std": 0.24430449476140859
+        },
+        "wrong": {
+          "count": 567865,
+          "mean": 0.42785074140372076,
+          "median": 0.4230431020259857,
+          "std": 0.22957198521774552
+        }
+      }
+    }
+  }
+}
