@@ -1,0 +1,22 @@
+{
+  "cuda_peak_memory_allocated_bytes": 3036097536,
+  "cuda_peak_memory_reserved_bytes": 4380950528,
+  "cuda_runtime": "12.8",
+  "cudnn": 91900,
+  "gpu": "NVIDIA GeForce RTX 5090 D v2",
+  "numpy": "1.23.5",
+  "pandas": "2.2.1",
+  "phase_seconds": {
+    "calibration": 131.11992476400337,
+    "cam_cache": 61.28041726601077,
+    "class_probe": 71.32358341797953,
+    "individual_and_complementarity": 54.269696863979334,
+    "oracles": 5.12334747298155,
+    "released_inference": 49.2421973629971,
+    "static_fusion": 137.37889381599962,
+    "visualization": 7.923027798999101
+  },
+  "python": "3.10.20",
+  "pytorch": "2.11.0+cu128",
+  "total_seconds": 521.498216692009
+}

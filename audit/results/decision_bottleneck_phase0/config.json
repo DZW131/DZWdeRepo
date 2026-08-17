@@ -1,0 +1,36 @@
+{
+  "audit_git_commit": "f82eb0ef55377e1dc27a02f3e704667640a71c10",
+  "base_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "checkpoint": "/home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth",
+  "checkpoint_sha256_expected": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "class_presence_thresholds": [
+    0.8,
+    0.9,
+    0.8,
+    0.6
+  ],
+  "exact_command": "python -u tools/audit_decision_bottleneck.py \\\n  --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val \\\n  --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth \\\n  --output-dir /home/duyanhong/experiments/SSHR_DECISION_BOTTLENECK_PHASE0_f82eb0e \\\n  --num-workers 4",
+  "expected_images": 3418,
+  "official_fusion": [
+    0.0,
+    0.6,
+    0.2,
+    0.2
+  ],
+  "probe": {
+    "batch_size": 16,
+    "fold_method": "GroupKFold by filename prefix before _xmin",
+    "folds": 5,
+    "learning_rate": 0.05,
+    "optimizer": "Adam",
+    "seed": 20260817,
+    "steps": 500,
+    "trainable_scalars": 16,
+    "weight_decay": 0.0
+  },
+  "scope": "BCSS validation-only frozen-model decision bottleneck audit",
+  "sshr_training_performed": false,
+  "static_grid_step": 0.05,
+  "test_evaluated": false,
+  "validation_root": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/val"
+}
