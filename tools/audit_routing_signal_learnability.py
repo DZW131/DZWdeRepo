@@ -14,11 +14,18 @@ from pathlib import Path
 import platform
 import shutil
 import subprocess
+import sys
 import time
 
 import numpy as np
 import pandas as pd
 import torch
+
+
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+if str(REPOSITORY_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPOSITORY_ROOT))
+
 
 from tools.decision_audit.fusion import score_predictions
 from tools.routing_signal_audit import (
