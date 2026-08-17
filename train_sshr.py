@@ -254,6 +254,10 @@ def collect_cdsr_epoch_record(model, diagnostics, epoch):
             },
             'alpha_sem': hfrm.selective_gate.alpha_sem.detach().item(),
             'alpha_ctx': hfrm.selective_gate.alpha_ctx.detach().item(),
+            'gamma_sem': hfrm.gamma_veto.detach().float().item(),
+            'gamma_context': hfrm.gamma_context.detach().float().item(),
+            'gamma_sem_gradient': _gradient_record(hfrm.gamma_veto),
+            'gamma_context_gradient': _gradient_record(hfrm.gamma_context),
             'alpha_sem_logit_gradient': _gradient_record(
                 hfrm.selective_gate.alpha_sem_logit
             ),
