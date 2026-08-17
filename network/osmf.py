@@ -7,6 +7,7 @@ initialization.
 
 from __future__ import annotations
 
+from contextlib import contextmanager
 from typing import Dict, Tuple
 
 import torch
@@ -19,6 +20,29 @@ OSMF_LAMBDA_MORPH = 0.20
 OSMF_LAMBDA_ORTH = 0.05
 OSMF_LAMBDA_REC = 0.10
 OSMF_EQUIVARIANCE_INTERVAL = 4
+
+
+@contextmanager
+def _ieee_cuda_conv_precision():
+    """Constrain only OSMF projections to IEEE FP32 across PyTorch APIs.
+
+    PyTorch 2.9+ exposes per-operator TF32 controls.  Once A0 enables TF32
+    through that API, the legacy ``cudnn.flags(allow_tf32=False)`` context no
+    longer overrides convolution precision.  Preserve A0 globally and restore
+    its setting immediately after each OSMF projection block.
+    """
+
+    conv_backend = getattr(torch.backends.cudnn, "conv", None)
+    if conv_backend is not None and hasattr(conv_backend, "fp32_precision"):
+        original = conv_backend.fp32_precision
+        conv_backend.fp32_precision = "ieee"
+        try:
+            yield
+        finally:
+            conv_backend.fp32_precision = original
+    else:
+        with torch.backends.cudnn.flags(allow_tf32=False):
+            yield
 
 
 class OSMFFactorizer(nn.Module):
@@ -92,7 +116,7 @@ class OSMFFactorizer(nn.Module):
                 # Released SSHR enables TF32 globally. A TF32 1x1 identity
                 # convolution is not bit-exact, so constrain only the four new
                 # OSMF projections while leaving the frozen SSHR path untouched.
-                with torch.backends.cudnn.flags(allow_tf32=False):
+                with _ieee_cuda_conv_precision():
                     return self.p_sem(feature_fp32), self.p_morph(feature_fp32)
             return self.p_sem(feature_fp32), self.p_morph(feature_fp32)
 
@@ -103,7 +127,7 @@ class OSMFFactorizer(nn.Module):
             semantic_fp32 = semantic.float()
             morphology_fp32 = morphology.float()
             if semantic.is_cuda:
-                with torch.backends.cudnn.flags(allow_tf32=False):
+                with _ieee_cuda_conv_precision():
                     return self.u_sem(semantic_fp32) + self.u_morph(morphology_fp32)
             return self.u_sem(semantic_fp32) + self.u_morph(morphology_fp32)
 

@@ -49,11 +49,24 @@ def test_autocast_does_not_quantize_identity_reconstruction():
 @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA is required")
 def test_cuda_bf16_tf32_identity_is_exact():
     module = OSMFFactorizer(512, n_class=4).cuda()
-    feature = torch.randn(2, 512, 28, 28, device="cuda")
-    with torch.no_grad(), torch.autocast(
-        device_type="cuda", dtype=torch.bfloat16
-    ):
-        reconstruction = module.forward_inference(feature)
+    feature = torch.randn(20, 512, 28, 28, device="cuda")
+    conv_backend = getattr(torch.backends.cudnn, "conv", None)
+    if conv_backend is not None and hasattr(conv_backend, "fp32_precision"):
+        original = conv_backend.fp32_precision
+        conv_backend.fp32_precision = "tf32"
+        try:
+            with torch.no_grad(), torch.autocast(
+                device_type="cuda", dtype=torch.bfloat16
+            ):
+                reconstruction = module.forward_inference(feature)
+            assert conv_backend.fp32_precision == "tf32"
+        finally:
+            conv_backend.fp32_precision = original
+    else:
+        with torch.no_grad(), torch.autocast(
+            device_type="cuda", dtype=torch.bfloat16
+        ):
+            reconstruction = module.forward_inference(feature)
     assert torch.equal(reconstruction, feature)
 
 
