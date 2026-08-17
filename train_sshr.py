@@ -154,6 +154,14 @@ def write_experiment_config(
     }
     if getattr(args, 'context_mode', 'ch') == 'fampr':
         config['fampr_config'] = model.hfrm_56.fampr_context.config.to_dict()
+    if getattr(args, 'rectification_mode', 'uniform') == 'cdsr':
+        config['cdsr_config'] = {
+            'need_formula': 'R * (1 - (1-D) * (1-U))',
+            'alpha_init': 0.10,
+            'target_stages': ['stage1', 'stage2', 'stage3'],
+            'shared_across_hierarchies': True,
+            'new_learnable_scalars': 2,
+        }
     path = os.path.join(args.save_folder, 'experiment_config.json')
     with open(path, 'w', encoding='utf-8') as output_file:
         json.dump(config, output_file, indent=2, sort_keys=True, default=str)
@@ -203,6 +211,106 @@ def collect_fampr_epoch_record(model, diagnostics, epoch):
         }
     return record
 
+
+def _tensor_summary(tensor):
+    values = tensor.detach().float().flatten()
+    quantiles = torch.quantile(
+        values, torch.tensor([0.10, 0.50, 0.90], device=values.device)
+    )
+    return {
+        'mean': values.mean().item(),
+        'std': values.std(unbiased=False).item(),
+        'p10': quantiles[0].item(),
+        'p50': quantiles[1].item(),
+        'p90': quantiles[2].item(),
+        'finite': bool(torch.isfinite(values).all().item()),
+    }
+
+
+def collect_cdsr_epoch_record(model, diagnostics, epoch):
+    """Summarize the first training batch for observability only."""
+    stages = {
+        'stage1': model.hfrm_56,
+        'stage2': model.hfrm_28_1,
+        'stage3': model.hfrm_28_2,
+    }
+    record = {'epoch': epoch, 'sample': 'first_training_batch', 'stages': {}}
+    shared_gate = model.cdsr_selective_gate
+    for stage, hfrm in stages.items():
+        values = diagnostics['cdsr'][stage]
+        need_map = values['need_map'].detach().float()
+        record['stages'][stage] = {
+            'disagreement': _tensor_summary(values['disagreement']),
+            'stage_uncertainty': _tensor_summary(values['stage_uncertainty']),
+            'deep_reliability': _tensor_summary(values['deep_reliability']),
+            'need': _tensor_summary(need_map),
+            'need_bins': {
+                'lt_0_25': (need_map < 0.25).float().mean().item(),
+                'ge_0_25_lt_0_50': (
+                    (need_map >= 0.25) & (need_map < 0.50)
+                ).float().mean().item(),
+                'ge_0_50_lt_0_75': (
+                    (need_map >= 0.50) & (need_map < 0.75)
+                ).float().mean().item(),
+                'ge_0_75': (need_map >= 0.75).float().mean().item(),
+            },
+            'alpha_sem': shared_gate.alpha_sem.detach().item(),
+            'alpha_ctx': shared_gate.alpha_ctx.detach().item(),
+            'gamma_sem': hfrm.gamma_veto.detach().float().item(),
+            'gamma_context': hfrm.gamma_context.detach().float().item(),
+            'gamma_sem_gradient': _gradient_record(hfrm.gamma_veto),
+            'gamma_context_gradient': _gradient_record(hfrm.gamma_context),
+            'alpha_sem_logit_gradient': _gradient_record(
+                shared_gate.alpha_sem_logit
+            ),
+            'alpha_ctx_logit_gradient': _gradient_record(
+                shared_gate.alpha_ctx_logit
+            ),
+            'semantic_gate': _tensor_summary(values['semantic_gate']),
+            'context_gate': _tensor_summary(values['context_gate']),
+            'effective_semantic_rms': values['effective_semantic']
+            .detach().float().square().mean().sqrt().item(),
+            'effective_context_rms': values['effective_context']
+            .detach().float().square().mean().sqrt().item(),
+            'all_finite': all(
+                bool(torch.isfinite(value).all().item())
+                for value in (
+                    values['disagreement'],
+                    values['stage_uncertainty'],
+                    values['deep_reliability'],
+                    values['need_map'],
+                    values['semantic_gate'],
+                    values['context_gate'],
+                    values['effective_semantic'],
+                    values['effective_context'],
+                )
+            ),
+        }
+    return record
+
+
+def collect_cdsr_parameter_state(model):
+    """Read the shared alpha and per-stage gamma state without a forward."""
+    shared_gate = model.cdsr_selective_gate
+    stages = {
+        'stage1': model.hfrm_56,
+        'stage2': model.hfrm_28_1,
+        'stage3': model.hfrm_28_2,
+    }
+    return {
+        'alpha_sem': shared_gate.alpha_sem.detach().float().item(),
+        'alpha_ctx': shared_gate.alpha_ctx.detach().float().item(),
+        'alpha_sem_logit': shared_gate.alpha_sem_logit.detach().float().item(),
+        'alpha_ctx_logit': shared_gate.alpha_ctx_logit.detach().float().item(),
+        'stages': {
+            stage: {
+                'gamma_sem': hfrm.gamma_veto.detach().float().item(),
+                'gamma_ctx': hfrm.gamma_context.detach().float().item(),
+            }
+            for stage, hfrm in stages.items()
+        },
+    }
+
 def get_model_kwargs(args):
     """Build architecture arguments without changing the official defaults."""
     rectifier_type = getattr(args, 'rectifier', 'hfrm').lower()
@@ -210,10 +318,25 @@ def get_model_kwargs(args):
     context_mode = getattr(args, 'context_mode', 'ch').lower()
     if rectifier_type == 'hfrm':
         model_kwargs['context_mode'] = context_mode
+        model_kwargs['rectification_mode'] = getattr(
+            args, 'rectification_mode', 'uniform'
+        ).lower()
     elif context_mode != 'ch':
         raise ValueError(
             "--context-mode=fampr requires --rectifier=hfrm; "
             "archived HST is isolated from FA-MPR"
+        )
+    if rectifier_type != 'hfrm' and getattr(
+        args, 'rectification_mode', 'uniform'
+    ).lower() != 'uniform':
+        raise ValueError(
+            "--rectification-mode=cdsr requires --rectifier=hfrm and "
+            "--context-mode=ch"
+        )
+    if getattr(args, 'rectification_mode', 'uniform').lower() == 'cdsr' and \
+            context_mode != 'ch':
+        raise ValueError(
+            "--rectification-mode=cdsr cannot be combined with FA-MPR"
         )
     if rectifier_type == 'hst':
         variant = getattr(args, 'hst_variant', 'a1').lower()
@@ -383,18 +506,29 @@ def train_phase(args):
     best_val_miou = None
     eval_history = []
     os.makedirs(args.save_folder, exist_ok=True)
+    training_start = time.perf_counter()
+    if torch.cuda.is_available():
+        torch.cuda.reset_peak_memory_stats()
 
     for ep in range(args.max_epoches):
+        epoch_start = time.perf_counter()
         model.train()
         ep_count = ep_EM = ep_acc = 0
+        epoch_loss_sum = 0.0
+        epoch_loss_count = 0
         fampr_epoch_record = None
+        cdsr_epoch_record = None
 
         
         for iter, (filename, img, label) in enumerate(train_data_loader):
             img = img.cuda(non_blocking=True)
             label = label.cuda(non_blocking=True)
             collect_diagnostics = (
-                getattr(args, 'context_mode', 'ch') == 'fampr' and iter == 0
+                (
+                    getattr(args, 'context_mode', 'ch') == 'fampr'
+                    or getattr(args, 'rectification_mode', 'uniform') == 'cdsr'
+                )
+                and iter == 0
             )
             
             with torch.autocast(device_type='cuda', dtype=amp_dtype, enabled=use_amp):
@@ -427,23 +561,35 @@ def train_phase(args):
                 ep_acc += compute_acc(pass_cls, true_cls)
             
             avg_meter.add({'loss_cls': loss_cls.item(), 'loss_adapt': loss_adapt_val.item()})
+            epoch_loss_sum += loss_cls.item()
+            epoch_loss_count += 1
             
             optimizer.zero_grad()
             if scaler.is_enabled():
                 scaler.scale(loss).backward()
                 scaler.unscale_(optimizer)
                 if collect_diagnostics:
-                    fampr_epoch_record = collect_fampr_epoch_record(
-                        model, model_diagnostics, ep + 1
-                    )
+                    if getattr(args, 'context_mode', 'ch') == 'fampr':
+                        fampr_epoch_record = collect_fampr_epoch_record(
+                            model, model_diagnostics, ep + 1
+                        )
+                    if getattr(args, 'rectification_mode', 'uniform') == 'cdsr':
+                        cdsr_epoch_record = collect_cdsr_epoch_record(
+                            model, model_diagnostics, ep + 1
+                        )
                 scaler.step(optimizer)
                 scaler.update()
             else:
                 loss.backward()
                 if collect_diagnostics:
-                    fampr_epoch_record = collect_fampr_epoch_record(
-                        model, model_diagnostics, ep + 1
-                    )
+                    if getattr(args, 'context_mode', 'ch') == 'fampr':
+                        fampr_epoch_record = collect_fampr_epoch_record(
+                            model, model_diagnostics, ep + 1
+                        )
+                    if getattr(args, 'rectification_mode', 'uniform') == 'cdsr':
+                        cdsr_epoch_record = collect_cdsr_epoch_record(
+                            model, model_diagnostics, ep + 1
+                        )
                 optimizer.step()
 
             if (optimizer.global_step) % 100 == 0 and (optimizer.global_step) != 0:
@@ -472,6 +618,34 @@ def train_phase(args):
                 flush=True,
             )
 
+        if cdsr_epoch_record is not None:
+            cdsr_epoch_record['epoch_end'] = {
+                'parameters': collect_cdsr_parameter_state(model),
+                'mean_classification_loss': (
+                    epoch_loss_sum / epoch_loss_count
+                    if epoch_loss_count else None
+                ),
+                'training_exact_match': ep_EM / ep_count if ep_count else None,
+                'training_accuracy': ep_acc / ep_count if ep_count else None,
+                'optimizer_global_step': optimizer.global_step,
+                'learning_rates': [
+                    group['lr'] for group in optimizer.param_groups
+                ],
+                'duration_seconds': time.perf_counter() - epoch_start,
+            }
+            diagnostics_path = os.path.join(
+                args.save_folder, 'cdsr_diagnostics.jsonl'
+            )
+            with open(diagnostics_path, 'a', encoding='utf-8') as output_file:
+                output_file.write(
+                    json.dumps(cdsr_epoch_record, sort_keys=True) + '\n'
+                )
+            print(
+                '[CDSRDiagnostics]',
+                json.dumps(cdsr_epoch_record, sort_keys=True),
+                flush=True,
+            )
+
         checkpoint_path = get_checkpoint_path(args)
         if args.save_checkpoints:
             torch.save(model.state_dict(), checkpoint_path)
@@ -496,6 +670,45 @@ def train_phase(args):
             print('[Eval]', json.dumps(eval_record, sort_keys=True), flush=True)
             if val_miou is not None and (best_val_miou is None or val_miou > best_val_miou):
                 best_val_miou = val_miou
+
+    training_seconds = time.perf_counter() - training_start
+    checkpoint_path = get_checkpoint_path(args)
+    training_summary = {
+        'epochs_completed': args.max_epoches,
+        'optimizer_global_step': optimizer.global_step,
+        'max_step': max_step,
+        'training_seconds': training_seconds,
+        'cuda_peak_memory_allocated_bytes': (
+            torch.cuda.max_memory_allocated() if torch.cuda.is_available()
+            else None
+        ),
+        'cuda_peak_memory_reserved_bytes': (
+            torch.cuda.max_memory_reserved() if torch.cuda.is_available()
+            else None
+        ),
+        'final_checkpoint': {
+            'path': os.path.abspath(checkpoint_path),
+            'size_bytes': (
+                os.path.getsize(checkpoint_path)
+                if os.path.isfile(checkpoint_path) else None
+            ),
+            'sha256': (
+                _sha256_file(checkpoint_path)
+                if os.path.isfile(checkpoint_path) else None
+            ),
+        },
+        'final_cdsr_parameters': (
+            collect_cdsr_parameter_state(model)
+            if getattr(args, 'rectification_mode', 'uniform') == 'cdsr'
+            else None
+        ),
+        'evaluation_calls_during_training': len(eval_history),
+    }
+    summary_path = os.path.join(args.save_folder, 'training_summary.json')
+    with open(summary_path, 'w', encoding='utf-8') as output_file:
+        json.dump(training_summary, output_file, indent=2, sort_keys=True)
+        output_file.write('\n')
+    print('[TrainingSummary]', json.dumps(training_summary, sort_keys=True), flush=True)
 
     return {'best_val_miou': best_val_miou, 'eval_history': eval_history}
 
@@ -531,6 +744,14 @@ if __name__ == '__main__':
         help=(
             "Contextual branch for HFRM. 'ch' is the exact official SSHR "
             "default; 'fampr' enables Full FA-MPR."
+        ),
+    )
+    parser.add_argument(
+        "--rectification_mode", "--rectification-mode",
+        default="uniform", choices=["uniform", "cdsr"],
+        help=(
+            "Residual application mode. 'uniform' preserves exact SSHR; "
+            "'cdsr' enables detached analytical selective rectification."
         ),
     )
     parser.add_argument(

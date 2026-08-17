@@ -1,0 +1,27 @@
+{
+  "additional_parameters": 6,
+  "cdsr_missing_keys": [
+    "hfrm_28_1.selective_gate.alpha_ctx_logit",
+    "hfrm_28_1.selective_gate.alpha_sem_logit",
+    "hfrm_28_2.selective_gate.alpha_ctx_logit",
+    "hfrm_28_2.selective_gate.alpha_sem_logit",
+    "hfrm_56.selective_gate.alpha_ctx_logit",
+    "hfrm_56.selective_gate.alpha_sem_logit"
+  ],
+  "cdsr_parameters": 112709720,
+  "cdsr_unexpected_keys": [],
+  "checkpoint": "/home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth",
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "checkpoint_size_bytes": 451130207,
+  "expected_cdsr_missing_keys": [
+    "hfrm_28_1.selective_gate.alpha_ctx_logit",
+    "hfrm_28_1.selective_gate.alpha_sem_logit",
+    "hfrm_28_2.selective_gate.alpha_ctx_logit",
+    "hfrm_28_2.selective_gate.alpha_sem_logit",
+    "hfrm_56.selective_gate.alpha_ctx_logit",
+    "hfrm_56.selective_gate.alpha_sem_logit"
+  ],
+  "pass": true,
+  "uniform_parameters": 112709714,
+  "uniform_strict_load": true
+}

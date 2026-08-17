@@ -24,22 +24,27 @@ Experiments on the LUAD-HistoSeg and BCSS datasets demonstrate that SSHR outperf
 ## Research Development
 
 The official SSHR implementation remains the exact default A0 baseline. The
-active Innovation 1 is **Frequency-Adaptive Morphology-Preserving
-Rectification (FA-MPR)**. It replaces only the Contextual Homogenization (CH)
-signal inside each HFRM with a fixed full configuration combining multi-band
-frequency selection, morphology-conditioned spatial sampling, adaptive
-low/high kernel spectra, and a learnable CH anchor.
+current Innovation 1 candidate is **Cross-Hierarchy Disagreement-Guided
+Selective Rectification (CDSR)**. It reuses the existing raw hierarchy CAMs to
+compute a detached analytical Need map and only attenuates the original GSR
+and CH15 residuals where rectification is less necessary.
 
 - `--rectifier hfrm --context-mode ch`: exact A0 (default);
+- `--rectifier hfrm --context-mode ch --rectification-mode cdsr`: Full CDSR;
 - `--rectifier hfrm --context-mode fampr`: Full FA-MPR;
 - `--rectifier hst`: archived negative-result implementation, isolated from
-  FA-MPR and retained only for reproducibility.
+  current Innovation 1 and retained only for reproducibility.
 
-FA-MPR does not change the backbone, GSR branch, CAM heads, loss, optimizer,
-training schedule, inference, or metrics. Its v1.0 configuration is frozen in
-code; the first controlled experiment is BCSS seed 42 against A0.
+CDSR-v2 adds only two hierarchy-shared learnable alpha logits and no new
+classifier, learned uncertainty head, or loss. Its Phase-0 frozen signal audit
+passed as a regular Go. The original six-alpha v1 failed readiness because the
+F28_2 logits were indistinguishable from matched weight-decay-only shadows;
+the approved hierarchy-shared v2 passes the same 20-real-step shadow audit for
+both shared scalars. The 25-epoch experiment remains intentionally unstarted
+pending review.
 
-The earlier HST candidate is archived with three selectable stages:
+The earlier FA-MPR and HST candidates are archived negative results. HST keeps
+three selectable stages:
 
 - A1: progressive-only correction-state propagation;
 - A2: target-conditioned stage-specific transitions;
@@ -49,8 +54,13 @@ Their BCSS seed-42 final-checkpoint results did not improve over A0, so HST is
 not part of the active Innovation 1 path. The source and tests remain available
 to preserve the complete experimental record.
 
-See [`docs/fampr_implementation_report.md`](docs/fampr_implementation_report.md)
-for the active design and validation evidence, and
+See
+[`docs/cdsr_need_signal_feasibility.md`](docs/cdsr_need_signal_feasibility.md)
+for the frozen Phase-0 evidence,
+[`docs/cdsr_implementation_readiness_report.md`](docs/cdsr_implementation_readiness_report.md)
+for the archived six-alpha v1 stop decision,
+[`docs/cdsr_v2_shared_alpha_readiness_report.md`](docs/cdsr_v2_shared_alpha_readiness_report.md)
+for the current hierarchy-shared readiness evidence, and
 [`docs/innovation1_hst_migration.md`](docs/innovation1_hst_migration.md) for the
 archived HST record.
 
@@ -76,6 +86,8 @@ SSHR/
 │           ├── img/
 │           └── mask/
 ├── init_weights/              # pretrained initialization weights, ignored by git
+├── network/cdsr/              # frozen analytical Need and two shared gates
+├── tools/                     # CDSR audits, readiness smoke, and profiling
 └── checkpoints/               # training checkpoints, ignored by git
 ```
 
@@ -142,14 +154,36 @@ python train_sshr.py \
 
 The final checkpoint is saved as `stage1_last.pth`.
 
-For the controlled Full FA-MPR BCSS seed-42 run, use the same command and add:
+The formal CDSR command would add the following mode selection:
 
 ```bash
---rectifier hfrm --context-mode fampr
+--rectifier hfrm --context-mode ch --rectification-mode cdsr
 ```
 
-Do not combine `--rectifier hst` with `--context-mode fampr`; the parser/model
-rejects that combination to prevent archived HST code from entering FA-MPR.
+CDSR-v2 has passed engineering readiness, but this review phase does not
+authorize the 25-epoch run. CDSR cannot be combined with FA-MPR or archived
+HST; the parser/model rejects those combinations.
+
+### CDSR readiness reproduction
+
+```bash
+python -m pytest -q
+
+python tools/check_cdsr_a0_compatibility.py \
+  --checkpoint /path/to/A0/stage1_last.pth \
+  --output-json audit/results/cdsr_v2_a0_compatibility.json
+
+python tools/smoke_cdsr.py \
+  --train-root /path/to/BCSS-WSSS/training \
+  --weights init_weights/ilsvrc-cls_rna-a1_cls1000_ep-0001.params \
+  --dataset bcss --batch-size 20 --steps 20 --formal-epochs 25 \
+  --image-size 224 --seed 42 \
+  --output-json audit/results/cdsr_v2_readiness_smoke.json
+
+python tools/profile_cdsr.py \
+  --batch-size 20 --image-size 224 --warmup 3 --iterations 10 \
+  --output-json audit/results/cdsr_v2_resource_profile.json
+```
 
 ### Evaluation
 

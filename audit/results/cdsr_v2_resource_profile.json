@@ -1,0 +1,64 @@
+{
+  "batch_size": 20,
+  "budget": {
+    "additional_parameters_eq_2": true,
+    "estimated_flops_lt_0_1_percent": true,
+    "forward_latency_lt_5_percent": true,
+    "pass": true,
+    "train_latency_lt_10_percent": true
+  },
+  "cdsr_vs_a0": {
+    "additional_parameters": 2,
+    "estimated_flops_percent": 0.02315304145268371,
+    "forward_median_latency_percent": 2.50799178952954,
+    "forward_peak_memory_percent": 1.9655127017654594,
+    "parameter_percent": 1.7744699487565185e-06,
+    "train_median_latency_percent": 1.4377944365772999,
+    "train_peak_memory_percent": 1.4128094568041094
+  },
+  "device": "cuda",
+  "flop_method": "exact Conv2d/Linear multiply-and-add count plus an explicit primitive-operation estimate for CDSR softmax, resize, JSD, entropy, Need, gates, and residual modulation; one multiply-add is two FLOPs and one transcendental is one estimated operation",
+  "gpu": "NVIDIA GeForce RTX 5090 D v2",
+  "image_size": 224,
+  "iterations": 10,
+  "precision": "bf16",
+  "results": [
+    {
+      "estimated_cdsr_functional_flops_per_image": 0.0,
+      "estimated_total_flops_per_image": 200488009728.0,
+      "forward": {
+        "mean_ms": 30.37490919814445,
+        "median_ms": 30.367444007424638,
+        "peak_cuda_memory_bytes": 1310638592
+      },
+      "learnable_cdsr_scalars": 0,
+      "mode": "uniform",
+      "module_flops_per_image": 200488009728.0,
+      "parameters": 112709714,
+      "train_step": {
+        "mean_ms": 93.88188170269132,
+        "median_ms": 93.8769109925488,
+        "peak_cuda_memory_bytes": 3937387008
+      }
+    },
+    {
+      "estimated_cdsr_functional_flops_per_image": 4672640.0,
+      "estimated_total_flops_per_image": 200534428800.0,
+      "forward": {
+        "mean_ms": 31.160195299889892,
+        "median_ms": 31.129057009820826,
+        "peak_cuda_memory_bytes": 1336399360
+      },
+      "learnable_cdsr_scalars": 2,
+      "mode": "cdsr",
+      "module_flops_per_image": 200529756160.0,
+      "parameters": 112709716,
+      "train_step": {
+        "mean_ms": 95.27206769853365,
+        "median_ms": 95.2266679960303,
+        "peak_cuda_memory_bytes": 3993014784
+      }
+    }
+  ],
+  "warmup": 3
+}
