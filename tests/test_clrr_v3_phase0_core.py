@@ -6,6 +6,7 @@ from tool import iouutils
 from tools.audit_clrr_v3_phase0 import (
     OfficialMetricAccumulator,
     TeacherAdvantageAccumulator,
+    phase0_decision,
 )
 from tools.clrr_v3_phase0_core import (
     analytical_virtual_correction_v2,
@@ -279,3 +280,51 @@ def test_teacher_advantage_uses_only_active_foreground_pixels():
     assert summary["per_class"][0]["teacher_win"] == 1
     assert summary["per_class"][1]["teacher_loss"] == 1
     assert summary["per_class"][3]["teacher_win"] == 1
+
+
+def decision_fixture(fused_delta_pp):
+    pass0 = {name: {"Mean IoU": 0.60} for name in (
+        "cam56", "cam28_1", "cam28_2", "camdeep", "fused"
+    )}
+    v3 = {name: {"Mean IoU": 0.601} for name in (
+        "cam56", "cam28_1", "cam28_2", "camdeep"
+    )}
+    v3["fused"] = {"Mean IoU": 0.60 + fused_delta_pp / 100}
+    mechanism = {
+        mode: {
+            stage: {
+                "mean_consensus_ce_delta": -0.01,
+                "ce_decrease_fraction": 0.75,
+                "all_finite": True,
+                "max_update_rms_ratio": 0.02,
+            }
+            for stage in ("stage1", "stage2", "stage3")
+        }
+        for mode in ("v2", "v3")
+    }
+    return {
+        "scores": {"pass0": pass0, "v3": v3},
+        "teacher_advantage": {
+            stage: {
+                "net_teacher_advantage": 1,
+                "net_teacher_advantage_rate": 0.01,
+            }
+            for stage in ("stage1", "stage2", "stage3")
+        },
+        "prediction_changes": {
+            "v3": {
+                name: {"net_corrected": 1}
+                for name in ("cam56", "cam28_1", "cam28_2", "fused")
+            }
+        },
+        "mechanism": mechanism,
+    }
+
+
+def test_v3_decision_enforces_fused_gain_and_strong_thresholds():
+    no_go = phase0_decision(decision_fixture(0.049))
+    assert no_go["signal"] == "CLRR_V3_SIGNAL_NOGO"
+    go = phase0_decision(decision_fixture(0.051))
+    assert go["signal"] == "CLRR_V3_SIGNAL_GO"
+    strong = phase0_decision(decision_fixture(0.201))
+    assert strong["signal"] == "CLRR_V3_SIGNAL_STRONG_GO"
