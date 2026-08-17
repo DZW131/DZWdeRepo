@@ -1,0 +1,636 @@
+{
+  "base_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "checkpoint": {
+    "path": "/home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth",
+    "sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+    "size_bytes": 451130207
+  },
+  "classifier_structure": {
+    "stage1": {
+      "bias_shape": [
+        4
+      ],
+      "direct_input": "corresponding HFRM rectified feature",
+      "intervening_trainable_nonlinearity": false,
+      "module": "ic_56",
+      "weight_shape": [
+        4,
+        256,
+        1,
+        1
+      ]
+    },
+    "stage2": {
+      "bias_shape": [
+        4
+      ],
+      "direct_input": "corresponding HFRM rectified feature",
+      "intervening_trainable_nonlinearity": false,
+      "module": "ic1",
+      "weight_shape": [
+        4,
+        512,
+        1,
+        1
+      ]
+    },
+    "stage3": {
+      "bias_shape": [
+        4
+      ],
+      "direct_input": "corresponding HFRM rectified feature",
+      "intervening_trainable_nonlinearity": false,
+      "module": "ic2",
+      "weight_shape": [
+        4,
+        1024,
+        1,
+        1
+      ]
+    }
+  },
+  "decision": {
+    "all_finite": true,
+    "ce_decrease_fraction_ge_70_percent_stages": 2,
+    "directional_mean_ce_pass_all_stages": true,
+    "fused_miou_delta_percentage_points": -0.007525127277097088,
+    "nondecreasing_stage_cam_miou_stages": 3,
+    "positive_net_correction_stages": 3,
+    "recoverability_positive_stages": 1,
+    "signal": "CLRR_V2_SIGNAL_NOGO",
+    "strong_go": false
+  },
+  "environment": {
+    "cuda_runtime": "12.8",
+    "cudnn": 91900,
+    "gpu": "NVIDIA GeForce RTX 5090 D v2",
+    "precision": "official BF16 inference; detached FP32 feedback",
+    "python": "3.10.20",
+    "pytorch": "2.11.0+cu128"
+  },
+  "eta": 0.05,
+  "official_inference_parity": {
+    "mean_dice_absolute_difference": 0.0,
+    "mean_iou_absolute_difference": 0.0,
+    "pass": true
+  },
+  "official_pass0_score": {
+    "Class IoU": {
+      "0": 0.7644911124908873,
+      "1": 0.7057178048719899,
+      "2": 0.5782677955014249,
+      "3": 0.644639954952189
+    },
+    "Dice Coefficients": {
+      "0": 0.8665287199000675,
+      "1": 0.8274731058751565,
+      "2": 0.7327879300961164,
+      "3": 0.7839283643950256
+    },
+    "Frequency Weighted IoU": 0.708387849547951,
+    "Mean Accuracy": 0.7820442568033559,
+    "Mean Dice": 0.8026795300665915,
+    "Mean IoU": 0.6732791669541228,
+    "Pixel Accuracy": 0.8290363276525127
+  },
+  "phase0": {
+    "consensus_utility": {
+      "stage1": {
+        "consensus_foreground_miou": 0.6346382935636719,
+        "consensus_per_class_iou": {
+          "0": 0.7458371445202062,
+          "1": 0.6888637229857686,
+          "2": 0.5768565110606044,
+          "3": 0.5269957956881084
+        },
+        "foreground_pixels": 9915516,
+        "harmful": 556259,
+        "harmful_rate": 0.05609985400658927,
+        "net_rate": 0.07312448489821408,
+        "net_recoverability": 725067,
+        "per_class": {
+          "0": {
+            "harmful": 292736,
+            "recoverable": 196247,
+            "total": 3860914
+          },
+          "1": {
+            "harmful": 157180,
+            "recoverable": 702954,
+            "total": 4178186
+          },
+          "2": {
+            "harmful": 91270,
+            "recoverable": 152420,
+            "total": 1294215
+          },
+          "3": {
+            "harmful": 15073,
+            "recoverable": 229705,
+            "total": 582201
+          }
+        },
+        "recoverable": 1281326,
+        "recoverable_rate": 0.12922433890480334,
+        "stage_foreground_miou": 0.5002627594220393,
+        "stage_per_class_iou": {
+          "0": 0.6588940677768864,
+          "1": 0.5973611729795719,
+          "2": 0.47083872473708843,
+          "3": 0.2739570721946108
+        }
+      },
+      "stage2": {
+        "consensus_foreground_miou": 0.6212737460803359,
+        "consensus_per_class_iou": {
+          "0": 0.7370893987588835,
+          "1": 0.6779808828576983,
+          "2": 0.5630690647880655,
+          "3": 0.5069556379166966
+        },
+        "foreground_pixels": 2479143,
+        "harmful": 117560,
+        "harmful_rate": 0.04741961234184555,
+        "net_rate": -0.012748356992718856,
+        "net_recoverability": -31605,
+        "per_class": {
+          "0": {
+            "harmful": 42346,
+            "recoverable": 19272,
+            "total": 965133
+          },
+          "1": {
+            "harmful": 55596,
+            "recoverable": 36257,
+            "total": 1044692
+          },
+          "2": {
+            "harmful": 15973,
+            "recoverable": 16313,
+            "total": 323515
+          },
+          "3": {
+            "harmful": 3645,
+            "recoverable": 14113,
+            "total": 145803
+          }
+        },
+        "recoverable": 85955,
+        "recoverable_rate": 0.03467125534912669,
+        "stage_foreground_miou": 0.6378947428983854,
+        "stage_per_class_iou": {
+          "0": 0.7498909397899333,
+          "1": 0.6976348659269049,
+          "2": 0.5722529719253359,
+          "3": 0.5318001939513676
+        }
+      },
+      "stage3": {
+        "consensus_foreground_miou": 0.625693347864853,
+        "consensus_per_class_iou": {
+          "0": 0.7425483030466755,
+          "1": 0.6878295158581408,
+          "2": 0.5613286109884817,
+          "3": 0.5110669615661136
+        },
+        "foreground_pixels": 2479143,
+        "harmful": 97938,
+        "harmful_rate": 0.03950478048261032,
+        "net_rate": -0.0001863547201593454,
+        "net_recoverability": -462,
+        "per_class": {
+          "0": {
+            "harmful": 20826,
+            "recoverable": 46781,
+            "total": 965133
+          },
+          "1": {
+            "harmful": 49803,
+            "recoverable": 34080,
+            "total": 1044692
+          },
+          "2": {
+            "harmful": 15873,
+            "recoverable": 14507,
+            "total": 323515
+          },
+          "3": {
+            "harmful": 11436,
+            "recoverable": 2108,
+            "total": 145803
+          }
+        },
+        "recoverable": 97476,
+        "recoverable_rate": 0.039318425762450974,
+        "stage_foreground_miou": 0.6357530452744669,
+        "stage_per_class_iou": {
+          "0": 0.7411937528432828,
+          "1": 0.6811898215898736,
+          "2": 0.5782231513202837,
+          "3": 0.5424054553444269
+        }
+      }
+    },
+    "mechanism": {
+      "stage1": {
+        "all_finite": true,
+        "argmax_change_fraction": 0.04624592120347261,
+        "ce_decrease_fraction": 0.8628195693528207,
+        "ce_decrease_pixels": 9209680,
+        "max_update_rms_ratio": 0.04999999329447746,
+        "mean_absolute_probability_change": 0.01668446010730366,
+        "mean_consensus_ce_delta": -0.15120570361614227,
+        "mean_mismatch": 0.2251718962953907,
+        "mean_update_rms_ratio": 0.008354555815458298,
+        "median_consensus_ce_delta": -0.004311203956604004,
+        "nontrivial_mismatch_pixels": 10673935,
+        "p99_update_rms_ratio": 0.04662250269204376
+      },
+      "stage2": {
+        "all_finite": true,
+        "argmax_change_fraction": 0.0104108202672526,
+        "ce_decrease_fraction": 0.7652780748863794,
+        "ce_decrease_pixels": 2039137,
+        "max_update_rms_ratio": 0.049872204661369324,
+        "mean_absolute_probability_change": 0.0041749737961642615,
+        "mean_consensus_ce_delta": -0.03504841774702072,
+        "mean_mismatch": 0.11911037502637971,
+        "mean_update_rms_ratio": 0.0033530837390571833,
+        "median_consensus_ce_delta": -0.001189589500427246,
+        "nontrivial_mismatch_pixels": 2664570,
+        "p99_update_rms_ratio": 0.025820512641221347
+      },
+      "stage3": {
+        "all_finite": true,
+        "argmax_change_fraction": 0.010183183864534696,
+        "ce_decrease_fraction": 0.6853086529539273,
+        "ce_decrease_pixels": 1826425,
+        "max_update_rms_ratio": 0.049937278032302856,
+        "mean_absolute_probability_change": 0.004259816143610668,
+        "mean_consensus_ce_delta": -0.04335838183760643,
+        "mean_mismatch": 0.12378329246588293,
+        "mean_update_rms_ratio": 0.0034239592496305704,
+        "median_consensus_ce_delta": -0.00092354416847229,
+        "nontrivial_mismatch_pixels": 2665113,
+        "p99_update_rms_ratio": 0.02602902606129648
+      }
+    },
+    "prediction_changes": {
+      "cam28_1": {
+        "corrected": 326939,
+        "corrected_rate": 0.0020608947925245154,
+        "foreground_pixels": 158639345,
+        "harmed": 317200,
+        "harmed_rate": 0.0019995039692076388,
+        "net_corrected": 9739,
+        "net_rate": 6.13908233168764e-05,
+        "per_class": {
+          "0": {
+            "changed": 208853,
+            "corrected": 96260,
+            "harmed": 105047,
+            "total": 61781842
+          },
+          "1": {
+            "changed": 284844,
+            "corrected": 132840,
+            "harmed": 140593,
+            "total": 66845621
+          },
+          "2": {
+            "changed": 154705,
+            "corrected": 74829,
+            "harmed": 65427,
+            "total": 20708801
+          },
+          "3": {
+            "changed": 39339,
+            "corrected": 23010,
+            "harmed": 6133,
+            "total": 9303081
+          }
+        },
+        "prediction_change_rate": 0.0043352486106142205
+      },
+      "cam28_2": {
+        "corrected": 339314,
+        "corrected_rate": 0.0021389019224707464,
+        "foreground_pixels": 158639345,
+        "harmed": 212184,
+        "harmed_rate": 0.0013375244331726155,
+        "net_corrected": 127130,
+        "net_rate": 0.0008013774892981309,
+        "per_class": {
+          "0": {
+            "changed": 206432,
+            "corrected": 133734,
+            "harmed": 66047,
+            "total": 61781842
+          },
+          "1": {
+            "changed": 231917,
+            "corrected": 134397,
+            "harmed": 90101,
+            "total": 66845621
+          },
+          "2": {
+            "changed": 125967,
+            "corrected": 68320,
+            "harmed": 46767,
+            "total": 20708801
+          },
+          "3": {
+            "changed": 20551,
+            "corrected": 2863,
+            "harmed": 9269,
+            "total": 9303081
+          }
+        },
+        "prediction_change_rate": 0.003686771399617163
+      },
+      "cam56": {
+        "corrected": 1768665,
+        "corrected_rate": 0.01114896812010917,
+        "foreground_pixels": 158639345,
+        "harmed": 664672,
+        "harmed_rate": 0.004189830713181525,
+        "net_corrected": 1103993,
+        "net_rate": 0.006959137406927645,
+        "per_class": {
+          "0": {
+            "changed": 635207,
+            "corrected": 275736,
+            "harmed": 348169,
+            "total": 61781842
+          },
+          "1": {
+            "changed": 1072917,
+            "corrected": 855123,
+            "harmed": 147624,
+            "total": 66845621
+          },
+          "2": {
+            "changed": 387585,
+            "corrected": 147119,
+            "harmed": 152300,
+            "total": 20708801
+          },
+          "3": {
+            "changed": 545179,
+            "corrected": 490687,
+            "harmed": 16579,
+            "total": 9303081
+          }
+        },
+        "prediction_change_rate": 0.016647118657732732
+      },
+      "fused": {
+        "corrected": 192025,
+        "corrected_rate": 0.0012104500305393975,
+        "foreground_pixels": 158639345,
+        "harmed": 205741,
+        "harmed_rate": 0.001296910296748893,
+        "net_corrected": -13716,
+        "net_rate": -8.646026620949551e-05,
+        "per_class": {
+          "0": {
+            "changed": 130528,
+            "corrected": 60640,
+            "harmed": 64550,
+            "total": 61781842
+          },
+          "1": {
+            "changed": 178198,
+            "corrected": 78866,
+            "harmed": 92259,
+            "total": 66845621
+          },
+          "2": {
+            "changed": 96289,
+            "corrected": 45159,
+            "harmed": 44049,
+            "total": 20708801
+          },
+          "3": {
+            "changed": 19341,
+            "corrected": 7360,
+            "harmed": 4883,
+            "total": 9303081
+          }
+        },
+        "prediction_change_rate": 0.0026749732230677073
+      }
+    },
+    "sample_count": 3418,
+    "scores": {
+      "pass0": {
+        "cam28_1": {
+          "Class IoU": {
+            "0": 0.7627812694570595,
+            "1": 0.7048815815341711,
+            "2": 0.575511436189412,
+            "3": 0.6379282271144033
+          },
+          "Dice Coefficients": {
+            "0": 0.8654292879932832,
+            "1": 0.8268979959298635,
+            "2": 0.7305709409274291,
+            "3": 0.7789452755671282
+          },
+          "Frequency Weighted IoU": 0.7066161846140483,
+          "Mean Accuracy": 0.7784005410023775,
+          "Mean Dice": 0.800460875104426,
+          "Mean IoU": 0.6702756285737614,
+          "Pixel Accuracy": 0.8279811669671228
+        },
+        "cam28_2": {
+          "Class IoU": {
+            "0": 0.7478989953906593,
+            "1": 0.6948742902344902,
+            "2": 0.574119289332044,
+            "3": 0.643035571930727
+          },
+          "Dice Coefficients": {
+            "0": 0.8557691232307187,
+            "1": 0.8199714801719632,
+            "2": 0.7294482612885885,
+            "3": 0.7827409009472601
+          },
+          "Frequency Weighted IoU": 0.6967213281007608,
+          "Mean Accuracy": 0.7763701501824312,
+          "Mean Dice": 0.7969824414096327,
+          "Mean IoU": 0.6649820367219802,
+          "Pixel Accuracy": 0.8209642317925606
+        },
+        "cam56": {
+          "Class IoU": {
+            "0": 0.730719762120944,
+            "1": 0.6798951585234971,
+            "2": 0.5383122327991832,
+            "3": 0.5096764323263474
+          },
+          "Dice Coefficients": {
+            "0": 0.8444114155436341,
+            "1": 0.8094495124577589,
+            "2": 0.699873824470141,
+            "3": 0.675212809066586
+          },
+          "Frequency Weighted IoU": 0.6712243360224245,
+          "Mean Accuracy": 0.720011767477154,
+          "Mean Dice": 0.75723689038453,
+          "Mean IoU": 0.6146508964424929,
+          "Pixel Accuracy": 0.8049067776975504
+        },
+        "camdeep": {
+          "Class IoU": {
+            "0": 0.7366740602461992,
+            "1": 0.6850579075485511,
+            "2": 0.5533932227945563,
+            "3": 0.6233067988543773
+          },
+          "Dice Coefficients": {
+            "0": 0.8483734249382002,
+            "1": 0.8130971695153008,
+            "2": 0.7124959922240438,
+            "3": 0.7679470070528456
+          },
+          "Frequency Weighted IoU": 0.6843509433921753,
+          "Mean Accuracy": 0.7613831503763837,
+          "Mean Dice": 0.7854783984325977,
+          "Mean IoU": 0.649607997360921,
+          "Pixel Accuracy": 0.8126887122485282
+        },
+        "fused": {
+          "Class IoU": {
+            "0": 0.7644911124908873,
+            "1": 0.7057178048719899,
+            "2": 0.5782677955014249,
+            "3": 0.644639954952189
+          },
+          "Dice Coefficients": {
+            "0": 0.8665287199000675,
+            "1": 0.8274731058751565,
+            "2": 0.7327879300961164,
+            "3": 0.7839283643950256
+          },
+          "Frequency Weighted IoU": 0.708387849547951,
+          "Mean Accuracy": 0.7820442568033559,
+          "Mean Dice": 0.8026795300665915,
+          "Mean IoU": 0.6732791669541228,
+          "Pixel Accuracy": 0.8290363276525127
+        }
+      },
+      "virtual": {
+        "cam28_1": {
+          "Class IoU": {
+            "0": 0.7631112961347072,
+            "1": 0.7046939972574073,
+            "2": 0.5755366128140049,
+            "3": 0.6391101362336046
+          },
+          "Dice Coefficients": {
+            "0": 0.8656416617688134,
+            "1": 0.8267689079578534,
+            "2": 0.730591226040836,
+            "3": 0.7798257384975613
+          },
+          "Frequency Weighted IoU": 0.706738268089388,
+          "Mean Accuracy": 0.7789030235345126,
+          "Mean Dice": 0.8007068835662661,
+          "Mean IoU": 0.670613010609931,
+          "Pixel Accuracy": 0.8280425577904397
+        },
+        "cam28_2": {
+          "Class IoU": {
+            "0": 0.7491430098169767,
+            "1": 0.6961861880669467,
+            "2": 0.5750901972711717,
+            "3": 0.6428295475510983
+          },
+          "Dice Coefficients": {
+            "0": 0.85658291587646,
+            "1": 0.8208841611431268,
+            "2": 0.7302314474021994,
+            "3": 0.782588246613094
+          },
+          "Frequency Weighted IoU": 0.6978732605286248,
+          "Mean Accuracy": 0.7768977547217631,
+          "Mean Dice": 0.79757169275872,
+          "Mean IoU": 0.6658122356765483,
+          "Pixel Accuracy": 0.8217656092818588
+        },
+        "cam56": {
+          "Class IoU": {
+            "0": 0.7414870226151254,
+            "1": 0.6871980828802735,
+            "2": 0.5412286019803964,
+            "3": 0.5536376129678354
+          },
+          "Dice Coefficients": {
+            "0": 0.8515561850144164,
+            "1": 0.8146027308271169,
+            "2": 0.7023339708138644,
+            "3": 0.7126985190713161
+          },
+          "Frequency Weighted IoU": 0.6814535678296335,
+          "Mean Accuracy": 0.7350427581027844,
+          "Mean Dice": 0.7702978514316785,
+          "Mean IoU": 0.6308878301109077,
+          "Pixel Accuracy": 0.811865915104478
+        },
+        "camdeep": {
+          "Class IoU": {
+            "0": 0.7366740602461992,
+            "1": 0.6850579075485511,
+            "2": 0.5533932227945563,
+            "3": 0.6233067988543773
+          },
+          "Dice Coefficients": {
+            "0": 0.8483734249382002,
+            "1": 0.8130971695153008,
+            "2": 0.7124959922240438,
+            "3": 0.7679470070528456
+          },
+          "Frequency Weighted IoU": 0.6843509433921753,
+          "Mean Accuracy": 0.7613831503763837,
+          "Mean Dice": 0.7854783984325977,
+          "Mean IoU": 0.649607997360921,
+          "Pixel Accuracy": 0.8126887122485282
+        },
+        "fused": {
+          "Class IoU": {
+            "0": 0.7644848209919654,
+            "1": 0.7055193592314971,
+            "2": 0.5779826626537496,
+            "3": 0.6448288198481952
+          },
+          "Dice Coefficients": {
+            "0": 0.8665246783615674,
+            "1": 0.8273366765527685,
+            "2": 0.7325589517970186,
+            "3": 0.784067997918115
+          },
+          "Frequency Weighted IoU": 0.7082756349114036,
+          "Mean Accuracy": 0.7820583097772548,
+          "Mean Dice": 0.8026220761573674,
+          "Mean IoU": 0.6732039156813518,
+          "Pixel Accuracy": 0.8289498673863032
+        }
+      }
+    },
+    "seconds": 134.02250532398466
+  },
+  "runtime": {
+    "cuda_peak_memory_allocated_bytes": 832815104,
+    "cuda_peak_memory_reserved_bytes": 910163968,
+    "official_inference_seconds": 49.30747877701651,
+    "virtual_audit_seconds": 134.02250532398466
+  },
+  "scope": "BCSS validation only; frozen A0; no training",
+  "test_evaluated": false,
+  "validation": {
+    "image_count": 3418,
+    "mask_count": 3418,
+    "root": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/val"
+  }
+}

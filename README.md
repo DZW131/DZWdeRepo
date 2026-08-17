@@ -129,6 +129,19 @@ python train_sshr.py \
   --amp-dtype bf16
 ```
 
+## Isolated CLRR-v2 Phase-0 Audit
+
+The `feature/innovation2-clrr-v2` research branch is based directly on the
+frozen official A0 baseline (`4e9a288`) and does not contain Innovation 1
+model code. The classifier-linearity audit passed, but the preregistered
+BCSS validation-only virtual-feedback gate returned `CLRR_V2_SIGNAL_NOGO`.
+Consequently, no CLRR training architecture or training protocol change was
+implemented and no new training run was started.
+
+- [Phase -1 structure audit](docs/clrr_v2_phase_minus1_structure_audit.md)
+- [Phase-0 virtual-feedback audit](docs/clrr_v2_phase0_virtual_feedback_audit.md)
+- [Phase-0 raw results](audit/results/clrr_v2_phase0_virtual_feedback.json)
+
 ## Acknowledgement
 
 We thank the authors of [ESFAN](https://github.com/OceanPetal/ESFAN), whose codebase provided a valuable foundation for this repository.
