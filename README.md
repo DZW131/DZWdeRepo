@@ -35,11 +35,12 @@ and CH15 residuals where rectification is less necessary.
 - `--rectifier hst`: archived negative-result implementation, isolated from
   current Innovation 1 and retained only for reproducibility.
 
-CDSR adds only six learnable alpha logits and no new classifier, learned
-uncertainty head, or loss. Its Phase-0 frozen signal audit passed as a regular
-Go, but its 20-real-step implementation readiness audit failed because both
-F28_2 alpha logits were indistinguishable from matched weight-decay-only
-shadows. Consequently, the 25-epoch CDSR experiment is intentionally blocked
+CDSR-v2 adds only two hierarchy-shared learnable alpha logits and no new
+classifier, learned uncertainty head, or loss. Its Phase-0 frozen signal audit
+passed as a regular Go. The original six-alpha v1 failed readiness because the
+F28_2 logits were indistinguishable from matched weight-decay-only shadows;
+the approved hierarchy-shared v2 passes the same 20-real-step shadow audit for
+both shared scalars. The 25-epoch experiment remains intentionally unstarted
 pending review.
 
 The earlier FA-MPR and HST candidates are archived negative results. HST keeps
@@ -57,7 +58,9 @@ See
 [`docs/cdsr_need_signal_feasibility.md`](docs/cdsr_need_signal_feasibility.md)
 for the frozen Phase-0 evidence,
 [`docs/cdsr_implementation_readiness_report.md`](docs/cdsr_implementation_readiness_report.md)
-for the implementation stop decision, and
+for the archived six-alpha v1 stop decision,
+[`docs/cdsr_v2_shared_alpha_readiness_report.md`](docs/cdsr_v2_shared_alpha_readiness_report.md)
+for the current hierarchy-shared readiness evidence, and
 [`docs/innovation1_hst_migration.md`](docs/innovation1_hst_migration.md) for the
 archived HST record.
 
@@ -83,7 +86,7 @@ SSHR/
 │           ├── img/
 │           └── mask/
 ├── init_weights/              # pretrained initialization weights, ignored by git
-├── network/cdsr/              # frozen analytical Need and six-scalar gates
+├── network/cdsr/              # frozen analytical Need and two shared gates
 ├── tools/                     # CDSR audits, readiness smoke, and profiling
 └── checkpoints/               # training checkpoints, ignored by git
 ```
@@ -157,9 +160,9 @@ The formal CDSR command would add the following mode selection:
 --rectifier hfrm --context-mode ch --rectification-mode cdsr
 ```
 
-Do **not** start that 25-epoch run while the current readiness report is FAIL.
-CDSR cannot be combined with FA-MPR or archived HST; the parser/model rejects
-those combinations.
+CDSR-v2 has passed engineering readiness, but this review phase does not
+authorize the 25-epoch run. CDSR cannot be combined with FA-MPR or archived
+HST; the parser/model rejects those combinations.
 
 ### CDSR readiness reproduction
 
@@ -168,18 +171,18 @@ python -m pytest -q
 
 python tools/check_cdsr_a0_compatibility.py \
   --checkpoint /path/to/A0/stage1_last.pth \
-  --output-json audit/results/cdsr_a0_compatibility.json
+  --output-json audit/results/cdsr_v2_a0_compatibility.json
 
 python tools/smoke_cdsr.py \
   --train-root /path/to/BCSS-WSSS/training \
   --weights init_weights/ilsvrc-cls_rna-a1_cls1000_ep-0001.params \
   --dataset bcss --batch-size 20 --steps 20 --formal-epochs 25 \
   --image-size 224 --seed 42 \
-  --output-json audit/results/cdsr_readiness_smoke.json
+  --output-json audit/results/cdsr_v2_readiness_smoke.json
 
 python tools/profile_cdsr.py \
   --batch-size 20 --image-size 224 --warmup 3 --iterations 10 \
-  --output-json audit/results/cdsr_resource_profile.json
+  --output-json audit/results/cdsr_v2_resource_profile.json
 ```
 
 ### Evaluation
