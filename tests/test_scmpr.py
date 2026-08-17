@@ -3,6 +3,7 @@
 import math
 from pathlib import Path
 import unittest
+from unittest import mock
 
 import torch
 import torch.nn.functional as F
@@ -138,13 +139,26 @@ class SCMPRFrozenControlsTest(unittest.TestCase):
         self.assertGreater(conditioner.target_projector.weight.grad.abs().sum().item(), 0.0)
         self.assertGreater(deep_projector.weight.grad.abs().sum().item(), 0.0)
 
-    def test_09_gate_initialization_is_point_one(self):
-        feature, deep, logits, shared, context, original_ch = make_stage()
+    def test_09_fp32_gate_initialization_is_small_nonconstant_and_near_point_one(self):
+        with mock.patch(
+            "torch.nn.init.xavier_uniform_",
+            wraps=torch.nn.init.xavier_uniform_,
+        ) as xavier:
+            feature, deep, logits, shared, context, original_ch = make_stage()
+        xavier.assert_called_once()
+        self.assertIs(xavier.call_args.args[0], shared.gate_policy[-1].weight)
+        self.assertEqual(xavier.call_args.kwargs, {"gain": 0.01})
         _, diagnostics = context(
             feature, original_ch, deep, logits, shared, return_diagnostics=True
         )
-        self.assertTrue(torch.allclose(diagnostics["gate_fine"], torch.full_like(diagnostics["gate_fine"], 0.1), atol=1e-7))
-        self.assertTrue(torch.allclose(diagnostics["gate_morphology"], torch.full_like(diagnostics["gate_morphology"], 0.1), atol=1e-7))
+        final_weight = shared.gate_policy[-1].weight
+        self.assertGreater(final_weight.abs().sum().item(), 0.0)
+        for name in ("gate_fine", "gate_morphology"):
+            gate = diagnostics[name]
+            self.assertAlmostEqual(gate.mean().item(), 0.1, delta=0.005)
+            self.assertGreater(gate.std(unbiased=False).item(), 0.0)
+            self.assertGreater(gate.min().item(), 0.05)
+            self.assertLess(gate.max().item(), 0.15)
 
     def test_10_all_stages_use_one_shared_policy_object(self):
         model = Net(n_class=4, context_mode="sc-mpr")
@@ -271,7 +285,7 @@ class SCMPRFrozenControlsTest(unittest.TestCase):
                 active_step = active_step or step
             optimizer.step()
         self.assertIsNotNone(active_step)
-        self.assertLessEqual(active_step, 3)
+        self.assertLessEqual(active_step, 2)
 
     @unittest.skipUnless(torch.cuda.is_available(), "CUDA is required")
     def test_19_batch20_bf16_official_path_smoke(self):

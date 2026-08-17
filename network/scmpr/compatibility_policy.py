@@ -39,7 +39,7 @@ class SharedSCMPRPolicy(nn.Module):
             nn.Conv2d(hidden_channels, 2, kernel_size=1, bias=True),
         )
         final_layer = self.gate_policy[-1]
-        nn.init.zeros_(final_layer.weight)
+        nn.init.xavier_uniform_(final_layer.weight, gain=0.01)
         nn.init.constant_(final_layer.bias, logit(gate_init))
 
     def forward(self, conditions: torch.Tensor) -> torch.Tensor:

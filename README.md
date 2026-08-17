@@ -39,9 +39,12 @@ SC-MPR does not change the backbone, GSR branch, CH15, CAM heads, loss,
 optimizer, training schedule, inference, or metrics. Engineering review found
 that exact per-channel spatial de-meaning made the initial residual invisible
 to SSHR's linear CAM plus global-average-pooling classification objective. The
-approved minimal readiness patch removed only that de-meaning operation. The
-patched design is DC-safe/amplitude-controlled, passes the five-step gradient
-gate and batch-20 BF16 smoke, and has not yet been trained on BCSS or LUAD.
+approved minimal readiness patch removed only that de-meaning operation. A
+subsequent approved initialization change set the final shared policy
+`Conv1x1` weight to Xavier with `gain=0.01`. Although relative gradient flow
+improves, final readiness still fails: BF16 initial gates remain quantized to
+a constant and the 10-step parameter movement is entirely explained by weight
+decay. SC-MPR has not been trained on BCSS or LUAD.
 
 The earlier HST candidate is archived with three selectable stages:
 
@@ -53,8 +56,10 @@ Their BCSS seed-42 final-checkpoint results did not improve over A0. Full
 FA-MPR likewise failed its validation go/no-go criterion. Both candidates are
 archived without deleting their source, tests, or experiment record.
 
-See [`docs/scmpr_readiness_patch_report.md`](docs/scmpr_readiness_patch_report.md)
+See [`docs/scmpr_final_training_readiness_report.md`](docs/scmpr_final_training_readiness_report.md)
 for the current engineering audit,
+[`docs/scmpr_readiness_patch_report.md`](docs/scmpr_readiness_patch_report.md)
+for the superseded mathematical-connectivity audit,
 [`docs/scmpr_implementation_report.md`](docs/scmpr_implementation_report.md)
 for the archived blocker proof,
 [`docs/archive/innovation1_fampr.md`](docs/archive/innovation1_fampr.md) for
@@ -156,9 +161,10 @@ SC-MPR is selectable for engineering smoke tests with:
 --rectifier hfrm --context-mode sc-mpr
 ```
 
-Do not start a formal SC-MPR run without an explicit experiment approval. Do
-not combine `--rectifier hst` with an alternative HFRM context; the
-parser/model rejects that combination to keep archived candidates isolated.
+Current SC-MPR final readiness is failed; do not start a formal run until a
+new explicitly reviewed design passes its engineering gate. Do not combine
+`--rectifier hst` with an alternative HFRM context; the parser/model rejects
+that combination to keep archived candidates isolated.
 
 ### Evaluation
 

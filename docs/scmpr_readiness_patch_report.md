@@ -1,5 +1,13 @@
 # SC-MPR Readiness Patch Report
 
+> Status update (2026-08-17): this report established mathematical graph
+> connectivity after removing exact spatial de-meaning. A subsequent approved
+> policy-output initialization audit found that practical training readiness
+> still fails under BF16. See
+> [`scmpr_final_training_readiness_report.md`](scmpr_final_training_readiness_report.md)
+> for the current decision. The recommendation at the end of this file is
+> retained as historical readiness evidence and is superseded.
+
 ## 1. Why exact spatial de-meaning was invalid
 
 The reviewed implementation formed a per-channel zero-mean residual
