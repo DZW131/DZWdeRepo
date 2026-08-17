@@ -1,10 +1,10 @@
 # OSMF-v1.0：Objective-Induced Semantic–Morphology Factorization
 ## 基于 SSHR 的目标诱导语义–形态互补表征学习最终技术方案
 
-**状态：** Research Candidate / Minimum Falsifiable Version  
-**Baseline：** Frozen SSHR experimental protocol  
-**首个实验数据集：** BCSS  
-**首个修改位置：** `CAM28_1` 对应的 post-HFRM representation  
+**状态：** Research Candidate / Minimum Falsifiable Version
+**Baseline：** Frozen SSHR experimental protocol
+**首个实验数据集：** BCSS
+**首个修改位置：** `CAM28_1` 对应的 post-HFRM representation
 **核心目标：**
 
 \[
