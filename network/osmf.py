@@ -88,13 +88,24 @@ class OSMFFactorizer(nn.Module):
         # before the original ic1 head and violate initialization parity.
         with torch.autocast(device_type=feature.device.type, enabled=False):
             feature_fp32 = feature.float()
+            if feature.is_cuda:
+                # Released SSHR enables TF32 globally. A TF32 1x1 identity
+                # convolution is not bit-exact, so constrain only the four new
+                # OSMF projections while leaving the frozen SSHR path untouched.
+                with torch.backends.cudnn.flags(allow_tf32=False):
+                    return self.p_sem(feature_fp32), self.p_morph(feature_fp32)
             return self.p_sem(feature_fp32), self.p_morph(feature_fp32)
 
     def reconstruct(
         self, semantic: torch.Tensor, morphology: torch.Tensor
     ) -> torch.Tensor:
         with torch.autocast(device_type=semantic.device.type, enabled=False):
-            return self.u_sem(semantic.float()) + self.u_morph(morphology.float())
+            semantic_fp32 = semantic.float()
+            morphology_fp32 = morphology.float()
+            if semantic.is_cuda:
+                with torch.backends.cudnn.flags(allow_tf32=False):
+                    return self.u_sem(semantic_fp32) + self.u_morph(morphology_fp32)
+            return self.u_sem(semantic_fp32) + self.u_morph(morphology_fp32)
 
     def forward(
         self, feature: torch.Tensor

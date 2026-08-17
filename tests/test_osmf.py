@@ -46,6 +46,17 @@ def test_autocast_does_not_quantize_identity_reconstruction():
     assert torch.equal(reconstruction, feature)
 
 
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA is required")
+def test_cuda_bf16_tf32_identity_is_exact():
+    module = OSMFFactorizer(512, n_class=4).cuda()
+    feature = torch.randn(2, 512, 28, 28, device="cuda")
+    with torch.no_grad(), torch.autocast(
+        device_type="cuda", dtype=torch.bfloat16
+    ):
+        reconstruction = module.forward_inference(feature)
+    assert torch.equal(reconstruction, feature)
+
+
 def test_semantic_and_morphology_select_complementary_channels():
     module = OSMFFactorizer(5, n_class=4)
     feature = torch.arange(5.0).reshape(1, 5, 1, 1)
