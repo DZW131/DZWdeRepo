@@ -58,18 +58,26 @@ class BCSSValidationDataset(Dataset):
             for path in self.image_dir.iterdir()
             if path.suffix.lower() in {".png", ".jpg", ".jpeg"}
         )
-        masks = {
-            path.stem: path
+        mask_paths = sorted(
+            path
             for path in self.mask_dir.iterdir()
             if path.suffix.lower() in {".png", ".jpg", ".jpeg"}
-        }
+        )
+        masks = {path.stem: path for path in mask_paths}
+        if len(masks) != len(mask_paths):
+            raise RuntimeError("Duplicate validation mask stems detected")
         missing = [path.name for path in images if path.stem not in masks]
         if missing:
             raise RuntimeError(f"Missing validation masks: {missing[:5]}")
+        image_stems = {path.stem for path in images}
+        extra = [path.name for path in mask_paths if path.stem not in image_stems]
+        if extra:
+            raise RuntimeError(f"Masks without validation images: {extra[:5]}")
         self.samples = [(path, masks[path.stem]) for path in images]
-        if len(self.samples) != 3418:
+        if len(self.samples) != 3418 or len(mask_paths) != 3418:
             raise RuntimeError(
-                f"Expected 3418 BCSS validation samples, got {len(self.samples)}"
+                "Expected 3418 matched BCSS validation samples, got "
+                f"{len(self.samples)} images and {len(mask_paths)} masks"
             )
 
     def __len__(self):
@@ -477,6 +485,8 @@ def render_report(result):
         f"- validation samples: {protocol['validation_samples']}",
         f"- checkpoint: `{protocol['checkpoint']}`",
         f"- checkpoint SHA256: `{protocol['checkpoint_sha256']}`",
+        "- checkpoint loading: strict state-dict match (no missing or unexpected keys)",
+        "- model path: official A0 HFRM with CH context (`context_mode=ch`)",
         f"- PyTorch: `{protocol['pytorch']}`",
         f"- device: `{protocol['device']}`",
         f"- network forward precision: `{protocol['amp_dtype']}`",
@@ -612,10 +622,37 @@ def render_report(result):
             f"- Major reverse stages: {decision['major_reverse_stage_count']}/3",
             f"- Final decision: **{decision['token']}**",
             "",
-            "## 8. Development consequence",
+            "## 8. Interpretation",
             "",
         ]
     )
+    if decision["strong_go"]:
+        lines.extend(
+            [
+                "This is a Strong Go under the frozen criteria. At least two",
+                "stages strongly rank both raw errors and beneficial versus",
+                "harmful HFRM transitions.",
+            ]
+        )
+    elif decision["signal_go"]:
+        lines.extend(
+            [
+                "This is a Go, not a Strong Go. F56 provides the clearest",
+                "corrected-versus-harmed signal; F28_1 is weaker, and F28_2",
+                "passes through raw-error ranking plus quartile net correction",
+                "rather than direct corrected-versus-harmed discrimination.",
+                "The per-class reversals shown above are a material limitation",
+                "and must not be hidden or used to retune the frozen formula.",
+            ]
+        )
+    else:
+        lines.extend(
+            [
+                "The frozen signal does not provide sufficiently consistent",
+                "evidence to justify CDSR model engineering.",
+            ]
+        )
+    lines.extend(["", "## 9. Development consequence", ""])
     if decision["signal_go"]:
         lines.extend(
             [
