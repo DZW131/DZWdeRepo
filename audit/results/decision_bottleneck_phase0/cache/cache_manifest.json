@@ -1,0 +1,48 @@
+{
+  "all_normalized_cams_finite": true,
+  "cam_dtype": "float32",
+  "cam_names": [
+    "cam56",
+    "cam28_1",
+    "cam28_2",
+    "camdeep"
+  ],
+  "cam_shape": [
+    3418,
+    4,
+    224,
+    224
+  ],
+  "checkpoint": "/home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth",
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "class_presence_thresholds": [
+    0.8,
+    0.9,
+    0.8,
+    0.6
+  ],
+  "complete": true,
+  "dataset": "BCSS",
+  "fusion_official": [
+    0.0,
+    0.6,
+    0.2,
+    0.2
+  ],
+  "git_commit": "f82eb0ef55377e1dc27a02f3e704667640a71c10",
+  "image_shape": [
+    224,
+    224
+  ],
+  "model_eval": true,
+  "model_requires_grad_parameters": 0,
+  "num_images": 3418,
+  "num_masks": 3418,
+  "num_source_groups": 22,
+  "seconds": 60.975014716008445,
+  "source_group_rule": "filename prefix before _xmin",
+  "split": "val",
+  "test_evaluated": false,
+  "torch_no_grad": true,
+  "tta": "official three-way identity/horizontal/vertical"
+}

@@ -129,6 +129,27 @@ python train_sshr.py \
   --amp-dtype bf16
 ```
 
+## Phase-0 Decision Bottleneck Audit
+
+The validation-only frozen-model audit is implemented in
+`tools/audit_decision_bottleneck.py`. It starts from the official A0 baseline,
+reuses one fixed final checkpoint, performs no SSHR retraining, and exposes no
+test-set or inference-tuning options.
+
+The completed BCSS seed-42 audit reproduced the released inference masks
+exactly (zero differing pixels). Its frozen decision was
+`NONLINEAR_ROUTING_REVIEW`: the five-fold out-of-fold 16-scalar class probe
+changed mIoU by -0.1603 percentage points, while the diagnostic image-class and
+pixel oracles showed ceilings of +1.6013 and +6.7134 points, respectively.
+
+- Full report: `audit/results/decision_bottleneck_phase0/docs/phase0_decision_bottleneck_audit.md`
+- Raw CSV tables: `audit/results/decision_bottleneck_phase0/tables/`
+- Deterministic figures: `audit/results/decision_bottleneck_phase0/figures/`
+- Reproduction config and environment: `audit/results/decision_bottleneck_phase0/config.json`
+
+This result does not authorize test evaluation or a new routing architecture;
+it stops at the preregistered human-review decision.
+
 ## Acknowledgement
 
 We thank the authors of [ESFAN](https://github.com/OceanPetal/ESFAN), whose codebase provided a valuable foundation for this repository.
