@@ -1,0 +1,37 @@
+{
+  "all_signals_finite": true,
+  "baseline_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "class_presence_thresholds": [
+    0.8,
+    0.9,
+    0.8,
+    0.6
+  ],
+  "dataset": "BCSS",
+  "fold_assignment_hash": "2e017b0c0bf434e9572c09f1bcc57e96d670c97201595036e619e2e95e099f4a",
+  "luad_evaluated": false,
+  "num_images": 3418,
+  "num_slides": 22,
+  "official_fusion": [
+    0.0,
+    0.6,
+    0.2,
+    0.2
+  ],
+  "phase0b_commit": "76ffbf4d61f77dd6ef04946c0ffa16643b9acd86",
+  "phase0b_parent_commit": "f1a95059cd7914e9d6b72e08ec135c4c8ea32c06",
+  "signal_a_feature_count": 153,
+  "signal_b_feature_count": 160,
+  "signal_c_feature_count": 236,
+  "signal_set_a": true,
+  "signal_set_b": true,
+  "signal_set_c": true,
+  "split": "val",
+  "test_evaluated": false,
+  "tta": [
+    "identity",
+    "hflip",
+    "vflip"
+  ]
+}

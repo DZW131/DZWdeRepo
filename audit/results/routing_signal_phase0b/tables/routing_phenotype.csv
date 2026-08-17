@@ -1,0 +1,4 @@
+phenotype,active,evidence
+SLIDE_CONTEXT_SIGNAL,False,"R_slide=0.0203, delta=+0.0425"
+SOFT_MIXTURE_FAVORED,True,G_soft=+0.5363
+CLASS_CONDITIONAL_SIGNAL,True,aggregate residual=+2.2418

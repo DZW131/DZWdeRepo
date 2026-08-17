@@ -1,0 +1,41 @@
+test_id,requirement,pass,evidence
+1,official parity exact,True,zero differing pixels and metric diff <1e-7
+2,checkpoint SHA exact,True,509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579
+3,3418 images,True,3418
+4,22 slide IDs,True,22
+5,fold assignment identical to Phase-0,True,2e017b0c0bf434e9572c09f1bcc57e96d670c97201595036e619e2e95e099f4a
+6,no slide leakage,True,one fold per source slide
+7,no test paths,True,test_evaluated=false
+8,no LUAD paths,True,luad_evaluated=false
+9,no network modification,True,git diff verified before archive
+10,official thresholds unchanged,True,"[0.8, 0.9, 0.8, 0.6]"
+11,official metric unchanged,True,tool.iouutils.scores
+12,official TTA unchanged,True,"['identity', 'hflip', 'vflip']"
+13,Signal A contains no GT,True,extractor has no GT argument
+14,Signal B contains no GT,True,extractor has no GT argument
+15,Signal C contains no GT,True,frozen feature hooks only
+16,slide ID absent from router input,True,used only for folds/bootstrap
+17,PCA fit train-fold only,True,fit_scope=train_fold_only
+18,scaler fit train-fold only,True,fit_scope=train_fold_only
+19,held-out absent from PCA fit,True,separate train/heldout indices
+20,held-out absent from scaler fit,True,transform-only heldout
+21,held-out GT absent from probe training,True,train-fold targets only
+22,Ridge alpha fixed 1.0,True,1.0
+23,MLP hidden dim fixed 32,True,32
+24,MLP epochs fixed 200,True,200
+25,MLP lr fixed 1e-3,True,0.001
+26,MLP seed fixed 20260817,True,20260817
+27,safe routing threshold exactly zero,True,0.0
+28,no threshold sweep,True,single threshold=0
+29,all images have one OOF prediction,True,1
+30,no image has multiple OOF predictions,True,1
+31,safe oracle includes official,True,"('official_fusion', 'cam56', 'cam28_1', 'cam28_2', 'camdeep')"
+32,image fusion grid has 286 candidates,True,286
+33,official fusion exists in grid,True,"(0.0, 0.6, 0.2, 0.2)"
+34,local enumeration maximum 625,True,625
+35,local oracle naming is bounded,True,Exact Local Image×Class Oracle
+36,bootstrap samples slide IDs,True,source_slide
+37,all signals finite,True,A/B/C finite
+38,all probe outputs finite,True,six OOF outputs finite
+39,prediction masks finite/integer,True,uint8 masks
+40,test_evaluated=false,True,false

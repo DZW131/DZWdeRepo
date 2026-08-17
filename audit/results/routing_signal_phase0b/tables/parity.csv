@@ -1,0 +1,2 @@
+official_mIoU,official_mDice,released_vs_phase0b_differing_pixels,mIoU_absolute_difference,mDice_absolute_difference,phase0_released_differing_pixels,pass
+67.32791669541228,80.26795300665916,0,0.0,0.0,0,True

@@ -150,6 +150,34 @@ pixel oracles showed ceilings of +1.6013 and +6.7134 points, respectively.
 This result does not authorize test evaluation or a new routing architecture;
 it stops at the preregistered human-review decision.
 
+## Phase-0B Routing Signal Learnability Audit
+
+Phase-0B tested whether GT-free evidence available from the frozen A0 model can
+actually learn the branch-routing opportunity identified in Phase-0. The audit
+used the same final BCSS seed-42 checkpoint and exact 5-fold slide grouping. It
+performed no SSHR training and did not evaluate test or LUAD.
+
+Released inference was reproduced exactly (zero differing pixels; validation
+mIoU 67.3279). Diagnostic ceilings remained substantial: the safe image oracle
+improved mIoU by +2.0936 points, the image-fusion oracle by +2.6299, and the
+bounded local image-class oracle by +4.3354. This supports the diagnostic
+phenotypes `SOFT_MIXTURE_FAVORED` and `CLASS_CONDITIONAL_SIGNAL`.
+
+However, the preregistered primary MLP-C OOF router reduced validation mIoU by
+0.7158 points, had 0/5 positive folds, and produced a slide-bootstrap 95% CI of
+[-1.0178, -0.4312] points. The frozen decision is therefore
+`ROUTING_SIGNAL_NOGO`: complementary branch information exists, but these
+GT-free image-level routing signals do not identify it reliably enough.
+
+- Full report: `audit/results/routing_signal_phase0b/docs/phase0b_routing_signal_learnability_audit.md`
+- Raw CSV tables: `audit/results/routing_signal_phase0b/tables/`
+- Deterministic figures: `audit/results/routing_signal_phase0b/figures/`
+- Frozen contract and environment: `audit/results/routing_signal_phase0b/config/`
+- Archive manifest: `audit/results/routing_signal_phase0b/ARTIFACTS.md`
+
+This result stops the current image-level routing direction; diagnostic oracle
+flags are not authorization to tune inference or implement another router.
+
 ## Acknowledgement
 
 We thank the authors of [ESFAN](https://github.com/OceanPetal/ESFAN), whose codebase provided a valuable foundation for this repository.
