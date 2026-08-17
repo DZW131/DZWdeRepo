@@ -760,6 +760,10 @@ def main():
         "flags": flags,
         "decision_reasons": decision_reasons,
         "processed_batches": processed_batches,
+        "hard_stop_reason": hard_stop,
+        "gradient_audit_steps_completed": sorted(
+            {int(row["step"]) for row in gradient_ratio_rows}
+        ),
         "baseline_commit": BASELINE_COMMIT,
         "phase0_parent_commit": PHASE0_PARENT_COMMIT,
         "audit_commit": args.audit_commit,
@@ -798,6 +802,8 @@ def main():
             "mean_non_equivariance_seconds": mean_non_eq,
             "mean_equivariance_seconds": mean_eq,
             "overhead_percent": overhead_percent,
+            "non_equivariance_samples": len(non_eq_times),
+            "equivariance_samples": len(eq_times),
             "peak_memory_allocated_bytes": peak_training_memory,
         },
         "environment": environment,

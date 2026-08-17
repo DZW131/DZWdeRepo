@@ -170,14 +170,14 @@ def make_figures(
             (
                 name,
                 [row for row in update_rows if row["parameter"] == name],
-                "relative_update_norm",
+                "cumulative_update_norm",
             )
         )
     _line_plot(
         figures / "parameter_update.png",
         parameter_series,
         "Cumulative OSMF parameter movement",
-        "Relative update norm",
+        "Absolute update norm",
     )
 
 
@@ -329,7 +329,9 @@ def write_report(
             f"Flags: `{summary['flags']}`.",
             f"Decision reasons: `{summary['decision_reasons']}`.",
             "Independent objective gradients were measured with `torch.autograd.grad` "
-            "at steps 1/2/4/8/16/32/64/96/128 and did not populate optimizer gradients.",
+            f"at completed audit steps {summary['gradient_audit_steps_completed']} "
+            "and did not populate optimizer gradients. Later preregistered points "
+            "were not reached after a hard stop.",
             "",
             "## 7. Representation health and early specialization",
             "",
@@ -344,12 +346,18 @@ def write_report(
             "",
             f"- Mean iteration time: {summary['cost']['mean_iteration_seconds']:.6f} s.",
             f"- Mean non-equivariance iteration: {summary['cost']['mean_non_equivariance_seconds']:.6f} s.",
-            f"- Mean equivariance iteration: {summary['cost']['mean_equivariance_seconds']:.6f} s.",
-            f"- Interval-averaged overhead proxy versus non-equivariance OSMF step: {summary['cost']['overhead_percent']:.2f}%.",
             f"- Peak training-step GPU memory: {summary['cost']['peak_memory_allocated_bytes'] / 2**30:.3f} GiB.",
             "",
-            "The overhead is an in-run proxy using non-equivariance OSMF steps as "
-            "the denominator; no additional A0 training batches were run.",
+            (
+                "Equivariance-step runtime and overhead were not estimable because "
+                "the preregistered hard stop occurred before step 4."
+                if summary["cost"]["equivariance_samples"] == 0
+                else "- Mean equivariance iteration: "
+                f"{summary['cost']['mean_equivariance_seconds']:.6f} s; "
+                "interval-averaged overhead proxy versus non-equivariance OSMF step: "
+                f"{summary['cost']['overhead_percent']:.2f}%."
+            ),
+            "No additional A0 training batches were run for timing.",
             "",
             "## 9. Protocol safety",
             "",

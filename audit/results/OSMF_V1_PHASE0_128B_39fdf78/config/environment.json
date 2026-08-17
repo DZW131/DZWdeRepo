@@ -1,0 +1,9 @@
+{
+  "cuda_runtime": "12.8",
+  "cudnn": 91900,
+  "elapsed_seconds": 2.445331361988792,
+  "gpu": "NVIDIA GeForce RTX 5090 D v2",
+  "peak_training_memory_allocated_bytes": 3958816768,
+  "python": "3.10.20",
+  "pytorch": "2.11.0+cu128"
+}
