@@ -288,6 +288,29 @@ def collect_cdsr_epoch_record(model, diagnostics, epoch):
         }
     return record
 
+
+def collect_cdsr_parameter_state(model):
+    """Read the shared alpha and per-stage gamma state without a forward."""
+    shared_gate = model.cdsr_selective_gate
+    stages = {
+        'stage1': model.hfrm_56,
+        'stage2': model.hfrm_28_1,
+        'stage3': model.hfrm_28_2,
+    }
+    return {
+        'alpha_sem': shared_gate.alpha_sem.detach().float().item(),
+        'alpha_ctx': shared_gate.alpha_ctx.detach().float().item(),
+        'alpha_sem_logit': shared_gate.alpha_sem_logit.detach().float().item(),
+        'alpha_ctx_logit': shared_gate.alpha_ctx_logit.detach().float().item(),
+        'stages': {
+            stage: {
+                'gamma_sem': hfrm.gamma_veto.detach().float().item(),
+                'gamma_ctx': hfrm.gamma_context.detach().float().item(),
+            }
+            for stage, hfrm in stages.items()
+        },
+    }
+
 def get_model_kwargs(args):
     """Build architecture arguments without changing the official defaults."""
     rectifier_type = getattr(args, 'rectifier', 'hfrm').lower()
@@ -483,10 +506,16 @@ def train_phase(args):
     best_val_miou = None
     eval_history = []
     os.makedirs(args.save_folder, exist_ok=True)
+    training_start = time.perf_counter()
+    if torch.cuda.is_available():
+        torch.cuda.reset_peak_memory_stats()
 
     for ep in range(args.max_epoches):
+        epoch_start = time.perf_counter()
         model.train()
         ep_count = ep_EM = ep_acc = 0
+        epoch_loss_sum = 0.0
+        epoch_loss_count = 0
         fampr_epoch_record = None
         cdsr_epoch_record = None
 
@@ -532,6 +561,8 @@ def train_phase(args):
                 ep_acc += compute_acc(pass_cls, true_cls)
             
             avg_meter.add({'loss_cls': loss_cls.item(), 'loss_adapt': loss_adapt_val.item()})
+            epoch_loss_sum += loss_cls.item()
+            epoch_loss_count += 1
             
             optimizer.zero_grad()
             if scaler.is_enabled():
@@ -588,6 +619,20 @@ def train_phase(args):
             )
 
         if cdsr_epoch_record is not None:
+            cdsr_epoch_record['epoch_end'] = {
+                'parameters': collect_cdsr_parameter_state(model),
+                'mean_classification_loss': (
+                    epoch_loss_sum / epoch_loss_count
+                    if epoch_loss_count else None
+                ),
+                'training_exact_match': ep_EM / ep_count if ep_count else None,
+                'training_accuracy': ep_acc / ep_count if ep_count else None,
+                'optimizer_global_step': optimizer.global_step,
+                'learning_rates': [
+                    group['lr'] for group in optimizer.param_groups
+                ],
+                'duration_seconds': time.perf_counter() - epoch_start,
+            }
             diagnostics_path = os.path.join(
                 args.save_folder, 'cdsr_diagnostics.jsonl'
             )
@@ -625,6 +670,45 @@ def train_phase(args):
             print('[Eval]', json.dumps(eval_record, sort_keys=True), flush=True)
             if val_miou is not None and (best_val_miou is None or val_miou > best_val_miou):
                 best_val_miou = val_miou
+
+    training_seconds = time.perf_counter() - training_start
+    checkpoint_path = get_checkpoint_path(args)
+    training_summary = {
+        'epochs_completed': args.max_epoches,
+        'optimizer_global_step': optimizer.global_step,
+        'max_step': max_step,
+        'training_seconds': training_seconds,
+        'cuda_peak_memory_allocated_bytes': (
+            torch.cuda.max_memory_allocated() if torch.cuda.is_available()
+            else None
+        ),
+        'cuda_peak_memory_reserved_bytes': (
+            torch.cuda.max_memory_reserved() if torch.cuda.is_available()
+            else None
+        ),
+        'final_checkpoint': {
+            'path': os.path.abspath(checkpoint_path),
+            'size_bytes': (
+                os.path.getsize(checkpoint_path)
+                if os.path.isfile(checkpoint_path) else None
+            ),
+            'sha256': (
+                _sha256_file(checkpoint_path)
+                if os.path.isfile(checkpoint_path) else None
+            ),
+        },
+        'final_cdsr_parameters': (
+            collect_cdsr_parameter_state(model)
+            if getattr(args, 'rectification_mode', 'uniform') == 'cdsr'
+            else None
+        ),
+        'evaluation_calls_during_training': len(eval_history),
+    }
+    summary_path = os.path.join(args.save_folder, 'training_summary.json')
+    with open(summary_path, 'w', encoding='utf-8') as output_file:
+        json.dump(training_summary, output_file, indent=2, sort_keys=True)
+        output_file.write('\n')
+    print('[TrainingSummary]', json.dumps(training_summary, sort_keys=True), flush=True)
 
     return {'best_val_miou': best_val_miou, 'eval_history': eval_history}
 
