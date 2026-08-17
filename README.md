@@ -109,6 +109,33 @@ python train_sshr.py \
 
 The final checkpoint is saved as `stage1_last.pth`.
 
+## OSMF-v1.0 research candidate
+
+`research/osmf-v1` starts directly from the frozen official A0 commit and is
+isolated from the archived Phase-0/Phase-0B routing experiments. OSMF inserts a
+semantic/morphology factorizer only at the 512-channel post-HFRM H28_1 feature:
+
+```text
+H28_1 -> P_sem/P_morph -> U_sem/U_morph -> original CAM28_1 head
+```
+
+Phase -1 initialization parity is complete. On the frozen BCSS seed-42 final
+checkpoint, random input, real validation input, every CAM output, and all 3418
+official validation predictions were bit-exact with A0. Both models obtained
+67.32791670% mIoU and 80.26795301% mDice, with zero differing pixels. Parameter
+overhead is 0.4661%.
+
+Current decision: `OSMF_PHASE_MINUS1_PASS`.
+
+- Phase -1 report: `audit/results/osmf_phase_minus1/osmf_phase_minus1_readiness_report.md`
+- Delivery and resume notes: `docs/osmf_phase_minus1_delivery.md`
+- Frozen technical specification: `docs/specs/osmf_v1_technical_spec.md`
+- Machine-readable evidence: `audit/results/osmf_phase_minus1/`
+
+No optimizer step, SSHR training, test evaluation, or LUAD evaluation was run.
+The next permitted action is the separately reviewed 128-batch Phase 0
+structural sanity audit; the 3-epoch and 25-epoch experiments remain locked.
+
 ### Evaluation
 
 ```bash

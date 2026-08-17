@@ -1,0 +1,2 @@
+images,differing_pixels,a0_mIoU,osmf_mIoU,mIoU_absolute_difference,a0_mDice,osmf_mDice,mDice_absolute_difference,pass
+3418,0,0.6732791669541228,0.6732791669541228,0.0,0.8026795300665915,0.8026795300665915,0.0,True
