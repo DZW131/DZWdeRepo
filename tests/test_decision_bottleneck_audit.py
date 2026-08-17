@@ -189,4 +189,3 @@ def test_analysis_source_does_not_import_training_entrypoint():
     source = (ROOT / "tools" / "audit_decision_bottleneck.py").read_text()
     assert "train_sshr" not in source
     assert "--test-root" not in cli_options()
-

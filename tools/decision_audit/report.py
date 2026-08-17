@@ -252,4 +252,3 @@ def write_report(output_dir: Path, summary: dict, tables: dict) -> Path:
     ]
     report_path.write_text("\n".join(sections) + "\n", encoding="utf-8")
     return report_path
-

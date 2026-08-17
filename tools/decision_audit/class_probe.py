@@ -238,4 +238,3 @@ def run_class_probe(
         "training_rows": training_rows,
         "assignment_rows": assignment_rows,
     }
-

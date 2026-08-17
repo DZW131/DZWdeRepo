@@ -198,4 +198,3 @@ def class_preference(individual_rows: list[dict]) -> list[dict]:
             }
         )
     return output
-

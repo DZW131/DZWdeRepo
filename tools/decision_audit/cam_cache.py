@@ -324,4 +324,3 @@ def exact_official_parity(
         and differing_ground_truth_pixels == 0
     )
     return parity
-

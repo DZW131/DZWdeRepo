@@ -178,4 +178,3 @@ def run_oracles(cache_dir: Path) -> dict:
         "pixel_summary": pixel_summary,
         "preference_rows": preference_rows,
     }
-

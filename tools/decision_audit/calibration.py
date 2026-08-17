@@ -121,4 +121,3 @@ def calibration_audit(cache_dir: Path, image_batch_size: int = 16) -> dict:
         "summary_rows": summary_rows,
         "confidence_rows": confidence_rows,
     }
-

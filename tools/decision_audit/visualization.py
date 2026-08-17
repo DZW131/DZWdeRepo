@@ -226,4 +226,3 @@ def generate_qualitative_examples(
                 }
             )
     return rows
-
