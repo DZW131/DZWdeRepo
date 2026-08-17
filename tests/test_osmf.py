@@ -30,11 +30,20 @@ def test_channel_partition_is_frozen(channels, expected):
 
 @pytest.mark.parametrize("dtype", [torch.float32, torch.bfloat16])
 def test_partition_initialization_is_exact_identity(dtype):
-    module = OSMFFactorizer(8, n_class=4).to(dtype=dtype)
+    module = OSMFFactorizer(8, n_class=4)
     feature = torch.randn(2, 8, 7, 7).to(dtype=dtype)
     reconstruction, aux = module(feature)
-    assert torch.equal(reconstruction, feature)
+    assert torch.equal(reconstruction, feature.float())
     assert torch.equal(aux["input"], feature)
+
+
+def test_autocast_does_not_quantize_identity_reconstruction():
+    module = OSMFFactorizer(8, n_class=4)
+    feature = torch.randn(2, 8, 7, 7)
+    with torch.autocast(device_type="cpu", dtype=torch.bfloat16):
+        reconstruction = module.forward_inference(feature)
+    assert reconstruction.dtype == torch.float32
+    assert torch.equal(reconstruction, feature)
 
 
 def test_semantic_and_morphology_select_complementary_channels():

@@ -83,12 +83,18 @@ class OSMFFactorizer(nn.Module):
             nn.init.zeros_(self.semantic_classifier.bias)
 
     def factorize(self, feature: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
-        return self.p_sem(feature), self.p_morph(feature)
+        # post-HFRM H28_1 remains FP32 in the released BF16 autocast path.
+        # Running the new identity projections under autocast would quantize H
+        # before the original ic1 head and violate initialization parity.
+        with torch.autocast(device_type=feature.device.type, enabled=False):
+            feature_fp32 = feature.float()
+            return self.p_sem(feature_fp32), self.p_morph(feature_fp32)
 
     def reconstruct(
         self, semantic: torch.Tensor, morphology: torch.Tensor
     ) -> torch.Tensor:
-        return self.u_sem(semantic) + self.u_morph(morphology)
+        with torch.autocast(device_type=semantic.device.type, enabled=False):
+            return self.u_sem(semantic.float()) + self.u_morph(morphology.float())
 
     def forward(
         self, feature: torch.Tensor
