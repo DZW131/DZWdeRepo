@@ -499,12 +499,19 @@ def run_phase0(model, validation_root, num_workers):
                     ("pass0", pass0_cams), ("virtual", virtual_cams)
                 ):
                     for name, cam in cam_values.items():
-                        resized = F.interpolate(
-                            cam,
-                            original_size,
-                            mode="bilinear",
-                            align_corners=False,
-                        )[0]
+                        # The released inference performs interpolation inside
+                        # the BF16 autocast region (which yields FP32 here).
+                        with torch.autocast(
+                            device_type="cuda",
+                            dtype=torch.bfloat16,
+                            enabled=True,
+                        ):
+                            resized = F.interpolate(
+                                cam,
+                                original_size,
+                                mode="bilinear",
+                                align_corners=False,
+                            )[0]
                         if cam_flip_dims:
                             resized = torch.flip(resized, dims=cam_flip_dims)
                         tta_cams[mode][name].append(resized)
