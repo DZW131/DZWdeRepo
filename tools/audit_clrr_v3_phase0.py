@@ -1,7 +1,8 @@
-"""Run the preregistered frozen-A0 CLRR-v2 Phase-0 validation audit.
+"""Run the final frozen-A0 CLRR-v3 Phase-0 validation audit.
 
 This program accepts a BCSS validation root only. It performs no training and
-has no test-root argument. CLRR-v2 eta is fixed at 0.05.
+has no test-root argument. It evaluates v2 and v3 on one shared Pass0 forward,
+with eta fixed at 0.05 for both mechanisms.
 """
 
 import argparse
@@ -29,8 +30,9 @@ if str(REPOSITORY_ROOT) not in sys.path:
 from tool import infer_utils
 from tool.GenDataset import Stage1_InferDataset
 from tool.infer_fun import _get_class_thresholds, _tta_transforms, infer
-from tools.clrr_v2_phase0_core import (
-    analytical_virtual_correction,
+from tools.clrr_v3_phase0_core import (
+    analytical_virtual_correction_v2,
+    analytical_virtual_correction_v3,
     leave_one_out_consensus,
 )
 
@@ -54,6 +56,12 @@ STAGE_TO_HFRM = {
     "stage3": "hfrm_28_2",
 }
 OFFICIAL_FUSION = (0.0, 0.6, 0.2, 0.2)
+VIRTUAL_MODES = ("v2", "v3")
+ALL_MODES = ("pass0", *VIRTUAL_MODES)
+CORRECTION_FUNCTIONS = {
+    "v2": analytical_virtual_correction_v2,
+    "v3": analytical_virtual_correction_v3,
+}
 
 
 def sha256_file(path):
@@ -192,67 +200,111 @@ class ChangeAccumulator:
         }
 
 
-class ConsensusUtilityAccumulator:
+class TeacherAdvantageAccumulator:
     def __init__(self):
-        self.total = 0
-        self.recoverable = 0
-        self.harmful = 0
-        self.stage_hist = np.zeros((4, 4), dtype=np.float64)
-        self.consensus_hist = np.zeros((4, 4), dtype=np.float64)
+        self.total_pixels = 0
+        self.active_pixels = 0
+        self.foreground_pixels = 0
+        self.active_foreground_pixels = 0
+        self.teacher_win = 0
+        self.teacher_loss = 0
+        self.both_correct = 0
+        self.both_wrong = 0
+        self.dominance_values = []
         self.per_class = {
-            class_id: {"total": 0, "recoverable": 0, "harmful": 0}
+            class_id: {
+                "active": 0,
+                "teacher_win": 0,
+                "teacher_loss": 0,
+                "both_correct": 0,
+                "both_wrong": 0,
+            }
             for class_id in range(4)
         }
 
-    def update(self, ground_truth, stage_prediction, consensus_prediction):
+    def update(
+        self,
+        ground_truth,
+        stage_prediction,
+        consensus_prediction,
+        active_mask,
+        dominance_gate,
+    ):
         foreground = ground_truth < 4
-        truth = ground_truth[foreground]
-        stage = stage_prediction[foreground]
-        consensus = consensus_prediction[foreground]
+        active_mask = np.asarray(active_mask, dtype=bool)
+        dominance_gate = np.asarray(dominance_gate, dtype=np.float32)
+        active_foreground = foreground & active_mask
+        truth = ground_truth[active_foreground]
+        stage = stage_prediction[active_foreground]
+        consensus = consensus_prediction[active_foreground]
         stage_correct = stage == truth
         consensus_correct = consensus == truth
-        recoverable = ~stage_correct & consensus_correct
-        harmful = stage_correct & ~consensus_correct
-        self.total += int(foreground.sum())
-        self.recoverable += int(recoverable.sum())
-        self.harmful += int(harmful.sum())
-        self.stage_hist += fast_hist(truth, stage, 4)
-        self.consensus_hist += fast_hist(truth, consensus, 4)
+        teacher_win = ~stage_correct & consensus_correct
+        teacher_loss = stage_correct & ~consensus_correct
+        both_correct = stage_correct & consensus_correct
+        both_wrong = ~stage_correct & ~consensus_correct
+        self.total_pixels += int(active_mask.size)
+        self.active_pixels += int(active_mask.sum())
+        self.foreground_pixels += int(foreground.sum())
+        self.active_foreground_pixels += int(active_foreground.sum())
+        self.teacher_win += int(teacher_win.sum())
+        self.teacher_loss += int(teacher_loss.sum())
+        self.both_correct += int(both_correct.sum())
+        self.both_wrong += int(both_wrong.sum())
+        active_dominance = dominance_gate[active_mask]
+        if active_dominance.size:
+            self.dominance_values.append(active_dominance)
         for class_id in range(4):
             class_mask = truth == class_id
             values = self.per_class[class_id]
-            values["total"] += int(class_mask.sum())
-            values["recoverable"] += int((recoverable & class_mask).sum())
-            values["harmful"] += int((harmful & class_mask).sum())
-
-    @staticmethod
-    def mean_iou(hist):
-        denominator = hist.sum(1) + hist.sum(0) - np.diag(hist)
-        iou = np.divide(
-            np.diag(hist),
-            denominator,
-            out=np.full(4, np.nan),
-            where=denominator > 0,
-        )
-        return np.nanmean(iou), iou
+            values["active"] += int(class_mask.sum())
+            values["teacher_win"] += int((teacher_win & class_mask).sum())
+            values["teacher_loss"] += int((teacher_loss & class_mask).sum())
+            values["both_correct"] += int((both_correct & class_mask).sum())
+            values["both_wrong"] += int((both_wrong & class_mask).sum())
 
     def summary(self):
-        denominator = max(self.total, 1)
-        stage_mean, stage_iou = self.mean_iou(self.stage_hist)
-        consensus_mean, consensus_iou = self.mean_iou(self.consensus_hist)
+        dominance = (
+            np.concatenate(self.dominance_values)
+            if self.dominance_values
+            else np.zeros(1, dtype=np.float32)
+        )
+        foreground_denominator = max(self.foreground_pixels, 1)
+        active_denominator = max(self.active_foreground_pixels, 1)
+        per_class = {}
+        for class_id, values in self.per_class.items():
+            class_active = max(values["active"], 1)
+            per_class[class_id] = {
+                **values,
+                "net_teacher_advantage": (
+                    values["teacher_win"] - values["teacher_loss"]
+                ),
+                "net_teacher_advantage_rate": (
+                    values["teacher_win"] - values["teacher_loss"]
+                ) / class_active,
+            }
         return {
-            "foreground_pixels": self.total,
-            "recoverable": self.recoverable,
-            "harmful": self.harmful,
-            "net_recoverability": self.recoverable - self.harmful,
-            "recoverable_rate": self.recoverable / denominator,
-            "harmful_rate": self.harmful / denominator,
-            "net_rate": (self.recoverable - self.harmful) / denominator,
-            "stage_foreground_miou": stage_mean,
-            "consensus_foreground_miou": consensus_mean,
-            "stage_per_class_iou": dict(zip(range(4), stage_iou)),
-            "consensus_per_class_iou": dict(zip(range(4), consensus_iou)),
-            "per_class": self.per_class,
+            "total_pixels": self.total_pixels,
+            "active_pixels": self.active_pixels,
+            "active_pixel_fraction": self.active_pixels / max(self.total_pixels, 1),
+            "foreground_pixels": self.foreground_pixels,
+            "active_foreground_pixels": self.active_foreground_pixels,
+            "active_foreground_fraction": (
+                self.active_foreground_pixels / foreground_denominator
+            ),
+            "dominance_gate_active_mean": float(dominance.mean()),
+            "dominance_gate_active_std": float(dominance.std()),
+            "dominance_gate_active_p50": float(np.quantile(dominance, 0.50)),
+            "dominance_gate_active_p90": float(np.quantile(dominance, 0.90)),
+            "teacher_win": self.teacher_win,
+            "teacher_loss": self.teacher_loss,
+            "both_correct": self.both_correct,
+            "both_wrong": self.both_wrong,
+            "net_teacher_advantage": self.teacher_win - self.teacher_loss,
+            "net_teacher_advantage_rate": (
+                self.teacher_win - self.teacher_loss
+            ) / active_denominator,
+            "per_class": per_class,
         }
 
 
@@ -261,7 +313,11 @@ class MechanismAccumulator:
         self.ce_deltas = []
         self.ce_decrease = 0
         self.nontrivial = 0
+        self.total_pixels = 0
+        self.active_pixels = 0
+        self.strata_deltas = {"active": [], "inactive": []}
         self.update_ratios = []
+        self.feedback_gates = []
         self.probability_change_sum = 0.0
         self.probability_values = 0
         self.argmax_changed = 0
@@ -280,12 +336,27 @@ class MechanismAccumulator:
         ce_delta = ce_after - ce_before
         mismatch = correction["mismatch"][:, 0]
         nontrivial = mismatch > 1e-6
-        selected = ce_delta[nontrivial].detach().cpu().numpy().astype(np.float32)
+        active = correction["active_mask"][:, 0]
+        selected_mask = active & nontrivial
+        selected = (
+            ce_delta[selected_mask].detach().cpu().numpy().astype(np.float32)
+        )
         self.ce_deltas.append(selected)
-        self.ce_decrease += int((ce_delta[nontrivial] < 0).sum().item())
-        self.nontrivial += int(nontrivial.sum().item())
+        self.ce_decrease += int((ce_delta[selected_mask] < 0).sum().item())
+        self.nontrivial += int(selected_mask.sum().item())
+        self.total_pixels += active.numel()
+        self.active_pixels += int(active.sum().item())
+        for name, mask in (
+            ("active", selected_mask),
+            ("inactive", (~active) & nontrivial),
+        ):
+            self.strata_deltas[name].append(
+                ce_delta[mask].detach().cpu().numpy().astype(np.float32)
+            )
         ratios = correction["update_ratio"].detach().cpu().numpy().astype(np.float32)
         self.update_ratios.append(ratios.reshape(-1))
+        gates = correction["feedback_gate"].detach().cpu().numpy().astype(np.float32)
+        self.feedback_gates.append(gates.reshape(-1))
         difference = (virtual_probability - probability).abs()
         self.probability_change_sum += difference.double().sum().item()
         self.probability_values += difference.numel()
@@ -306,15 +377,48 @@ class MechanismAccumulator:
         )
 
     def summary(self):
-        ce_delta = np.concatenate(self.ce_deltas)
+        ce_delta = (
+            np.concatenate(self.ce_deltas)
+            if any(value.size for value in self.ce_deltas)
+            else np.zeros(1, dtype=np.float32)
+        )
         update_ratio = np.concatenate(self.update_ratios)
+        feedback_gate = np.concatenate(self.feedback_gates)
+        strata = {}
+        for name, values in self.strata_deltas.items():
+            selected = (
+                np.concatenate(values)
+                if any(value.size for value in values)
+                else np.zeros(0, dtype=np.float32)
+            )
+            strata[name] = {
+                "nontrivial_pixels": int(selected.size),
+                "mean_consensus_ce_delta": (
+                    float(selected.mean()) if selected.size else None
+                ),
+                "median_consensus_ce_delta": (
+                    float(np.median(selected)) if selected.size else None
+                ),
+                "ce_decrease_fraction": (
+                    float((selected < 0).mean()) if selected.size else None
+                ),
+            }
         return {
+            "total_pixels": self.total_pixels,
+            "active_pixels": self.active_pixels,
+            "active_correction_fraction": (
+                self.active_pixels / max(self.total_pixels, 1)
+            ),
             "nontrivial_mismatch_pixels": self.nontrivial,
             "mean_consensus_ce_delta": float(ce_delta.mean()),
             "median_consensus_ce_delta": float(np.median(ce_delta)),
             "ce_decrease_pixels": self.ce_decrease,
             "ce_decrease_fraction": self.ce_decrease / max(self.nontrivial, 1),
             "mean_mismatch": self.mismatch_sum / self.mismatch_values,
+            "feedback_gate_mean": float(feedback_gate.mean()),
+            "feedback_gate_std": float(feedback_gate.std()),
+            "feedback_gate_p50": float(np.quantile(feedback_gate, 0.50)),
+            "feedback_gate_p90": float(np.quantile(feedback_gate, 0.90)),
             "mean_update_rms_ratio": float(update_ratio.mean()),
             "p99_update_rms_ratio": float(np.quantile(update_ratio, 0.99)),
             "max_update_rms_ratio": float(update_ratio.max()),
@@ -322,6 +426,7 @@ class MechanismAccumulator:
                 self.probability_change_sum / self.probability_values
             ),
             "argmax_change_fraction": self.argmax_changed / self.argmax_values,
+            "ce_strata": strata,
             "all_finite": self.finite,
         }
 
@@ -376,39 +481,41 @@ def virtual_pass(model, features, logits):
         name: torch.softmax(value.detach().float(), dim=1)
         for name, value in logits.items()
     }
-    virtual_logits = {}
-    mechanism = {}
+    virtual_logits = {mode: {} for mode in VIRTUAL_MODES}
+    mechanism = {mode: {} for mode in VIRTUAL_MODES}
     for stage in STAGES:
         head = getattr(model, STAGE_TO_HEAD[stage])
         hfrm = getattr(model, STAGE_TO_HFRM[stage])
         consensus = leave_one_out_consensus(
             probabilities, stage, features[stage].shape[-2:]
         )
-        correction = analytical_virtual_correction(
-            features[stage],
-            probabilities[stage],
-            consensus,
-            head.weight,
-            hfrm.gamma_veto,
-            hfrm.gamma_context,
-            eta=ETA,
-        )
         bias = head.bias.detach().float() if head.bias is not None else None
-        # Phase-0 feedback and directional probe are explicitly FP32.
-        virtual_logits[stage] = F.conv2d(
-            correction["updated_feature"],
-            head.weight.detach().float(),
-            bias,
-        )
-        mechanism[stage] = {
-            "probability": probabilities[stage],
-            "virtual_probability": torch.softmax(
-                virtual_logits[stage], dim=1
-            ).detach(),
-            "consensus_state": consensus,
-            "correction": correction,
-        }
-    virtual_logits["deep"] = logits["deep"].detach().float()
+        for mode, correction_function in CORRECTION_FUNCTIONS.items():
+            correction = correction_function(
+                features[stage],
+                probabilities[stage],
+                consensus,
+                head.weight,
+                hfrm.gamma_veto,
+                hfrm.gamma_context,
+                eta=ETA,
+            )
+            # Phase-0 feedback and directional probes are explicitly FP32.
+            virtual_logits[mode][stage] = F.conv2d(
+                correction["updated_feature"],
+                head.weight.detach().float(),
+                bias,
+            )
+            mechanism[mode][stage] = {
+                "probability": probabilities[stage],
+                "virtual_probability": torch.softmax(
+                    virtual_logits[mode][stage], dim=1
+                ).detach(),
+                "consensus_state": consensus,
+                "correction": correction,
+            }
+    for mode in VIRTUAL_MODES:
+        virtual_logits[mode]["deep"] = logits["deep"].detach().float()
     return probabilities, virtual_logits, mechanism
 
 
@@ -441,16 +548,20 @@ def run_phase0(model, validation_root, num_workers):
     )
     metrics = {
         mode: {name: OfficialMetricAccumulator() for name in (*CAM_NAMES, "fused")}
-        for mode in ("pass0", "virtual")
+        for mode in ALL_MODES
     }
     changes = {
-        name: ChangeAccumulator() for name in (*CAM_NAMES[:3], "fused")
+        mode: {
+            name: ChangeAccumulator() for name in (*CAM_NAMES[:3], "fused")
+        }
+        for mode in VIRTUAL_MODES
     }
-    consensus_utility = {
-        stage: ConsensusUtilityAccumulator() for stage in STAGES
+    teacher_advantage = {
+        stage: TeacherAdvantageAccumulator() for stage in STAGES
     }
     mechanism_accumulators = {
-        stage: MechanismAccumulator() for stage in STAGES
+        mode: {stage: MechanismAccumulator() for stage in STAGES}
+        for mode in VIRTUAL_MODES
     }
     start = time.perf_counter()
 
@@ -467,7 +578,7 @@ def run_phase0(model, validation_root, num_workers):
             image_tensor = image_tensor.cuda(non_blocking=True)
             tta_cams = {
                 mode: {name: [] for name in CAM_NAMES}
-                for mode in ("pass0", "virtual")
+                for mode in ALL_MODES
             }
             deep_probabilities = []
 
@@ -490,14 +601,16 @@ def run_phase0(model, validation_root, num_workers):
                     "camdeep": F.relu(logits["deep"]),
                 }
                 virtual_cams = {
-                    "cam56": F.relu(virtual_logits["stage1"]),
-                    "cam28_1": F.relu(virtual_logits["stage2"]),
-                    "cam28_2": F.relu(virtual_logits["stage3"]),
-                    "camdeep": F.relu(virtual_logits["deep"]),
+                    mode: {
+                        "cam56": F.relu(virtual_logits[mode]["stage1"]),
+                        "cam28_1": F.relu(virtual_logits[mode]["stage2"]),
+                        "cam28_2": F.relu(virtual_logits[mode]["stage3"]),
+                        "camdeep": F.relu(virtual_logits[mode]["deep"]),
+                    }
+                    for mode in VIRTUAL_MODES
                 }
-                for mode, cam_values in (
-                    ("pass0", pass0_cams), ("virtual", virtual_cams)
-                ):
+                cam_modes = {"pass0": pass0_cams, **virtual_cams}
+                for mode, cam_values in cam_modes.items():
                     for name, cam in cam_values.items():
                         # The released inference performs interpolation inside
                         # the BF16 autocast region (which yields FP32 here).
@@ -522,22 +635,28 @@ def run_phase0(model, validation_root, num_workers):
 
                 if not input_flip_dims:
                     for stage in STAGES:
-                        state = mechanism[stage]
-                        mechanism_accumulators[stage].update(
-                            state["probability"],
-                            state["virtual_probability"],
-                            state["consensus_state"]["consensus"],
-                            state["correction"],
-                        )
+                        for mode in VIRTUAL_MODES:
+                            state = mechanism[mode][stage]
+                            mechanism_accumulators[mode][stage].update(
+                                state["probability"],
+                                state["virtual_probability"],
+                                state["consensus_state"]["consensus"],
+                                state["correction"],
+                            )
+                        state = mechanism["v3"][stage]
                         native_ground_truth = resize_ground_truth(
                             ground_truth,
                             state["probability"].shape[-2:],
                         )
-                        consensus_utility[stage].update(
+                        teacher_advantage[stage].update(
                             native_ground_truth,
                             state["probability"][0].argmax(0).cpu().numpy().astype(np.uint8),
                             state["consensus_state"]["consensus"][0]
                             .argmax(0).cpu().numpy().astype(np.uint8),
+                            state["correction"]["active_mask"][0, 0]
+                            .cpu().numpy(),
+                            state["correction"]["dominance_gate"][0, 0]
+                            .cpu().numpy(),
                         )
 
             deep_probability = (
@@ -547,9 +666,9 @@ def run_phase0(model, validation_root, num_workers):
             if label.sum() == 0:
                 label[int(np.argmax(deep_probability))] = 1.0
 
-            predictions = {"pass0": {}, "virtual": {}}
-            normalized = {"pass0": {}, "virtual": {}}
-            for mode in ("pass0", "virtual"):
+            predictions = {mode: {} for mode in ALL_MODES}
+            normalized = {mode: {} for mode in ALL_MODES}
+            for mode in ALL_MODES:
                 for name in CAM_NAMES:
                     averaged = torch.stack(tta_cams[mode][name]).mean(0)
                     normalized[mode][name] = normalize_cam(
@@ -573,12 +692,13 @@ def run_phase0(model, validation_root, num_workers):
                     ground_truth, predictions[mode]["fused"]
                 )
 
-            for name, accumulator in changes.items():
-                accumulator.update(
-                    ground_truth,
-                    predictions["pass0"][name],
-                    predictions["virtual"][name],
-                )
+            for mode in VIRTUAL_MODES:
+                for name, accumulator in changes[mode].items():
+                    accumulator.update(
+                        ground_truth,
+                        predictions["pass0"][name],
+                        predictions[mode][name],
+                    )
 
     return {
         "sample_count": len(dataset),
@@ -588,77 +708,137 @@ def run_phase0(model, validation_root, num_workers):
             for mode, values in metrics.items()
         },
         "prediction_changes": {
-            name: accumulator.summary() for name, accumulator in changes.items()
+            mode: {
+                name: accumulator.summary()
+                for name, accumulator in mode_accumulators.items()
+            }
+            for mode, mode_accumulators in changes.items()
         },
-        "consensus_utility": {
+        "teacher_advantage": {
             stage: accumulator.summary()
-            for stage, accumulator in consensus_utility.items()
+            for stage, accumulator in teacher_advantage.items()
         },
         "mechanism": {
-            stage: accumulator.summary()
-            for stage, accumulator in mechanism_accumulators.items()
+            mode: {
+                stage: accumulator.summary()
+                for stage, accumulator in mode_accumulators.items()
+            }
+            for mode, mode_accumulators in mechanism_accumulators.items()
         },
     }
 
 
 def phase0_decision(result):
-    recoverability_positive = sum(
-        result["consensus_utility"][stage]["net_recoverability"] > 0
+    teacher_advantage_positive = sum(
+        result["teacher_advantage"][stage]["net_teacher_advantage"] > 0
         for stage in STAGES
     )
     directional_all = all(
-        result["mechanism"][stage]["mean_consensus_ce_delta"] < 0
+        result["mechanism"]["v3"][stage]["mean_consensus_ce_delta"] < 0
         for stage in STAGES
     )
     directional_fraction_stages = sum(
-        result["mechanism"][stage]["ce_decrease_fraction"] >= 0.70
+        result["mechanism"]["v3"][stage]["ce_decrease_fraction"] >= 0.70
         for stage in STAGES
     )
-    nondecreasing_stage_cams = sum(
-        result["scores"]["virtual"][STAGE_TO_CAM[stage]]["Mean IoU"]
-        >= result["scores"]["pass0"][STAGE_TO_CAM[stage]]["Mean IoU"]
+    positive_stage_cams = sum(
+        result["scores"]["v3"][STAGE_TO_CAM[stage]]["Mean IoU"]
+        > result["scores"]["pass0"][STAGE_TO_CAM[stage]]["Mean IoU"]
         for stage in STAGES
     )
     positive_net_correction = sum(
-        result["prediction_changes"][STAGE_TO_CAM[stage]]["net_corrected"] > 0
+        result["prediction_changes"]["v3"][STAGE_TO_CAM[stage]]["net_corrected"] > 0
         for stage in STAGES
     )
     fused_delta_pp = 100 * (
-        result["scores"]["virtual"]["fused"]["Mean IoU"]
+        result["scores"]["v3"]["fused"]["Mean IoU"]
         - result["scores"]["pass0"]["fused"]["Mean IoU"]
     )
     all_finite = all(
-        result["mechanism"][stage]["all_finite"] for stage in STAGES
+        result["mechanism"][mode][stage]["all_finite"]
+        for mode in VIRTUAL_MODES
+        for stage in STAGES
     )
+    max_update_ratio = max(
+        result["mechanism"]["v3"][stage]["max_update_rms_ratio"]
+        for stage in STAGES
+    )
+    stability_pass = all_finite and max_update_ratio <= 0.05 + 1e-6
     go = (
-        recoverability_positive >= 2
+        teacher_advantage_positive >= 2
         and directional_all
         and directional_fraction_stages >= 2
-        and nondecreasing_stage_cams >= 2
+        and positive_stage_cams >= 2
         and positive_net_correction >= 2
-        and fused_delta_pp > -0.05
-        and all_finite
+        and fused_delta_pp >= 0.05
+        and stability_pass
     )
     strong_go = (
         go
         and fused_delta_pp >= 0.20
-        and sum(
-            result["scores"]["virtual"][STAGE_TO_CAM[stage]]["Mean IoU"]
-            > result["scores"]["pass0"][STAGE_TO_CAM[stage]]["Mean IoU"]
-            for stage in STAGES
-        ) >= 2
+        and positive_stage_cams == 3
+    )
+    signal = (
+        "CLRR_V3_SIGNAL_STRONG_GO"
+        if strong_go
+        else "CLRR_V3_SIGNAL_GO"
+        if go
+        else "CLRR_V3_SIGNAL_NOGO"
     )
     return {
-        "recoverability_positive_stages": recoverability_positive,
+        "teacher_advantage_positive_stages": teacher_advantage_positive,
+        "teacher_advantage_rates": {
+            stage: result["teacher_advantage"][stage][
+                "net_teacher_advantage_rate"
+            ]
+            for stage in STAGES
+        },
         "directional_mean_ce_pass_all_stages": directional_all,
         "ce_decrease_fraction_ge_70_percent_stages": directional_fraction_stages,
-        "nondecreasing_stage_cam_miou_stages": nondecreasing_stage_cams,
+        "positive_stage_cam_miou_stages": positive_stage_cams,
         "positive_net_correction_stages": positive_net_correction,
         "fused_miou_delta_percentage_points": fused_delta_pp,
         "all_finite": all_finite,
+        "max_update_rms_ratio": max_update_ratio,
+        "stability_pass": stability_pass,
+        "go": go,
         "strong_go": strong_go,
-        "signal": "CLRR_V2_SIGNAL_GO" if go else "CLRR_V2_SIGNAL_NOGO",
+        "signal": signal,
     }
+
+
+def v2_v3_comparison(result):
+    comparison = {}
+    for mode in VIRTUAL_MODES:
+        comparison[mode] = {
+            "active_correction_fraction": {
+                stage: result["mechanism"][mode][stage][
+                    "active_correction_fraction"
+                ]
+                for stage in STAGES
+            },
+            "stage_miou_delta_percentage_points": {
+                STAGE_TO_CAM[stage]: 100
+                * (
+                    result["scores"][mode][STAGE_TO_CAM[stage]]["Mean IoU"]
+                    - result["scores"]["pass0"][STAGE_TO_CAM[stage]]["Mean IoU"]
+                )
+                for stage in STAGES
+            },
+            "fused_miou_delta_percentage_points": 100
+            * (
+                result["scores"][mode]["fused"]["Mean IoU"]
+                - result["scores"]["pass0"]["fused"]["Mean IoU"]
+            ),
+            "fused_net_corrected": result["prediction_changes"][mode]["fused"][
+                "net_corrected"
+            ],
+            "ce_decrease_fraction": {
+                stage: result["mechanism"][mode][stage]["ce_decrease_fraction"]
+                for stage in STAGES
+            },
+        }
+    return comparison
 
 
 def main():
@@ -720,11 +900,21 @@ def main():
     if not parity["pass"]:
         raise RuntimeError(f"Pass0 official inference parity failed: {parity}")
     decision = phase0_decision(phase0)
+    comparison = v2_v3_comparison(phase0)
 
     result = {
-        "scope": "BCSS validation only; frozen A0; no training",
+        "scope": "CLRR-v3 frozen Phase-0; BCSS validation only; frozen A0",
         "test_evaluated": False,
+        "training_performed": False,
         "eta": ETA,
+        "frozen_formulas": {
+            "consensus": "leave-one-out reliability-weighted consensus",
+            "v2_gate": "rho_i",
+            "v3_gate": "relu(rho_i-r_i)",
+            "v3_extra_rho_multiplier": False,
+            "feedback_state": "detached FP32",
+            "official_fusion": list(OFFICIAL_FUSION),
+        },
         "base_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
         "checkpoint": {
             "path": str(args.checkpoint.resolve()),
@@ -740,10 +930,11 @@ def main():
         "official_pass0_score": official_score,
         "official_inference_parity": parity,
         "phase0": phase0,
+        "v2_v3_comparison": comparison,
         "decision": decision,
         "runtime": {
             "official_inference_seconds": official_seconds,
-            "virtual_audit_seconds": phase0["seconds"],
+            "joint_v2_v3_virtual_audit_seconds": phase0["seconds"],
             "cuda_peak_memory_allocated_bytes": torch.cuda.max_memory_allocated(),
             "cuda_peak_memory_reserved_bytes": torch.cuda.max_memory_reserved(),
         },

@@ -1,4 +1,4 @@
-"""Frozen analytical CLRR-v2 operators used only by the Phase-0 audit."""
+"""Frozen analytical CLRR-v2/v3 operators used only by Phase-0 audits."""
 
 import math
 
@@ -94,22 +94,30 @@ def classifier_backprojection(semantic_error, classifier_weight):
     return torch.einsum("oc,bohw->bchw", weight, semantic_error).detach()
 
 
-def analytical_virtual_correction(
+def _analytical_virtual_correction(
     feature,
     probability,
     consensus_state,
     classifier_weight,
     gamma_sem,
     gamma_ctx,
+    gate_mode,
     eta=0.05,
 ):
-    """Build the frozen bounded CLRR-v2 virtual update in FP32."""
+    """Build a frozen bounded CLRR virtual update in detached FP32."""
     if eta != 0.05:
         raise ValueError("Phase-0 eta is frozen at 0.05")
+    if gate_mode not in {"v2_consensus_reliability", "v3_reliability_dominance"}:
+        raise ValueError(f"Unknown frozen feedback gate: {gate_mode}")
     feature = feature.detach().float()
     probability = probability.detach().float()
     consensus = consensus_state["consensus"].detach().float()
     rho = consensus_state["consensus_reliability"].detach().float()
+    current_reliability = normalized_entropy_reliability(probability)
+    dominance_gate = (rho - current_reliability).clamp_min(0.0).detach()
+    feedback_gate = (
+        rho if gate_mode == "v2_consensus_reliability" else dominance_gate
+    ).detach()
     semantic_error = (consensus - probability).detach()
     mismatch = 0.5 * semantic_error.abs().sum(dim=1, keepdim=True)
 
@@ -133,7 +141,7 @@ def analytical_virtual_correction(
     ).clamp(0.0, 1.0).view(1, 1, 1, 1).detach()
     delta = (
         maturity
-        * rho
+        * feedback_gate
         * mismatch
         * feature_scale
         * normalized_direction
@@ -145,6 +153,10 @@ def analytical_virtual_correction(
     return {
         "consensus": consensus,
         "consensus_reliability": rho,
+        "current_reliability": current_reliability,
+        "dominance_gate": dominance_gate,
+        "feedback_gate": feedback_gate,
+        "active_mask": (feedback_gate > 0).detach(),
         "semantic_error": semantic_error,
         "mismatch": mismatch.detach(),
         "backprojection": backprojection,
@@ -156,4 +168,49 @@ def analytical_virtual_correction(
         "update": update,
         "updated_feature": updated_feature,
         "update_ratio": update_ratio.detach(),
+        "gate_mode": gate_mode,
     }
+
+
+def analytical_virtual_correction_v2(
+    feature,
+    probability,
+    consensus_state,
+    classifier_weight,
+    gamma_sem,
+    gamma_ctx,
+    eta=0.05,
+):
+    """Reproduce the frozen CLRR-v2 rho-weighted virtual update."""
+    return _analytical_virtual_correction(
+        feature,
+        probability,
+        consensus_state,
+        classifier_weight,
+        gamma_sem,
+        gamma_ctx,
+        gate_mode="v2_consensus_reliability",
+        eta=eta,
+    )
+
+
+def analytical_virtual_correction_v3(
+    feature,
+    probability,
+    consensus_state,
+    classifier_weight,
+    gamma_sem,
+    gamma_ctx,
+    eta=0.05,
+):
+    """Apply only d=ReLU(rho-r_i), without multiplying rho again."""
+    return _analytical_virtual_correction(
+        feature,
+        probability,
+        consensus_state,
+        classifier_weight,
+        gamma_sem,
+        gamma_ctx,
+        gate_mode="v3_reliability_dominance",
+        eta=eta,
+    )
