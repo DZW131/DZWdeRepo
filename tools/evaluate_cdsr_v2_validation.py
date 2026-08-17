@@ -283,8 +283,12 @@ def collect_mechanism_state(model, validation_root, args):
     stage_results = {}
     for stage, hfrm_name in HFRM_STAGES.items():
         hfrm = getattr(model, hfrm_name)
+        gamma_sem = hfrm.gamma_veto.detach().float().item()
+        gamma_ctx = hfrm.gamma_context.detach().float().item()
         need_values = np.concatenate(accumulators[stage].pop("need_values"))
         need_summary = accumulators[stage]["need"].summary()
+        semantic_feature = accumulators[stage]["effective_semantic"].summary()
+        context_feature = accumulators[stage]["effective_context"].summary()
         quantiles = np.quantile(need_values, [0.10, 0.50, 0.90])
         need_summary.update(
             {"p10": quantiles[0], "p50": quantiles[1], "p90": quantiles[2]}
@@ -293,14 +297,16 @@ def collect_mechanism_state(model, validation_root, args):
             "need": need_summary,
             "semantic_gate": accumulators[stage]["semantic_gate"].summary(),
             "context_gate": accumulators[stage]["context_gate"].summary(),
-            "gamma_sem": hfrm.gamma_veto.detach().float().item(),
-            "gamma_ctx": hfrm.gamma_context.detach().float().item(),
-            "effective_semantic_residual": accumulators[stage][
-                "effective_semantic"
-            ].summary(),
-            "effective_context_residual": accumulators[stage][
-                "effective_context"
-            ].summary(),
+            "gamma_sem": gamma_sem,
+            "gamma_ctx": gamma_ctx,
+            "gated_semantic_feature": semantic_feature,
+            "gated_context_feature": context_feature,
+            "effective_semantic_residual_rms": (
+                abs(gamma_sem) * semantic_feature["rms"]
+            ),
+            "effective_context_residual_rms": (
+                abs(gamma_ctx) * context_feature["rms"]
+            ),
         }
     return {
         "sample_count": len(dataset),
