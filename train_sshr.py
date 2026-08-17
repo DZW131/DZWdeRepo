@@ -152,8 +152,11 @@ def write_experiment_config(
             'gpu': torch.cuda.get_device_name(0) if torch.cuda.is_available() else None,
         },
     }
-    if getattr(args, 'context_mode', 'ch') == 'fampr':
+    context_mode = getattr(args, 'context_mode', 'ch').lower()
+    if context_mode == 'fampr':
         config['fampr_config'] = model.hfrm_56.fampr_context.config.to_dict()
+    elif context_mode in {'sc-mpr', 'scmpr'}:
+        config['scmpr_config'] = model.hfrm_56.scmpr_context.config.to_dict()
     path = os.path.join(args.save_folder, 'experiment_config.json')
     with open(path, 'w', encoding='utf-8') as output_file:
         json.dump(config, output_file, indent=2, sort_keys=True, default=str)
@@ -203,17 +206,56 @@ def collect_fampr_epoch_record(model, diagnostics, epoch):
         }
     return record
 
+
+def collect_scmpr_epoch_record(model, diagnostics, epoch):
+    """Record SC-MPR observability without adding an optimization objective."""
+    stages = {
+        'stage1': model.hfrm_56,
+        'stage2': model.hfrm_28_1,
+        'stage3': model.hfrm_28_2,
+    }
+    record = {'epoch': epoch, 'sample': 'first_training_batch', 'stages': {}}
+    for stage, hfrm in stages.items():
+        scmpr = hfrm.scmpr_context
+        stage_diagnostics = diagnostics['scmpr'][stage]
+        record['stages'][stage] = {
+            **stage_diagnostics['summary'],
+            'gamma_veto': hfrm.gamma_veto.detach().float().item(),
+            'gamma_context': hfrm.gamma_context.detach().float().item(),
+            'gamma_veto_gradient': _gradient_record(hfrm.gamma_veto),
+            'gamma_context_gradient': _gradient_record(hfrm.gamma_context),
+            'beta_logit_gradient': _gradient_record(scmpr.beta_logit),
+            'target_projector_gradient': _gradient_record(
+                scmpr.semantic_condition.target_projector.weight
+            ),
+        }
+    shared = model.scmpr_shared
+    record['shared'] = {
+        'deep_projector_gradient': _gradient_record(
+            shared.deep_projector.weight
+        ),
+        'policy_input_gradient': _gradient_record(
+            shared.gate_policy[0].weight
+        ),
+        'policy_output_gradient': _gradient_record(
+            shared.gate_policy[-1].weight
+        ),
+    }
+    return record
+
 def get_model_kwargs(args):
     """Build architecture arguments without changing the official defaults."""
     rectifier_type = getattr(args, 'rectifier', 'hfrm').lower()
     model_kwargs = {'rectifier_type': rectifier_type}
     context_mode = getattr(args, 'context_mode', 'ch').lower()
+    if context_mode == 'scmpr':
+        context_mode = 'sc-mpr'
     if rectifier_type == 'hfrm':
         model_kwargs['context_mode'] = context_mode
     elif context_mode != 'ch':
         raise ValueError(
-            "--context-mode=fampr requires --rectifier=hfrm; "
-            "archived HST is isolated from FA-MPR"
+            "Alternative context modes require --rectifier=hfrm; "
+            "archived HST is isolated from FA-MPR and SC-MPR"
         )
     if rectifier_type == 'hst':
         variant = getattr(args, 'hst_variant', 'a1').lower()
@@ -388,13 +430,15 @@ def train_phase(args):
         model.train()
         ep_count = ep_EM = ep_acc = 0
         fampr_epoch_record = None
+        scmpr_epoch_record = None
 
         
         for iter, (filename, img, label) in enumerate(train_data_loader):
             img = img.cuda(non_blocking=True)
             label = label.cuda(non_blocking=True)
+            context_mode = getattr(args, 'context_mode', 'ch').lower()
             collect_diagnostics = (
-                getattr(args, 'context_mode', 'ch') == 'fampr' and iter == 0
+                context_mode in {'fampr', 'sc-mpr', 'scmpr'} and iter == 0
             )
             
             with torch.autocast(device_type='cuda', dtype=amp_dtype, enabled=use_amp):
@@ -433,17 +477,27 @@ def train_phase(args):
                 scaler.scale(loss).backward()
                 scaler.unscale_(optimizer)
                 if collect_diagnostics:
-                    fampr_epoch_record = collect_fampr_epoch_record(
-                        model, model_diagnostics, ep + 1
-                    )
+                    if context_mode == 'fampr':
+                        fampr_epoch_record = collect_fampr_epoch_record(
+                            model, model_diagnostics, ep + 1
+                        )
+                    else:
+                        scmpr_epoch_record = collect_scmpr_epoch_record(
+                            model, model_diagnostics, ep + 1
+                        )
                 scaler.step(optimizer)
                 scaler.update()
             else:
                 loss.backward()
                 if collect_diagnostics:
-                    fampr_epoch_record = collect_fampr_epoch_record(
-                        model, model_diagnostics, ep + 1
-                    )
+                    if context_mode == 'fampr':
+                        fampr_epoch_record = collect_fampr_epoch_record(
+                            model, model_diagnostics, ep + 1
+                        )
+                    else:
+                        scmpr_epoch_record = collect_scmpr_epoch_record(
+                            model, model_diagnostics, ep + 1
+                        )
                 optimizer.step()
 
             if (optimizer.global_step) % 100 == 0 and (optimizer.global_step) != 0:
@@ -469,6 +523,19 @@ def train_phase(args):
             print(
                 '[FAMPRDiagnostics]',
                 json.dumps(fampr_epoch_record, sort_keys=True),
+                flush=True,
+            )
+        if scmpr_epoch_record is not None:
+            diagnostics_path = os.path.join(
+                args.save_folder, 'scmpr_diagnostics.jsonl'
+            )
+            with open(diagnostics_path, 'a', encoding='utf-8') as output_file:
+                output_file.write(
+                    json.dumps(scmpr_epoch_record, sort_keys=True) + '\n'
+                )
+            print(
+                '[SCMPRDiagnostics]',
+                json.dumps(scmpr_epoch_record, sort_keys=True),
                 flush=True,
             )
 
@@ -527,10 +594,11 @@ if __name__ == '__main__':
     parser.add_argument("--rectifier", default="hfrm", choices=["hfrm", "hst"])
     parser.add_argument(
         "--context_mode", "--context-mode",
-        default="ch", choices=["ch", "fampr"],
+        default="ch", choices=["ch", "fampr", "sc-mpr", "scmpr"],
         help=(
             "Contextual branch for HFRM. 'ch' is the exact official SSHR "
-            "default; 'fampr' enables Full FA-MPR."
+            "default; 'fampr' is archived Full FA-MPR; 'sc-mpr' enables "
+            "Semantic-Conditioned Morphology-Preserving Rectification."
         ),
     )
     parser.add_argument(

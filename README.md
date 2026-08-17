@@ -24,20 +24,27 @@ Experiments on the LUAD-HistoSeg and BCSS datasets demonstrate that SSHR outperf
 ## Research Development
 
 The official SSHR implementation remains the exact default A0 baseline. The
-active Innovation 1 is **Frequency-Adaptive Morphology-Preserving
-Rectification (FA-MPR)**. It replaces only the Contextual Homogenization (CH)
-signal inside each HFRM with a fixed full configuration combining multi-band
-frequency selection, morphology-conditioned spatial sampling, adaptive
-low/high kernel spectra, and a learnable CH anchor.
+new Innovation 1 candidate is **Semantic-Conditioned Morphology-Preserving
+Rectification (SC-MPR)**. It keeps original CH15 and adds bounded, spatially
+selective fine/morphology residual proposals verified by read-only deep
+semantic conditions.
 
 - `--rectifier hfrm --context-mode ch`: exact A0 (default);
-- `--rectifier hfrm --context-mode fampr`: Full FA-MPR;
+- `--rectifier hfrm --context-mode sc-mpr`: SC-MPR engineering candidate;
+- `--rectifier hfrm --context-mode fampr`: archived Full FA-MPR;
 - `--rectifier hst`: archived negative-result implementation, isolated from
-  FA-MPR and retained only for reproducibility.
+  both active and archived HFRM-context candidates.
 
-FA-MPR does not change the backbone, GSR branch, CAM heads, loss, optimizer,
-training schedule, inference, or metrics. Its v1.0 configuration is frozen in
-code; the first controlled experiment is BCSS seed 42 against A0.
+SC-MPR does not change the backbone, GSR branch, CH15, CAM heads, loss,
+optimizer, training schedule, inference, or metrics. Engineering review found
+that exact per-channel spatial de-meaning made the initial residual invisible
+to SSHR's linear CAM plus global-average-pooling classification objective. The
+approved minimal readiness patch removed only that de-meaning operation. A
+subsequent approved initialization change set the final shared policy
+`Conv1x1` weight to Xavier with `gain=0.01`. Although relative gradient flow
+improves, final readiness still fails: BF16 initial gates remain quantized to
+a constant and the 10-step parameter movement is entirely explained by weight
+decay. SC-MPR has not been trained on BCSS or LUAD.
 
 The earlier HST candidate is archived with three selectable stages:
 
@@ -45,12 +52,18 @@ The earlier HST candidate is archived with three selectable stages:
 - A2: target-conditioned stage-specific transitions;
 - A3: lightweight hierarchy-token interaction.
 
-Their BCSS seed-42 final-checkpoint results did not improve over A0, so HST is
-not part of the active Innovation 1 path. The source and tests remain available
-to preserve the complete experimental record.
+Their BCSS seed-42 final-checkpoint results did not improve over A0. Full
+FA-MPR likewise failed its validation go/no-go criterion. Both candidates are
+archived without deleting their source, tests, or experiment record.
 
-See [`docs/fampr_implementation_report.md`](docs/fampr_implementation_report.md)
-for the active design and validation evidence, and
+See [`docs/scmpr_final_training_readiness_report.md`](docs/scmpr_final_training_readiness_report.md)
+for the current engineering audit,
+[`docs/scmpr_readiness_patch_report.md`](docs/scmpr_readiness_patch_report.md)
+for the superseded mathematical-connectivity audit,
+[`docs/scmpr_implementation_report.md`](docs/scmpr_implementation_report.md)
+for the archived blocker proof,
+[`docs/archive/innovation1_fampr.md`](docs/archive/innovation1_fampr.md) for
+the FA-MPR archival record, and
 [`docs/innovation1_hst_migration.md`](docs/innovation1_hst_migration.md) for the
 archived HST record.
 
@@ -142,14 +155,16 @@ python train_sshr.py \
 
 The final checkpoint is saved as `stage1_last.pth`.
 
-For the controlled Full FA-MPR BCSS seed-42 run, use the same command and add:
+SC-MPR is selectable for engineering smoke tests with:
 
 ```bash
---rectifier hfrm --context-mode fampr
+--rectifier hfrm --context-mode sc-mpr
 ```
 
-Do not combine `--rectifier hst` with `--context-mode fampr`; the parser/model
-rejects that combination to prevent archived HST code from entering FA-MPR.
+Current SC-MPR final readiness is failed; do not start a formal run until a
+new explicitly reviewed design passes its engineering gate. Do not combine
+`--rectifier hst` with an alternative HFRM context; the parser/model rejects
+that combination to keep archived candidates isolated.
 
 ### Evaluation
 

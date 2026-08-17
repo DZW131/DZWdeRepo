@@ -28,7 +28,7 @@ def main():
     parser.add_argument("--rectifier", default="hst", choices=["hfrm", "hst"])
     parser.add_argument(
         "--context_mode", "--context-mode",
-        default="ch", choices=["ch", "fampr"],
+        default="ch", choices=["ch", "fampr", "sc-mpr", "scmpr"],
     )
     parser.add_argument(
         "--hst_variant", default="a1", choices=["a1", "a2", "a3"]
@@ -58,6 +58,7 @@ def main():
         "ic1.",
         "ic2.",
         "fc8.",
+        "scmpr_shared.",
     )
     missing_backbone = [
         key

@@ -12,6 +12,21 @@ from network.fampr.fampr_context import (
     FrequencyAdaptiveMorphologyContext,
 )
 from network.hst.hst_rectifier import HSTConfig, HSTRectifier
+from network.scmpr.compatibility_policy import SharedSCMPRPolicy
+from network.scmpr.scmpr_context import SCMPRConfig, SCMPRContext
+
+
+def normalize_context_mode(context_mode):
+    """Canonicalize the public SC-MPR spelling without changing old modes."""
+    normalized = context_mode.lower()
+    if normalized == "scmpr":
+        normalized = "sc-mpr"
+    if normalized not in {"ch", "fampr", "sc-mpr"}:
+        raise ValueError(
+            "context_mode must be 'ch', 'fampr', or 'sc-mpr', "
+            f"got {context_mode!r}"
+        )
+    return normalized
 
 
 class HFRM(nn.Module):
@@ -22,14 +37,10 @@ class HFRM(nn.Module):
         context_kernel=15,
         context_mode="ch",
         fampr_config=None,
+        scmpr_config=None,
     ):
         super(HFRM, self).__init__()
-        self.context_mode = context_mode.lower()
-        if self.context_mode not in {"ch", "fampr"}:
-            raise ValueError(
-                "context_mode must be either 'ch' or 'fampr', "
-                f"got {context_mode!r}"
-            )
+        self.context_mode = normalize_context_mode(context_mode)
 
         self.veto_mlp = nn.Sequential(
             nn.Linear(deep_channels, deep_channels // 8, bias=False),
@@ -45,11 +56,24 @@ class HFRM(nn.Module):
                 channels=in_channels,
                 config=FAMPRConfig.from_value(fampr_config),
             )
+        elif self.context_mode == "sc-mpr":
+            self.scmpr_context = SCMPRContext(
+                channels=in_channels,
+                config=SCMPRConfig.from_value(scmpr_config),
+            )
 
         self.gamma_veto = nn.Parameter(torch.zeros(1))
         self.gamma_context = nn.Parameter(torch.zeros(1))
 
-    def _forward_impl(self, feat_nong, feat_deep, return_diagnostics=False):
+    def _forward_impl(
+        self,
+        feat_nong,
+        feat_deep,
+        semantic_cam_logits=None,
+        scmpr_shared=None,
+        scmpr_shared_semantic=None,
+        return_diagnostics=False,
+    ):
         B, C, H, W = feat_nong.size()
         
 
@@ -65,6 +89,7 @@ class HFRM(nn.Module):
             self.context_conv, feat_nong
         )
         fampr_diagnostics = None
+        scmpr_diagnostics = None
         if self.context_mode == "fampr":
             if return_diagnostics:
                 feat_context, fampr_diagnostics = self.fampr_context(
@@ -72,6 +97,30 @@ class HFRM(nn.Module):
                 )
             else:
                 feat_context = self.fampr_context(feat_nong, feat_smoothed)
+        elif self.context_mode == "sc-mpr":
+            if semantic_cam_logits is None or scmpr_shared is None:
+                raise ValueError(
+                    "SC-MPR requires deep CAM logits and the shared policy"
+                )
+            if return_diagnostics:
+                feat_context, scmpr_diagnostics = self.scmpr_context(
+                    feat_nong,
+                    feat_smoothed,
+                    feat_deep,
+                    semantic_cam_logits,
+                    scmpr_shared,
+                    shared_semantic=scmpr_shared_semantic,
+                    return_diagnostics=True,
+                )
+            else:
+                feat_context = self.scmpr_context(
+                    feat_nong,
+                    feat_smoothed,
+                    feat_deep,
+                    semantic_cam_logits,
+                    scmpr_shared,
+                    shared_semantic=scmpr_shared_semantic,
+                )
         else:
             feat_context = feat_smoothed
         
@@ -89,18 +138,43 @@ class HFRM(nn.Module):
                 "gamma_sem": self.gamma_veto,
                 "gamma_context": self.gamma_context,
                 "fampr": fampr_diagnostics,
+                "scmpr": scmpr_diagnostics,
             }
             return feat_rectified, diagnostics
         return feat_rectified
 
-    def forward(self, feat_nong, feat_deep):
+    def forward(
+        self,
+        feat_nong,
+        feat_deep,
+        semantic_cam_logits=None,
+        scmpr_shared=None,
+        scmpr_shared_semantic=None,
+    ):
         return self._forward_impl(
-            feat_nong, feat_deep, return_diagnostics=False
+            feat_nong,
+            feat_deep,
+            semantic_cam_logits=semantic_cam_logits,
+            scmpr_shared=scmpr_shared,
+            scmpr_shared_semantic=scmpr_shared_semantic,
+            return_diagnostics=False,
         )
 
-    def forward_with_diagnostics(self, feat_nong, feat_deep):
+    def forward_with_diagnostics(
+        self,
+        feat_nong,
+        feat_deep,
+        semantic_cam_logits=None,
+        scmpr_shared=None,
+        scmpr_shared_semantic=None,
+    ):
         return self._forward_impl(
-            feat_nong, feat_deep, return_diagnostics=True
+            feat_nong,
+            feat_deep,
+            semantic_cam_logits=semantic_cam_logits,
+            scmpr_shared=scmpr_shared,
+            scmpr_shared_semantic=scmpr_shared_semantic,
+            return_diagnostics=True,
         )
 
 # =========================================================================
@@ -114,6 +188,7 @@ class Net(network.resnet38d.Net):
         hst_config=None,
         context_mode="ch",
         fampr_config=None,
+        scmpr_config=None,
     ):
         super().__init__()
 
@@ -123,27 +198,32 @@ class Net(network.resnet38d.Net):
                 "rectifier_type must be either 'hfrm' or 'hst', "
                 f"got {rectifier_type!r}"
             )
-        self.context_mode = context_mode.lower()
-        if self.context_mode not in {"ch", "fampr"}:
-            raise ValueError(
-                "context_mode must be either 'ch' or 'fampr', "
-                f"got {context_mode!r}"
-            )
+        self.context_mode = normalize_context_mode(context_mode)
         if self.rectifier_type == "hst" and self.context_mode != "ch":
             raise ValueError(
-                "FA-MPR is only defined for rectifier_type='hfrm'; "
-                "archived HST cannot use context_mode='fampr'"
+                "Alternative HFRM contexts require rectifier_type='hfrm'; "
+                f"archived HST cannot use context_mode={self.context_mode!r}"
             )
 
         self.dropout7 = torch.nn.Dropout2d(0.5)
 
         if self.rectifier_type == "hfrm":
+            if self.context_mode == "sc-mpr":
+                resolved_scmpr = SCMPRConfig.from_value(scmpr_config)
+                self.scmpr_shared = SharedSCMPRPolicy(
+                    deep_channels=4096,
+                    projection_dim=resolved_scmpr.projection_dim,
+                    condition_channels=resolved_scmpr.condition_channels,
+                    hidden_channels=resolved_scmpr.policy_hidden_channels,
+                    gate_init=resolved_scmpr.gate_init,
+                )
             self.hfrm_56 = HFRM(
                 in_channels=256,
                 deep_channels=4096,
                 context_kernel=15,
                 context_mode=self.context_mode,
                 fampr_config=fampr_config,
+                scmpr_config=scmpr_config,
             )
             self.hfrm_28_1 = HFRM(
                 in_channels=512,
@@ -151,6 +231,7 @@ class Net(network.resnet38d.Net):
                 context_kernel=15,
                 context_mode=self.context_mode,
                 fampr_config=fampr_config,
+                scmpr_config=scmpr_config,
             )
             self.hfrm_28_2 = HFRM(
                 in_channels=1024,
@@ -158,8 +239,11 @@ class Net(network.resnet38d.Net):
                 context_kernel=15,
                 context_mode=self.context_mode,
                 fampr_config=fampr_config,
+                scmpr_config=scmpr_config,
             )
             rectifier_layers = [self.hfrm_56, self.hfrm_28_1, self.hfrm_28_2]
+            if self.context_mode == "sc-mpr":
+                rectifier_layers.append(self.scmpr_shared)
         else:
             self.hst_rectifier = HSTRectifier(HSTConfig.from_value(hst_config))
             rectifier_layers = [self.hst_rectifier]
@@ -213,19 +297,42 @@ class Net(network.resnet38d.Net):
         feat_28_1,
         feat_28_2,
         feat_deep,
+        semantic_cam_logits=None,
         return_diagnostics=False,
     ):
         if self.rectifier_type == "hfrm":
+            scmpr_shared = (
+                self.scmpr_shared if self.context_mode == "sc-mpr" else None
+            )
+            scmpr_shared_semantic = (
+                scmpr_shared.prepare_semantic(feat_deep, semantic_cam_logits)
+                if scmpr_shared is not None
+                else None
+            )
             if return_diagnostics:
                 feat_56_rectified, diag_56 = \
-                    self.hfrm_56.forward_with_diagnostics(feat_56, feat_deep)
+                    self.hfrm_56.forward_with_diagnostics(
+                        feat_56,
+                        feat_deep,
+                        semantic_cam_logits=semantic_cam_logits,
+                        scmpr_shared=scmpr_shared,
+                        scmpr_shared_semantic=scmpr_shared_semantic,
+                    )
                 feat_28_1_rectified, diag_28_1 = \
                     self.hfrm_28_1.forward_with_diagnostics(
-                        feat_28_1, feat_deep
+                        feat_28_1,
+                        feat_deep,
+                        semantic_cam_logits=semantic_cam_logits,
+                        scmpr_shared=scmpr_shared,
+                        scmpr_shared_semantic=scmpr_shared_semantic,
                     )
                 feat_28_2_rectified, diag_28_2 = \
                     self.hfrm_28_2.forward_with_diagnostics(
-                        feat_28_2, feat_deep
+                        feat_28_2,
+                        feat_deep,
+                        semantic_cam_logits=semantic_cam_logits,
+                        scmpr_shared=scmpr_shared,
+                        scmpr_shared_semantic=scmpr_shared_semantic,
                     )
                 stage_diagnostics = {
                     "stage1": diag_56,
@@ -233,9 +340,27 @@ class Net(network.resnet38d.Net):
                     "stage3": diag_28_2,
                 }
             else:
-                feat_56_rectified = self.hfrm_56(feat_56, feat_deep)
-                feat_28_1_rectified = self.hfrm_28_1(feat_28_1, feat_deep)
-                feat_28_2_rectified = self.hfrm_28_2(feat_28_2, feat_deep)
+                feat_56_rectified = self.hfrm_56(
+                    feat_56,
+                    feat_deep,
+                    semantic_cam_logits=semantic_cam_logits,
+                    scmpr_shared=scmpr_shared,
+                    scmpr_shared_semantic=scmpr_shared_semantic,
+                )
+                feat_28_1_rectified = self.hfrm_28_1(
+                    feat_28_1,
+                    feat_deep,
+                    semantic_cam_logits=semantic_cam_logits,
+                    scmpr_shared=scmpr_shared,
+                    scmpr_shared_semantic=scmpr_shared_semantic,
+                )
+                feat_28_2_rectified = self.hfrm_28_2(
+                    feat_28_2,
+                    feat_deep,
+                    semantic_cam_logits=semantic_cam_logits,
+                    scmpr_shared=scmpr_shared,
+                    scmpr_shared_semantic=scmpr_shared_semantic,
+                )
                 stage_diagnostics = {}
             diagnostics = {
                 "base_features": {
@@ -265,6 +390,11 @@ class Net(network.resnet38d.Net):
                     for stage, values in stage_diagnostics.items()
                     if values["fampr"] is not None
                 },
+                "scmpr": {
+                    stage: values["scmpr"]
+                    for stage, values in stage_diagnostics.items()
+                    if values["scmpr"] is not None
+                },
             }
         else:
             diagnostics = self.hst_rectifier(
@@ -285,6 +415,9 @@ class Net(network.resnet38d.Net):
     def _forward_impl(self, x, return_diagnostics=False):
         feat_56, feat_28_1, feat_28_2, feat_deep = \
             self._extract_backbone_features(x)
+        semantic_cam_logits = (
+            self.fc8(feat_deep) if self.context_mode == "sc-mpr" else None
+        )
         (
             feat_56_rectified,
             feat_28_1_rectified,
@@ -295,6 +428,7 @@ class Net(network.resnet38d.Net):
             feat_28_1,
             feat_28_2,
             feat_deep,
+            semantic_cam_logits=semantic_cam_logits,
             return_diagnostics=return_diagnostics,
         )
 
@@ -374,6 +508,8 @@ class Net(network.resnet38d.Net):
                 groups[2].append(m.anchor_logit)
             elif isinstance(m, AdaptiveKernelSpectrum):
                 groups[2].append(m.base_kernel)
+            elif isinstance(m, SCMPRContext):
+                groups[2].append(m.beta_logit)
             elif isinstance(m, HSTRectifier):
                 groups[2].extend(m.residual_scale_parameters())
                 
@@ -396,6 +532,7 @@ class Net_CAM(Net):
         hst_config=None,
         context_mode="ch",
         fampr_config=None,
+        scmpr_config=None,
     ):
         super().__init__(
             n_class,
@@ -403,6 +540,7 @@ class Net_CAM(Net):
             hst_config=hst_config,
             context_mode=context_mode,
             fampr_config=fampr_config,
+            scmpr_config=scmpr_config,
         )
 
     def forward(self, x):
@@ -412,22 +550,29 @@ class Net_CAM(Net):
     def forward_cam(self, x):
         feat_56, feat_28_1, feat_28_2, feat_deep = \
             self._extract_backbone_features(x)
+        deep_cam_logits = self.fc8(feat_deep)
         (
             feat_56_rectified,
             feat_28_1_rectified,
             feat_28_2_rectified,
             _,
         ) = self._rectify_features(
-            feat_56, feat_28_1, feat_28_2, feat_deep
+            feat_56,
+            feat_28_1,
+            feat_28_2,
+            feat_deep,
+            semantic_cam_logits=(
+                deep_cam_logits if self.context_mode == "sc-mpr" else None
+            ),
         )
 
 
         cam_56 = F.relu(self.ic_56(feat_56_rectified))
         cam_28_1 = F.relu(self.ic1(feat_28_1_rectified))
         cam_28_2 = F.relu(self.ic2(feat_28_2_rectified))
-        cam_deep = F.relu(self.fc8(feat_deep)) 
+        cam_deep = F.relu(deep_cam_logits)
         
-        out_deep = F.avg_pool2d(self.fc8(feat_deep), kernel_size=(feat_deep.size(2), feat_deep.size(3)), padding=0).view(feat_deep.size(0), -1)
+        out_deep = F.avg_pool2d(deep_cam_logits, kernel_size=(feat_deep.size(2), feat_deep.size(3)), padding=0).view(feat_deep.size(0), -1)
         y_deep = torch.sigmoid(out_deep)
 
         return cam_56, cam_28_1, cam_28_2, cam_deep, y_deep
