@@ -1,0 +1,3 @@
+step,equivariance_scheduled,iteration_seconds,peak_memory_allocated_bytes,lr_group0
+1,False,1.898404498002492,3831684096,0.01
+2,False,0.10948137802188285,3958816768,0.009999692569927526

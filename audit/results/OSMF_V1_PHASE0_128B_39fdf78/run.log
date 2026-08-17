@@ -1,0 +1,131 @@
+[Audit] {"eq_error_morphology": 0.06215658783912659, "hard_stop": null, "loss_sshr": 0.16958370804786682, "reconstruction_cosine": 0.9984278082847595, "semantic_morphology_rms_ratio": 1.1755257808652968, "step": 1}
+[Audit] {"eq_error_morphology": 0.062207963317632675, "hard_stop": "PERSISTENT_SEM_GRADIENT_RATIO_GT_0_50", "loss_sshr": 0.22407865524291992, "reconstruction_cosine": 0.9969591498374939, "semantic_morphology_rms_ratio": 1.1199111840544065, "step": 2}
+{
+  "audit_commit": "39fdf788aed6d0e31bd42108d87fc502a37d591a",
+  "baseline_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "cost": {
+    "mean_equivariance_seconds": 1.0039429380121874,
+    "mean_iteration_seconds": 1.0039429380121874,
+    "mean_non_equivariance_seconds": 1.0039429380121874,
+    "overhead_percent": 0.0,
+    "peak_memory_allocated_bytes": 3958816768
+  },
+  "decision": "OSMF_PHASE0_NOGO",
+  "decision_reasons": [
+    "PERSISTENT_SEM_GRADIENT_RATIO_GT_0_50"
+  ],
+  "environment": {
+    "cuda_runtime": "12.8",
+    "cudnn": 91900,
+    "elapsed_seconds": 2.445331361988792,
+    "gpu": "NVIDIA GeForce RTX 5090 D v2",
+    "peak_training_memory_allocated_bytes": 3958816768,
+    "python": "3.10.20",
+    "pytorch": "2.11.0+cu128"
+  },
+  "exact_command": "tools/audit_osmf_phase0_128batch.py --train-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/training --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --output-dir /home/duyanhong/experiments/OSMF_V1_PHASE0_128B_39fdf78 --audit-commit 39fdf788aed6d0e31bd42108d87fc502a37d591a --num-workers 4",
+  "flags": [],
+  "formal_training_performed": false,
+  "luad_evaluated": false,
+  "mechanism": {
+    "cross_covariance_end": 0.015338481403887272,
+    "cross_covariance_start": 0.015844818204641342,
+    "end_reconstruction_cosine": 0.9969591498374939,
+    "end_semantic_morphology_rms_ratio": 1.1199111840544065,
+    "eq_error_morphology_end": 0.062207963317632675,
+    "eq_error_morphology_start": 0.06257335841655731,
+    "eq_responsive": true,
+    "morphology_eq_gradient_active": true,
+    "sshr_loss_stable": true
+  },
+  "optimizer": {
+    "class": "PolyOptimizer",
+    "fresh_state_from_a0_checkpoint": true,
+    "lr_power": 0.9,
+    "max_step": 29275,
+    "momentum": 0.0005,
+    "parameter_groups": [
+      {
+        "lr": 0.01,
+        "momentum": 0.0005,
+        "parameter_tensors": 82,
+        "weight_decay": 0.0005
+      },
+      {
+        "lr": 0.02,
+        "momentum": 0.0005,
+        "parameter_tensors": 39,
+        "weight_decay": 0.0
+      },
+      {
+        "lr": 0.1,
+        "momentum": 0.0005,
+        "parameter_tensors": 24,
+        "weight_decay": 0.0005
+      },
+      {
+        "lr": 0.2,
+        "momentum": 0.0005,
+        "parameter_tensors": 4,
+        "weight_decay": 0.0
+      }
+    ]
+  },
+  "parameter_health": {
+    "p_morph.weight": {
+      "end_relative_update": 0.00031687860609963536,
+      "end_update_norm": 0.005070057697594166,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.03232729434967041,
+      "measurable_update": true
+    },
+    "p_sem.weight": {
+      "end_relative_update": 0.00742372265085578,
+      "end_update_norm": 0.11877956241369247,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.6383252441883087,
+      "measurable_update": true
+    },
+    "semantic_classifier.bias": {
+      "end_relative_update": 11195926528.0,
+      "end_update_norm": 0.011195926927030087,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.029982044361531734,
+      "measurable_update": true
+    },
+    "semantic_classifier.weight": {
+      "end_relative_update": 0.02556457184255123,
+      "end_update_norm": 0.07254554331302643,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.38080431520938873,
+      "measurable_update": true
+    },
+    "u_morph.weight": {
+      "end_relative_update": 0.0003444515750743449,
+      "end_update_norm": 0.005511225201189518,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.03458279836922884,
+      "measurable_update": true
+    },
+    "u_sem.weight": {
+      "end_relative_update": 0.0003859659773297608,
+      "end_update_norm": 0.006175455637276173,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.038701850920915604,
+      "measurable_update": true
+    }
+  },
+  "phase0_parent_commit": "5eb7b258f0cdeb4fa8779b65e716c105c9541f9a",
+  "phase1_started": false,
+  "processed_batches": 2,
+  "segmentation_gt_used": false,
+  "start_state": {
+    "feature_max_abs": 0.0,
+    "finite": true,
+    "reconstruction_cosine": 1.0
+  },
+  "test_evaluated": false,
+  "training_scope": "exactly 128 batches unless preregistered hard stop",
+  "validation_evaluated": false
+}

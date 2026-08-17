@@ -1,0 +1,13 @@
+parameter,grad_norm,nonzero_grad_fraction,finite,step
+p_sem.weight,0.8324391841888428,1.0,True,1
+p_morph.weight,0.035933591425418854,1.0,True,1
+u_sem.weight,0.03995245322585106,1.0,True,1
+u_morph.weight,0.040237199515104294,1.0,True,1
+semantic_classifier.weight,0.4831552803516388,1.0,True,1
+semantic_classifier.bias,0.03684380650520325,1.0,True,1
+p_sem.weight,0.44421130418777466,1.0,True,2
+p_morph.weight,0.028720997273921967,1.0,True,2
+u_sem.weight,0.03745124861598015,1.0,True,2
+u_morph.weight,0.028928397223353386,1.0,True,2
+semantic_classifier.weight,0.27845335006713867,1.0,True,2
+semantic_classifier.bias,0.023120282217860222,1.0,True,2
