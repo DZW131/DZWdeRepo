@@ -57,4 +57,3 @@ def run_safe_image_oracle(
         "choices": choices,
         "predictions": predictions,
     }
-

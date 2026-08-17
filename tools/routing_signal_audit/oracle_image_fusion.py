@@ -132,4 +132,3 @@ def run_image_fusion_oracle(
         "weights": weights,
         "predictions": predictions,
     }
-

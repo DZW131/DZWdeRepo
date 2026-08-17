@@ -72,4 +72,3 @@ def grouped_slide_bootstrap(
         "ci_97_5": float(np.quantile(deltas, 0.975)),
     }
     return {"rows": rows, "summary": summary}
-

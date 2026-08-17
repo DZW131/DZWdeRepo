@@ -84,4 +84,3 @@ def run_linear_probe(
         "assignment_min": int(assignment.min()),
         "assignment_max": int(assignment.max()),
     }
-

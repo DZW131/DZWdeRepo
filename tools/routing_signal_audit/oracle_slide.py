@@ -80,4 +80,3 @@ def run_slide_oracle(
         "choice_by_group": choice_by_group,
         "predictions": predictions,
     }
-
