@@ -1,0 +1,11 @@
+{
+  "baseline_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "files": {
+    "network/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "network/resnet38_cls.py": "af6388daa96ea85f562d9b7bb8fe113f1eb1be08c9be9a33306bc8a98d6ec7cb",
+    "network/resnet38d.py": "aeb8b5862ae4b76a0f579d90458d4b7abbc109b6d375ab9c768d6c374f1c6545",
+    "tool/infer_fun.py": "0d84fa70507199faaf10eaf55e838a7a4bc2a85ae44d6183436dc9d1e64cd520",
+    "tool/iouutils.py": "584e1fcbb6101a613ca689ec3ee0e8ad3395568f81f767e2485d168d259b4d31",
+    "train_sshr.py": "2b4f5f73f047995ad3d91fccfe74afc3437ff410e15364cbacf542b0a4d9eb86"
+  }
+}

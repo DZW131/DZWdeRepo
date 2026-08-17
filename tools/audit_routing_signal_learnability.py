@@ -46,6 +46,7 @@ from tools.routing_signal_audit.cache_validation import (
     recheck_exact_parity,
     sha256_file,
     validate_phase0_assets,
+    validate_frozen_source_hashes,
 )
 from tools.routing_signal_audit.metrics import (
     build_utility_targets,
@@ -230,6 +231,13 @@ def main() -> None:
         args.checkpoint,
         PHASE0_PARENT_COMMIT,
     )
+    frozen_source_audit = validate_frozen_source_hashes(
+        Path(__file__).resolve().parents[1]
+    )
+    if not frozen_source_audit["pass"]:
+        raise RuntimeError(
+            f"Frozen baseline source changed; STOP: {frozen_source_audit['mismatches']}"
+        )
     shutil.copyfile(
         phase0_dir / "tables" / "class_probe_fold_assignments.csv",
         tables_dir / "groupkfold_assignment.csv",
@@ -573,7 +581,7 @@ def main() -> None:
         ),
         "test_evaluated": False,
         "luad_evaluated": False,
-        "forbidden_source_diff": False,
+        "forbidden_source_diff": not frozen_source_audit["pass"],
         "thresholds": list(BCSS_THRESHOLDS),
         "metric": "tool.iouutils.scores",
         "tta": ["identity", "hflip", "vflip"],

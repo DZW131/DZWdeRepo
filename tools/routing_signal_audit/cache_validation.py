@@ -39,6 +39,28 @@ def _read_lines(path: Path) -> list[str]:
     return Path(path).read_text(encoding="utf-8").splitlines()
 
 
+def validate_frozen_source_hashes(repository_root: Path) -> dict:
+    manifest_path = Path(__file__).with_name("frozen_source_manifest.json")
+    manifest = _read_json(manifest_path)
+    if manifest.get("baseline_commit") != BASELINE_COMMIT:
+        raise RuntimeError("Frozen source manifest baseline identity mismatch")
+    actual = {
+        relative_path: sha256_file(Path(repository_root) / relative_path)
+        for relative_path in manifest["files"]
+    }
+    mismatches = {
+        path: {"actual": actual[path], "expected": expected}
+        for path, expected in manifest["files"].items()
+        if actual[path] != expected
+    }
+    return {
+        "pass": not mismatches,
+        "baseline_commit": manifest["baseline_commit"],
+        "checked_files": len(actual),
+        "mismatches": mismatches,
+    }
+
+
 def load_phase0_assignment(phase0_dir: Path) -> tuple[np.ndarray, list[dict], str]:
     assignment_path = (
         Path(phase0_dir) / "tables" / "class_probe_fold_assignments.csv"

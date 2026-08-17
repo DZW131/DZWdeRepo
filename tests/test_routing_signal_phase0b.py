@@ -30,7 +30,10 @@ from tools.routing_signal_audit import (
     ROUTING_THRESHOLD,
     SAFE_CANDIDATES,
 )
-from tools.routing_signal_audit.cache_validation import load_phase0_assignment
+from tools.routing_signal_audit.cache_validation import (
+    load_phase0_assignment,
+    validate_frozen_source_hashes,
+)
 from tools.routing_signal_audit.metrics import (
     candidate_utilities,
     frozen_primary_decision,
@@ -298,24 +301,26 @@ def test_41_routing_diagnostics_are_finite():
 
 
 def test_42_no_forbidden_baseline_source_diff():
-    result = subprocess.run(
-        [
-            "git",
-            "diff",
-            "--name-only",
-            PHASE0_PARENT_COMMIT,
-            "--",
-            "network",
-            "train_sshr.py",
-            "tool/infer_fun.py",
-            "tool/iouutils.py",
-        ],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        check=True,
-    )
-    assert result.stdout.strip() == ""
+    assert validate_frozen_source_hashes(ROOT)["pass"]
+    if (ROOT / ".git").exists():
+        result = subprocess.run(
+            [
+                "git",
+                "diff",
+                "--name-only",
+                PHASE0_PARENT_COMMIT,
+                "--",
+                "network",
+                "train_sshr.py",
+                "tool/infer_fun.py",
+                "tool/iouutils.py",
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        assert result.stdout.strip() == ""
 
 
 def test_43_no_formal_training_entrypoint_is_called():
