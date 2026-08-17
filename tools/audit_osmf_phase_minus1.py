@@ -193,6 +193,7 @@ def write_report(output_dir: Path, summary: dict):
         "- Dataset/split: BCSS validation only.",
         "- CAM56, CAM28_2, CAMdeep, official fusion, thresholds, TTA, and metric: unchanged.",
         "- Test evaluated: false. LUAD evaluated: false. Training performed: false.",
+        f"- Exact command: `{summary['exact_command']}`.",
         "",
         "## 3. Implementation",
         "",
@@ -264,6 +265,11 @@ def parse_args():
     parser.add_argument("--val-root", required=True, type=Path)
     parser.add_argument("--checkpoint", required=True, type=Path)
     parser.add_argument("--output-dir", required=True, type=Path)
+    parser.add_argument(
+        "--osmf-commit",
+        default=None,
+        help="Exact source commit for immutable archive executions without .git",
+    )
     parser.add_argument("--num-workers", default=4, type=int)
     parser.add_argument(
         "--amp-dtype", default="bf16", choices=("none", "bf16", "fp16")
@@ -334,11 +340,17 @@ def main():
 
     a0_parameters = sum(parameter.numel() for parameter in baseline.parameters())
     osmf_parameters = sum(parameter.numel() for parameter in osmf.parameters())
+    osmf_commit = args.osmf_commit or git_commit()
+    if len(osmf_commit) != 40 or any(
+        character not in "0123456789abcdef" for character in osmf_commit.lower()
+    ):
+        raise ValueError("--osmf-commit must be a full 40-character Git SHA")
     summary = {
         "scope": "OSMF-v1.0 Phase -1 implementation parity; BCSS validation only",
         "decision": "OSMF_PHASE_MINUS1_PASS" if parity_pass else "OSMF_PHASE_MINUS1_STOP",
         "frozen_a0_commit": FROZEN_A0_COMMIT,
-        "osmf_commit": git_commit(),
+        "osmf_commit": osmf_commit,
+        "exact_command": " ".join(sys.argv),
         "checkpoint": str(args.checkpoint),
         "checkpoint_sha256": checkpoint_sha,
         "tensor_parity": tensor_results,
