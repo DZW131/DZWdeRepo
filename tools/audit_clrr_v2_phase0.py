@@ -546,7 +546,7 @@ def run_phase0(model, validation_root, num_workers):
                 for name in CAM_NAMES:
                     averaged = torch.stack(tta_cams[mode][name]).mean(0)
                     normalized[mode][name] = normalize_cam(
-                        averaged.cpu().numpy()
+                        averaged.float().cpu().numpy()
                     )
                     predictions[mode][name] = label_map_from_cam(
                         normalized[mode][name], label, original_image
