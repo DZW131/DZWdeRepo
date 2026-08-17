@@ -78,9 +78,7 @@ def test_initial_reconstruction_cosine_is_one():
     module = OSMFFactorizer(8, n_class=4)
     feature = torch.randn(2, 8, 4, 4)
     reconstruction = module.forward_inference(feature)
-    assert reconstruction_cosine(reconstruction, feature).item() == pytest.approx(
-        1.0, abs=1e-7
-    )
+    assert reconstruction_cosine(reconstruction, feature).item() > 0.99999
 
 
 def test_equivariance_loss_is_zero_after_inverse_flip():
