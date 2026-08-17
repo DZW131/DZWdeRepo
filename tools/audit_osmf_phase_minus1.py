@@ -334,9 +334,15 @@ def main():
             a0_capture["prediction"] != osmf_capture["prediction"]
         )
     )
-    miou_diff = abs(a0_score["Mean IoU"] - osmf_score["Mean IoU"])
-    mdice_diff = abs(a0_score["Mean Dice"] - osmf_score["Mean Dice"])
-    parity_pass = differing_pixels == 0 and miou_diff < 1e-7 and mdice_diff < 1e-7
+    a0_miou = float(a0_score["Mean IoU"])
+    osmf_miou = float(osmf_score["Mean IoU"])
+    a0_mdice = float(a0_score["Mean Dice"])
+    osmf_mdice = float(osmf_score["Mean Dice"])
+    miou_diff = float(abs(a0_miou - osmf_miou))
+    mdice_diff = float(abs(a0_mdice - osmf_mdice))
+    parity_pass = bool(
+        differing_pixels == 0 and miou_diff < 1e-7 and mdice_diff < 1e-7
+    )
 
     a0_parameters = sum(parameter.numel() for parameter in baseline.parameters())
     osmf_parameters = sum(parameter.numel() for parameter in osmf.parameters())
@@ -358,11 +364,11 @@ def main():
             "pass": parity_pass,
             "images": int(a0_capture["prediction"].shape[0]),
             "differing_pixels": differing_pixels,
-            "a0_mIoU": a0_score["Mean IoU"],
-            "osmf_mIoU": osmf_score["Mean IoU"],
+            "a0_mIoU": a0_miou,
+            "osmf_mIoU": osmf_miou,
             "mIoU_absolute_difference": miou_diff,
-            "a0_mDice": a0_score["Mean Dice"],
-            "osmf_mDice": osmf_score["Mean Dice"],
+            "a0_mDice": a0_mdice,
+            "osmf_mDice": osmf_mdice,
             "mDice_absolute_difference": mdice_diff,
         },
         "missing_keys": missing,
