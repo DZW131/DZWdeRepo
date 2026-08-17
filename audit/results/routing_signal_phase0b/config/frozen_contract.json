@@ -1,0 +1,45 @@
+{
+  "baseline_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "bootstrap_replicates": 2000,
+  "checkpoint": "/home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth",
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "class_presence_thresholds": [
+    0.8,
+    0.9,
+    0.8,
+    0.6
+  ],
+  "exact_command": "python -u tools/audit_routing_signal_learnability.py \\\n  --phase0-dir /home/duyanhong/experiments/SSHR_DECISION_BOTTLENECK_PHASE0_f82eb0e \\\n  --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val \\\n  --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth \\\n  --output-dir /home/duyanhong/experiments/SSHR_ROUTING_SIGNAL_PHASE0B \\\n  --num-workers 4",
+  "fold_seed": 20260817,
+  "folds": 5,
+  "luad_evaluated": false,
+  "mlp": {
+    "candidate_batch_size": 256,
+    "epochs": 200,
+    "hidden_dim": 32,
+    "learning_rate": 0.001,
+    "seed": 20260817
+  },
+  "num_images": 3418,
+  "num_slides": 22,
+  "official_fusion": [
+    0.0,
+    0.6,
+    0.2,
+    0.2
+  ],
+  "phase0_dir": "/home/duyanhong/experiments/SSHR_DECISION_BOTTLENECK_PHASE0_f82eb0e",
+  "phase0b_commit": "76ffbf4d61f77dd6ef04946c0ffa16643b9acd86",
+  "phase0b_parent_commit": "f1a95059cd7914e9d6b72e08ec135c4c8ea32c06",
+  "ridge_alpha": 1.0,
+  "safe_routing_threshold": 0.0,
+  "scope": "Frozen-model BCSS validation-only Phase-0B routing-signal learnability audit",
+  "sshr_training_performed": false,
+  "test_evaluated": false,
+  "tta": [
+    "identity",
+    "hflip",
+    "vflip"
+  ],
+  "validation_root": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/val"
+}

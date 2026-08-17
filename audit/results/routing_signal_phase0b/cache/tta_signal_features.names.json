@@ -1,0 +1,9 @@
+[
+  "tta_jsd_mean",
+  "tta_jsd_max",
+  "tta_l1_mean",
+  "tta_l1_max",
+  "tta_three_view_argmax_consistency",
+  "tta_probability_variance_mean",
+  "tta_probability_variance_p90"
+]
