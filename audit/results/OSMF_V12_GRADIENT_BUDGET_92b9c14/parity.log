@@ -1,0 +1,68 @@
+{
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "decision": "OSMF_V12_PARITY_PASS",
+  "environment": {
+    "cuda_runtime": "12.8",
+    "cudnn": 91900,
+    "elapsed_seconds": 107.02091737498995,
+    "gpu": "NVIDIA GeForce RTX 5090 D v2",
+    "peak_memory_allocated_bytes": 2320297472,
+    "python": "3.10.20",
+    "pytorch": "2.11.0+cu128"
+  },
+  "exact_command": "tools/audit_osmf_v12_parity.py --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --output-dir /home/duyanhong/experiments/OSMF_V12_GRADIENT_BUDGET_92b9c14/parity --osmf-v12-commit 92b9c142a18a7c0d8bbc6406f3ff336b1ef7e7c4 --num-workers 4",
+  "frozen_a0_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "luad_evaluated": false,
+  "missing_keys": [
+    "osmf_28_1.p_morph.weight",
+    "osmf_28_1.p_sem.weight",
+    "osmf_28_1.u_morph.weight",
+    "osmf_28_1.u_sem.weight"
+  ],
+  "osmf_v12_commit": "92b9c142a18a7c0d8bbc6406f3ff336b1ef7e7c4",
+  "parameters": {
+    "a0_total": 112709714,
+    "delta": 524288,
+    "new_trainable_tensors": 4,
+    "overhead_percent": 0.4651666492561591,
+    "v12_total": 113234002
+  },
+  "phase0_started": false,
+  "prediction_parity": {
+    "a0_mDice": 0.8026783768476796,
+    "a0_mIoU": 0.673277470466486,
+    "differing_pixels": 0,
+    "images": 3418,
+    "mDice_absolute_difference": 0.0,
+    "mIoU_absolute_difference": 0.0,
+    "v12_mDice": 0.8026783768476796,
+    "v12_mIoU": 0.673277470466486
+  },
+  "readiness_started": false,
+  "tensor_parity": {
+    "random_input": {
+      "baseline_vs_osmf_hfrm_max_abs": 0.0,
+      "baseline_vs_osmf_reconstruction_max_abs": 0.0,
+      "cam28_1_max_abs": 0.0,
+      "cam28_2_max_abs": 0.0,
+      "cam56_max_abs": 0.0,
+      "camdeep_max_abs": 0.0,
+      "classification_probability_max_abs": 0.0,
+      "osmf_input_vs_reconstruction_max_abs": 0.0
+    },
+    "real_validation_input": {
+      "baseline_vs_osmf_hfrm_max_abs": 0.0,
+      "baseline_vs_osmf_reconstruction_max_abs": 0.0,
+      "cam28_1_max_abs": 0.0,
+      "cam28_2_max_abs": 0.0,
+      "cam56_max_abs": 0.0,
+      "camdeep_max_abs": 0.0,
+      "classification_probability_max_abs": 0.0,
+      "osmf_input_vs_reconstruction_max_abs": 0.0
+    }
+  },
+  "test_evaluated": false,
+  "training_performed": false,
+  "unexpected_keys": [],
+  "validation_metrics_used_for_selection": false
+}

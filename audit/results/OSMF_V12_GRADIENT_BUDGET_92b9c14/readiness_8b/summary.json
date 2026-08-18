@@ -1,0 +1,188 @@
+{
+  "audit_commit": "92b9c142a18a7c0d8bbc6406f3ff336b1ef7e7c4",
+  "audit_steps_completed": [
+    0,
+    1,
+    2,
+    4,
+    8
+  ],
+  "authorized_batches": 8,
+  "baseline_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "checkpoint_saved": false,
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "cost": {
+    "elapsed_seconds": 3.604082298988942,
+    "equivariance_samples": 1,
+    "mean_equivariance_seconds": 0.1969865540158935,
+    "mean_iteration_seconds": 0.13720396150893066,
+    "mean_non_equivariance_seconds": 0.11727643067327638,
+    "non_equivariance_samples": 3,
+    "peak_memory_allocated_bytes": 6591479808
+  },
+  "decision": "OSMF_V12_READINESS_PASS",
+  "decision_reasons": [],
+  "environment": {
+    "cuda_runtime": "12.8",
+    "cudnn": 91900,
+    "gpu": "NVIDIA GeForce RTX 5090 D v2",
+    "python": "3.10.20",
+    "pytorch": "2.11.0+cu128"
+  },
+  "exact_command": "tools/audit_osmf_v12_gradient_gate.py --gate readiness --train-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/training --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --parity-summary /home/duyanhong/experiments/OSMF_V12_GRADIENT_BUDGET_92b9c14/parity/summary.json --output-dir /home/duyanhong/experiments/OSMF_V12_GRADIENT_BUDGET_92b9c14/readiness_8b --audit-commit 92b9c142a18a7c0d8bbc6406f3ff336b1ef7e7c4 --num-workers 4",
+  "finite": true,
+  "flags": [],
+  "formal_training_performed": false,
+  "fresh_run_not_continuation": true,
+  "gate": "readiness",
+  "gradient_budget": {
+    "eq": {
+      "max": 0.13127036521945218,
+      "mean": 0.09211157299433999,
+      "p95": 0.12405394173815222,
+      "values": [
+        0.08316087534411923,
+        0.0725833107569601,
+        0.08143174065682847,
+        0.13127036521945218
+      ]
+    },
+    "orth": {
+      "max": 0.07186948336691784,
+      "mean": 0.0563163895461851,
+      "p95": 0.0693299340932688,
+      "values": [
+        0.05321303733182597,
+        0.05493915487592431,
+        0.04524388261007229,
+        0.07186948336691784
+      ]
+    },
+    "rec": {
+      "max": 0.008631703798328482,
+      "mean": 0.0030769884500558347,
+      "p95": 0.007628461008544646,
+      "values": [
+        2.1186459905988243e-08,
+        0.00173281028233203,
+        0.0019434185331029218,
+        0.008631703798328482
+      ]
+    },
+    "sem_pres": {
+      "max": 0.2192070602472361,
+      "mean": 0.13613775947832635,
+      "p95": 0.20478355507850096,
+      "values": [
+        0.2192070602472361,
+        0.09779347629553162,
+        0.10450014224820228,
+        0.12305035912233543
+      ]
+    }
+  },
+  "hard_stop_reason": null,
+  "ic1_aux_gradient_free": true,
+  "ic1_base_gradient_active": true,
+  "luad_evaluated": false,
+  "mechanism": {
+    "cross_covariance_end": 0.010872910730540752,
+    "cross_covariance_healthy": true,
+    "cross_covariance_start": 0.015844818204641342,
+    "eq_error_morphology_end": 0.10827571153640747,
+    "eq_error_morphology_start": 0.06257335841655731,
+    "eq_responsive": true,
+    "morphology_eq_gradient_active": true,
+    "reconstruction_cosine_end": 0.9996923804283142,
+    "semantic_morphology_rms_ratio_end": 1.5311769239545843,
+    "sshr_loss_stable": true
+  },
+  "next_gate_authorized": "phase0_128b",
+  "optimizer": {
+    "class": "PolyOptimizer",
+    "lr_power": 0.9,
+    "max_step": 29275,
+    "momentum": 0.0005,
+    "parameter_groups": [
+      {
+        "lr": 0.01,
+        "momentum": 0.0005,
+        "parameter_tensors": 82,
+        "weight_decay": 0.0005
+      },
+      {
+        "lr": 0.02,
+        "momentum": 0.0005,
+        "parameter_tensors": 39,
+        "weight_decay": 0.0
+      },
+      {
+        "lr": 0.1,
+        "momentum": 0.0005,
+        "parameter_tensors": 23,
+        "weight_decay": 0.0005
+      },
+      {
+        "lr": 0.2,
+        "momentum": 0.0005,
+        "parameter_tensors": 3,
+        "weight_decay": 0.0
+      }
+    ]
+  },
+  "parameter_health": {
+    "p_morph.weight": {
+      "end_relative_update": 0.0010290704667568207,
+      "end_update_norm": 0.01646512746810913,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.05950283259153366,
+      "measurable_update": true
+    },
+    "p_sem.weight": {
+      "end_relative_update": 0.0014879415975883603,
+      "end_update_norm": 0.023807065561413765,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.07628065999597311,
+      "measurable_update": true
+    },
+    "u_morph.weight": {
+      "end_relative_update": 0.0010663381544873118,
+      "end_update_norm": 0.01706141047179699,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.05069372057914734,
+      "measurable_update": true
+    },
+    "u_sem.weight": {
+      "end_relative_update": 0.0014770436100661755,
+      "end_update_norm": 0.023632697761058807,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.08316850755363703,
+      "measurable_update": true
+    }
+  },
+  "parity_summary_sha256": "e2585306d7f43be4842ea39168ff2e5c7f2d64cf86e6332c1e11d8eccfef0dcf",
+  "phase1_started": false,
+  "processed_batches": 8,
+  "readiness_summary_sha256": null,
+  "segmentation_gt_used": false,
+  "semantic": {
+    "agreement_end": 0.948259711265564,
+    "agreement_start": 0.8567123413085938,
+    "ratio_max": 0.2192070602472361,
+    "ratio_mean": 0.13613775947832635,
+    "ratio_min": 0.09779347629553162,
+    "response_non_degenerate": true,
+    "response_ratio_end": 0.8133319306740904,
+    "response_ratio_start": 0.8215406911108056,
+    "semantic_parameters_active": true,
+    "v10_ratio_max": 4.106567,
+    "v10_ratio_min": 2.480527
+  },
+  "start_state": {
+    "finite": true,
+    "max_identity_error": 0.0,
+    "reconstruction_cosine": 1.0
+  },
+  "test_evaluated": false,
+  "validation_evaluated": false
+}
