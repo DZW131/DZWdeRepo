@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from typing import Dict, Iterable, Mapping, Sequence, Tuple
 
 import torch
@@ -16,14 +17,16 @@ def gradient_decomposition(
     representation: torch.Tensor,
     parameters: Sequence[torch.nn.Parameter],
     weights: Mapping[str, float],
+    objective_names: Sequence[str] = ("sem", "eq", "orth", "rec"),
     eps: float = 1e-12,
 ) -> Tuple[list[dict], list[dict]]:
     """Measure independent objective gradients without populating ``.grad``."""
 
     gradients_h: Dict[str, torch.Tensor] = {}
     parameter_norms: Dict[str, float] = {}
+    parameter_finite: Dict[str, bool] = {}
     targets = (representation, *parameters)
-    for name in ("base", "sem", "eq", "orth", "rec"):
+    for name in ("base", *objective_names):
         gradients = torch.autograd.grad(
             losses[name],
             targets,
@@ -35,16 +38,24 @@ def gradient_decomposition(
             grad_h = _zero_like(representation)
         gradients_h[name] = grad_h.detach().float()
         squared = torch.zeros((), device=representation.device, dtype=torch.float64)
+        all_parameter_gradients_finite = True
         for gradient in gradients[1:]:
             if gradient is not None:
+                all_parameter_gradients_finite = (
+                    all_parameter_gradients_finite
+                    and bool(torch.isfinite(gradient).all())
+                )
                 squared = squared + gradient.detach().double().square().sum()
         parameter_norms[name] = float(squared.sqrt().cpu())
+        parameter_finite[name] = all_parameter_gradients_finite and math.isfinite(
+            parameter_norms[name]
+        )
 
     base = gradients_h["base"].reshape(-1)
     base_norm = float(torch.linalg.vector_norm(base).cpu())
     ratio_rows = []
     cosine_rows = []
-    for name in ("sem", "eq", "orth", "rec"):
+    for name in objective_names:
         gradient = gradients_h[name].reshape(-1)
         norm = float(torch.linalg.vector_norm(gradient).cpu())
         weight = float(weights[name])
@@ -69,6 +80,8 @@ def gradient_decomposition(
                 "finite": bool(
                     torch.isfinite(gradients_h[name]).all()
                     and torch.isfinite(gradients_h["base"]).all()
+                    and parameter_finite[name]
+                    and parameter_finite["base"]
                 ),
             }
         )
