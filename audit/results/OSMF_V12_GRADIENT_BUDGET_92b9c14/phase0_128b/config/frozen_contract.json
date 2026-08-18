@@ -1,0 +1,92 @@
+{
+  "audit_commit": "92b9c142a18a7c0d8bbc6406f3ff336b1ef7e7c4",
+  "audit_steps": [
+    0,
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    96,
+    128
+  ],
+  "authorized_batches": 128,
+  "baseline_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "batch_size": 20,
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "dataset_size": 23422,
+  "equivariance_interval": 4,
+  "exact_command": "tools/audit_osmf_v12_gradient_gate.py --gate phase0 --train-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/training --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --parity-summary /home/duyanhong/experiments/OSMF_V12_GRADIENT_BUDGET_92b9c14/parity/summary.json --readiness-summary /home/duyanhong/experiments/OSMF_V12_GRADIENT_BUDGET_92b9c14/readiness_8b/summary.json --output-dir /home/duyanhong/experiments/OSMF_V12_GRADIENT_BUDGET_92b9c14/phase0_128b --audit-commit 92b9c142a18a7c0d8bbc6406f3ff336b1ef7e7c4 --num-workers 4",
+  "gate": "phase0",
+  "image_size": 224,
+  "luad_evaluated": false,
+  "missing_keys": [
+    "osmf_28_1.p_morph.weight",
+    "osmf_28_1.p_sem.weight",
+    "osmf_28_1.u_morph.weight",
+    "osmf_28_1.u_sem.weight"
+  ],
+  "objective_weights": {
+    "eq": 0.05,
+    "orth": 0.05,
+    "rec": 0.1,
+    "sem_pres": 0.05
+  },
+  "optimizer": {
+    "class": "PolyOptimizer",
+    "lr_power": 0.9,
+    "max_step": 29275,
+    "momentum": 0.0005,
+    "parameter_groups": [
+      {
+        "lr": 0.01,
+        "momentum": 0.0005,
+        "parameter_tensors": 82,
+        "weight_decay": 0.0005
+      },
+      {
+        "lr": 0.02,
+        "momentum": 0.0005,
+        "parameter_tensors": 39,
+        "weight_decay": 0.0
+      },
+      {
+        "lr": 0.1,
+        "momentum": 0.0005,
+        "parameter_tensors": 23,
+        "weight_decay": 0.0005
+      },
+      {
+        "lr": 0.2,
+        "momentum": 0.0005,
+        "parameter_tensors": 3,
+        "weight_decay": 0.0
+      }
+    ]
+  },
+  "parity_summary_sha256": "e2585306d7f43be4842ea39168ff2e5c7f2d64cf86e6332c1e11d8eccfef0dcf",
+  "precision": "bf16",
+  "readiness_summary_sha256": "892d42e48eaffed3a7fbeaeb02e818430b504b2d49cc9650598cd7eb1ec70592",
+  "seed": 20260817,
+  "segmentation_gt_used": false,
+  "source_sha256": {
+    "docs/specs/osmf_v12_gradient_budget_preregistered_contract.md": "f7e16fc22652980ba7c82b014d55f769caa2a86f5f7752e6a098bf50a2f17d72",
+    "network/osmf.py": "96ebcaed75c0e2fb616d72b2b92135906f88b9d7fe952ff83f79095a426c69bc",
+    "network/osmf_v12.py": "365908c7f5853f3374331b06449aefd131f67c901511de584abcf2170b353f08",
+    "network/resnet38_cls.py": "af6388daa96ea85f562d9b7bb8fe113f1eb1be08c9be9a33306bc8a98d6ec7cb",
+    "network/resnet38_cls_osmf_v12.py": "6eb74d592db2f612e2fdcd0e7dd8ffdeb0e03c616ea7939b2de002326d020c8b",
+    "tool/GenDataset.py": "073c9b4ffe10aab71bd8fbcb63e0703579c587d8e60cef7518e9d1c9a6dde969",
+    "tool/torchutils.py": "cf2548d3728932766564e00d651be53d87c0b4971f1870d7bdc3638eacb69dfa",
+    "tools/audit_osmf_v12_gradient_gate.py": "e7cd1e5a04c28f05fbc7fa82ec0b251a3be6244f40ada8279d96c7c05006dd48",
+    "tools/osmf_v12_audit/__init__.py": "7c40a58726c2b3c94ae8f14813c686c6951dc76a87ec9cbe552612cabe589f3f",
+    "tools/osmf_v12_audit/decision.py": "72e9fff57553c1dfbf995c2ce42012b24ac1984c9f8a7771ac0cca49343e921b",
+    "tools/osmf_v12_audit/report.py": "92d9145d48d112b799d8f1b9f4b0f3004cd452d5f1ea6868d590324c4274554f",
+    "train_osmf_v12.py": "91bfd227ce449362d67921140ad26644e908fa03a4651ce6f1f4f400df09ba9f",
+    "train_sshr.py": "2b4f5f73f047995ad3d91fccfe74afc3437ff410e15364cbacf542b0a4d9eb86"
+  },
+  "test_evaluated": false,
+  "unexpected_keys": [],
+  "validation_evaluated": false
+}

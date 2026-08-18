@@ -1,0 +1,7 @@
+{
+  "cuda_runtime": "12.8",
+  "cudnn": 91900,
+  "gpu": "NVIDIA GeForce RTX 5090 D v2",
+  "python": "3.10.20",
+  "pytorch": "2.11.0+cu128"
+}
