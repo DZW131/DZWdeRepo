@@ -1,0 +1,17 @@
+parameter,grad_norm,nonzero_grad_fraction,finite,step
+p_sem.weight,0.12508104741573334,1.0,True,1
+p_morph.weight,0.035933591425418854,1.0,True,1
+u_sem.weight,0.12144459784030914,1.0,True,1
+u_morph.weight,0.040237199515104294,1.0,True,1
+p_sem.weight,0.06476250290870667,1.0,True,2
+p_morph.weight,0.037274330854415894,1.0,True,2
+u_sem.weight,0.07406353205442429,1.0,True,2
+u_morph.weight,0.03947330638766289,1.0,True,2
+p_sem.weight,0.07810458540916443,1.0,True,4
+p_morph.weight,0.05753593519330025,1.0,True,4
+u_sem.weight,0.08417961001396179,1.0,True,4
+u_morph.weight,0.03807955980300903,1.0,True,4
+p_sem.weight,0.14124813675880432,1.0,True,8
+p_morph.weight,0.12845957279205322,1.0,True,8
+u_sem.weight,0.1518608033657074,1.0,True,8
+u_morph.weight,0.08945298939943314,1.0,True,8
