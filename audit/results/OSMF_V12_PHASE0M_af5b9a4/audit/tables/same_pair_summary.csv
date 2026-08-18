@@ -1,0 +1,2 @@
+num_eq_steps,num_improved,num_harmed,num_neutral,improved_fraction,harmed_fraction,neutral_fraction,mean_delta,median_delta,p25_delta,p75_delta,min_delta,max_delta
+32,16,16,0,0.5,0.5,0.0,4.600873216986656e-05,5.252659320831299e-07,-0.0020048003643751144,0.0016775038093328476,-0.018139690160751343,0.021510545164346695
