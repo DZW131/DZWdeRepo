@@ -1,0 +1,5 @@
+taxonomy,n_regions,wrong_pixels,wrong_pixel_fraction
+A_correct_pure,3795,4285024,0.10716903561013279
+B_misclassified_pure,2044,7462392,0.1866354433451878
+C_false_positive_pure,424,2718372,0.06798685507236082
+D_mixed_boundary,2290,25518000,0.6382086659723186
