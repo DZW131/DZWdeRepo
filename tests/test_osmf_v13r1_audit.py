@@ -76,6 +76,21 @@ def test_r1_phase0s_go_uses_corrected_graph_gate():
     assert reasons == []
 
 
+def test_r1_phase0s_nogo_when_fixed_morphology_affinity_worsens():
+    decision, reasons, *_ = phase0s_decision(
+        finite=True, ratio_rows=_ratios(), representation_rows=_representations(),
+        parameter_summary=_parameters(), morphology_graph_expected=True,
+        semantic_path_active=True, causal_rows=[{"delta": -0.01}] * 4,
+        fixed_rows=[
+            {"affinity_eq_error_morphology": 0.010, "affinity_eq_error_semantic": 0.010},
+            {"affinity_eq_error_morphology": 0.011, "affinity_eq_error_semantic": 0.009},
+        ],
+        sshr_loss_stable=True, cross_covariance_healthy=True,
+    )
+    assert decision == "OSMF_V13R1_PHASE0S_NOGO"
+    assert "FIXED_MORPHOLOGY_AFFINITY_NOT_IMPROVED" in reasons
+
+
 def test_r1_tools_do_not_expose_training_extension_or_test_data():
     for name in (
         "tools/audit_osmf_v13r1_graph_parity.py",

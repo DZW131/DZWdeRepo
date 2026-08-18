@@ -62,8 +62,11 @@ def phase0s_decision(*, finite, ratio_rows, representation_rows,
         nogo.append("CROSS_COVARIANCE_DESTABILIZED")
     if causal["improved_fraction"] < 0.50 or causal["mean_delta"] >= 0:
         nogo.append("SAME_PAIR_STRUCTURAL_CAUSAL_INVALID")
-    if m_end - m_start > 0.005:
-        nogo.append("FIXED_MORPHOLOGY_AFFINITY_CLEARLY_WORSENED")
+    # R1 explicitly requires AffinityEqErr_M(end) < AffinityEqErr_M(start).
+    # Failure to improve is therefore a primary NOGO rather than a tunable
+    # absolute tolerance inherited from the superseded Phase-0M audit.
+    if m_end >= m_start:
+        nogo.append("FIXED_MORPHOLOGY_AFFINITY_NOT_IMPROVED")
     budget_ok = all(
         stats[name]["mean"] <= 0.20 and stats[name]["p95"] <= 0.30
         for name in ("sem_pres", "struct")

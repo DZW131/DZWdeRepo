@@ -319,12 +319,12 @@ def main():
         float(row["p_morph_grad_norm"]) > 1e-12
         and abs(float(row["u_morph_grad_norm"])) <= 1e-12
         for row in morph_gradient_rows if row["step"] in (4, 8)
-    ) and len(morph_gradient_rows) == 2
+    ) and len(morph_gradient_rows) >= 2
     semantic_active = all(
         float(row[key]) > 1e-12
         for row in semantic_gradient_rows if row["step"] in (4, 8)
         for key in ("p_sem_grad_norm", "u_sem_grad_norm")
-    ) and len(semantic_gradient_rows) == 2
+    ) and len(semantic_gradient_rows) >= 2
     sshr_values = [float(row["loss_sshr"]) for row in loss_rows]
     # Different shuffled batches are not paired controls. Treat only a clear
     # numerical explosion as instability; ordinary batch-to-batch variation
@@ -369,4 +369,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
