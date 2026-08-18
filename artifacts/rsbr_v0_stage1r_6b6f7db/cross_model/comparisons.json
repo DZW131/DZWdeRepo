@@ -1,0 +1,26 @@
+[
+  {
+    "comparison": "A0-1 vs RSBR-1",
+    "differing_pixel_fraction": 0.00034099979773945856,
+    "differing_pixels": 58482,
+    "mdice_diff_pp": 0.0005256037344247844,
+    "miou_diff_pp": 0.0008962309683169245,
+    "per_class_iou_max_abs_diff_pp": 0.005142383729217492
+  },
+  {
+    "comparison": "A0-2 vs RSBR-2",
+    "differing_pixel_fraction": 0.00033697651090863496,
+    "differing_pixels": 57792,
+    "mdice_diff_pp": 0.008904190103597998,
+    "miou_diff_pp": 0.011940684959466097,
+    "per_class_iou_max_abs_diff_pp": 0.02828068382003668
+  },
+  {
+    "comparison": "A0-3 vs RSBR-3",
+    "differing_pixel_fraction": 0.00022973550889050765,
+    "differing_pixels": 39400,
+    "mdice_diff_pp": 0.0033768034599535035,
+    "miou_diff_pp": 0.004958444712443999,
+    "per_class_iou_max_abs_diff_pp": 0.00977856276966893
+  }
+]

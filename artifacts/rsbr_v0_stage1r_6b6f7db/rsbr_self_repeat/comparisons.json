@@ -1,0 +1,26 @@
+[
+  {
+    "comparison": "RSBR-1 vs RSBR-2",
+    "differing_pixel_fraction": 0.0004876107021948627,
+    "differing_pixels": 83626,
+    "mdice_diff_pp": 0.009429793838022782,
+    "miou_diff_pp": 0.012836915927783021,
+    "per_class_iou_max_abs_diff_pp": 0.027419293268715617
+  },
+  {
+    "comparison": "RSBR-1 vs RSBR-3",
+    "differing_pixel_fraction": 0.0004777623957350641,
+    "differing_pixels": 81937,
+    "mdice_diff_pp": 0.009785375481807801,
+    "miou_diff_pp": 0.01329944088913626,
+    "per_class_iou_max_abs_diff_pp": 0.028285273676786904
+  },
+  {
+    "comparison": "RSBR-2 vs RSBR-3",
+    "differing_pixel_fraction": 0.00016416759524904168,
+    "differing_pixels": 28155,
+    "mdice_diff_pp": 0.000355581643785019,
+    "miou_diff_pp": 0.00046252496135323895,
+    "per_class_iou_max_abs_diff_pp": 0.0009674396486136772
+  }
+]

@@ -1,0 +1,1182 @@
+{
+  "a0_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "a0_self_envelope": {
+    "mdice_pp": 0.005882968287429513,
+    "miou_pp": 0.007444765208375337,
+    "per_class_iou_pp": 0.027389359881901942,
+    "pixels": 36795
+  },
+  "checkpoint": "/home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth",
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "command": "tools/audit_rsbr_v0_stage1r.py --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --output-dir /home/duyanhong/experiments/RSBR_V0_STAGE1R_PARITY_6b6f7db --rsbr-commit 98e15df9ba702f0b9f43efc1942287abe02b49c8 --num-workers 4",
+  "cross_model_envelope": {
+    "mdice_pp": 0.008904190103597998,
+    "miou_pp": 0.011940684959466097,
+    "per_class_iou_pp": 0.02828068382003668,
+    "pixels": 58482
+  },
+  "decision": "RSBR_V0_PARITY_HARNESS_NONDETERMINISM_CONFIRMED",
+  "decision_rule": {
+    "a0_self_exact": false,
+    "miou_allowance_pp": 0.01379944088913626,
+    "miou_pass": true,
+    "pixel_allowance": 87808,
+    "pixel_pass": true
+  },
+  "diagnostic_modes": {
+    "deterministic": {
+      "a0_repeat": {
+        "comparison": "deterministic: A0 repeat",
+        "differing_pixel_fraction": 0.0,
+        "differing_pixels": 0,
+        "mdice_diff_pp": 0.0,
+        "miou_diff_pp": 0.0,
+        "per_class_iou_max_abs_diff_pp": 0.0
+      },
+      "cross": {
+        "comparison": "deterministic: A0 vs RSBR",
+        "differing_pixel_fraction": 0.0,
+        "differing_pixels": 0,
+        "mdice_diff_pp": 0.0,
+        "miou_diff_pp": 0.0,
+        "per_class_iou_max_abs_diff_pp": 0.0
+      },
+      "maximum_differing_pixels": 0,
+      "maximum_miou_diff_pp": 0.0,
+      "rsbr_repeat": {
+        "comparison": "deterministic: RSBR repeat",
+        "differing_pixel_fraction": 0.0,
+        "differing_pixels": 0,
+        "mdice_diff_pp": 0.0,
+        "miou_diff_pp": 0.0,
+        "per_class_iou_max_abs_diff_pp": 0.0
+      }
+    },
+    "fp32": {
+      "a0_repeat": {
+        "comparison": "fp32: A0 repeat",
+        "differing_pixel_fraction": 0.0,
+        "differing_pixels": 0,
+        "mdice_diff_pp": 0.0,
+        "miou_diff_pp": 0.0,
+        "per_class_iou_max_abs_diff_pp": 0.0
+      },
+      "cross": {
+        "comparison": "fp32: A0 vs RSBR",
+        "differing_pixel_fraction": 0.0,
+        "differing_pixels": 0,
+        "mdice_diff_pp": 0.0,
+        "miou_diff_pp": 0.0,
+        "per_class_iou_max_abs_diff_pp": 0.0
+      },
+      "maximum_differing_pixels": 18,
+      "maximum_miou_diff_pp": 8.454666378110431e-06,
+      "rsbr_repeat": {
+        "comparison": "fp32: RSBR repeat",
+        "differing_pixel_fraction": 1.1210538903061225e-05,
+        "differing_pixels": 18,
+        "mdice_diff_pp": 6.614855496689387e-06,
+        "miou_diff_pp": 8.454666378110431e-06,
+        "per_class_iou_max_abs_diff_pp": 0.00014206745078126914
+      }
+    },
+    "production": {
+      "a0_repeat": {
+        "comparison": "production: A0 repeat",
+        "differing_pixel_fraction": 0.0002242107780612245,
+        "differing_pixels": 360,
+        "mdice_diff_pp": 0.003214903947190706,
+        "miou_diff_pp": 0.005268782483502932,
+        "per_class_iou_max_abs_diff_pp": 0.007545644473616608
+      },
+      "cross": {
+        "comparison": "production: A0 vs RSBR",
+        "differing_pixel_fraction": 0.00017563177614795918,
+        "differing_pixels": 282,
+        "mdice_diff_pp": 0.0013057319698916992,
+        "miou_diff_pp": 0.002154214242111596,
+        "per_class_iou_max_abs_diff_pp": 0.004030675702360043
+      },
+      "maximum_differing_pixels": 480,
+      "maximum_miou_diff_pp": 0.005268782483502932,
+      "rsbr_repeat": {
+        "comparison": "production: RSBR repeat",
+        "differing_pixel_fraction": 0.00029894770408163266,
+        "differing_pixels": 480,
+        "mdice_diff_pp": 0.0005518832128958984,
+        "miou_diff_pp": 0.0008720448611887477,
+        "per_class_iou_max_abs_diff_pp": 0.011845547639710574
+      }
+    },
+    "tf32_off": {
+      "a0_repeat": {
+        "comparison": "tf32_off: A0 repeat",
+        "differing_pixel_fraction": 0.00019618443080357144,
+        "differing_pixels": 315,
+        "mdice_diff_pp": 0.0011494924516353144,
+        "miou_diff_pp": 0.0018406437439666412,
+        "per_class_iou_max_abs_diff_pp": 0.004299399239815482
+      },
+      "cross": {
+        "comparison": "tf32_off: A0 vs RSBR",
+        "differing_pixel_fraction": 0.0001936931999362245,
+        "differing_pixels": 311,
+        "mdice_diff_pp": 0.00043430198778393603,
+        "miou_diff_pp": 0.0007854812250518428,
+        "per_class_iou_max_abs_diff_pp": 0.006047658527108535
+      },
+      "maximum_differing_pixels": 333,
+      "maximum_miou_diff_pp": 0.002381771890114237,
+      "rsbr_repeat": {
+        "comparison": "tf32_off: RSBR repeat",
+        "differing_pixel_fraction": 0.00020739496970663266,
+        "differing_pixels": 333,
+        "mdice_diff_pp": 0.0013920204671058478,
+        "miou_diff_pp": 0.002381771890114237,
+        "per_class_iou_max_abs_diff_pp": 0.010109185352691341
+      }
+    }
+  },
+  "environment": {
+    "autocast_dtype": "bf16",
+    "cuda_runtime": "12.8",
+    "cudnn": 91900,
+    "cudnn_benchmark": true,
+    "cudnn_deterministic": false,
+    "deterministic_algorithms": false,
+    "gpu": "NVIDIA GeForce RTX 5090 D v2",
+    "mode": "production",
+    "python": "3.10.20",
+    "pytorch": "2.11.0+cu128",
+    "tf32_convolution": "tf32",
+    "tf32_matmul": "tf32"
+  },
+  "executive_comparisons": [
+    {
+      "comparison": "A0-1 vs A0-2",
+      "differing_pixel_fraction": 0.0,
+      "differing_pixels": 0,
+      "mdice_diff_pp": 0.0,
+      "miou_diff_pp": 0.0,
+      "per_class_iou_max_abs_diff_pp": 0.0
+    },
+    {
+      "comparison": "A0-1 vs A0-3",
+      "differing_pixel_fraction": 0.00021454614339152863,
+      "differing_pixels": 36795,
+      "mdice_diff_pp": 0.005882968287429513,
+      "miou_diff_pp": 0.007444765208375337,
+      "per_class_iou_max_abs_diff_pp": 0.027389359881901942
+    },
+    {
+      "comparison": "A0-2 vs A0-3",
+      "differing_pixel_fraction": 0.00021454614339152863,
+      "differing_pixels": 36795,
+      "mdice_diff_pp": 0.005882968287429513,
+      "miou_diff_pp": 0.007444765208375337,
+      "per_class_iou_max_abs_diff_pp": 0.027389359881901942
+    },
+    {
+      "comparison": "RSBR-1 vs RSBR-2",
+      "differing_pixel_fraction": 0.0004876107021948627,
+      "differing_pixels": 83626,
+      "mdice_diff_pp": 0.009429793838022782,
+      "miou_diff_pp": 0.012836915927783021,
+      "per_class_iou_max_abs_diff_pp": 0.027419293268715617
+    },
+    {
+      "comparison": "RSBR-1 vs RSBR-3",
+      "differing_pixel_fraction": 0.0004777623957350641,
+      "differing_pixels": 81937,
+      "mdice_diff_pp": 0.009785375481807801,
+      "miou_diff_pp": 0.01329944088913626,
+      "per_class_iou_max_abs_diff_pp": 0.028285273676786904
+    },
+    {
+      "comparison": "RSBR-2 vs RSBR-3",
+      "differing_pixel_fraction": 0.00016416759524904168,
+      "differing_pixels": 28155,
+      "mdice_diff_pp": 0.000355581643785019,
+      "miou_diff_pp": 0.00046252496135323895,
+      "per_class_iou_max_abs_diff_pp": 0.0009674396486136772
+    },
+    {
+      "comparison": "A0-1 vs RSBR-1",
+      "differing_pixel_fraction": 0.00034099979773945856,
+      "differing_pixels": 58482,
+      "mdice_diff_pp": 0.0005256037344247844,
+      "miou_diff_pp": 0.0008962309683169245,
+      "per_class_iou_max_abs_diff_pp": 0.005142383729217492
+    },
+    {
+      "comparison": "A0-2 vs RSBR-2",
+      "differing_pixel_fraction": 0.00033697651090863496,
+      "differing_pixels": 57792,
+      "mdice_diff_pp": 0.008904190103597998,
+      "miou_diff_pp": 0.011940684959466097,
+      "per_class_iou_max_abs_diff_pp": 0.02828068382003668
+    },
+    {
+      "comparison": "A0-3 vs RSBR-3",
+      "differing_pixel_fraction": 0.00022973550889050765,
+      "differing_pixels": 39400,
+      "mdice_diff_pp": 0.0033768034599535035,
+      "miou_diff_pp": 0.004958444712443999,
+      "per_class_iou_max_abs_diff_pp": 0.00977856276966893
+    }
+  ],
+  "full_run_results": {
+    "a0": [
+      {
+        "command": "/home/duyanhong/DZWdeRepo-rsbr-stage1r/tools/audit_rsbr_v0_stage1r.py --worker --model a0 --scope full --mode production --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --output-dir /home/duyanhong/experiments/RSBR_V0_STAGE1R_PARITY_6b6f7db --worker-output /home/duyanhong/experiments/RSBR_V0_STAGE1R_PARITY_6b6f7db/a0_self_repeat/run_1 --rsbr-commit 98e15df9ba702f0b9f43efc1942287abe02b49c8 --num-workers 4",
+        "count": 3418,
+        "environment": {
+          "autocast_dtype": "bf16",
+          "cuda_runtime": "12.8",
+          "cudnn": 91900,
+          "cudnn_benchmark": true,
+          "cudnn_deterministic": false,
+          "deterministic_algorithms": false,
+          "gpu": "NVIDIA GeForce RTX 5090 D v2",
+          "mode": "production",
+          "python": "3.10.20",
+          "pytorch": "2.11.0+cu128",
+          "tf32_convolution": "tf32",
+          "tf32_matmul": "tf32"
+        },
+        "metrics": {
+          "class_dice": {
+            "0": 0.866466316235475,
+            "1": 0.8274320417936813,
+            "2": 0.7327872974004059,
+            "3": 0.7839464316965523
+          },
+          "class_iou": {
+            "0": 0.7643939731529589,
+            "1": 0.7056580695411523,
+            "2": 0.5782670075016977,
+            "3": 0.6446643899004048
+          },
+          "mDice": 0.8026580217815287,
+          "mIoU": 0.6732458600240534
+        },
+        "mode": "production",
+        "model": "a0",
+        "names_sha256": "4550e8d1217b6e319ba4b653a5736bf1278c0dbe0fb460195001edda3e260df2",
+        "peak_cuda_memory_bytes": 758853632,
+        "prediction_sha256": "61aa8f221c7c11c3a7a432dc0891a234952414b264235aca8e1ecb2e68934ab9",
+        "runtime_seconds": 61.21770906448364,
+        "scope": "full",
+        "seed": 42
+      },
+      {
+        "command": "/home/duyanhong/DZWdeRepo-rsbr-stage1r/tools/audit_rsbr_v0_stage1r.py --worker --model a0 --scope full --mode production --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --output-dir /home/duyanhong/experiments/RSBR_V0_STAGE1R_PARITY_6b6f7db --worker-output /home/duyanhong/experiments/RSBR_V0_STAGE1R_PARITY_6b6f7db/a0_self_repeat/run_2 --rsbr-commit 98e15df9ba702f0b9f43efc1942287abe02b49c8 --num-workers 4",
+        "count": 3418,
+        "environment": {
+          "autocast_dtype": "bf16",
+          "cuda_runtime": "12.8",
+          "cudnn": 91900,
+          "cudnn_benchmark": true,
+          "cudnn_deterministic": false,
+          "deterministic_algorithms": false,
+          "gpu": "NVIDIA GeForce RTX 5090 D v2",
+          "mode": "production",
+          "python": "3.10.20",
+          "pytorch": "2.11.0+cu128",
+          "tf32_convolution": "tf32",
+          "tf32_matmul": "tf32"
+        },
+        "metrics": {
+          "class_dice": {
+            "0": 0.866466316235475,
+            "1": 0.8274320417936813,
+            "2": 0.7327872974004059,
+            "3": 0.7839464316965523
+          },
+          "class_iou": {
+            "0": 0.7643939731529589,
+            "1": 0.7056580695411523,
+            "2": 0.5782670075016977,
+            "3": 0.6446643899004048
+          },
+          "mDice": 0.8026580217815287,
+          "mIoU": 0.6732458600240534
+        },
+        "mode": "production",
+        "model": "a0",
+        "names_sha256": "4550e8d1217b6e319ba4b653a5736bf1278c0dbe0fb460195001edda3e260df2",
+        "peak_cuda_memory_bytes": 758853632,
+        "prediction_sha256": "61aa8f221c7c11c3a7a432dc0891a234952414b264235aca8e1ecb2e68934ab9",
+        "runtime_seconds": 61.63139724731445,
+        "scope": "full",
+        "seed": 42
+      },
+      {
+        "command": "/home/duyanhong/DZWdeRepo-rsbr-stage1r/tools/audit_rsbr_v0_stage1r.py --worker --model a0 --scope full --mode production --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --output-dir /home/duyanhong/experiments/RSBR_V0_STAGE1R_PARITY_6b6f7db --worker-output /home/duyanhong/experiments/RSBR_V0_STAGE1R_PARITY_6b6f7db/a0_self_repeat/run_3 --rsbr-commit 98e15df9ba702f0b9f43efc1942287abe02b49c8 --num-workers 4",
+        "count": 3418,
+        "environment": {
+          "autocast_dtype": "bf16",
+          "cuda_runtime": "12.8",
+          "cudnn": 91900,
+          "cudnn_benchmark": true,
+          "cudnn_deterministic": false,
+          "deterministic_algorithms": false,
+          "gpu": "NVIDIA GeForce RTX 5090 D v2",
+          "mode": "production",
+          "python": "3.10.20",
+          "pytorch": "2.11.0+cu128",
+          "tf32_convolution": "tf32",
+          "tf32_matmul": "tf32"
+        },
+        "metrics": {
+          "class_dice": {
+            "0": 0.8664652929595883,
+            "1": 0.827463528435073,
+            "2": 0.7330071722527727,
+            "3": 0.7839314122101778
+          },
+          "class_iou": {
+            "0": 0.764392380381431,
+            "1": 0.7057038723330268,
+            "2": 0.5785409011005167,
+            "3": 0.644644076889574
+          },
+          "mDice": 0.802716851464403,
+          "mIoU": 0.6733203076761372
+        },
+        "mode": "production",
+        "model": "a0",
+        "names_sha256": "4550e8d1217b6e319ba4b653a5736bf1278c0dbe0fb460195001edda3e260df2",
+        "peak_cuda_memory_bytes": 758853632,
+        "prediction_sha256": "b455574b437a81a095117b9709823fc685eb40d5c20396f5e27cf993d13373e0",
+        "runtime_seconds": 60.3810088634491,
+        "scope": "full",
+        "seed": 42
+      }
+    ],
+    "rsbr": [
+      {
+        "command": "/home/duyanhong/DZWdeRepo-rsbr-stage1r/tools/audit_rsbr_v0_stage1r.py --worker --model rsbr --scope full --mode production --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --output-dir /home/duyanhong/experiments/RSBR_V0_STAGE1R_PARITY_6b6f7db --worker-output /home/duyanhong/experiments/RSBR_V0_STAGE1R_PARITY_6b6f7db/rsbr_self_repeat/run_1 --rsbr-commit 98e15df9ba702f0b9f43efc1942287abe02b49c8 --num-workers 4",
+        "count": 3418,
+        "environment": {
+          "autocast_dtype": "bf16",
+          "cuda_runtime": "12.8",
+          "cudnn": 91900,
+          "cudnn_benchmark": true,
+          "cudnn_deterministic": false,
+          "deterministic_algorithms": false,
+          "gpu": "NVIDIA GeForce RTX 5090 D v2",
+          "mode": "production",
+          "python": "3.10.20",
+          "pytorch": "2.11.0+cu128",
+          "tf32_convolution": "tf32",
+          "tf32_matmul": "tf32"
+        },
+        "metrics": {
+          "class_dice": {
+            "0": 0.8664332780639806,
+            "1": 0.827432688247745,
+            "2": 0.7327942135881348,
+            "3": 0.7839508830768773
+          },
+          "class_iou": {
+            "0": 0.7643425493156667,
+            "1": 0.7056590098961998,
+            "2": 0.5782756214072109,
+            "3": 0.6446704102384032
+          },
+          "mDice": 0.8026527657441844,
+          "mIoU": 0.6732368977143702
+        },
+        "mode": "production",
+        "model": "rsbr",
+        "names_sha256": "4550e8d1217b6e319ba4b653a5736bf1278c0dbe0fb460195001edda3e260df2",
+        "peak_cuda_memory_bytes": 759654400,
+        "prediction_sha256": "bb8f138541916489446b0e509086978c91ef23874e0735e9a59ced203d7f8e9a",
+        "runtime_seconds": 189.19715690612793,
+        "scope": "full",
+        "seed": 42
+      },
+      {
+        "command": "/home/duyanhong/DZWdeRepo-rsbr-stage1r/tools/audit_rsbr_v0_stage1r.py --worker --model rsbr --scope full --mode production --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --output-dir /home/duyanhong/experiments/RSBR_V0_STAGE1R_PARITY_6b6f7db --worker-output /home/duyanhong/experiments/RSBR_V0_STAGE1R_PARITY_6b6f7db/rsbr_self_repeat/run_2 --rsbr-commit 98e15df9ba702f0b9f43efc1942287abe02b49c8 --num-workers 4",
+        "count": 3418,
+        "environment": {
+          "autocast_dtype": "bf16",
+          "cuda_runtime": "12.8",
+          "cudnn": 91900,
+          "cudnn_benchmark": true,
+          "cudnn_deterministic": false,
+          "deterministic_algorithms": false,
+          "gpu": "NVIDIA GeForce RTX 5090 D v2",
+          "mode": "production",
+          "python": "3.10.20",
+          "pytorch": "2.11.0+cu128",
+          "tf32_convolution": "tf32",
+          "tf32_matmul": "tf32"
+        },
+        "metrics": {
+          "class_dice": {
+            "0": 0.8665281811351871,
+            "1": 0.827505719598164,
+            "2": 0.7330143262939474,
+            "3": 0.7839400277029603
+          },
+          "class_iou": {
+            "0": 0.7644902737882152,
+            "1": 0.7057652505686953,
+            "2": 0.578549814339898,
+            "3": 0.6446557287977834
+          },
+          "mDice": 0.8027470636825647,
+          "mIoU": 0.6733652668736481
+        },
+        "mode": "production",
+        "model": "rsbr",
+        "names_sha256": "4550e8d1217b6e319ba4b653a5736bf1278c0dbe0fb460195001edda3e260df2",
+        "peak_cuda_memory_bytes": 759654400,
+        "prediction_sha256": "2ed8da20a01a3fd90d323fc2d555ded07fcd9bb9e7be5db792d94aa1309f6971",
+        "runtime_seconds": 189.51436281204224,
+        "scope": "full",
+        "seed": 42
+      },
+      {
+        "command": "/home/duyanhong/DZWdeRepo-rsbr-stage1r/tools/audit_rsbr_v0_stage1r.py --worker --model rsbr --scope full --mode production --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --output-dir /home/duyanhong/experiments/RSBR_V0_STAGE1R_PARITY_6b6f7db --worker-output /home/duyanhong/experiments/RSBR_V0_STAGE1R_PARITY_6b6f7db/rsbr_self_repeat/run_3 --rsbr-commit 98e15df9ba702f0b9f43efc1942287abe02b49c8 --num-workers 4",
+        "count": 3418,
+        "environment": {
+          "autocast_dtype": "bf16",
+          "cuda_runtime": "12.8",
+          "cudnn": 91900,
+          "cudnn_benchmark": true,
+          "cudnn_deterministic": false,
+          "deterministic_algorithms": false,
+          "gpu": "NVIDIA GeForce RTX 5090 D v2",
+          "mode": "production",
+          "python": "3.10.20",
+          "pytorch": "2.11.0+cu128",
+          "tf32_convolution": "tf32",
+          "tf32_matmul": "tf32"
+        },
+        "metrics": {
+          "class_dice": {
+            "0": 0.8665281119001408,
+            "1": 0.8275059083344987,
+            "2": 0.7330212768427469,
+            "3": 0.7839471809186237
+          },
+          "class_iou": {
+            "0": 0.7644901660091277,
+            "1": 0.7057655251456707,
+            "2": 0.5785584741439788,
+            "3": 0.6446654031942696
+          },
+          "mDice": 0.8027506194990025,
+          "mIoU": 0.6733698921232616
+        },
+        "mode": "production",
+        "model": "rsbr",
+        "names_sha256": "4550e8d1217b6e319ba4b653a5736bf1278c0dbe0fb460195001edda3e260df2",
+        "peak_cuda_memory_bytes": 759654400,
+        "prediction_sha256": "b56ca756a3b0fc37efc9127baaf0e64ab5718a68dab75fdc27066e90bd17f010",
+        "runtime_seconds": 193.32712531089783,
+        "scope": "full",
+        "seed": 42
+      }
+    ]
+  },
+  "luad_accessed": false,
+  "merge_path": {
+    "all_base_refined_hashes_equal": true,
+    "all_tensors_contiguous": true,
+    "delta_core_unique_hashes": [
+      "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f"
+    ],
+    "delta_transition_unique_hashes": [
+      "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f"
+    ],
+    "dtypes": [
+      "torch.bfloat16"
+    ]
+  },
+  "rsbr_commit": "98e15df9ba702f0b9f43efc1942287abe02b49c8",
+  "rsbr_self_envelope": {
+    "mdice_pp": 0.009785375481807801,
+    "miou_pp": 0.01329944088913626,
+    "per_class_iou_pp": 0.028285273676786904,
+    "pixels": 83626
+  },
+  "same_process_identity": {
+    "delta_core_exact_zero": true,
+    "delta_transition_exact_zero": true,
+    "differing_prediction_pixels": 0,
+    "environment": {
+      "autocast_dtype": "bf16",
+      "cuda_runtime": "12.8",
+      "cudnn": 91900,
+      "cudnn_benchmark": true,
+      "cudnn_deterministic": false,
+      "deterministic_algorithms": false,
+      "gpu": "NVIDIA GeForce RTX 5090 D v2",
+      "mode": "production",
+      "python": "3.10.20",
+      "pytorch": "2.11.0+cu128",
+      "tf32_convolution": "tf32",
+      "tf32_matmul": "tf32"
+    },
+    "image_count": 32,
+    "image_ids": [
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+0",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+1",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+10",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+100",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+101",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+102",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+103",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+104",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+105",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+106",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+107",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+108",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+109",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+11",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+110",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+111",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+112",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+113",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+114",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+115",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+116",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+117",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+118",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+119",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+12",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+120",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+121",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+122",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+123",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+124",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+125",
+      "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+126"
+    ],
+    "maximum_cam28_1_difference": 0.0,
+    "pass": true,
+    "rows": [
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+0",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "19574234a24f5e29e7479ccfb1f19147ff27711bb2647184740456b20c45e73a",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "19574234a24f5e29e7479ccfb1f19147ff27711bb2647184740456b20c45e73a",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+1",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "9fc331fac5f2a37e8d0711e672c909aa9b47bea27a57e3ecc07e4680ce3ead07",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "9fc331fac5f2a37e8d0711e672c909aa9b47bea27a57e3ecc07e4680ce3ead07",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+10",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "11e0c2381f6f585dac1a171719f2fad6beb800a7ed76591d4cb422075f09edac",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "11e0c2381f6f585dac1a171719f2fad6beb800a7ed76591d4cb422075f09edac",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+100",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "ef87faac0913d2733eee3ae76dc80132386e8966579571750058a013ae88494b",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "ef87faac0913d2733eee3ae76dc80132386e8966579571750058a013ae88494b",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+101",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "abcfbb57f15fa3dbde1bf6dc58375c0a21ef76dbeae370eb7613b181f5302d7c",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "abcfbb57f15fa3dbde1bf6dc58375c0a21ef76dbeae370eb7613b181f5302d7c",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+102",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "c9419ff0c404c7a8bfcca5757033a5255fc757dafa7c831077d47e61b64f5cc9",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "c9419ff0c404c7a8bfcca5757033a5255fc757dafa7c831077d47e61b64f5cc9",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+103",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "db2d7d2852ce44e7b739788de4f44bc0e4b3b96928fa524682e190f97b580c9f",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "db2d7d2852ce44e7b739788de4f44bc0e4b3b96928fa524682e190f97b580c9f",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+104",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "919def3f77e2223cfb56125bb1297d7e914b58bf662dac07d1a17a17f1150813",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "919def3f77e2223cfb56125bb1297d7e914b58bf662dac07d1a17a17f1150813",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+105",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "73a3b397dcff73b133ac2c9d18a99a9cd48b7a527dad12d1d5821617a6b14f3c",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "73a3b397dcff73b133ac2c9d18a99a9cd48b7a527dad12d1d5821617a6b14f3c",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+106",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "8d74d3fcb9ee46c6a792606bafbb08a7c968872b701b24650b5c11e8805c333c",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "8d74d3fcb9ee46c6a792606bafbb08a7c968872b701b24650b5c11e8805c333c",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+107",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "5336c180392d015efb9f93c24111ac8bc2ca6628cd892021313ea620c3b7305f",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "5336c180392d015efb9f93c24111ac8bc2ca6628cd892021313ea620c3b7305f",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+108",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "cc383423683bbd86b6343ae7b8aece125572342e1248bed1b8f6994966bea4b4",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "cc383423683bbd86b6343ae7b8aece125572342e1248bed1b8f6994966bea4b4",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+109",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "6a312a2c530ee42440d3194d9a2276d53818d28f573ede81b18bebd53cb51203",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "6a312a2c530ee42440d3194d9a2276d53818d28f573ede81b18bebd53cb51203",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+11",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "241f4f3ef97ba6dc700370bb701219d7adcec0c2014b6ee00df0fc11ca004c36",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "241f4f3ef97ba6dc700370bb701219d7adcec0c2014b6ee00df0fc11ca004c36",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+110",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "15c32f86e7c0c18afa70fde9e14808da07d5b0167e55eb6ec90428be343f34b1",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "15c32f86e7c0c18afa70fde9e14808da07d5b0167e55eb6ec90428be343f34b1",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+111",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "53e22d33ea86fd829a914c4f8bc10c05091ea99cce490d71fe6770c7a6988f5d",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "53e22d33ea86fd829a914c4f8bc10c05091ea99cce490d71fe6770c7a6988f5d",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+112",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "2e02eed9f2fb0517ffbc2c46013243666d45fafd9e4103b55c045040668243a9",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "2e02eed9f2fb0517ffbc2c46013243666d45fafd9e4103b55c045040668243a9",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+113",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "045db19ab38721f55a0d331bcf23eee9aa005c6121fac12d300a2b434b3fde81",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "045db19ab38721f55a0d331bcf23eee9aa005c6121fac12d300a2b434b3fde81",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+114",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "6826a684c6f4e063ab127c1fda9bb85ad801a496ed349d0b6bd01c6259b80272",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "6826a684c6f4e063ab127c1fda9bb85ad801a496ed349d0b6bd01c6259b80272",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+115",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "3fdb494b447a400d261b81bac80c0eaa71298a9966960d2ac59336286b6634de",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "3fdb494b447a400d261b81bac80c0eaa71298a9966960d2ac59336286b6634de",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+116",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "1d6d5d149a0a177daf0922c83f944c9281a16dd9952f1260bceec143100adfab",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "1d6d5d149a0a177daf0922c83f944c9281a16dd9952f1260bceec143100adfab",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+117",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "2468a15cc36e70eaafc1cbcf07559da35141d593b2fbf0d6755f748e83c71e34",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "2468a15cc36e70eaafc1cbcf07559da35141d593b2fbf0d6755f748e83c71e34",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+118",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "7de55ee27675907e5c2a0d31670d7b8eb4eb0238e3a4f011b0a7a0046b6e8ff1",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "7de55ee27675907e5c2a0d31670d7b8eb4eb0238e3a4f011b0a7a0046b6e8ff1",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+119",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "8a75f2a091c33a745004d45d64f5820dd191c07fae03e317356eef341a77c4ff",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "8a75f2a091c33a745004d45d64f5820dd191c07fae03e317356eef341a77c4ff",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+12",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "48ac83111fb6878d24268084912c0d6845c10128c31421211fc301ed7e077017",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "48ac83111fb6878d24268084912c0d6845c10128c31421211fc301ed7e077017",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+120",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "a0d30390579277dfe393a8b8c7f2706eb69c186d7d365f94432af850cf9786a4",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "a0d30390579277dfe393a8b8c7f2706eb69c186d7d365f94432af850cf9786a4",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+121",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "c636b0721fb669e6dbc4199304625b1dfc4b387cf33e01b9579175f184f060cb",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "c636b0721fb669e6dbc4199304625b1dfc4b387cf33e01b9579175f184f060cb",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+122",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "ef3836c6a15a664804404f47cadbe35675165fba89b59a8b9f78152a78210c80",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "ef3836c6a15a664804404f47cadbe35675165fba89b59a8b9f78152a78210c80",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+123",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "1c86760e098da1ea1f6967e26abba5a917d5d168666244b01bc8e954d53a7da3",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "1c86760e098da1ea1f6967e26abba5a917d5d168666244b01bc8e954d53a7da3",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+124",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "feecd9b714f3ee5f55a29a64b23b29db42e2a719e2ab8fc27a8f024678f58498",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "feecd9b714f3ee5f55a29a64b23b29db42e2a719e2ab8fc27a8f024678f58498",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+125",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "4159ab025d873aa005cc9cafe6e61ae5b0c95713443bcb41bb62bcb584a9a1f8",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "4159ab025d873aa005cc9cafe6e61ae5b0c95713443bcb41bb62bcb584a9a1f8",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      },
+      {
+        "differing_prediction_pixels": 0,
+        "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+126",
+        "maximum_cam28_1_difference": 0.0,
+        "merge_path": {
+          "base_cam28_1_hash": "7aaa8457d694431a094913071dfb1b051e16be208ca8efecbc2bbed60c4ab3ab",
+          "base_contiguous": true,
+          "base_dtype": "torch.bfloat16",
+          "delta_core_contiguous": true,
+          "delta_core_dtype": "torch.bfloat16",
+          "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "delta_transition_contiguous": true,
+          "delta_transition_dtype": "torch.bfloat16",
+          "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+          "refined_cam28_1_hash": "7aaa8457d694431a094913071dfb1b051e16be208ca8efecbc2bbed60c4ab3ab",
+          "refined_contiguous": true,
+          "refined_dtype": "torch.bfloat16"
+        }
+      }
+    ]
+  },
+  "scope": "BCSS validation-only audit; no training",
+  "source_diagnosis": [
+    "Deterministic algorithms reduce the observed subset discrepancy; CUDA/cuDNN algorithm selection is implicated.",
+    "Disabling autocast reduces the discrepancy; BF16 rounding/accumulation is implicated.",
+    "Disabling TF32 reduces the discrepancy; TF32 execution is implicated.",
+    "Data order and TTA accumulation order are identical by construction, and the same-process zero residual merge is checked separately."
+  ],
+  "test_evaluated": false,
+  "training_performed": false
+}

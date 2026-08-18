@@ -1,0 +1,20 @@
+{
+  "a0_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "checkpoint": "/home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth",
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "command": "tools/audit_rsbr_v0_stage1r.py --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --output-dir /home/duyanhong/experiments/RSBR_V0_STAGE1R_PARITY_6b6f7db --rsbr-commit 98e15df9ba702f0b9f43efc1942287abe02b49c8 --num-workers 4",
+  "diagnostic_modes": [
+    "production",
+    "deterministic",
+    "fp32",
+    "tf32_off"
+  ],
+  "fixed_subset_images": 32,
+  "full_repeats_per_model": 3,
+  "luad_forbidden": true,
+  "rsbr_commit": "98e15df9ba702f0b9f43efc1942287abe02b49c8",
+  "scope": "BCSS validation-only audit",
+  "seed": 42,
+  "test_forbidden": true,
+  "training_forbidden": true
+}

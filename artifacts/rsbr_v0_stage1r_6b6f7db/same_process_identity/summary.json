@@ -1,0 +1,666 @@
+{
+  "delta_core_exact_zero": true,
+  "delta_transition_exact_zero": true,
+  "differing_prediction_pixels": 0,
+  "environment": {
+    "autocast_dtype": "bf16",
+    "cuda_runtime": "12.8",
+    "cudnn": 91900,
+    "cudnn_benchmark": true,
+    "cudnn_deterministic": false,
+    "deterministic_algorithms": false,
+    "gpu": "NVIDIA GeForce RTX 5090 D v2",
+    "mode": "production",
+    "python": "3.10.20",
+    "pytorch": "2.11.0+cu128",
+    "tf32_convolution": "tf32",
+    "tf32_matmul": "tf32"
+  },
+  "image_count": 32,
+  "image_ids": [
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+0",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+1",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+10",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+100",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+101",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+102",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+103",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+104",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+105",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+106",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+107",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+108",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+109",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+11",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+110",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+111",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+112",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+113",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+114",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+115",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+116",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+117",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+118",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+119",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+12",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+120",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+121",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+122",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+123",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+124",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+125",
+    "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+126"
+  ],
+  "maximum_cam28_1_difference": 0.0,
+  "pass": true,
+  "rows": [
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+0",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "19574234a24f5e29e7479ccfb1f19147ff27711bb2647184740456b20c45e73a",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "19574234a24f5e29e7479ccfb1f19147ff27711bb2647184740456b20c45e73a",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+1",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "9fc331fac5f2a37e8d0711e672c909aa9b47bea27a57e3ecc07e4680ce3ead07",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "9fc331fac5f2a37e8d0711e672c909aa9b47bea27a57e3ecc07e4680ce3ead07",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+10",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "11e0c2381f6f585dac1a171719f2fad6beb800a7ed76591d4cb422075f09edac",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "11e0c2381f6f585dac1a171719f2fad6beb800a7ed76591d4cb422075f09edac",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+100",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "ef87faac0913d2733eee3ae76dc80132386e8966579571750058a013ae88494b",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "ef87faac0913d2733eee3ae76dc80132386e8966579571750058a013ae88494b",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+101",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "abcfbb57f15fa3dbde1bf6dc58375c0a21ef76dbeae370eb7613b181f5302d7c",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "abcfbb57f15fa3dbde1bf6dc58375c0a21ef76dbeae370eb7613b181f5302d7c",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+102",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "c9419ff0c404c7a8bfcca5757033a5255fc757dafa7c831077d47e61b64f5cc9",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "c9419ff0c404c7a8bfcca5757033a5255fc757dafa7c831077d47e61b64f5cc9",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+103",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "db2d7d2852ce44e7b739788de4f44bc0e4b3b96928fa524682e190f97b580c9f",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "db2d7d2852ce44e7b739788de4f44bc0e4b3b96928fa524682e190f97b580c9f",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+104",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "919def3f77e2223cfb56125bb1297d7e914b58bf662dac07d1a17a17f1150813",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "919def3f77e2223cfb56125bb1297d7e914b58bf662dac07d1a17a17f1150813",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+105",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "73a3b397dcff73b133ac2c9d18a99a9cd48b7a527dad12d1d5821617a6b14f3c",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "73a3b397dcff73b133ac2c9d18a99a9cd48b7a527dad12d1d5821617a6b14f3c",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+106",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "8d74d3fcb9ee46c6a792606bafbb08a7c968872b701b24650b5c11e8805c333c",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "8d74d3fcb9ee46c6a792606bafbb08a7c968872b701b24650b5c11e8805c333c",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+107",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "5336c180392d015efb9f93c24111ac8bc2ca6628cd892021313ea620c3b7305f",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "5336c180392d015efb9f93c24111ac8bc2ca6628cd892021313ea620c3b7305f",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+108",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "cc383423683bbd86b6343ae7b8aece125572342e1248bed1b8f6994966bea4b4",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "cc383423683bbd86b6343ae7b8aece125572342e1248bed1b8f6994966bea4b4",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+109",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "6a312a2c530ee42440d3194d9a2276d53818d28f573ede81b18bebd53cb51203",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "6a312a2c530ee42440d3194d9a2276d53818d28f573ede81b18bebd53cb51203",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+11",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "241f4f3ef97ba6dc700370bb701219d7adcec0c2014b6ee00df0fc11ca004c36",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "241f4f3ef97ba6dc700370bb701219d7adcec0c2014b6ee00df0fc11ca004c36",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+110",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "15c32f86e7c0c18afa70fde9e14808da07d5b0167e55eb6ec90428be343f34b1",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "15c32f86e7c0c18afa70fde9e14808da07d5b0167e55eb6ec90428be343f34b1",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+111",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "53e22d33ea86fd829a914c4f8bc10c05091ea99cce490d71fe6770c7a6988f5d",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "53e22d33ea86fd829a914c4f8bc10c05091ea99cce490d71fe6770c7a6988f5d",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+112",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "2e02eed9f2fb0517ffbc2c46013243666d45fafd9e4103b55c045040668243a9",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "2e02eed9f2fb0517ffbc2c46013243666d45fafd9e4103b55c045040668243a9",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+113",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "045db19ab38721f55a0d331bcf23eee9aa005c6121fac12d300a2b434b3fde81",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "045db19ab38721f55a0d331bcf23eee9aa005c6121fac12d300a2b434b3fde81",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+114",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "6826a684c6f4e063ab127c1fda9bb85ad801a496ed349d0b6bd01c6259b80272",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "6826a684c6f4e063ab127c1fda9bb85ad801a496ed349d0b6bd01c6259b80272",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+115",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "3fdb494b447a400d261b81bac80c0eaa71298a9966960d2ac59336286b6634de",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "3fdb494b447a400d261b81bac80c0eaa71298a9966960d2ac59336286b6634de",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+116",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "1d6d5d149a0a177daf0922c83f944c9281a16dd9952f1260bceec143100adfab",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "1d6d5d149a0a177daf0922c83f944c9281a16dd9952f1260bceec143100adfab",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+117",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "2468a15cc36e70eaafc1cbcf07559da35141d593b2fbf0d6755f748e83c71e34",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "2468a15cc36e70eaafc1cbcf07559da35141d593b2fbf0d6755f748e83c71e34",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+118",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "7de55ee27675907e5c2a0d31670d7b8eb4eb0238e3a4f011b0a7a0046b6e8ff1",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "7de55ee27675907e5c2a0d31670d7b8eb4eb0238e3a4f011b0a7a0046b6e8ff1",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+119",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "8a75f2a091c33a745004d45d64f5820dd191c07fae03e317356eef341a77c4ff",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "8a75f2a091c33a745004d45d64f5820dd191c07fae03e317356eef341a77c4ff",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+12",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "48ac83111fb6878d24268084912c0d6845c10128c31421211fc301ed7e077017",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "48ac83111fb6878d24268084912c0d6845c10128c31421211fc301ed7e077017",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+120",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "a0d30390579277dfe393a8b8c7f2706eb69c186d7d365f94432af850cf9786a4",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "a0d30390579277dfe393a8b8c7f2706eb69c186d7d365f94432af850cf9786a4",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+121",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "c636b0721fb669e6dbc4199304625b1dfc4b387cf33e01b9579175f184f060cb",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "c636b0721fb669e6dbc4199304625b1dfc4b387cf33e01b9579175f184f060cb",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+122",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "ef3836c6a15a664804404f47cadbe35675165fba89b59a8b9f78152a78210c80",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "ef3836c6a15a664804404f47cadbe35675165fba89b59a8b9f78152a78210c80",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+123",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "1c86760e098da1ea1f6967e26abba5a917d5d168666244b01bc8e954d53a7da3",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "1c86760e098da1ea1f6967e26abba5a917d5d168666244b01bc8e954d53a7da3",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+124",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "feecd9b714f3ee5f55a29a64b23b29db42e2a719e2ab8fc27a8f024678f58498",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "feecd9b714f3ee5f55a29a64b23b29db42e2a719e2ab8fc27a8f024678f58498",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+125",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "4159ab025d873aa005cc9cafe6e61ae5b0c95713443bcb41bb62bcb584a9a1f8",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "4159ab025d873aa005cc9cafe6e61ae5b0c95713443bcb41bb62bcb584a9a1f8",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    },
+    {
+      "differing_prediction_pixels": 0,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+126",
+      "maximum_cam28_1_difference": 0.0,
+      "merge_path": {
+        "base_cam28_1_hash": "7aaa8457d694431a094913071dfb1b051e16be208ca8efecbc2bbed60c4ab3ab",
+        "base_contiguous": true,
+        "base_dtype": "torch.bfloat16",
+        "delta_core_contiguous": true,
+        "delta_core_dtype": "torch.bfloat16",
+        "delta_core_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "delta_transition_contiguous": true,
+        "delta_transition_dtype": "torch.bfloat16",
+        "delta_transition_hash": "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f",
+        "refined_cam28_1_hash": "7aaa8457d694431a094913071dfb1b051e16be208ca8efecbc2bbed60c4ab3ab",
+        "refined_contiguous": true,
+        "refined_dtype": "torch.bfloat16"
+      }
+    }
+  ]
+}

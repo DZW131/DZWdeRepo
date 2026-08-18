@@ -536,6 +536,19 @@ def diagnose_source(mode_rows):
 
 
 def write_report(output, summary):
+    run_rows = []
+    for model_name in ("a0", "rsbr"):
+        for index, record in enumerate(summary["full_run_results"][model_name], start=1):
+            metrics = record["metrics"]
+            run_rows.append(
+                f"| {model_name.upper()}-{index} | {100 * metrics['mIoU']:.8f} | "
+                f"{100 * metrics['mDice']:.8f} | "
+                f"{100 * metrics['class_iou']['0']:.8f} | "
+                f"{100 * metrics['class_iou']['1']:.8f} | "
+                f"{100 * metrics['class_iou']['2']:.8f} | "
+                f"{100 * metrics['class_iou']['3']:.8f} | "
+                f"{record['runtime_seconds']:.2f} | `{record['prediction_sha256'][:12]}` |"
+            )
     table_rows = []
     for row in summary["executive_comparisons"]:
         table_rows.append(
@@ -584,13 +597,19 @@ change, or RSBR model change was used.
 Per-image hashes, dtypes, autocast state, and tensor contiguity are retained in
 `same_process_identity/summary.json` and summarized under `merge_path/summary.json`.
 
-## 4. Full-validation repeat and cross-model table
+## 4. Absolute full-validation results
+
+| Run | mIoU (%) | mDice (%) | C0 IoU | C1 IoU | C2 IoU | C3 IoU | Runtime (s) | Prediction hash |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+{chr(10).join(run_rows)}
+
+## 5. Full-validation repeat and cross-model table
 
 | Comparison | Differing Pixels | mIoU Diff (pp) | mDice Diff (pp) | Max class-IoU Diff (pp) |
 |---|---:|---:|---:|---:|
 {chr(10).join(table_rows)}
 
-## 5. Numerical envelopes and decision rule
+## 6. Numerical envelopes and decision rule
 
 - A0 self envelope: `{json.dumps(summary['a0_self_envelope'], sort_keys=True)}`
 - RSBR self envelope: `{json.dumps(summary['rsbr_self_envelope'], sort_keys=True)}`
@@ -600,27 +619,27 @@ Per-image hashes, dtypes, autocast state, and tensor contiguity are retained in
 - mIoU rule pass: {summary['decision_rule']['miou_pass']}
 - Pixel rule pass: {summary['decision_rule']['pixel_pass']}
 
-## 6. Diagnostic modes on the fixed 32-image subset
+## 7. Diagnostic modes on the fixed 32-image subset
 
 | Mode | A0 repeat pixels | RSBR repeat pixels | A0-vs-RSBR pixels | Maximum mIoU diff (pp) |
 |---|---:|---:|---:|---:|
 {chr(10).join(diagnostic_rows)}
 
-## 7. Source localization
+## 8. Source localization
 
 {source_lines}
 
 These mode tests are diagnostic only and do not alter the production SSHR or
 RSBR protocol.
 
-## 8. Residual merge path
+## 9. Residual merge path
 
 The canonical branch records show zero-filled `delta_core` and
 `delta_transition`, equal base/refined CAM hashes, and the recorded BF16 dtype
 and contiguity state. Full per-image records are in
 `same_process_identity/summary.json`.
 
-## 9. Commands and artifacts
+## 10. Commands and artifacts
 
 Exact top-level command:
 
@@ -632,7 +651,7 @@ Each independent inference command and stdout/stderr is stored beside its run
 directory. Prediction masks are retained as compressed NPZ files so every
 pixel-count comparison is reproducible.
 
-## 10. Stop decision
+## 11. Stop decision
 
 Stage -1R stops here. This report does not authorize Stage 0. Under the frozen
 specification, a revised parity harness may be implemented only after human

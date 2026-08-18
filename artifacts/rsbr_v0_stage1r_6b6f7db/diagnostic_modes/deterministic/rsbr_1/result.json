@@ -1,0 +1,42 @@
+{
+  "command": "/home/duyanhong/DZWdeRepo-rsbr-stage1r/tools/audit_rsbr_v0_stage1r.py --worker --model rsbr --scope subset --mode deterministic --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --output-dir /home/duyanhong/experiments/RSBR_V0_STAGE1R_PARITY_6b6f7db --worker-output /home/duyanhong/experiments/RSBR_V0_STAGE1R_PARITY_6b6f7db/diagnostic_modes/deterministic/rsbr_1 --rsbr-commit 98e15df9ba702f0b9f43efc1942287abe02b49c8 --num-workers 4",
+  "count": 32,
+  "environment": {
+    "autocast_dtype": "bf16",
+    "cuda_runtime": "12.8",
+    "cudnn": 91900,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": true,
+    "deterministic_algorithms": true,
+    "gpu": "NVIDIA GeForce RTX 5090 D v2",
+    "mode": "deterministic",
+    "python": "3.10.20",
+    "pytorch": "2.11.0+cu128",
+    "tf32_convolution": "tf32",
+    "tf32_matmul": "tf32"
+  },
+  "metrics": {
+    "class_dice": {
+      "0": 0.7112682654304066,
+      "1": 0.7091101184903844,
+      "2": 0.7397554376534334,
+      "3": 0.0
+    },
+    "class_iou": {
+      "0": 0.5519133628442492,
+      "1": 0.5493188293188294,
+      "2": 0.5869935564538473,
+      "3": NaN
+    },
+    "mDice": 0.5400334553935562,
+    "mIoU": 0.562741916205642
+  },
+  "mode": "deterministic",
+  "model": "rsbr",
+  "names_sha256": "1a71359b4771edae5d25b6ae268c9f7afd15d141e6d381c6ce01aef554106fc0",
+  "peak_cuda_memory_bytes": 754757632,
+  "prediction_sha256": "1231985b9c4cdba00399ffbd8477678a42d49518083c3e53c38f63455cd4a6bb",
+  "runtime_seconds": 2.4014108180999756,
+  "scope": "subset",
+  "seed": 42
+}

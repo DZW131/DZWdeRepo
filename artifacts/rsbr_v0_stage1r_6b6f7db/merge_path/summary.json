@@ -1,0 +1,13 @@
+{
+  "all_base_refined_hashes_equal": true,
+  "all_tensors_contiguous": true,
+  "delta_core_unique_hashes": [
+    "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f"
+  ],
+  "delta_transition_unique_hashes": [
+    "27e252c16d2f3c861b57f34cb9d769a3e4ff93a1adf73af6970fda1294d88d0f"
+  ],
+  "dtypes": [
+    "torch.bfloat16"
+  ]
+}

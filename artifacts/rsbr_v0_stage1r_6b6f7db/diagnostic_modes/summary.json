@@ -1,0 +1,114 @@
+{
+  "deterministic": {
+    "a0_repeat": {
+      "comparison": "deterministic: A0 repeat",
+      "differing_pixel_fraction": 0.0,
+      "differing_pixels": 0,
+      "mdice_diff_pp": 0.0,
+      "miou_diff_pp": 0.0,
+      "per_class_iou_max_abs_diff_pp": 0.0
+    },
+    "cross": {
+      "comparison": "deterministic: A0 vs RSBR",
+      "differing_pixel_fraction": 0.0,
+      "differing_pixels": 0,
+      "mdice_diff_pp": 0.0,
+      "miou_diff_pp": 0.0,
+      "per_class_iou_max_abs_diff_pp": 0.0
+    },
+    "maximum_differing_pixels": 0,
+    "maximum_miou_diff_pp": 0.0,
+    "rsbr_repeat": {
+      "comparison": "deterministic: RSBR repeat",
+      "differing_pixel_fraction": 0.0,
+      "differing_pixels": 0,
+      "mdice_diff_pp": 0.0,
+      "miou_diff_pp": 0.0,
+      "per_class_iou_max_abs_diff_pp": 0.0
+    }
+  },
+  "fp32": {
+    "a0_repeat": {
+      "comparison": "fp32: A0 repeat",
+      "differing_pixel_fraction": 0.0,
+      "differing_pixels": 0,
+      "mdice_diff_pp": 0.0,
+      "miou_diff_pp": 0.0,
+      "per_class_iou_max_abs_diff_pp": 0.0
+    },
+    "cross": {
+      "comparison": "fp32: A0 vs RSBR",
+      "differing_pixel_fraction": 0.0,
+      "differing_pixels": 0,
+      "mdice_diff_pp": 0.0,
+      "miou_diff_pp": 0.0,
+      "per_class_iou_max_abs_diff_pp": 0.0
+    },
+    "maximum_differing_pixels": 18,
+    "maximum_miou_diff_pp": 8.454666378110431e-06,
+    "rsbr_repeat": {
+      "comparison": "fp32: RSBR repeat",
+      "differing_pixel_fraction": 1.1210538903061225e-05,
+      "differing_pixels": 18,
+      "mdice_diff_pp": 6.614855496689387e-06,
+      "miou_diff_pp": 8.454666378110431e-06,
+      "per_class_iou_max_abs_diff_pp": 0.00014206745078126914
+    }
+  },
+  "production": {
+    "a0_repeat": {
+      "comparison": "production: A0 repeat",
+      "differing_pixel_fraction": 0.0002242107780612245,
+      "differing_pixels": 360,
+      "mdice_diff_pp": 0.003214903947190706,
+      "miou_diff_pp": 0.005268782483502932,
+      "per_class_iou_max_abs_diff_pp": 0.007545644473616608
+    },
+    "cross": {
+      "comparison": "production: A0 vs RSBR",
+      "differing_pixel_fraction": 0.00017563177614795918,
+      "differing_pixels": 282,
+      "mdice_diff_pp": 0.0013057319698916992,
+      "miou_diff_pp": 0.002154214242111596,
+      "per_class_iou_max_abs_diff_pp": 0.004030675702360043
+    },
+    "maximum_differing_pixels": 480,
+    "maximum_miou_diff_pp": 0.005268782483502932,
+    "rsbr_repeat": {
+      "comparison": "production: RSBR repeat",
+      "differing_pixel_fraction": 0.00029894770408163266,
+      "differing_pixels": 480,
+      "mdice_diff_pp": 0.0005518832128958984,
+      "miou_diff_pp": 0.0008720448611887477,
+      "per_class_iou_max_abs_diff_pp": 0.011845547639710574
+    }
+  },
+  "tf32_off": {
+    "a0_repeat": {
+      "comparison": "tf32_off: A0 repeat",
+      "differing_pixel_fraction": 0.00019618443080357144,
+      "differing_pixels": 315,
+      "mdice_diff_pp": 0.0011494924516353144,
+      "miou_diff_pp": 0.0018406437439666412,
+      "per_class_iou_max_abs_diff_pp": 0.004299399239815482
+    },
+    "cross": {
+      "comparison": "tf32_off: A0 vs RSBR",
+      "differing_pixel_fraction": 0.0001936931999362245,
+      "differing_pixels": 311,
+      "mdice_diff_pp": 0.00043430198778393603,
+      "miou_diff_pp": 0.0007854812250518428,
+      "per_class_iou_max_abs_diff_pp": 0.006047658527108535
+    },
+    "maximum_differing_pixels": 333,
+    "maximum_miou_diff_pp": 0.002381771890114237,
+    "rsbr_repeat": {
+      "comparison": "tf32_off: RSBR repeat",
+      "differing_pixel_fraction": 0.00020739496970663266,
+      "differing_pixels": 333,
+      "mdice_diff_pp": 0.0013920204671058478,
+      "miou_diff_pp": 0.002381771890114237,
+      "per_class_iou_max_abs_diff_pp": 0.010109185352691341
+    }
+  }
+}

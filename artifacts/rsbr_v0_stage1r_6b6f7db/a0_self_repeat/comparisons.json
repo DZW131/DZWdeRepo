@@ -1,0 +1,26 @@
+[
+  {
+    "comparison": "A0-1 vs A0-2",
+    "differing_pixel_fraction": 0.0,
+    "differing_pixels": 0,
+    "mdice_diff_pp": 0.0,
+    "miou_diff_pp": 0.0,
+    "per_class_iou_max_abs_diff_pp": 0.0
+  },
+  {
+    "comparison": "A0-1 vs A0-3",
+    "differing_pixel_fraction": 0.00021454614339152863,
+    "differing_pixels": 36795,
+    "mdice_diff_pp": 0.005882968287429513,
+    "miou_diff_pp": 0.007444765208375337,
+    "per_class_iou_max_abs_diff_pp": 0.027389359881901942
+  },
+  {
+    "comparison": "A0-2 vs A0-3",
+    "differing_pixel_fraction": 0.00021454614339152863,
+    "differing_pixels": 36795,
+    "mdice_diff_pp": 0.005882968287429513,
+    "miou_diff_pp": 0.007444765208375337,
+    "per_class_iou_max_abs_diff_pp": 0.027389359881901942
+  }
+]
