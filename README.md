@@ -133,3 +133,20 @@ python train_sshr.py \
 
 We thank the authors of [ESFAN](https://github.com/OceanPetal/ESFAN), whose codebase provided a valuable foundation for this repository.
 
+## Frozen region-centric Phase-0R audit
+
+`tools/audit_region_phase0r.py` implements the validation-only Region-Centric
+Representation Feasibility Audit. It starts from the frozen official A0 model,
+first proves exact released-inference parity, then extracts class-wise
+8-connected regions and runs only offline oracle and slide-held-out diagnostic
+probes. It does not train or modify SSHR and rejects test/LUAD paths.
+
+```bash
+python tools/audit_region_phase0r.py \
+  --val-root /path/to/BCSS-WSSS/val \
+  --checkpoint /path/to/stage1_last.pth \
+  --output-dir /path/to/SSHR_REGION_PHASE0R_<commit> \
+  --audit-commit <commit-sha> \
+  --amp-dtype bf16
+```
+
