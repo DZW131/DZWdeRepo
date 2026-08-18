@@ -1,0 +1,166 @@
+{
+  "audit_commit": "ce97889049d4212bd6c95e355642f5dee277c45d",
+  "authorized_batches": 128,
+  "baseline_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "checkpoint_saved": false,
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "cost": {
+    "elapsed_seconds": 28.396129093016498,
+    "peak_memory_allocated_bytes": 6578912768
+  },
+  "decision": "OSMF_V13R1_PHASE0S_NOGO",
+  "decision_reasons": [
+    "FIXED_MORPHOLOGY_AFFINITY_NOT_IMPROVED"
+  ],
+  "environment": {
+    "cuda_runtime": "12.8",
+    "cudnn": 91900,
+    "gpu": "NVIDIA GeForce RTX 5090 D v2",
+    "python": "3.10.20",
+    "pytorch": "2.11.0+cu128"
+  },
+  "exact_command": "tools/audit_osmf_v13r1_gradient_gate.py --gate phase0s --train-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/training --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --parity-summary /home/duyanhong/experiments/OSMF_V13R1_GRAPH_CORRECTED_ce97889/graph_parity/summary.json --readiness-summary /home/duyanhong/experiments/OSMF_V13R1_GRAPH_CORRECTED_ce97889/readiness_8b/summary.json --output-dir /home/duyanhong/experiments/OSMF_V13R1_GRAPH_CORRECTED_ce97889/phase0s_128b --audit-commit ce97889049d4212bd6c95e355642f5dee277c45d --num-workers 4",
+  "finite": true,
+  "fixed_probe": {
+    "affinity_morphology_end": 0.013293104406329803,
+    "affinity_morphology_start": 0.010489035659702495,
+    "affinity_semantic_end": 0.010492395085748285,
+    "affinity_semantic_start": 0.008939599130826537,
+    "budget_ok": true,
+    "health_ok": true,
+    "images": 64,
+    "raw_morphology_end": 0.07856521056964993,
+    "raw_morphology_start": 0.06337954779155552,
+    "specificity_gap": -0.09363471057657169,
+    "struct_improve_m": -0.26733332189276854,
+    "struct_improve_s": -0.17369861131619685
+  },
+  "full_training_started": false,
+  "gate": "phase0s",
+  "gradient_budget": {
+    "orth": {
+      "max": 0.054173143922561014,
+      "mean": 0.04484168335248175,
+      "p95": 0.053968269084332235,
+      "values": [
+        0.05321303733182597,
+        0.054173143922561014,
+        0.05366095682698906,
+        0.05198360114397505,
+        0.03681566992326766,
+        0.034505095227875045,
+        0.0446009291255359,
+        0.033953411799027285,
+        0.04066930487127875
+      ]
+    },
+    "rec": {
+      "max": 0.01885167422941037,
+      "mean": 0.012428145344052224,
+      "p95": 0.01871720084920246,
+      "values": [
+        2.1186459905988243e-08,
+        0.001683985955987605,
+        0.0029807523178334273,
+        0.01687808219117161,
+        0.01763377406760129,
+        0.01756908244079337,
+        0.01885167422941037,
+        0.017740444928321827,
+        0.018515490778890593
+      ]
+    },
+    "sem_pres": {
+      "max": 0.27486486398015914,
+      "mean": 0.16164520402955565,
+      "p95": 0.25433003862747694,
+      "values": [
+        0.2192070602472361,
+        0.09240789748988576,
+        0.08410960055573387,
+        0.17041581255438723,
+        0.27486486398015914,
+        0.17578372971909648,
+        0.22352780059845373,
+        0.1343683803249711,
+        0.08012169079607737
+      ]
+    },
+    "struct": {
+      "max": 0.007145074044994625,
+      "mean": 0.0030731381645994022,
+      "p95": 0.005760808988797322,
+      "values": [
+        0.0015504129217400128,
+        0.001481051753488618,
+        0.0017762386548950695,
+        0.007145074044994625,
+        0.002873850526925261,
+        0.0033376141406803077,
+        0.00368441140450137,
+        0.0035621460420606882,
+        0.0022474439921086687
+      ]
+    }
+  },
+  "luad_evaluated": false,
+  "morphology_graph_expected": true,
+  "parameter_health": {
+    "p_morph.weight": {
+      "end_relative_update": 0.006964176427572966,
+      "end_update_norm": 0.11142682284116745,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.04801294828454653,
+      "measurable_update": true
+    },
+    "p_sem.weight": {
+      "end_relative_update": 0.01075788028538227,
+      "end_update_norm": 0.17212608456611633,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.06285684928297997,
+      "measurable_update": true
+    },
+    "u_morph.weight": {
+      "end_relative_update": 0.00703951483592391,
+      "end_update_norm": 0.11263223737478256,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.043914920546942286,
+      "measurable_update": true
+    },
+    "u_sem.weight": {
+      "end_relative_update": 0.00905457790941,
+      "end_update_norm": 0.14487324655056,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.06539771209160487,
+      "measurable_update": true
+    }
+  },
+  "parity_summary_sha256": "6d77c24d52fef3517760c33527b723d8289297dcc5791b884397c4cb17f7d6e3",
+  "processed_batches": 128,
+  "readiness_summary_sha256": "886d55e0632b56862d79717493f1e38fb5fa8874ab92c66a888bd1f42f2cbe3e",
+  "representation": {
+    "cross_covariance_end": 0.11426158994436264,
+    "cross_covariance_healthy": true,
+    "cross_covariance_start": 0.1258750706911087,
+    "reconstruction_cosine_end": 0.9982051253318787,
+    "reconstruction_cosine_start": 1.0,
+    "semantic_agreement_end": 0.9876124262809753,
+    "semantic_agreement_start": 0.8567291498184204
+  },
+  "same_pair_causal": {
+    "improved_fraction": 0.5,
+    "max_delta": 3.932695835828781e-05,
+    "mean_delta": -7.525081173298531e-06,
+    "median_delta": -1.1348383850418031e-06,
+    "min_delta": -0.00013951282016932964,
+    "num_harmed": 15,
+    "num_improved": 16,
+    "num_neutral": 1,
+    "num_struct_steps": 32
+  },
+  "segmentation_gt_used": false,
+  "semantic_preservation_path_active": true,
+  "sshr_loss_stable": true,
+  "test_evaluated": false,
+  "validation_evaluated": false
+}

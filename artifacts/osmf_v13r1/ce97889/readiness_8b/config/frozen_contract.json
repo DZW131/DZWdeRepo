@@ -1,0 +1,75 @@
+{
+  "active_steps": [
+    4,
+    8
+  ],
+  "audit_commit": "ce97889049d4212bd6c95e355642f5dee277c45d",
+  "audit_steps": [
+    0,
+    1,
+    2,
+    4,
+    8
+  ],
+  "authorized_batches": 8,
+  "baseline_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "batch_size": 20,
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "exact_command": "tools/audit_osmf_v13r1_gradient_gate.py --gate readiness --train-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/training --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --parity-summary /home/duyanhong/experiments/OSMF_V13R1_GRAPH_CORRECTED_ce97889/graph_parity/summary.json --output-dir /home/duyanhong/experiments/OSMF_V13R1_GRAPH_CORRECTED_ce97889/readiness_8b --audit-commit ce97889049d4212bd6c95e355642f5dee277c45d --num-workers 4",
+  "gate": "readiness",
+  "image_size": 224,
+  "luad_evaluated": false,
+  "missing_keys": [
+    "osmf_28_1.p_morph.weight",
+    "osmf_28_1.p_sem.weight",
+    "osmf_28_1.u_morph.weight",
+    "osmf_28_1.u_sem.weight"
+  ],
+  "objective_weights": {
+    "orth": 0.05,
+    "rec": 0.1,
+    "sem_pres": 0.05,
+    "struct": 0.05
+  },
+  "optimizer": {
+    "class": "PolyOptimizer",
+    "groups": [
+      {
+        "lr": 0.01,
+        "momentum": 0.0005,
+        "tensors": 82,
+        "weight_decay": 0.0005
+      },
+      {
+        "lr": 0.02,
+        "momentum": 0.0005,
+        "tensors": 39,
+        "weight_decay": 0.0
+      },
+      {
+        "lr": 0.1,
+        "momentum": 0.0005,
+        "tensors": 23,
+        "weight_decay": 0.0005
+      },
+      {
+        "lr": 0.2,
+        "momentum": 0.0005,
+        "tensors": 3,
+        "weight_decay": 0.0
+      }
+    ],
+    "lr_power": 0.9,
+    "max_step": 29275
+  },
+  "parity_summary_sha256": "6d77c24d52fef3517760c33527b723d8289297dcc5791b884397c4cb17f7d6e3",
+  "precision": "bf16",
+  "readiness_summary_sha256": null,
+  "seed": 20260817,
+  "segmentation_gt_used": false,
+  "smooth_l1_beta": 1.0,
+  "structural_interval": 4,
+  "test_evaluated": false,
+  "unexpected_keys": [],
+  "validation_evaluated": false
+}
