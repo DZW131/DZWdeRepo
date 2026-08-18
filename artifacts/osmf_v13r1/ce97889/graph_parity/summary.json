@@ -1,0 +1,75 @@
+{
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "decision": "OSMF_V13R1_GRAPH_PARITY_PASS",
+  "environment": {
+    "cuda_runtime": "12.8",
+    "cudnn": 91900,
+    "elapsed_seconds": 113.83066978497664,
+    "gpu": "NVIDIA GeForce RTX 5090 D v2",
+    "peak_memory_allocated_bytes": 7352961024,
+    "python": "3.10.20",
+    "pytorch": "2.11.0+cu128"
+  },
+  "exact_command": "tools/audit_osmf_v13r1_graph_parity.py --train-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/training --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --output-dir /home/duyanhong/experiments/OSMF_V13R1_GRAPH_CORRECTED_ce97889/graph_parity --osmf-v13r1-commit ce97889049d4212bd6c95e355642f5dee277c45d --num-workers 4",
+  "frozen_a0_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "graph_connectivity": {
+    "pass": true,
+    "struct_p_morph_grad_norm": 0.0005514695658348501,
+    "struct_u_morph_grad_norm": 0.0,
+    "total_p_morph_grad_norm": 0.03593379259109497,
+    "total_u_morph_grad_norm": 0.040237199515104294
+  },
+  "luad_evaluated": false,
+  "missing_keys": [
+    "osmf_28_1.p_morph.weight",
+    "osmf_28_1.p_sem.weight",
+    "osmf_28_1.u_morph.weight",
+    "osmf_28_1.u_sem.weight"
+  ],
+  "osmf_v13r1_commit": "ce97889049d4212bd6c95e355642f5dee277c45d",
+  "parameters": {
+    "a0_total": 112709714,
+    "delta": 524288,
+    "new_trainable_tensors": 4,
+    "overhead_percent": 0.4651666492561591,
+    "v13_total": 113234002
+  },
+  "phase0_started": false,
+  "prediction_parity": {
+    "a0_mDice": 0.8027430370812695,
+    "a0_mIoU": 0.6733598797454392,
+    "differing_pixels": 0,
+    "images": 3418,
+    "mDice_absolute_difference": 0.0,
+    "mIoU_absolute_difference": 0.0,
+    "v13_mDice": 0.8027430370812695,
+    "v13_mIoU": 0.6733598797454392
+  },
+  "readiness_started": false,
+  "tensor_parity": {
+    "random_input": {
+      "baseline_vs_osmf_hfrm_max_abs": 0.0,
+      "baseline_vs_osmf_reconstruction_max_abs": 0.0,
+      "cam28_1_max_abs": 0.0,
+      "cam28_2_max_abs": 0.0,
+      "cam56_max_abs": 0.0,
+      "camdeep_max_abs": 0.0,
+      "classification_probability_max_abs": 0.0,
+      "osmf_input_vs_reconstruction_max_abs": 0.0
+    },
+    "real_validation_input": {
+      "baseline_vs_osmf_hfrm_max_abs": 0.0,
+      "baseline_vs_osmf_reconstruction_max_abs": 0.0,
+      "cam28_1_max_abs": 0.0,
+      "cam28_2_max_abs": 0.0,
+      "cam56_max_abs": 0.0,
+      "camdeep_max_abs": 0.0,
+      "classification_probability_max_abs": 0.0,
+      "osmf_input_vs_reconstruction_max_abs": 0.0
+    }
+  },
+  "test_evaluated": false,
+  "training_performed": false,
+  "unexpected_keys": [],
+  "validation_metrics_used_for_selection": false
+}

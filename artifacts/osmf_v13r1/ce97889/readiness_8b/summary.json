@@ -1,0 +1,131 @@
+{
+  "audit_commit": "ce97889049d4212bd6c95e355642f5dee277c45d",
+  "authorized_batches": 8,
+  "baseline_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "checkpoint_saved": false,
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "cost": {
+    "elapsed_seconds": 3.9956798249913845,
+    "peak_memory_allocated_bytes": 6582205952
+  },
+  "decision": "OSMF_V13R1_READINESS_PASS",
+  "decision_reasons": [],
+  "environment": {
+    "cuda_runtime": "12.8",
+    "cudnn": 91900,
+    "gpu": "NVIDIA GeForce RTX 5090 D v2",
+    "python": "3.10.20",
+    "pytorch": "2.11.0+cu128"
+  },
+  "exact_command": "tools/audit_osmf_v13r1_gradient_gate.py --gate readiness --train-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/training --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --parity-summary /home/duyanhong/experiments/OSMF_V13R1_GRAPH_CORRECTED_ce97889/graph_parity/summary.json --output-dir /home/duyanhong/experiments/OSMF_V13R1_GRAPH_CORRECTED_ce97889/readiness_8b --audit-commit ce97889049d4212bd6c95e355642f5dee277c45d --num-workers 4",
+  "finite": true,
+  "fixed_probe": null,
+  "full_training_started": false,
+  "gate": "readiness",
+  "gradient_budget": {
+    "orth": {
+      "max": 0.05416991981004866,
+      "mean": 0.05333771725275457,
+      "p95": 0.05410601285431783,
+      "values": [
+        0.05321303733182597,
+        0.05416991981004866,
+        0.053743873438509795,
+        0.05222403843063386
+      ]
+    },
+    "rec": {
+      "max": 0.016910689743864768,
+      "mean": 0.005394575110012822,
+      "p95": 0.014821625368681363,
+      "values": [
+        2.1186459905988243e-08,
+        0.0016839956004178545,
+        0.0029835939093087625,
+        0.016910689743864768
+      ]
+    },
+    "sem_pres": {
+      "max": 0.2192070602472361,
+      "mean": 0.14172079765344633,
+      "p95": 0.21200570093109322,
+      "values": [
+        0.2192070602472361,
+        0.0924082717758597,
+        0.08406986045107252,
+        0.17119799813961703
+      ]
+    },
+    "struct": {
+      "max": 0.007158194399019882,
+      "mean": 0.0029914282097390937,
+      "p95": 0.006350872842171629,
+      "values": [
+        0.0015504129217400128,
+        0.001481054831498272,
+        0.001776050686698208,
+        0.007158194399019882
+      ]
+    }
+  },
+  "luad_evaluated": false,
+  "morphology_graph_expected": true,
+  "parameter_health": {
+    "p_morph.weight": {
+      "end_relative_update": 0.0016879835166037083,
+      "end_update_norm": 0.027007736265659332,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.05479158740490675,
+      "measurable_update": true
+    },
+    "p_sem.weight": {
+      "end_relative_update": 0.0021156431175768375,
+      "end_update_norm": 0.0338502898812294,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.06982555985450745,
+      "measurable_update": true
+    },
+    "u_morph.weight": {
+      "end_relative_update": 0.0017998198745772243,
+      "end_update_norm": 0.028797117993235588,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.04818296153098345,
+      "measurable_update": true
+    },
+    "u_sem.weight": {
+      "end_relative_update": 0.0020836563780903816,
+      "end_update_norm": 0.033338502049446106,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.07551948726177216,
+      "measurable_update": true
+    }
+  },
+  "parity_summary_sha256": "6d77c24d52fef3517760c33527b723d8289297dcc5791b884397c4cb17f7d6e3",
+  "processed_batches": 8,
+  "readiness_summary_sha256": null,
+  "representation": {
+    "cross_covariance_end": 0.08908975124359131,
+    "cross_covariance_healthy": true,
+    "cross_covariance_start": 0.1258750706911087,
+    "reconstruction_cosine_end": 0.9991003274917603,
+    "reconstruction_cosine_start": 1.0,
+    "semantic_agreement_end": 0.9361613392829895,
+    "semantic_agreement_start": 0.8567291498184204
+  },
+  "same_pair_causal": {
+    "improved_fraction": 1.0,
+    "max_delta": -8.503376739099622e-05,
+    "mean_delta": -0.0001121772947954014,
+    "median_delta": -0.0001121772947954014,
+    "min_delta": -0.00013932082219980657,
+    "num_harmed": 0,
+    "num_improved": 2,
+    "num_neutral": 0,
+    "num_struct_steps": 2
+  },
+  "segmentation_gt_used": false,
+  "semantic_preservation_path_active": true,
+  "sshr_loss_stable": true,
+  "test_evaluated": false,
+  "validation_evaluated": false
+}

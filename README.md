@@ -139,4 +139,5 @@ We thank the authors of [ESFAN](https://github.com/OceanPetal/ESFAN), whose code
 - [OSMF-v1.1 semantic-preservation readiness audit](docs/osmf_v11_semantic_preservation_delivery.md) — exact parity PASS, 8-batch readiness REVIEW; 128-batch Phase 0 was not started.
 - [OSMF-v1.2 conservative gradient-budget audit](docs/osmf_v12_gradient_budget_delivery.md) — exact parity PASS, 8-batch readiness PASS, fresh 128-batch Phase 0 REVIEW; later experiments were not started.
 - [OSMF-v1.2 Phase-0M morphology causal audit](docs/osmf_v12_phase0m_delivery.md) — same-pair, fixed-probe, affinity, and morphology-gradient evidence yields `MORPH_EQ_OBJECTIVE_INVALID`; later experiments were not started.
+- [OSMF-v1.3-R1 graph-corrected local-structural audit](docs/osmf_v13r1_graph_corrected_delivery.md) — graph/parity and 8-batch readiness PASS, but the fresh 128-batch fixed morphology probe worsens by 26.73%; final decision `OSMF_V13R1_PHASE0S_NOGO`, ending the OSMF local-structural morphology-specialization line.
 
