@@ -136,4 +136,5 @@ We thank the authors of [ESFAN](https://github.com/OceanPetal/ESFAN), whose code
 ## Research audits
 
 - [OSMF-v1.0 Phase-0 structural and gradient audit](docs/osmf_v1_phase0_delivery.md) — preregistered decision: `OSMF_PHASE0_NOGO`; Phase 1 was not started.
+- [OSMF-v1.1 semantic-preservation readiness audit](docs/osmf_v11_semantic_preservation_delivery.md) — exact parity PASS, 8-batch readiness REVIEW; 128-batch Phase 0 was not started.
 

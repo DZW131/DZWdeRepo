@@ -513,6 +513,9 @@ def main():
             for row in cosines:
                 row["step"] = step
                 cosine_rows.append(row)
+            # Do not retain the diagnostic graph while profiling the separate
+            # official optimizer step. Rows above contain scalar copies only.
+            del audit_bundle, ratios, cosines, ic1_aux_grads
 
         optimizer.zero_grad()
         before_step = (
