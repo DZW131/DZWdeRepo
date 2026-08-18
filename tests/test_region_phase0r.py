@@ -65,6 +65,11 @@ class RegionPhase0RTests(unittest.TestCase):
         for key in released.state_dict():
             self.assertEqual(released.state_dict()[key].shape, extractor.state_dict()[key].shape)
 
+    def test_upstream_eval_return_is_not_chained(self):
+        extractor = RegionAuditExtractor(n_class=4)
+        self.assertIsNone(extractor.eval())
+        self.assertFalse(extractor.training)
+
     def test_preregistered_decisions(self):
         self.assertEqual(
             decide_phase0r(2.1, 0.04, 0.06, 0.6, 0.3, 4, 0.2, False),

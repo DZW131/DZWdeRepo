@@ -111,7 +111,11 @@ def load_models(checkpoint):
     for key, value in released.state_dict().items():
         if not torch.equal(value, extractor.state_dict()[key]):
             raise AssertionError(f"Extractor changed checkpoint tensor {key}")
-    return released.eval(), extractor.eval()
+    # Upstream ResNet38 overrides train() without returning self, so eval()
+    # also returns None. Keep the released two-statement calling convention.
+    released.eval()
+    extractor.eval()
+    return released, extractor
 
 
 def flatten_metrics(metrics):
@@ -149,7 +153,8 @@ def feature_extraction(model, val_root, runtime_args):
     dataset = Stage1_InferDataset(str(val_root / "img"), img_size=IMAGE_SIZE)
     loader = DataLoader(dataset, shuffle=False, batch_size=1,
                         num_workers=runtime_args.num_workers, pin_memory=True)
-    model = model.cuda().eval()
+    model.eval()
+    model = model.cuda()
     names, ground_truth, predictions, rows = [], [], [], []
     region_parts, bbox_parts, centroid_parts, geometry_parts = [], [], [], []
     for image_index, (name_tuple, tensor) in enumerate(loader):
