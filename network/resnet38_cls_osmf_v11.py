@@ -90,10 +90,22 @@ class Net(SSHRNet):
         cam_28_1 = self.ic1(feat_28_1_osmf)
         cam_28_2 = self.ic2(feat_28_2_rectified)
         cam_deep = self.fc8(self.dropout7(feat_deep))
-        out_56 = F.adaptive_avg_pool2d(cam_56, 1).flatten(1)
-        out_28_1 = F.adaptive_avg_pool2d(cam_28_1, 1).flatten(1)
-        out_28_2 = F.adaptive_avg_pool2d(cam_28_2, 1).flatten(1)
-        out_deep = F.adaptive_avg_pool2d(cam_deep, 1).flatten(1)
+        out_56 = F.avg_pool2d(
+            cam_56, kernel_size=(cam_56.size(2), cam_56.size(3)), padding=0
+        ).flatten(1)
+        out_28_1 = F.avg_pool2d(
+            cam_28_1,
+            kernel_size=(cam_28_1.size(2), cam_28_1.size(3)),
+            padding=0,
+        ).flatten(1)
+        out_28_2 = F.avg_pool2d(
+            cam_28_2,
+            kernel_size=(cam_28_2.size(2), cam_28_2.size(3)),
+            padding=0,
+        ).flatten(1)
+        out_deep = F.avg_pool2d(
+            cam_deep, kernel_size=(cam_deep.size(2), cam_deep.size(3)), padding=0
+        ).flatten(1)
         y_deep = torch.sigmoid(out_deep)
         outputs = (
             out_56,
@@ -135,5 +147,9 @@ class Net_CAM(Net):
         cam_28_1 = F.relu(self.ic1(feat_28_1_osmf))
         cam_28_2 = F.relu(self.ic2(feat_28_2_rectified))
         cam_deep = F.relu(self.fc8(feat_deep))
-        out_deep = F.adaptive_avg_pool2d(self.fc8(feat_deep), 1).flatten(1)
+        out_deep = F.avg_pool2d(
+            self.fc8(feat_deep),
+            kernel_size=(feat_deep.size(2), feat_deep.size(3)),
+            padding=0,
+        ).flatten(1)
         return cam_56, cam_28_1, cam_28_2, cam_deep, torch.sigmoid(out_deep)
