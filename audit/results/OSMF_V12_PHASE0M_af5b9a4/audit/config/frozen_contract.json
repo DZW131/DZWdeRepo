@@ -1,0 +1,121 @@
+{
+  "audit_commit": "af5b9a431e30d26bec36c024447e1b0af93cc197",
+  "authorized_batches": 128,
+  "baseline_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "batch_size": 20,
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "eq_steps": [
+    4,
+    8,
+    12,
+    16,
+    20,
+    24,
+    28,
+    32,
+    36,
+    40,
+    44,
+    48,
+    52,
+    56,
+    60,
+    64,
+    68,
+    72,
+    76,
+    80,
+    84,
+    88,
+    92,
+    96,
+    100,
+    104,
+    108,
+    112,
+    116,
+    120,
+    124,
+    128
+  ],
+  "exact_command": "tools/audit_osmf_v12_phase0m.py --train-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/training --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --v12-phase0-summary /home/duyanhong/experiments/OSMF_V12_GRADIENT_BUDGET_92b9c14/phase0_128b/summary.json --output-dir /home/duyanhong/experiments/OSMF_V12_PHASE0M_af5b9a4/audit --audit-commit af5b9a431e30d26bec36c024447e1b0af93cc197 --num-workers 4",
+  "fixed_probe_steps": [
+    0,
+    4,
+    8,
+    16,
+    32,
+    64,
+    96,
+    128
+  ],
+  "frozen_v12_executed_commit": "92b9c142a18a7c0d8bbc6406f3ff336b1ef7e7c4",
+  "gradient_steps": [
+    4,
+    8,
+    16,
+    32,
+    64,
+    96,
+    128
+  ],
+  "image_size": 224,
+  "luad_evaluated": false,
+  "objective_weights": {
+    "eq": 0.05,
+    "orth": 0.05,
+    "rec": 0.1,
+    "sem_pres": 0.05
+  },
+  "optimizer": {
+    "class": "PolyOptimizer",
+    "lr_power": 0.9,
+    "max_step": 29275,
+    "parameter_groups": [
+      {
+        "lr": 0.01,
+        "momentum": 0.0005,
+        "parameter_tensors": 82,
+        "weight_decay": 0.0005
+      },
+      {
+        "lr": 0.02,
+        "momentum": 0.0005,
+        "parameter_tensors": 39,
+        "weight_decay": 0.0
+      },
+      {
+        "lr": 0.1,
+        "momentum": 0.0005,
+        "parameter_tensors": 23,
+        "weight_decay": 0.0005
+      },
+      {
+        "lr": 0.2,
+        "momentum": 0.0005,
+        "parameter_tensors": 3,
+        "weight_decay": 0.0
+      }
+    ]
+  },
+  "precision": "bf16",
+  "probe_batch_size": 8,
+  "probe_images": 64,
+  "seed": 20260817,
+  "segmentation_gt_used": false,
+  "source_sha256": {
+    "docs/specs/osmf_v12_phase0m_preregistered_contract.md": "097eb9d876bf3d33b021fab28755ea0d60b6850c478cb938a802461fd8a04cd7",
+    "network/osmf_v12.py": "365908c7f5853f3374331b06449aefd131f67c901511de584abcf2170b353f08",
+    "network/resnet38_cls_osmf_v12.py": "6eb74d592db2f612e2fdcd0e7dd8ffdeb0e03c616ea7939b2de002326d020c8b",
+    "tool/GenDataset.py": "073c9b4ffe10aab71bd8fbcb63e0703579c587d8e60cef7518e9d1c9a6dde969",
+    "tools/audit_osmf_v12_phase0m.py": "ac367bd401eceae5da6a4758c0cc70d640cd415d8573550942fd4216a49d799a",
+    "tools/osmf_v12_phase0m/__init__.py": "e9dcfc6be2a01041c05f12a01d12105114a282e0a07a0936b9e153d68253d854",
+    "tools/osmf_v12_phase0m/diagnostics.py": "e76eeb3d2c7d859f0a9d3d915b0f24afabadac09daf2f4378dc4d43aa971b867",
+    "tools/osmf_v12_phase0m/report.py": "397b539926b6e350f17c518db3c50db80dccd580677ef9a98dbb8626ce63a484",
+    "train_osmf_v12.py": "91bfd227ce449362d67921140ad26644e908fa03a4651ce6f1f4f400df09ba9f",
+    "train_sshr.py": "2b4f5f73f047995ad3d91fccfe74afc3437ff410e15364cbacf542b0a4d9eb86"
+  },
+  "test_evaluated": false,
+  "v12_phase0_summary_sha256": "095871dcfc31e967fc842c777b6c9d44edd3826ac2eb084e0123ebc587ab94b6",
+  "validation_evaluated": false
+}
