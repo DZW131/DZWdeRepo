@@ -151,6 +151,15 @@ python -u tools/run_rsbr_v0.py \
   --num-workers 4
 ```
 
+Optional one-batch batch20/BF16 resource smoke:
+
+```bash
+python -u tools/smoke_rsbr_v0.py \
+  --train-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/training \
+  --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth \
+  --num-workers 4
+```
+
 The command stops automatically after parity failure, readiness REVIEW/NOGO,
 or the three-epoch pilot. It never accesses BCSS test or LUAD.
 
