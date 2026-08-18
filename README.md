@@ -163,3 +163,21 @@ python -u tools/smoke_rsbr_v0.py \
 The command stops automatically after parity failure, readiness REVIEW/NOGO,
 or the three-epoch pilot. It never accesses BCSS test or LUAD.
 
+### RSBR-v0 Stage -1R parity-harness audit
+
+The audit-only Stage -1R branch measures the independent BF16 numerical
+envelope before any parity-gate revision:
+
+```bash
+python -u tools/audit_rsbr_v0_stage1r.py \
+  --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val \
+  --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth \
+  --output-dir /home/duyanhong/experiments/RSBR_V0_STAGE1R_PARITY_<commit> \
+  --rsbr-commit <commit> \
+  --num-workers 4
+```
+
+This command launches three independent A0 and three independent zero-init
+RSBR full-validation processes, then stops after generating
+`docs/rsbr_v0_stage1r_parity_audit.md`. It never trains or accesses test/LUAD.
+
