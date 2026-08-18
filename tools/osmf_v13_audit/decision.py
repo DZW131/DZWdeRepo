@@ -73,12 +73,14 @@ def _safety_failures(finite, representation_rows, parameter_summary):
 
 def readiness_decision(*, finite, ratio_rows, representation_rows,
                        parameter_summary, morph_struct_active,
-                       causal_rows, sshr_loss_stable):
+                       semantic_path_active, causal_rows, sshr_loss_stable):
     nogo, review = _safety_failures(
         finite, representation_rows, parameter_summary
     ), []
     if not morph_struct_active:
         nogo.append("MORPHOLOGY_STRUCTURAL_PATH_INACTIVE")
+    if not semantic_path_active:
+        nogo.append("SEMANTIC_PRESERVATION_PATH_INACTIVE")
     if not sshr_loss_stable:
         nogo.append("SSHR_LOSS_DESTABILIZED")
     causal = causal_statistics(causal_rows)
@@ -99,7 +101,8 @@ def readiness_decision(*, finite, ratio_rows, representation_rows,
 
 def phase0s_decision(*, finite, ratio_rows, representation_rows,
                      parameter_summary, morph_struct_active, causal_rows,
-                     fixed_rows, sshr_loss_stable, cross_covariance_healthy):
+                     semantic_path_active, fixed_rows, sshr_loss_stable,
+                     cross_covariance_healthy):
     nogo = _safety_failures(finite, representation_rows, parameter_summary)
     stats = _ratio_stats(ratio_rows)
     causal = causal_statistics(causal_rows)
@@ -113,6 +116,8 @@ def phase0s_decision(*, finite, ratio_rows, representation_rows,
     specificity_gap = m_improve - s_improve
     if not morph_struct_active:
         nogo.append("MORPHOLOGY_STRUCTURAL_PATH_INACTIVE")
+    if not semantic_path_active:
+        nogo.append("SEMANTIC_PRESERVATION_PATH_INACTIVE")
     if not sshr_loss_stable:
         nogo.append("SSHR_LOSS_DESTABILIZED")
     if not cross_covariance_healthy:

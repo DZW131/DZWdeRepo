@@ -238,7 +238,8 @@ def main():
     if identity_error >= 1e-6 or not start_rep["finite"]:
         raise RuntimeError("Start-state parity/finite failure")
     representation_rows, loss_rows = [start_rep], []
-    ratio_rows, cosine_rows, causal_rows, morph_gradient_rows = [], [], [], []
+    ratio_rows, cosine_rows, causal_rows = [], [], []
+    morph_gradient_rows, semantic_gradient_rows = [], []
     parameter_gradient_rows_all, parameter_update_rows_all = [], []
     fixed_rows = [_fixed_probe_measure(model, probe_records, 0)] if probe_records else []
     initial = snapshot_parameters(model.osmf_28_1, PARAMETER_NAMES)
@@ -262,8 +263,18 @@ def main():
             cosine_rows.extend({"step": step, **row} for row in cosines)
             if step in active_steps:
                 selected = dict(model.osmf_28_1.named_parameters())
-                grads = torch.autograd.grad(audit["struct"], tuple(selected[name] for name in MORPHOLOGY_PARAMETER_NAMES), retain_graph=False, allow_unused=True)
+                grads = torch.autograd.grad(audit["struct"], tuple(selected[name] for name in MORPHOLOGY_PARAMETER_NAMES), retain_graph=True, allow_unused=True)
                 morph_gradient_rows.append({"step": step, "p_morph_grad_norm": 0.0 if grads[0] is None else float(grads[0].float().norm().cpu()), "u_morph_grad_norm": 0.0 if grads[1] is None else float(grads[1].float().norm().cpu())})
+                sem_grads = torch.autograd.grad(
+                    audit["sem_pres"],
+                    (selected["p_sem.weight"], selected["u_sem.weight"]),
+                    retain_graph=False, allow_unused=True,
+                )
+                semantic_gradient_rows.append({
+                    "step": step,
+                    "p_sem_grad_norm": 0.0 if sem_grads[0] is None else float(sem_grads[0].float().norm().cpu()),
+                    "u_sem_grad_norm": 0.0 if sem_grads[1] is None else float(sem_grads[1].float().norm().cpu()),
+                })
             finite = finite and _finite(audit) and all(row["finite"] for row in ratios + cosines)
             del audit, ratios, cosines
 
@@ -296,20 +307,37 @@ def main():
         if not finite:
             break
 
+    if processed != authorized:
+        finite = False
     parameter_summary = _parameter_summary(parameter_gradient_rows_all, parameter_update_rows_all)
-    morph_active = all(any(float(row[key]) > 1e-12 for row in morph_gradient_rows if row["step"] in (4, 8)) for key in ("p_morph_grad_norm", "u_morph_grad_norm"))
+    morph_active = all(
+        float(row[key]) > 1e-12
+        for row in morph_gradient_rows if row["step"] in (4, 8)
+        for key in ("p_morph_grad_norm", "u_morph_grad_norm")
+    ) and len(morph_gradient_rows) == 2
+    semantic_active = all(
+        float(row[key]) > 1e-12
+        for row in semantic_gradient_rows if row["step"] in (4, 8)
+        for key in ("p_sem_grad_norm", "u_sem_grad_norm")
+    ) and len(semantic_gradient_rows) == 2
     sshr_values = [float(row["loss_sshr"]) for row in loss_rows]
-    sshr_stable = all(math.isfinite(value) for value in sshr_values) and max(sshr_values) < 2.0 * max(sshr_values[0], 1e-6)
+    # Different shuffled batches are not paired controls. Treat only a clear
+    # numerical explosion as instability; ordinary batch-to-batch variation
+    # must not be compared to the first batch by a relative multiplier.
+    sshr_stable = (
+        all(math.isfinite(value) and value >= 0.0 for value in sshr_values)
+        and max(sshr_values) < 5.0
+    )
     cross_start, cross_end = representation_rows[0]["cross_covariance"], representation_rows[-1]["cross_covariance"]
     cross_healthy = math.isfinite(cross_end) and cross_end <= max(2.0 * cross_start, cross_start + 0.01)
     if args.gate == "readiness":
-        decision, reasons, ratio_stats, causal = readiness_decision(finite=finite, ratio_rows=ratio_rows, representation_rows=representation_rows, parameter_summary=parameter_summary, morph_struct_active=morph_active, causal_rows=causal_rows, sshr_loss_stable=sshr_stable)
+        decision, reasons, ratio_stats, causal = readiness_decision(finite=finite, ratio_rows=ratio_rows, representation_rows=representation_rows, parameter_summary=parameter_summary, morph_struct_active=morph_active, semantic_path_active=semantic_active, causal_rows=causal_rows, sshr_loss_stable=sshr_stable)
         fixed_summary = None
     else:
-        decision, reasons, ratio_stats, causal, evidence = phase0s_decision(finite=finite, ratio_rows=ratio_rows, representation_rows=representation_rows, parameter_summary=parameter_summary, morph_struct_active=morph_active, causal_rows=causal_rows, fixed_rows=fixed_rows, sshr_loss_stable=sshr_stable, cross_covariance_healthy=cross_healthy)
+        decision, reasons, ratio_stats, causal, evidence = phase0s_decision(finite=finite, ratio_rows=ratio_rows, representation_rows=representation_rows, parameter_summary=parameter_summary, morph_struct_active=morph_active, semantic_path_active=semantic_active, causal_rows=causal_rows, fixed_rows=fixed_rows, sshr_loss_stable=sshr_stable, cross_covariance_healthy=cross_healthy)
         fixed_summary = {"images": PROBE_IMAGES, "affinity_morphology_start": fixed_rows[0]["affinity_eq_error_morphology"], "affinity_morphology_end": fixed_rows[-1]["affinity_eq_error_morphology"], "affinity_semantic_start": fixed_rows[0]["affinity_eq_error_semantic"], "affinity_semantic_end": fixed_rows[-1]["affinity_eq_error_semantic"], "raw_morphology_start": fixed_rows[0]["eq_error_morphology"], "raw_morphology_end": fixed_rows[-1]["eq_error_morphology"], **evidence}
 
-    for name, rows in (("loss_trace.csv", loss_rows), ("gradient_ratios.csv", ratio_rows), ("gradient_cosines.csv", cosine_rows), ("morphology_structural_gradients.csv", morph_gradient_rows), ("same_pair_causal.csv", causal_rows), ("representation_health.csv", representation_rows), ("parameter_gradients.csv", parameter_gradient_rows_all), ("parameter_updates.csv", parameter_update_rows_all), ("fixed_probe.csv", fixed_rows)):
+    for name, rows in (("loss_trace.csv", loss_rows), ("gradient_ratios.csv", ratio_rows), ("gradient_cosines.csv", cosine_rows), ("morphology_structural_gradients.csv", morph_gradient_rows), ("semantic_preservation_gradients.csv", semantic_gradient_rows), ("same_pair_causal.csv", causal_rows), ("representation_health.csv", representation_rows), ("parameter_gradients.csv", parameter_gradient_rows_all), ("parameter_updates.csv", parameter_update_rows_all), ("fixed_probe.csv", fixed_rows)):
         write_csv(args.output_dir / "tables" / name, rows)
     summary = {
         "gate": args.gate, "decision": decision, "decision_reasons": reasons,
@@ -318,7 +346,9 @@ def main():
         "checkpoint_sha256": checkpoint_sha, "parity_summary_sha256": parity_sha,
         "readiness_summary_sha256": readiness_sha, "exact_command": contract["exact_command"],
         "same_pair_causal": causal, "gradient_budget": ratio_stats,
-        "morphology_structural_path_active": morph_active, "parameter_health": parameter_summary,
+        "morphology_structural_path_active": morph_active,
+        "semantic_preservation_path_active": semantic_active,
+        "parameter_health": parameter_summary,
         "fixed_probe": fixed_summary,
         "representation": {"semantic_agreement_start": representation_rows[0]["semantic_agreement"], "semantic_agreement_end": representation_rows[-1]["semantic_agreement"], "reconstruction_cosine_start": representation_rows[0]["reconstruction_cosine"], "reconstruction_cosine_end": representation_rows[-1]["reconstruction_cosine"], "cross_covariance_start": cross_start, "cross_covariance_end": cross_end, "cross_covariance_healthy": cross_healthy},
         "finite": finite, "sshr_loss_stable": sshr_stable,

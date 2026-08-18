@@ -38,6 +38,7 @@ def test_readiness_pass_requires_favorable_same_pair_causality():
         finite=True, ratio_rows=_rows([0.1, 0.15]),
         representation_rows=_representations(), parameter_summary=_parameters(),
         morph_struct_active=True,
+        semantic_path_active=True,
         causal_rows=[{"delta": -0.01}, {"delta": -0.02}],
         sshr_loss_stable=True,
     )
@@ -53,6 +54,7 @@ def test_phase0s_nogo_has_priority_for_invalid_causal_effect():
         finite=True, ratio_rows=_rows([0.1, 0.15]),
         representation_rows=_representations(), parameter_summary=_parameters(),
         morph_struct_active=True,
+        semantic_path_active=True,
         causal_rows=[{"delta": 0.01}, {"delta": -0.001}], fixed_rows=fixed,
         sshr_loss_stable=True, cross_covariance_healthy=True,
     )
@@ -69,6 +71,7 @@ def test_phase0s_go_requires_five_percent_fixed_morphology_improvement():
         finite=True, ratio_rows=_rows([0.1, 0.15]),
         representation_rows=_representations(), parameter_summary=_parameters(),
         morph_struct_active=True,
+        semantic_path_active=True,
         causal_rows=[{"delta": -0.01}] * 4, fixed_rows=fixed,
         sshr_loss_stable=True, cross_covariance_healthy=True,
     )
