@@ -1,0 +1,133 @@
+{
+  "audit_commit": "5a19675e76e60a020892be934936aa19f31b03fa",
+  "authorized_batches": 8,
+  "baseline_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "checkpoint_saved": false,
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "cost": {
+    "elapsed_seconds": 4.155787480005529,
+    "peak_memory_allocated_bytes": 6582205952
+  },
+  "decision": "OSMF_V13_READINESS_NOGO",
+  "decision_reasons": [
+    "MORPHOLOGY_STRUCTURAL_PATH_INACTIVE"
+  ],
+  "environment": {
+    "cuda_runtime": "12.8",
+    "cudnn": 91900,
+    "gpu": "NVIDIA GeForce RTX 5090 D v2",
+    "python": "3.10.20",
+    "pytorch": "2.11.0+cu128"
+  },
+  "exact_command": "tools/audit_osmf_v13_gradient_gate.py --gate readiness --train-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/training --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --parity-summary /home/duyanhong/experiments/OSMF_V13_LOCAL_STRUCTURAL_5a19675/parity/summary.json --output-dir /home/duyanhong/experiments/OSMF_V13_LOCAL_STRUCTURAL_5a19675/readiness_8b --audit-commit 5a19675e76e60a020892be934936aa19f31b03fa --num-workers 4",
+  "finite": true,
+  "fixed_probe": null,
+  "full_training_started": false,
+  "gate": "readiness",
+  "gradient_budget": {
+    "orth": {
+      "max": 0.054173143922561014,
+      "mean": 0.053257684806337774,
+      "p95": 0.05409631585822522,
+      "values": [
+        0.05321303733182597,
+        0.054173143922561014,
+        0.05366095682698906,
+        0.05198360114397505
+      ]
+    },
+    "rec": {
+      "max": 0.01687808219117161,
+      "mean": 0.005385710412863137,
+      "p95": 0.014793482710170877,
+      "values": [
+        2.1186459905988243e-08,
+        0.001683985955987605,
+        0.0029807523178334273,
+        0.01687808219117161
+      ]
+    },
+    "sem_pres": {
+      "max": 0.2192070602472361,
+      "mean": 0.14153509271181075,
+      "p95": 0.21188837309330877,
+      "values": [
+        0.2192070602472361,
+        0.09240789748988576,
+        0.08410960055573387,
+        0.17041581255438723
+      ]
+    },
+    "struct": {
+      "max": 0.007145074044994625,
+      "mean": 0.0029881943437795816,
+      "p95": 0.00633974873647969,
+      "values": [
+        0.0015504129217400128,
+        0.001481051753488618,
+        0.0017762386548950695,
+        0.007145074044994625
+      ]
+    }
+  },
+  "luad_evaluated": false,
+  "morphology_structural_path_active": false,
+  "parameter_health": {
+    "p_morph.weight": {
+      "end_relative_update": 0.0016875554574653506,
+      "end_update_norm": 0.02700088731944561,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.0548202944919467,
+      "measurable_update": true
+    },
+    "p_sem.weight": {
+      "end_relative_update": 0.002115794224664569,
+      "end_update_norm": 0.0338527075946331,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.06987304892390966,
+      "measurable_update": true
+    },
+    "u_morph.weight": {
+      "end_relative_update": 0.0017981341807171702,
+      "end_update_norm": 0.028770146891474724,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.04820131231099367,
+      "measurable_update": true
+    },
+    "u_sem.weight": {
+      "end_relative_update": 0.002085183747112751,
+      "end_update_norm": 0.033362939953804016,
+      "grad_nonzero": true,
+      "mean_grad_norm": 0.07557924557477236,
+      "measurable_update": true
+    }
+  },
+  "parity_summary_sha256": "35b0ce620790de88e4ab1c6ef3edcdf15fc811921389d9b2e580f6f11590c822",
+  "processed_batches": 8,
+  "readiness_summary_sha256": null,
+  "representation": {
+    "cross_covariance_end": 0.08899380266666412,
+    "cross_covariance_healthy": true,
+    "cross_covariance_start": 0.1258750706911087,
+    "reconstruction_cosine_end": 0.9991025924682617,
+    "reconstruction_cosine_start": 1.0,
+    "semantic_agreement_end": 0.9363112449645996,
+    "semantic_agreement_start": 0.8567291498184204
+  },
+  "same_pair_causal": {
+    "improved_fraction": 1.0,
+    "max_delta": -8.472495392197743e-05,
+    "mean_delta": -0.00011211888704565354,
+    "median_delta": -0.00011211888704565354,
+    "min_delta": -0.00013951282016932964,
+    "num_harmed": 0,
+    "num_improved": 2,
+    "num_neutral": 0,
+    "num_struct_steps": 2
+  },
+  "segmentation_gt_used": false,
+  "semantic_preservation_path_active": true,
+  "sshr_loss_stable": true,
+  "test_evaluated": false,
+  "validation_evaluated": false
+}
