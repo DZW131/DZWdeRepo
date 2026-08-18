@@ -133,3 +133,24 @@ python train_sshr.py \
 
 We thank the authors of [ESFAN](https://github.com/OceanPetal/ESFAN), whose codebase provided a valuable foundation for this repository.
 
+## RSBR-v0 gated experiment
+
+The isolated `research/rsbr-v0` branch adds the preregistered Region
+Semantic-Boundary Refinement pilot without changing the A0 entry point. Its
+frozen contract is documented in `docs/rsbr_v0_frozen_contract.md`.
+
+Run all gates on the server from a fresh output directory:
+
+```bash
+python -u tools/run_rsbr_v0.py \
+  --train-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/training \
+  --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val \
+  --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth \
+  --output-dir /home/duyanhong/experiments/RSBR_V0_<commit> \
+  --audit-commit <commit> \
+  --num-workers 4
+```
+
+The command stops automatically after parity failure, readiness REVIEW/NOGO,
+or the three-epoch pilot. It never accesses BCSS test or LUAD.
+
