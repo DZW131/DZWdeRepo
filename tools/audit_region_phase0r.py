@@ -266,6 +266,10 @@ def run_probes(frame, tokens, ground_truth, predictions, baseline_metrics, outpu
                 "segmentation_miou": float(segmentation["Mean IoU"]),
                 "segmentation_mdice": float(segmentation["Mean Dice"]),
                 "segmentation_gain_miou_pp": gain_pp,
+                **{
+                    f"segmentation_iou_class_{class_index}": float(value)
+                    for class_index, value in segmentation["Class IoU"].items()
+                },
             }
             all_rows.append(entry)
             if min_area == PRIMARY_MIN_AREA:
@@ -395,8 +399,8 @@ def qualitative_panels(frame, artifact, val_root, gt, raw_prediction, oracle_pre
                         "GT-majority oracle", "Region OOF", "Error difference",
                     ][col])
             axes[row_index, 0].set_ylabel(item.image_id[:18], fontsize=7)
-        figure.suptitle(category)
-        figure.tight_layout()
+        figure.suptitle(category, y=0.998, fontsize=14)
+        figure.tight_layout(rect=[0.0, 0.0, 1.0, 0.985])
         figure.savefig(output_dir / "figures" / f"{category}.png", dpi=130)
         plt.close(figure)
 
@@ -522,6 +526,7 @@ def main():
             "n_regions": int((frame.pixel_area >= PRIMARY_MIN_AREA).sum()),
             "pure_fraction": float((frame.loc[frame.pixel_area >= PRIMARY_MIN_AREA, "purity"] >= 0.8).mean()),
         },
+        "taxonomy": taxonomy.to_dict(orient="records"),
         "probes": {
             key: {field: value for field, value in artifact.items()
                   if field not in {"oof", "fold_ids", "folds", "frame", "prediction"}}

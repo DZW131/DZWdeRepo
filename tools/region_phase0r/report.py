@@ -44,11 +44,33 @@ def write_report(output_dir, summary):
         "",
         f"Recoverable error fraction: {oracle['recovery_fraction']:.4f}.",
         "",
+        "| Class | A0 IoU | Oracle IoU | ΔIoU |",
+        "|---:|---:|---:|---:|",
+    ]
+    for class_index in range(4):
+        base_value = baseline["class_iou"][str(class_index)]
+        oracle_value = oracle["class_iou"][str(class_index)]
+        lines.append(
+            f"| {class_index} | {_pct(base_value)} | {_pct(oracle_value)} | "
+            f"{100.0 * (oracle_value - base_value):+.4f} pp |"
+        )
+    lines += [
+        "",
         "## 4. Region purity and error taxonomy",
         "",
         f"Primary area ≥ 8 regions: {primary['n_regions']}. Pure-region fraction: {primary['pure_fraction']:.4f}.",
         "",
-        "See `tables/region_purity_by_class.csv` and `tables/taxonomy_error_mass.csv` for the complete breakdown.",
+        "| Taxonomy | Regions | Wrong-pixel mass | Fraction |",
+        "|---|---:|---:|---:|",
+    ]
+    for item in summary["taxonomy"]:
+        lines.append(
+            f"| {item['taxonomy']} | {item['n_regions']} | {item['wrong_pixels']} | "
+            f"{item['wrong_pixel_fraction']:.4f} |"
+        )
+    lines += [
+        "",
+        "See `tables/region_purity_by_class.csv` and `tables/taxonomy_error_mass.csv` for the complete distribution.",
         "",
         "## 5. Frozen feature probes",
         "",
@@ -62,8 +84,8 @@ def write_report(output_dir, summary):
         )
     lines += [
         "",
-        f"Region−BBox accuracy: {decision['region_bbox_gain']:+.4f}; "
-        f"Region−Centroid accuracy: {decision['region_centroid_gain']:+.4f}.",
+        f"Region−BBox macro-F1: {decision['region_bbox_gain']:+.4f}; "
+        f"Region−Centroid macro-F1: {decision['region_centroid_gain']:+.4f}.",
         "",
         f"Positive slide-held-out folds for Region relabeling: {decision['positive_folds']}/5.",
         "",
@@ -87,6 +109,9 @@ def write_report(output_dir, summary):
         f"- Oracle recovery fraction: {oracle['recovery_fraction']:.4f}",
         f"- Mixed-boundary share of error mass: {decision['mixed_error_fraction']:.4f}",
         f"- Region+Geo relabeling gain: {decision['region_geo_seg_gain_pp']:+.4f} pp",
+        f"- Geometry macro-F1 increment: {decision['geometry_f1_gain']:+.4f}",
+        f"- Geometry segmentation increment: {decision['geometry_seg_increment_pp']:+.4f} pp",
+        f"- Geometry adds value flag: {decision['geometry_adds_value']}",
         "",
         "## 9. Scope guard",
         "",
