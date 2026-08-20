@@ -1,0 +1,47 @@
+{
+  "command": "/home/duyanhong/DZWdeRepo-rsbr-parity-r1/tools/audit_rsbr_v0_parity_r1.py --worker --model rsbr --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --output-dir /home/duyanhong/experiments/RSBR_V0_PARITY_R1_AND_READINESS_7cbe5aa/parity_r1 --worker-output /home/duyanhong/experiments/RSBR_V0_PARITY_R1_AND_READINESS_7cbe5aa/parity_r1/production_rsbr/run --audit-commit 7cbe5aa0ad73d7e6827962f832bd50d6050d0b73 --num-workers 4",
+  "count": 3418,
+  "environment": {
+    "autocast_dtype": "bf16",
+    "cuda_runtime": "12.8",
+    "cudnn": 91900,
+    "cudnn_benchmark": true,
+    "cudnn_deterministic": false,
+    "deterministic_algorithms": false,
+    "gpu": "NVIDIA GeForce RTX 5090 D v2",
+    "python": "3.10.20",
+    "pytorch": "2.11.0+cu128",
+    "tf32_convolution": "tf32",
+    "tf32_matmul": "tf32"
+  },
+  "metrics": {
+    "class_dice": {
+      "0": 0.8665218696847533,
+      "1": 0.8275036679775213,
+      "2": 0.7330132917713866,
+      "3": 0.783935123324762
+    },
+    "class_iou": {
+      "0": 0.7644804487262171,
+      "1": 0.7057622658402114,
+      "2": 0.578548525419197,
+      "3": 0.6446490959167136
+    },
+    "mDice": 0.8027434881896058,
+    "mIoU": 0.6733600839755848
+  },
+  "missing_keys_expected_rsbr_only": [
+    "rsbr.region_semantic_head.bias",
+    "rsbr.region_semantic_head.weight",
+    "rsbr.transition_head.0.bias",
+    "rsbr.transition_head.0.weight",
+    "rsbr.transition_head.2.bias",
+    "rsbr.transition_head.2.weight"
+  ],
+  "model": "rsbr",
+  "names_sha256": "4550e8d1217b6e319ba4b653a5736bf1278c0dbe0fb460195001edda3e260df2",
+  "peak_cuda_memory_bytes": 759654400,
+  "prediction_sha256": "36d45935421b21a9ddf4458ab561e14dba4d5c12d37346efeda9bf9dc2a5d265",
+  "production_flags_unchanged": true,
+  "runtime_seconds": 133.15933799743652
+}
