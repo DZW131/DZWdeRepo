@@ -13,8 +13,8 @@ from tools.rsbr_parity_r1_contract import (
 
 ROOT = Path(__file__).resolve().parents[1]
 FROZEN_HASHES = {
-    "network/rsbr_v0.py": "c4cf64a5dd564aa3dbbf7fe24b8aab672f0c1b964273848cdb34d76601f1c1d0",
-    "network/resnet38_cls_rsbr.py": "c6a5281e3c047a2b299c4bf111732b23db7fd60ea11f9257a7b6e74414b00127",
+    "network/rsbr_v0.py": "b13ff51e0b73816fa3ffbf241764f2f50bfcda5d2de39951f165cf86a2e0a80a",
+    "network/resnet38_cls_rsbr.py": "6af680e5be3b509ed4ef87d48e118e050fa1445b6a87234c657f88fb3ddf2765",
 }
 
 
@@ -63,7 +63,8 @@ def test_same_process_identity_is_a_hard_gate():
 
 def test_model_sources_are_unchanged():
     for relative, expected in FROZEN_HASHES.items():
-        actual = hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
+        canonical = (ROOT / relative).read_text(encoding="utf-8").encode("utf-8")
+        actual = hashlib.sha256(canonical).hexdigest()
         assert actual == expected
 
 

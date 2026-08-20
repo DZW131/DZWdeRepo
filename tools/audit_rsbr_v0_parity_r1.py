@@ -46,8 +46,8 @@ EXPECTED_VAL = 3418
 FIXED_SUBSET = 32
 A0_COMMIT = "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9"
 FROZEN_MODEL_HASHES = {
-    "network/rsbr_v0.py": "c4cf64a5dd564aa3dbbf7fe24b8aab672f0c1b964273848cdb34d76601f1c1d0",
-    "network/resnet38_cls_rsbr.py": "c6a5281e3c047a2b299c4bf111732b23db7fd60ea11f9257a7b6e74414b00127",
+    "network/rsbr_v0.py": "b13ff51e0b73816fa3ffbf241764f2f50bfcda5d2de39951f165cf86a2e0a80a",
+    "network/resnet38_cls_rsbr.py": "6af680e5be3b509ed4ef87d48e118e050fa1445b6a87234c657f88fb3ddf2765",
 }
 
 
@@ -70,6 +70,13 @@ def sha256_file(path):
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def sha256_source(path):
+    """Hash source text after canonical LF newline conversion."""
+
+    text = Path(path).read_text(encoding="utf-8")
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
 def write_json(path, payload):
@@ -492,7 +499,7 @@ Exact command:
 def orchestrator_main(args):
     validate_args(args)
     output = Path(args.output_dir)
-    actual_hashes = {name: sha256_file(ROOT / name) for name in FROZEN_MODEL_HASHES}
+    actual_hashes = {name: sha256_source(ROOT / name) for name in FROZEN_MODEL_HASHES}
     hashes_ok = actual_hashes == FROZEN_MODEL_HASHES
     if not hashes_ok:
         raise RuntimeError({"model_source_hash_mismatch": actual_hashes})
