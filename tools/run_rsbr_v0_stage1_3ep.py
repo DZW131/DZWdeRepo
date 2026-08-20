@@ -597,6 +597,11 @@ def write_report(output, summary):
         if summary["decision"] in (STRONG_GO, GO)
         else "Not yet justified for a 25-epoch study without scientific review."
     )
+    transition_weak = (
+        abs(summary["epoch3_variant_delta_miou_pp"]["transition_only"])
+        <= KNOWN_PRODUCTION_ENVELOPE_PP
+        and summary["epoch3_transition_to_core_rms"] < 0.01
+    )
     text = f"""# RSBR-v0 Stage-1 Three-Epoch Frozen-SSHR Pilot
 
 ## 1. Executive conclusion
@@ -604,6 +609,11 @@ def write_report(output, summary):
 **{summary['decision']}**
 
 Secondary flags: {summary['secondary_flags'] or 'none'}
+
+The performance delta itself is below the +0.05 pp threshold. `REVIEW` is
+triggered only by the preregistered mechanism exception: Core-only is
+positive, Full does not improve over Core-only, and Type-B errors decrease.
+This is not a performance GO.
 
 The pilot used BCSS training and validation only. It fresh-started from the
 frozen A0 checkpoint, trained exactly three epochs, and stopped. No test,
@@ -679,7 +689,7 @@ Epoch-3 transition/region training-gradient ratio: {summary['epoch3_transition_t
 8. Full exceeds both isolated paths: {'JOINT_RSBR_SYNERGY' in summary['secondary_flags']}.
 9. Type-B error decreases: {summary['epoch3_type_b_recovery_pixels']['full'] > 0}.
 10. Type-D error decreases: {summary['epoch3_type_d_recovery_pixels']['full'] > 0}.
-11. Transition path weak: {'TRANSITION_PATH_NOT_EFFECTIVE' in summary['secondary_flags']} (T/C RMS={summary['epoch3_transition_to_core_rms']:.6f}).
+11. Transition path remains quantitatively weak: {transition_weak} (transition-only Δ={summary['epoch3_variant_delta_miou_pp']['transition_only']:+.6f} pp; T/C RMS={summary['epoch3_transition_to_core_rms']:.6f}). The stricter `TRANSITION_PATH_NOT_EFFECTIVE` flag is {'present' if 'TRANSITION_PATH_NOT_EFFECTIVE' in summary['secondary_flags'] else 'absent'} because its Type-D recovery condition is evaluated separately.
 12. Frozen parameter/buffer hashes strictly unchanged: {summary['safety']['parameters_unchanged'] and summary['safety']['buffers_unchanged']}.
 13. 25-epoch recommendation: {recommendation}
 
