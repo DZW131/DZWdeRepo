@@ -210,6 +210,7 @@ def test_no_rsbr_transition_or_extended_graph_modules_exist():
 def test_disposable_preflight_is_three_step_bf16_real_batch_contract():
     source = (ROOT / "tools" / "preflight_rgr_v0.py").read_text(encoding="utf-8")
     assert "PREFLIGHT_STEPS = 3" in source
+    assert "sys.path.insert(0, str(ROOT))" in source
     assert '"batch_size_20"' in source
     assert '"upstream_gradients_by_step3"' in source
     assert '"frozen_base_unchanged"' in source
