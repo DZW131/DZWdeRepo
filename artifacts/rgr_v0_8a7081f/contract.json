@@ -1,0 +1,33 @@
+{
+  "a0_checkpoint": "/home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth",
+  "a0_checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "a0_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "auto_25epoch_forbidden": true,
+  "batch_size": 20,
+  "command": "tools/run_rgr_v0.py --train-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/training --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --rsbr-pilot-summary /home/duyanhong/experiments/RSBR_V0_PILOT_3EP_a266d01/summary.json --output-dir /home/duyanhong/experiments/RGR_V0_8a7081f --experiment-commit 8a7081f5fb3ac1ffb4037e6e60d0716e6363e2c0 --num-workers 4",
+  "experiment_commit": "8a7081f5fb3ac1ffb4037e6e60d0716e6363e2c0",
+  "image_size": 224,
+  "lambda_region": 0.05,
+  "lambda_residual": 0.01,
+  "loss_weights": [
+    0.1,
+    0.15,
+    0.25,
+    0.5
+  ],
+  "lr": 0.01,
+  "luad_forbidden": true,
+  "pilot_epochs": 3,
+  "precision": "BF16",
+  "readiness_steps": 32,
+  "rsbr_prerequisite": "RSBR_V0_PILOT_REVIEW",
+  "seed": 42,
+  "source_hashes": {
+    "network/resnet38_cls_rgr.py": "4ea34afa1457de8d0df9f4decf61677d31f53bec789fa86493c8157fa7713abd",
+    "network/rgr_v0.py": "0568042112201ecfd603a473342794caf35f57c83688d81ea0ad98db25821da6",
+    "tool/infer_rgr_v0_paired.py": "9c8ff4bb55bd41457aaa6756cc00850db1abbc6196fb9478dc34439263f01c96",
+    "tools/run_rgr_v0.py": "eb28b3023f83a6d1e8609d738782f5ddb633fe61ac5a99ad688537cb0167f4fb"
+  },
+  "test_forbidden": true,
+  "weight_decay": 0.0005
+}

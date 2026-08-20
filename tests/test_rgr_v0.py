@@ -217,3 +217,29 @@ def test_disposable_preflight_is_three_step_bf16_real_batch_contract():
     assert '"upstream_gradients_by_step3"' in source
     assert '"frozen_base_unchanged"' in source
     assert "RGR_V0_PREFLIGHT_PASS" in source
+
+
+def test_archived_formal_result_is_complete_and_scope_safe():
+    import json
+
+    artifact = ROOT / "artifacts" / "rgr_v0_8a7081f"
+    if not artifact.exists():
+        pytest.skip("Formal artifact is added after the implementation commit")
+    parity = json.loads((artifact / "parity" / "summary.json").read_text())
+    readiness = json.loads((artifact / "readiness_32b" / "summary.json").read_text())
+    pilot = json.loads((artifact / "pilot_3ep" / "summary.json").read_text())
+    assert parity["decision"] == "RGR_V0_PARITY_PASS"
+    assert parity["same_process_exact"]
+    assert parity["independent_delta_miou_pp"] == 0.0
+    assert parity["independent_differing_pixels"] == 0
+    assert readiness["decision"] == "RGR_V0_READINESS_PASS"
+    assert readiness["failures"] == []
+    assert pilot["decision"] == "RGR_V0_PILOT_NOGO"
+    assert pilot["total_optimizer_updates"] == 1171 * 3
+    assert pilot["best_full_minus_base_pp"] < 0.05
+    assert all(row["full_minus_isolated_pp"] < 0 for row in pilot["epochs"])
+    assert pilot["epochs"][-1]["full_minus_base_pp"] < 0
+    assert pilot["safety"]["failures"] == []
+    assert pilot["test_accessed"] is False
+    assert pilot["luad_accessed"] is False
+    assert pilot["auto_25epoch"] is False

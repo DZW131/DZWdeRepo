@@ -1,0 +1,283 @@
+{
+  "allowed_differing_pixels": 87808,
+  "allowed_miou_envelope_pp": 0.01379944,
+  "decision": "RGR_V0_PARITY_PASS",
+  "independent_a0": {
+    "image_count": 3418,
+    "metrics": {
+      "class_dice": {
+        "0": 0.866347365376103,
+        "1": 0.827372039668025,
+        "2": 0.7327858082159107,
+        "3": 0.7839388043647064
+      },
+      "class_iou": {
+        "0": 0.7642088404474305,
+        "1": 0.7055707928316779,
+        "2": 0.5782651527791319,
+        "3": 0.6446540743002344
+      },
+      "mDice": 0.8026110044061863,
+      "mIoU": 0.6731747150896187
+    },
+    "names_sha256": "4550e8d1217b6e319ba4b653a5736bf1278c0dbe0fb460195001edda3e260df2",
+    "official_thresholds": [
+      0.800000011920929,
+      0.8999999761581421,
+      0.800000011920929,
+      0.6000000238418579
+    ],
+    "prediction_sha256": "d9e1bb71f598c7236414d4eb59c3ebece66c87b5aa2330d0f8ec9ca9c5143857",
+    "runtime_seconds": 40.20751614001347
+  },
+  "independent_delta_miou_pp": 0.0,
+  "independent_differing_pixels": 0,
+  "independent_envelope_pass": true,
+  "missing_keys_expected_rgr_only": [
+    "rgr.edge_gate.0.bias",
+    "rgr.edge_gate.0.weight",
+    "rgr.edge_gate.2.bias",
+    "rgr.edge_gate.2.weight",
+    "rgr.graph_head.bias",
+    "rgr.graph_head.weight",
+    "rgr.isolated_head.bias",
+    "rgr.isolated_head.weight",
+    "rgr.message_projection.bias",
+    "rgr.message_projection.weight",
+    "rgr.node_projection.bias",
+    "rgr.node_projection.weight",
+    "rgr.value_projection.weight"
+  ],
+  "rgr_initialization_sha256": "907ef50015d41a82d11b3c371c2c88d9baf2c45b15057067381247c5933cf5e9",
+  "same_process": {
+    "differing_base_full_pixels": 0,
+    "differing_isolated_full_pixels": 0,
+    "final_metrics": {
+      "base": {
+        "class_dice": {
+          "0": 0.866347365376103,
+          "1": 0.827372039668025,
+          "2": 0.7327858082159107,
+          "3": 0.7839388043647064
+        },
+        "class_iou": {
+          "0": 0.7642088404474305,
+          "1": 0.7055707928316779,
+          "2": 0.5782651527791319,
+          "3": 0.6446540743002344
+        },
+        "mDice": 0.8026110044061863,
+        "mIoU": 0.6731747150896187
+      },
+      "full": {
+        "class_dice": {
+          "0": 0.866347365376103,
+          "1": 0.827372039668025,
+          "2": 0.7327858082159107,
+          "3": 0.7839388043647064
+        },
+        "class_iou": {
+          "0": 0.7642088404474305,
+          "1": 0.7055707928316779,
+          "2": 0.5782651527791319,
+          "3": 0.6446540743002344
+        },
+        "mDice": 0.8026110044061863,
+        "mIoU": 0.6731747150896187
+      }
+    },
+    "full_minus_base_mdice_pp": 0.0,
+    "full_minus_base_pp": 0.0,
+    "full_minus_isolated_pp": 0.0,
+    "graph_only_minus_base_pp": 0.0,
+    "image_count": 3418,
+    "isolated_class_iou_delta_pp": {
+      "0": 0.0,
+      "1": 0.0,
+      "2": 0.0,
+      "3": 0.0
+    },
+    "isolated_minus_base_pp": 0.0,
+    "mechanism": {
+      "components_per_image": 2.651453091476497,
+      "contextual_token_norm": 3.6527510682858058,
+      "core_fraction": 0.6982032646294329,
+      "different_class_gate_mean": 0.2052041300851652,
+      "edges_per_image": 7.6208308952603865,
+      "gate_max": 0.21649630631948508,
+      "gate_mean": 0.21412821374186908,
+      "gate_min": 0.2116630171762239,
+      "gate_std": 0.0018217487515566403,
+      "graph_construction_seconds": 0.0004432709192674042,
+      "graph_to_isolated_rms": 0.0,
+      "max_abs_delta_graph": 0.0,
+      "max_abs_delta_iso": 0.0,
+      "mean_abs_residual": 0.0,
+      "mean_region_token_norm": 17.048002401182845,
+      "message_norm": 0.8344558297901886,
+      "message_passing_seconds": 0.00029591521642425883,
+      "multi_node_fraction": 0.45484688901891945,
+      "multi_node_message_nonzero_fraction": 0.45484688901891945,
+      "node_encoding_seconds": 5.074910252916884e-05,
+      "nontouch_gate_mean": 0.17474242877734666,
+      "region_extraction_seconds": 0.0005460281004518963,
+      "regions_per_image": 2.45006826604252,
+      "residual_ratio": 0.0,
+      "rms_delta_graph": 0.0,
+      "rms_delta_iso": 0.0,
+      "same_class_gate_mean": 0.1703082537102332,
+      "tiny_region_fraction": 0.044893491258324494,
+      "top_gate_feature_similarity": 0.3751468949960132,
+      "top_gate_spatial_distance": 0.1982636437536097,
+      "touch_gate_mean": 0.21236006295632173,
+      "transition_fraction": 0.30153986697077895
+    },
+    "names_sha256": "4550e8d1217b6e319ba4b653a5736bf1278c0dbe0fb460195001edda3e260df2",
+    "node_count_stratified": {},
+    "node_counts": {
+      "groups": {
+        "N=1": 1865,
+        "N=2": 286,
+        "N=3-4": 678,
+        "N>=5": 589
+      },
+      "max": 12,
+      "mean": 2.454651843183148,
+      "min": 1
+    },
+    "official_fusion": {
+      "cam28_1": 0.6,
+      "cam28_2": 0.2,
+      "cam56": 0.0,
+      "camdeep": 0.2
+    },
+    "official_thresholds": [
+      0.800000011920929,
+      0.8999999761581421,
+      0.800000011920929,
+      0.6000000238418579
+    ],
+    "optimizer_updates_during_evaluation": 0,
+    "paired_class_iou_delta_pp": {
+      "0": 0.0,
+      "1": 0.0,
+      "2": 0.0,
+      "3": 0.0
+    },
+    "prediction_sha256": {
+      "base": "d9e1bb71f598c7236414d4eb59c3ebece66c87b5aa2330d0f8ec9ca9c5143857",
+      "full": "d9e1bb71f598c7236414d4eb59c3ebece66c87b5aa2330d0f8ec9ca9c5143857"
+    },
+    "runtime": {
+      "base_forward_seconds": 35.26127677742625,
+      "mean_rgr_seconds_per_image": 0.005942466952176568,
+      "message_passing_included_seconds": 20.31135204253951,
+      "region_extraction_and_graph_seconds": 20.31135204253951,
+      "rgr_overhead_vs_base_forward_percent": 57.60242934692184,
+      "validation_seconds": 72.18124065600568
+    },
+    "taxonomy": {
+      "A_correct_pure": {
+        "base_wrong_pixels": 4282466,
+        "pixels": 106365418,
+        "recovery_pixels": {
+          "base": 0,
+          "full": 0
+        },
+        "recovery_rate": {
+          "base": 0.0,
+          "full": 0.0
+        },
+        "regions": 3802,
+        "variant_wrong_pixels": {
+          "base": 4282466,
+          "full": 4282466
+        }
+      },
+      "B_misclassified_pure": {
+        "base_wrong_pixels": 7463418,
+        "pixels": 7727673,
+        "recovery_pixels": {
+          "base": 0,
+          "full": 0
+        },
+        "recovery_rate": {
+          "base": 0.0,
+          "full": 0.0
+        },
+        "regions": 2059,
+        "variant_wrong_pixels": {
+          "base": 7463418,
+          "full": 7463418
+        }
+      },
+      "C_false_positive_pure": {
+        "base_wrong_pixels": 2718279,
+        "pixels": 2879030,
+        "recovery_pixels": {
+          "base": 0,
+          "full": 0
+        },
+        "recovery_rate": {
+          "base": 0.0,
+          "full": 0.0
+        },
+        "regions": 424,
+        "variant_wrong_pixels": {
+          "base": 2718279,
+          "full": 2718279
+        }
+      },
+      "D_mixed_boundary": {
+        "base_wrong_pixels": 25538276,
+        "pixels": 54529447,
+        "recovery_pixels": {
+          "base": 0,
+          "full": 0
+        },
+        "recovery_rate": {
+          "base": 0.0,
+          "full": 0.0
+        },
+        "regions": 2287,
+        "variant_wrong_pixels": {
+          "base": 25538276,
+          "full": 25538276
+        }
+      }
+    },
+    "tta": [
+      [
+        [],
+        []
+      ],
+      [
+        [
+          3
+        ],
+        [
+          2
+        ]
+      ],
+      [
+        [
+          2
+        ],
+        [
+          1
+        ]
+      ]
+    ],
+    "variants": [
+      "base",
+      "full"
+    ]
+  },
+  "same_process_exact": true,
+  "zero_initialization": {
+    "graph_bias": true,
+    "graph_weight": true,
+    "isolated_bias": true,
+    "isolated_weight": true
+  }
+}

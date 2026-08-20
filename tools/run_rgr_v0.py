@@ -968,6 +968,8 @@ def write_delivery_report(output, contract, parity, readiness, pilot):
                 f"{values.get('full_minus_base_pp', float('nan')):+.4f} | "
                 f"{values.get('full_minus_isolated_pp', float('nan')):+.4f} |\n"
             )
+    final_epoch = pilot.get("epochs", [{}])[-1] if pilot else {}
+    final_mechanism = final_epoch.get("mechanism", {})
 
     final_decision = (
         pilot.get("decision") if pilot
@@ -1045,6 +1047,12 @@ No RSBR trained weight, dense label, test split, LUAD split, other seed, or
 |---|---:|---:|---:|
 {node_rows}
 
+The node-count bin is assigned from the unflipped TTA view. A nominal `N=1`
+image can have more than one proposal in another TTA view, so its tiny nonzero
+paired delta is a binning/TTA effect; the module-level `N=1` graph message and
+graph residual remain exactly zero by construction and unit test. `N>=2_all`
+is the primary relational diagnostic.
+
 ## 9. Training and resources
 
 | Epoch | Train seconds | Validation seconds | Mean loss | Isolated grad | Graph grad |
@@ -1054,6 +1062,9 @@ No RSBR trained weight, dense label, test split, LUAD split, other seed, or
 - Pilot peak CUDA memory: {pilot.get('peak_cuda_memory_bytes', 0) / 2**30:.3f} GiB
 - Parameter overhead below 1%: {readiness.get('parameter_profile', {}).get('under_one_percent', 'not run')}
 - Runtime review: {'RGR_RUNTIME_REVIEW' in pilot.get('secondary_flags', []) if pilot else 'not run'}
+- Epoch-3 mean region extraction: {1000 * final_mechanism.get('region_extraction_seconds', float('nan')):.4f} ms/image/view
+- Epoch-3 mean graph construction: {1000 * final_mechanism.get('graph_construction_seconds', float('nan')):.4f} ms/image/view
+- Epoch-3 mean message passing: {1000 * final_mechanism.get('message_passing_seconds', float('nan')):.4f} ms/image/view
 
 ## 10. Required scientific answers
 
@@ -1080,6 +1091,7 @@ No RSBR trained weight, dense label, test split, LUAD split, other seed, or
 - Readiness: `readiness_32b/summary.json`
 - Pilot: `pilot_3ep/summary.json`
 - Checkpoints: `checkpoints/epoch1_rgr.pth` through `epoch3_rgr.pth`
+- Checkpoint SHA256: `{json.dumps(pilot.get('checkpoint_sha256s', {}), sort_keys=True) if pilot else 'not run'}`
 
 ## 12. STOP boundary
 

@@ -1,0 +1,10 @@
+{
+  "auto_25epoch": false,
+  "final_decision": "RGR_V0_PILOT_NOGO",
+  "luad_accessed": false,
+  "parity": "RGR_V0_PARITY_PASS",
+  "pilot": "RGR_V0_PILOT_NOGO",
+  "readiness": "RGR_V0_READINESS_PASS",
+  "report": "docs/rgr_v0_delivery.md",
+  "test_accessed": false
+}
