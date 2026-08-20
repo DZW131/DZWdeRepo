@@ -133,3 +133,26 @@ python train_sshr.py \
 
 We thank the authors of [ESFAN](https://github.com/OceanPetal/ESFAN), whose codebase provided a valuable foundation for this repository.
 
+## RGR-v0 minimal region graph experiment
+
+The isolated `research/rgr-v0` branch adds a frozen-SSHR, image-label-only
+region graph pilot. It starts from official A0, verifies exact/production
+parity, runs a fresh 32-batch readiness gate, and only after readiness PASS
+runs a fresh three-epoch BCSS seed-42 pilot:
+
+```bash
+python -u tools/run_rgr_v0.py \
+  --train-root /home/duyanhong/datasets/BCSS-WSSS/train \
+  --val-root /home/duyanhong/datasets/BCSS-WSSS/val \
+  --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth \
+  --rsbr-pilot-summary /home/duyanhong/experiments/RSBR_V0_PILOT_3EP_a266d01/summary.json \
+  --output-dir /home/duyanhong/experiments/RGR_V0_<commit> \
+  --experiment-commit <commit> \
+  --num-workers 4
+```
+
+Outputs are written under `parity/`, `readiness_32b/`, `pilot_3ep/`,
+`checkpoints/`, and `docs/rgr_v0_delivery.md`. The command stops immediately
+after parity/readiness failure or after epoch 3. It cannot access test, LUAD,
+other seeds, or automatically continue to 25 epochs.
+
