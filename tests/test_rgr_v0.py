@@ -206,3 +206,11 @@ def test_no_rsbr_transition_or_extended_graph_modules_exist():
     assert "GAT" not in model_source
     assert model_source.count("message_projection") >= 1
 
+
+def test_disposable_preflight_is_three_step_bf16_real_batch_contract():
+    source = (ROOT / "tools" / "preflight_rgr_v0.py").read_text(encoding="utf-8")
+    assert "PREFLIGHT_STEPS = 3" in source
+    assert '"batch_size_20"' in source
+    assert '"upstream_gradients_by_step3"' in source
+    assert '"frozen_base_unchanged"' in source
+    assert "RGR_V0_PREFLIGHT_PASS" in source
