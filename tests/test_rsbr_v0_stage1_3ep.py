@@ -136,3 +136,14 @@ def test_scope_rejects_test_or_luad_paths(tmp_path):
         _validate_scope(tmp_path / "test", ("base", "full"))
     with pytest.raises(ValueError):
         _validate_scope(tmp_path / "luad" / "val", ("base", "full"))
+
+
+def test_server_preflight_is_disposable_and_checks_frozen_state():
+    source = (ROOT / "tools" / "preflight_rsbr_v0_stage1.py").read_text(
+        encoding="utf-8"
+    )
+    assert "RSBR_STAGE1_PREFLIGHT_PASS" in source
+    assert "frozen_parameters_unchanged" in source
+    assert "frozen_buffers_unchanged" in source
+    assert "torch.save" not in source
+    assert "paired_rsbr_validation" not in source
