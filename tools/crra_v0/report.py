@@ -191,7 +191,7 @@ def write_report(summary, output_path):
         f"- Hard NOGO conditions: `{decision['hard_nogo_conditions']}`",
         f"- REVIEW conditions: `{decision['review_conditions']}`",
         "",
-        f"Final decision: **{decision['decision']}**  ",
+        f"Final decision: **{decision['decision']}**",
         f"Final flag: **{decision['representation_flag']}**",
         "",
         "The audit stops here. CRSR training, segmentation training, test, LUAD, graph, prototype, "

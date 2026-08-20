@@ -1,0 +1,15 @@
+{
+  "a0_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "amp_dtype": "bf16",
+  "audit_commit": "be298c1704ffdb684f779d09e943fd495adf6f14",
+  "checkpoint": "/home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth",
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "command": "/home/duyanhong/miniconda3/envs/sshr5090/bin/python tools/audit_crra_v0.py --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --output-dir /home/duyanhong/experiments/CRRA_V0_be298c1 --audit-commit be298c1704ffdb684f779d09e943fd495adf6f14 --batch-size 20 --num-workers 8 --amp-dtype bf16",
+  "numpy": "1.23.5",
+  "pandas": "2.2.1",
+  "python": "3.10.20",
+  "scipy": "1.12.0",
+  "seed": 42,
+  "sklearn": "1.4.1.post1",
+  "torch": "2.11.0+cu128"
+}
