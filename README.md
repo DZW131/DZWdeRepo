@@ -1,5 +1,12 @@
 # SSHR: Single-Stage Hierarchical Rectification for Weakly Supervised Histopathology Segmentation (MICCAI 2026)
 
+## CRRA-v0 validation-only audit
+
+The `audit/crra-v0` branch adds a frozen, offline audit of Whole, Core, and
+Core+Rim region representations on BCSS validation. It changes no SSHR model,
+training, inference, or metric code. Reproduction commands and the artifact
+index are documented in [`docs/CRRA_V0.md`](docs/CRRA_V0.md).
+
 ## Abstract
   <details>
   <summary>Click to expand</summary>
