@@ -163,3 +163,31 @@ python -u tools/smoke_rsbr_v0.py \
 The command stops automatically after parity failure, readiness REVIEW/NOGO,
 or the three-epoch pilot. It never accesses BCSS test or LUAD.
 
+### Corrected Stage-1 three-epoch pilot
+
+After archived `RSBR_V0_PARITY_R1_PASS` and `RSBR_V0_READINESS_PASS`
+artifacts exist, the isolated `experiment/rsbr-v0-stage1-3ep` branch runs the
+fresh-restart, frozen-SSHR pilot. The original SSHR modules remain in `eval`
+mode and outside the update groups; only the two RSBR heads train.
+
+```bash
+python -u tools/run_rsbr_v0_stage1_3ep.py \
+  --train-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/training \
+  --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val \
+  --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth \
+  --parity-summary /home/duyanhong/experiments/RSBR_V0_PARITY_R1_AND_READINESS_7cbe5aa/parity_r1/summary.json \
+  --readiness-summary /home/duyanhong/experiments/RSBR_V0_PARITY_R1_AND_READINESS_7cbe5aa/readiness_32b/summary.json \
+  --output-dir /home/duyanhong/experiments/RSBR_V0_PILOT_3EP_<commit> \
+  --experiment-commit <commit> \
+  --batch-size 20 \
+  --img-size 224 \
+  --num-workers 4 \
+  --lr 0.01 \
+  --wt-dec 0.0005
+```
+
+The command has a hard three-epoch limit. It performs paired same-forward
+BCSS validation after initialization and every epoch, runs the four-way
+contribution ablation only at epoch 3, writes checkpoints and the complete
+report, and then stops. It has no test, LUAD, or automatic continuation path.
+

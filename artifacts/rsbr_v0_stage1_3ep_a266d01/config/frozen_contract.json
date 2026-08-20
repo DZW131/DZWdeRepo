@@ -1,0 +1,63 @@
+{
+  "a0_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "auto_continue_forbidden": true,
+  "batch_size": 20,
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "command": "tools/run_rsbr_v0_stage1_3ep.py --train-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/training --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --parity-summary /home/duyanhong/experiments/RSBR_V0_PARITY_R1_AND_READINESS_7cbe5aa/parity_r1/summary.json --readiness-summary /home/duyanhong/experiments/RSBR_V0_PARITY_R1_AND_READINESS_7cbe5aa/readiness_32b/summary.json --output-dir /home/duyanhong/experiments/RSBR_V0_PILOT_3EP_a266d01 --experiment-commit a266d0129edd52e537807ce45bf6ab58f34a9e29 --batch-size 20 --img-size 224 --num-workers 4 --lr 0.01 --wt-dec 0.0005",
+  "epochs": 3,
+  "evaluation_split_only": "BCSS val",
+  "experiment_commit": "a266d0129edd52e537807ce45bf6ab58f34a9e29",
+  "image_size": 224,
+  "lambda_region": 0.05,
+  "lambda_residual": 0.01,
+  "loss_weights": [
+    0.1,
+    0.15,
+    0.25,
+    0.5
+  ],
+  "lr": 0.01,
+  "luad_forbidden": true,
+  "maximum_steps": 3513,
+  "mode_contract": {
+    "all_original_modules_eval": true,
+    "all_original_parameters_frozen": true,
+    "all_rsbr_parameters_trainable": true,
+    "rsbr_module_train": true
+  },
+  "model_source_hashes": {
+    "network/resnet38_cls_rsbr.py": "6af680e5be3b509ed4ef87d48e118e050fa1445b6a87234c657f88fb3ddf2765",
+    "network/rsbr_v0.py": "b13ff51e0b73816fa3ffbf241764f2f50bfcda5d2de39951f165cf86a2e0a80a"
+  },
+  "optimizer_groups_initial": [
+    {
+      "lr": 0.1,
+      "momentum": 0.0005,
+      "parameter_elements": 199808,
+      "parameter_tensors": 3,
+      "weight_decay": 0.0005
+    },
+    {
+      "lr": 0.2,
+      "momentum": 0.0005,
+      "parameter_elements": 136,
+      "parameter_tensors": 3,
+      "weight_decay": 0.0
+    }
+  ],
+  "parity_decision": "RSBR_V0_PARITY_R1_PASS",
+  "precision": "BF16",
+  "readiness_decision": "RSBR_V0_READINESS_PASS",
+  "rsbr_initialization_sha256": "7b384befc6af84f6b8d209a327d6671bc9685b7bc9aa135485595f0637b23381",
+  "seed": 42,
+  "steps_per_epoch": 1171,
+  "test_forbidden": true,
+  "training_split_only": "BCSS train",
+  "weight_decay": 0.0005,
+  "zero_initialization": {
+    "region_bias_zero": true,
+    "region_weight_zero": true,
+    "transition_output_bias_zero": true,
+    "transition_output_weight_zero": true
+  }
+}
