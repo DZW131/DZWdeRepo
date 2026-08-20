@@ -1,0 +1,392 @@
+[
+  {
+    "accuracy": 0.6864583333333333,
+    "balanced_accuracy": 0.6231079062893812,
+    "confusion_matrix": [
+      [
+        228,
+        20,
+        1,
+        3,
+        11
+      ],
+      [
+        41,
+        218,
+        71,
+        7,
+        8
+      ],
+      [
+        8,
+        19,
+        115,
+        3,
+        1
+      ],
+      [
+        19,
+        18,
+        0,
+        86,
+        4
+      ],
+      [
+        3,
+        11,
+        46,
+        7,
+        12
+      ]
+    ],
+    "fold": 0,
+    "held_out_slides": [
+      "TCGA-GM-A2DB-DX1",
+      "TCGA-OL-A5D6-DX1",
+      "TCGA-OL-A5RW-DX1",
+      "TCGA-S3-AA15-DX1"
+    ],
+    "macro_f1": 0.7118530507631975,
+    "n_held_out": 960,
+    "n_train": 3778,
+    "per_class_f1": {
+      "0": 0.8113879003558719,
+      "1": 0.6909667194928685,
+      "2": 0.6068601583113457,
+      "3": 0.7381974248927039,
+      "4": 0.20869565217391303
+    },
+    "train_slides": [
+      "TCGA-EW-A1PB-DX1",
+      "TCGA-EW-A1PH-DX1",
+      "TCGA-GM-A2DD-DX1",
+      "TCGA-GM-A2DF-DX1",
+      "TCGA-GM-A2DH-DX1",
+      "TCGA-GM-A2DI-DX1",
+      "TCGA-GM-A3XL-DX1",
+      "TCGA-HN-A2NL-DX1",
+      "TCGA-LL-A441-DX1",
+      "TCGA-LL-A5YO-DX1",
+      "TCGA-LL-A73Y-DX1",
+      "TCGA-LL-A740-DX1",
+      "TCGA-OL-A5D7-DX1",
+      "TCGA-OL-A66I-DX1",
+      "TCGA-OL-A66P-DX1",
+      "TCGA-OL-A6VO-DX1",
+      "TCGA-OL-A97C-DX1",
+      "TCGA-S3-AA10-DX1"
+    ]
+  },
+  {
+    "accuracy": 0.8209745762711864,
+    "balanced_accuracy": 0.5899656041528984,
+    "confusion_matrix": [
+      [
+        220,
+        52,
+        12,
+        2,
+        10
+      ],
+      [
+        32,
+        497,
+        12,
+        3,
+        1
+      ],
+      [
+        1,
+        3,
+        49,
+        0,
+        0
+      ],
+      [
+        9,
+        8,
+        0,
+        5,
+        0
+      ],
+      [
+        10,
+        7,
+        3,
+        4,
+        4
+      ]
+    ],
+    "fold": 1,
+    "held_out_slides": [
+      "TCGA-GM-A2DD-DX1",
+      "TCGA-LL-A441-DX1",
+      "TCGA-LL-A73Y-DX1",
+      "TCGA-OL-A97C-DX1"
+    ],
+    "macro_f1": 0.6765001199171681,
+    "n_held_out": 944,
+    "n_train": 3794,
+    "per_class_f1": {
+      "0": 0.7746478873239436,
+      "1": 0.8938848920863309,
+      "2": 0.7596899224806202,
+      "3": 0.2777777777777778,
+      "4": 0.18604651162790697
+    },
+    "train_slides": [
+      "TCGA-EW-A1PB-DX1",
+      "TCGA-EW-A1PH-DX1",
+      "TCGA-GM-A2DB-DX1",
+      "TCGA-GM-A2DF-DX1",
+      "TCGA-GM-A2DH-DX1",
+      "TCGA-GM-A2DI-DX1",
+      "TCGA-GM-A3XL-DX1",
+      "TCGA-HN-A2NL-DX1",
+      "TCGA-LL-A5YO-DX1",
+      "TCGA-LL-A740-DX1",
+      "TCGA-OL-A5D6-DX1",
+      "TCGA-OL-A5D7-DX1",
+      "TCGA-OL-A5RW-DX1",
+      "TCGA-OL-A66I-DX1",
+      "TCGA-OL-A66P-DX1",
+      "TCGA-OL-A6VO-DX1",
+      "TCGA-S3-AA10-DX1",
+      "TCGA-S3-AA15-DX1"
+    ]
+  },
+  {
+    "accuracy": 0.6914893617021277,
+    "balanced_accuracy": 0.601022450488771,
+    "confusion_matrix": [
+      [
+        329,
+        68,
+        9,
+        29,
+        10
+      ],
+      [
+        27,
+        161,
+        21,
+        19,
+        11
+      ],
+      [
+        7,
+        35,
+        137,
+        7,
+        25
+      ],
+      [
+        3,
+        5,
+        4,
+        19,
+        4
+      ],
+      [
+        1,
+        0,
+        0,
+        5,
+        4
+      ]
+    ],
+    "fold": 2,
+    "held_out_slides": [
+      "TCGA-EW-A1PH-DX1",
+      "TCGA-GM-A2DH-DX1",
+      "TCGA-LL-A5YO-DX1",
+      "TCGA-S3-AA10-DX1"
+    ],
+    "macro_f1": 0.6237034788867676,
+    "n_held_out": 940,
+    "n_train": 3798,
+    "per_class_f1": {
+      "0": 0.8103448275862069,
+      "1": 0.6338582677165354,
+      "2": 0.7172774869109948,
+      "3": 0.3333333333333333,
+      "4": 0.125
+    },
+    "train_slides": [
+      "TCGA-EW-A1PB-DX1",
+      "TCGA-GM-A2DB-DX1",
+      "TCGA-GM-A2DD-DX1",
+      "TCGA-GM-A2DF-DX1",
+      "TCGA-GM-A2DI-DX1",
+      "TCGA-GM-A3XL-DX1",
+      "TCGA-HN-A2NL-DX1",
+      "TCGA-LL-A441-DX1",
+      "TCGA-LL-A73Y-DX1",
+      "TCGA-LL-A740-DX1",
+      "TCGA-OL-A5D6-DX1",
+      "TCGA-OL-A5D7-DX1",
+      "TCGA-OL-A5RW-DX1",
+      "TCGA-OL-A66I-DX1",
+      "TCGA-OL-A66P-DX1",
+      "TCGA-OL-A6VO-DX1",
+      "TCGA-OL-A97C-DX1",
+      "TCGA-S3-AA15-DX1"
+    ]
+  },
+  {
+    "accuracy": 0.6716101694915254,
+    "balanced_accuracy": 0.49370588932035353,
+    "confusion_matrix": [
+      [
+        279,
+        31,
+        15,
+        2,
+        15
+      ],
+      [
+        23,
+        163,
+        16,
+        6,
+        16
+      ],
+      [
+        24,
+        45,
+        179,
+        7,
+        48
+      ],
+      [
+        4,
+        13,
+        2,
+        4,
+        9
+      ],
+      [
+        8,
+        17,
+        4,
+        5,
+        9
+      ]
+    ],
+    "fold": 3,
+    "held_out_slides": [
+      "TCGA-EW-A1PB-DX1",
+      "TCGA-GM-A2DF-DX1",
+      "TCGA-GM-A2DI-DX1",
+      "TCGA-OL-A5D7-DX1",
+      "TCGA-OL-A66I-DX1"
+    ],
+    "macro_f1": 0.578622759648009,
+    "n_held_out": 944,
+    "n_train": 3794,
+    "per_class_f1": {
+      "0": 0.8205882352941176,
+      "1": 0.6612576064908722,
+      "2": 0.6897880539499036,
+      "3": 0.14285714285714285,
+      "4": 0.12857142857142856
+    },
+    "train_slides": [
+      "TCGA-EW-A1PH-DX1",
+      "TCGA-GM-A2DB-DX1",
+      "TCGA-GM-A2DD-DX1",
+      "TCGA-GM-A2DH-DX1",
+      "TCGA-GM-A3XL-DX1",
+      "TCGA-HN-A2NL-DX1",
+      "TCGA-LL-A441-DX1",
+      "TCGA-LL-A5YO-DX1",
+      "TCGA-LL-A73Y-DX1",
+      "TCGA-LL-A740-DX1",
+      "TCGA-OL-A5D6-DX1",
+      "TCGA-OL-A5RW-DX1",
+      "TCGA-OL-A66P-DX1",
+      "TCGA-OL-A6VO-DX1",
+      "TCGA-OL-A97C-DX1",
+      "TCGA-S3-AA10-DX1",
+      "TCGA-S3-AA15-DX1"
+    ]
+  },
+  {
+    "accuracy": 0.6873684210526316,
+    "balanced_accuracy": 0.5511917649964652,
+    "confusion_matrix": [
+      [
+        390,
+        19,
+        5,
+        2,
+        3
+      ],
+      [
+        47,
+        165,
+        4,
+        21,
+        7
+      ],
+      [
+        6,
+        11,
+        51,
+        3,
+        0
+      ],
+      [
+        21,
+        12,
+        44,
+        31,
+        4
+      ],
+      [
+        39,
+        18,
+        29,
+        2,
+        16
+      ]
+    ],
+    "fold": 4,
+    "held_out_slides": [
+      "TCGA-GM-A3XL-DX1",
+      "TCGA-HN-A2NL-DX1",
+      "TCGA-LL-A740-DX1",
+      "TCGA-OL-A66P-DX1",
+      "TCGA-OL-A6VO-DX1"
+    ],
+    "macro_f1": 0.6030462044265756,
+    "n_held_out": 950,
+    "n_train": 3788,
+    "per_class_f1": {
+      "0": 0.8459869848156182,
+      "1": 0.7036247334754797,
+      "2": 0.5,
+      "3": 0.36257309941520466,
+      "4": 0.23880597014925373
+    },
+    "train_slides": [
+      "TCGA-EW-A1PB-DX1",
+      "TCGA-EW-A1PH-DX1",
+      "TCGA-GM-A2DB-DX1",
+      "TCGA-GM-A2DD-DX1",
+      "TCGA-GM-A2DF-DX1",
+      "TCGA-GM-A2DH-DX1",
+      "TCGA-GM-A2DI-DX1",
+      "TCGA-LL-A441-DX1",
+      "TCGA-LL-A5YO-DX1",
+      "TCGA-LL-A73Y-DX1",
+      "TCGA-OL-A5D6-DX1",
+      "TCGA-OL-A5D7-DX1",
+      "TCGA-OL-A5RW-DX1",
+      "TCGA-OL-A66I-DX1",
+      "TCGA-OL-A97C-DX1",
+      "TCGA-S3-AA10-DX1",
+      "TCGA-S3-AA15-DX1"
+    ]
+  }
+]

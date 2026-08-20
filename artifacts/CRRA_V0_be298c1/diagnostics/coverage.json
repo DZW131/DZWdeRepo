@@ -1,0 +1,11 @@
+{
+  "common_support_fraction": 0.8200471698113208,
+  "common_support_regions": 6954,
+  "coverage_review": "COVERAGE_PASS",
+  "empty_core_regions": 1526,
+  "empty_rim_regions": 0,
+  "excluded_regions": 1526,
+  "raw_components": 9199,
+  "tiny_components": 719,
+  "total_proposed_regions": 8480
+}
