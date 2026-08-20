@@ -177,6 +177,7 @@ def test_hard_stage_limits_and_forbidden_scope(tmp_path):
     assert '"test_accessed": False' in source
     assert '"luad_accessed": False' in source
     assert '"auto_25epoch": False' in source
+    assert ".cuda().eval()" not in source
     with pytest.raises(ValueError):
         _validate_scope(tmp_path / "test", ("base", "full"))
     with pytest.raises(ValueError):

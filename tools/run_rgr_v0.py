@@ -531,7 +531,9 @@ def run_parity(args, output):
     torch.cuda.empty_cache()
 
     seed_everything()
-    a0 = load_a0(args.checkpoint).cuda().eval()
+    a0 = load_a0(args.checkpoint)
+    a0.cuda()
+    a0.eval()
     a0_summary, a0_ground_truth, a0_predictions = official_a0_validation(
         a0, args.val_root, runtime_args(args), return_arrays=True
     )
