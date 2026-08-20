@@ -189,6 +189,7 @@ def test_four_way_paired_evaluator_and_official_fusion_are_locked():
     assert "0.6 * normalized_28_1 + 0.2 * normalized_28_2 + 0.2 * normalized_deep" in source
     assert "(((), ()), ((3,), (2,)), ((2,), (1,)))" in source
     assert '"optimizer_updates_during_evaluation": 0' in source
+    assert "model.eval().cuda()" not in source
 
 
 def test_node_count_groups_are_frozen():

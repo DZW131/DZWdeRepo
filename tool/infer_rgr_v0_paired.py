@@ -245,7 +245,8 @@ def paired_rgr_validation(
 
     variants = tuple(variants)
     _validate_scope(dataroot, variants)
-    model.eval().cuda()
+    model.eval()
+    model.cuda()
     dataset, loader = _validation_loader(dataroot, args)
     thresholds = _official_contract(args)
     prediction_lists = {variant: [] for variant in variants}
@@ -399,7 +400,8 @@ def official_a0_validation(model, dataroot, args, return_arrays=False):
     """Independent released A0 validation for corrected parity comparison."""
 
     _validate_scope(dataroot, ("base", "full"))
-    model.eval().cuda()
+    model.eval()
+    model.cuda()
     dataset, loader = _validation_loader(dataroot, args)
     thresholds = _official_contract(args)
     predictions, ground_truth, names = [], [], []
