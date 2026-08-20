@@ -1,0 +1,19 @@
+{
+  "a0_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "audit_commit": "7cbe5aa0ad73d7e6827962f832bd50d6050d0b73",
+  "checkpoint": "/home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth",
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "command": "tools/audit_rsbr_v0_parity_r1.py --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --output-dir /home/duyanhong/experiments/RSBR_V0_PARITY_R1_AND_READINESS_7cbe5aa/parity_r1 --audit-commit 7cbe5aa0ad73d7e6827962f832bd50d6050d0b73 --num-workers 4",
+  "dataset": "BCSS validation",
+  "evaluation_only": true,
+  "fixed_subset_images": 32,
+  "luad_forbidden": true,
+  "mIoU_allowance_pp": 0.01379944,
+  "model_source_hashes": {
+    "network/resnet38_cls_rsbr.py": "6af680e5be3b509ed4ef87d48e118e050fa1445b6a87234c657f88fb3ddf2765",
+    "network/rsbr_v0.py": "b13ff51e0b73816fa3ffbf241764f2f50bfcda5d2de39951f165cf86a2e0a80a"
+  },
+  "pixel_allowance": 87808,
+  "seed": 42,
+  "test_forbidden": true
+}
