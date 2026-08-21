@@ -295,19 +295,19 @@ def main():
                 raise FloatingPointError(f"Non-finite loss epoch={epoch} batch={batch_index}")
             optimizer.zero_grad(); total_loss.backward(); optimizer.step()
 
-            sums["total_loss"] += float(total_loss.detach().float())
-            sums["classification_loss"] += float(classification_loss.detach().float())
+            sums["total_loss"] += float(total_loss.detach().float().item())
+            sums["classification_loss"] += float(classification_loss.detach().float().item())
             for name, value in components.items():
-                sums[f"loss_{name}"] += float(value.detach().float())
-            sums["pcsd_loss_raw"] += float(pcsd_raw.detach().float())
-            sums["pcsd_loss_weighted"] += float(pcsd_weighted.detach().float())
+                sums[f"loss_{name}"] += float(value.detach().float().item())
+            sums["pcsd_loss_raw"] += float(pcsd_raw.detach().float().item())
+            sums["pcsd_loss_weighted"] += float(pcsd_weighted.detach().float().item())
             for target, source in (
                 ("mean_abs_pd_minus_ps", "mean_abs_discrepancy"),
                 ("prediction_agreement", "prediction_agreement"),
                 ("mean_present_classes", "mean_present_classes"),
                 ("valid_fraction", "valid_fraction"),
             ):
-                sums[target] += float(diagnostics[source].detach().float())
+                sums[target] += float(diagnostics[source].detach().float().item())
             probability = outputs[4].detach().float().cpu().numpy()
             truth = labels.detach().float().cpu().numpy()
             for observed, target in zip(probability, truth):
@@ -330,11 +330,13 @@ def main():
             **{name: value / batches for name, value in sums.items()},
             "training_exact_match": exact / examples,
             "training_accuracy": accuracy_sum / examples,
-            "beta_spatial": float(model.hfrm_28_1.beta_spatial.detach().float()),
-            "gamma_spatial": float(model.hfrm_28_1.gamma_spatial.detach().float()),
-            "effective_gamma": float(alpha * model.hfrm_28_1.gamma_spatial.detach().float()),
-            "gamma_global_28_1": float(model.hfrm_28_1.gamma_veto.detach().float()),
-            "gamma_context_28_1": float(model.hfrm_28_1.gamma_context.detach().float()),
+            "beta_spatial": float(model.hfrm_28_1.beta_spatial.detach().float().item()),
+            "gamma_spatial": float(model.hfrm_28_1.gamma_spatial.detach().float().item()),
+            "effective_gamma": float(
+                alpha * model.hfrm_28_1.gamma_spatial.detach().float().item()
+            ),
+            "gamma_global_28_1": float(model.hfrm_28_1.gamma_veto.detach().float().item()),
+            "gamma_context_28_1": float(model.hfrm_28_1.gamma_context.detach().float().item()),
             "lr_end": float(optimizer.param_groups[0]["lr"]),
             "optimizer_momentum": float(optimizer.param_groups[0]["momentum"]),
             "epoch_seconds": time.time() - epoch_started,

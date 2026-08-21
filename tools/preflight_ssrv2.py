@@ -101,9 +101,9 @@ def main():
             if not torch.equal(resolved, labels):
                 raise AssertionError("Training did not use exact GT image-level labels")
             batch_records.append({
-                "batch": batch_index + 1, "total_loss": float(total.float()),
-                "classification_loss": float(cls_loss.float()),
-                "pcsd_raw": float(pcsd.float()),
+                "batch": batch_index + 1, "total_loss": float(total.detach().float().item()),
+                "classification_loss": float(cls_loss.detach().float().item()),
+                "pcsd_raw": float(pcsd.detach().float().item()),
                 "logit_shapes": [list(value.shape) for value in outputs[:4]],
                 "cam_shapes": [list(value.shape) for value in outputs[5:9]],
             })
@@ -138,7 +138,9 @@ def main():
     identity_output, identity_diagnostics = ssrv2(
         feature, deep_feature, deep_logits, raw_logits, presence, classifier, alpha=0.0
     )
-    identity_difference = float((identity_output - baseline_output).abs().max())
+    identity_difference = float(
+        (identity_output - baseline_output).detach().abs().max().item()
+    )
     if identity_difference != 0.0 or epoch_alpha(1) != 0.0:
         raise AssertionError(f"Epoch1 identity failed: {identity_difference}")
 
@@ -198,7 +200,7 @@ def main():
         "pcsd_teacher_gradient": None,
         "pcsd_student_gradient_l1": float(student_grad.detach().float().abs().sum()),
         "ptcr_residual_requires_grad": identity_diagnostics["teacher_residual"].requires_grad,
-        "beta_gradient_after_alpha_positive": float(beta_gradient.detach().float()),
+        "beta_gradient_after_alpha_positive": float(beta_gradient.detach().float().item()),
         "single_present_pcsd": float(single["pcsd_loss"].detach()),
         "single_present_ptcr_nonzero": int(single["teacher_residual"].count_nonzero()),
         "dense_gt_enters_model_or_loss": False,
