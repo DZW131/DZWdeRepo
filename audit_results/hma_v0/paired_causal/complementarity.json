@@ -1,0 +1,19 @@
+{
+  "both_harm": 93262,
+  "both_recover": 231441,
+  "ch_correct_gsr_wrong": 4036188,
+  "ch_harm": 2500443,
+  "ch_recover": 4179085,
+  "ch_unique_harm": 2407181,
+  "ch_unique_recover": 3947644,
+  "foreground_pixels": 158639345,
+  "full_harm": 2242873,
+  "full_recover": 3953552,
+  "gsr_correct_ch_wrong": 2480060,
+  "gsr_harm": 181806,
+  "gsr_recover": 304320,
+  "gsr_unique_harm": 88544,
+  "gsr_unique_recover": 72879,
+  "harm_set_jaccard": 0.03602258335016746,
+  "recovery_set_jaccard": 0.054431552101570004
+}

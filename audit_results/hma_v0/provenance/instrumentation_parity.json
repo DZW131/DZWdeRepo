@@ -1,0 +1,9 @@
+{
+  "decision": "SSHR_HMA_PARITY_PASS",
+  "final_prediction_differing_pixels": 0,
+  "images": 32,
+  "maximum_absolute_difference": 0.0,
+  "same_process_exact_tensor_equality": true,
+  "tensors_compared": 480,
+  "tta_views_per_image": 3
+}

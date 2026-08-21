@@ -1,0 +1,26 @@
+{
+  "28_1": {
+    "gsr_present_confusion": 25910565,
+    "harmed": 203017,
+    "net": 353189,
+    "raw_present_confusion": 26270726,
+    "recovered": 556206,
+    "recovery_rate": 0.021172083329558535
+  },
+  "28_2": {
+    "gsr_present_confusion": 24963226,
+    "harmed": 230011,
+    "net": 164000,
+    "raw_present_confusion": 25139239,
+    "recovered": 394011,
+    "recovery_rate": 0.015673147464805914
+  },
+  "56": {
+    "gsr_present_confusion": 31225467,
+    "harmed": 206509,
+    "net": 439884,
+    "raw_present_confusion": 31647660,
+    "recovered": 646393,
+    "recovery_rate": 0.02042466962802305
+  }
+}

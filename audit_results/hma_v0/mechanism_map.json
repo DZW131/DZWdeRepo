@@ -1,0 +1,47 @@
+{
+  "completion": "HFRM_MECHANISM_MAP_COMPLETE",
+  "labels": [
+    "GSR_IS_GLOBAL_AMPLIFICATION",
+    "GSR_VETO_SUPPORTED",
+    "CH_HOMOGENIZER_SUPPORTED",
+    "CH_BOUNDARY_TRADEOFF_CONFIRMED",
+    "HFRM28_1_DOMINANT",
+    "DEEP_SUPERVISION_DOMINANT",
+    "CLASS_GATE_DOMINANT"
+  ],
+  "measurements": {
+    "absent_fraction_suppressed": 0.9066930867459269,
+    "absent_median_delta_logit": -0.265625,
+    "ch_gain_miou": 0.023075928565391646,
+    "class_gate_gain_miou": 0.09377059173929081,
+    "direct_deep_gradient_norm": 0.0006589152026208467,
+    "full_gain_miou": 0.023218532240734557,
+    "gsr_gain_miou": 0.0023013266255695886,
+    "hfrm_28_1_removal_cost_miou": 0.011262162121864927,
+    "hfrm_28_2_removal_cost_miou": 0.0015756419258774468,
+    "normalization_amplification_cells": 0,
+    "present_confusion_net_rate": 0.01152299984498714,
+    "remaining_absent_errors": 4036548,
+    "remaining_present_confusion_errors": 23084639,
+    "shallow_to_deep_gradient_norm_sum": 2.894258689600804e-06,
+    "veto_supported": true
+  },
+  "single_most_important_unresolved_scientific_question": "How can deep semantic guidance resolve spatial present-class confusion while preserving tissue boundaries, and is that limitation causal during retraining?",
+  "tier_a_directly_supported": [
+    "All trained gamma_veto scalars are positive, so the released residual equation performs additive channel amplification/modulation rather than direct feature suppression.",
+    "CH improves interior pixels while causing net near-boundary harm in paired causal predictions.",
+    "The remaining frozen Full errors are dominated by present class confusion (23084639 present-confusion vs 4036548 absent-class pixels)."
+  ],
+  "tier_b_structurally_plausible": [
+    "Each GSR gate is global over space: one channel vector is broadcast to every pixel in a stage.",
+    "The same deep feature is directly supervised at weight 0.50 and simultaneously conditions all three HFRMs.",
+    "HFRM56 has a training loss but no direct path to the released final inference fusion or deeper backbone stages.",
+    "A fixed K=15 spans approximately 60 input pixels at F56 and 120 at F28; this is a structural scale mismatch, not proven performance harm."
+  ],
+  "tier_c_speculative": [
+    "Whether a spatially varying semantic mechanism would improve present-class localization is untested.",
+    "Whether constraining CH to a low-pass family would improve segmentation is untested.",
+    "Whether changing K by stage would improve the smoothing/boundary trade-off is untested.",
+    "The historical training-time contribution of HFRM56 cannot be identified by frozen-checkpoint inference ablation."
+  ]
+}

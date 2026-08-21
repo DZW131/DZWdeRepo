@@ -1,0 +1,156 @@
+{
+  "architecture": {
+    "28_1": {
+      "channels": 512,
+      "context_bias": false,
+      "context_groups": 512,
+      "context_kernel": [
+        15,
+        15
+      ],
+      "deep_channels": 4096,
+      "gate_output_channels": 512,
+      "hidden_channels": 512
+    },
+    "28_2": {
+      "channels": 1024,
+      "context_bias": false,
+      "context_groups": 1024,
+      "context_kernel": [
+        15,
+        15
+      ],
+      "deep_channels": 4096,
+      "gate_output_channels": 1024,
+      "hidden_channels": 512
+    },
+    "56": {
+      "channels": 256,
+      "context_bias": false,
+      "context_groups": 256,
+      "context_kernel": [
+        15,
+        15
+      ],
+      "deep_channels": 4096,
+      "gate_output_channels": 256,
+      "hidden_channels": 512
+    }
+  },
+  "effective_input_span": {
+    "28_stride_approximately_8": 120,
+    "56_stride_approximately_4": 60,
+    "claim": "structural fact only; not evidence that K=15 is wrong"
+  },
+  "fresh_initialization": {
+    "28_1": {
+      "context_uniform_exact": true,
+      "context_value": 0.004444444552063942,
+      "gamma_context_zero": true,
+      "gamma_veto_zero": true
+    },
+    "28_2": {
+      "context_uniform_exact": true,
+      "context_value": 0.004444444552063942,
+      "gamma_context_zero": true,
+      "gamma_veto_zero": true
+    },
+    "56": {
+      "context_uniform_exact": true,
+      "context_value": 0.004444444552063942,
+      "gamma_context_zero": true,
+      "gamma_veto_zero": true
+    }
+  },
+  "inference": {
+    "cam56_fused": false,
+    "cam_weights": {
+      "28_1": 0.6,
+      "28_2": 0.2,
+      "deep": 0.2
+    },
+    "class_presence_thresholds": [
+      0.8,
+      0.9,
+      0.8,
+      0.6
+    ],
+    "gate_source": "deep classifier probability",
+    "per_stage_per_class_minmax": true,
+    "tta": [
+      [
+        [],
+        []
+      ],
+      [
+        [
+          3
+        ],
+        [
+          2
+        ]
+      ],
+      [
+        [
+          2
+        ],
+        [
+          1
+        ]
+      ]
+    ]
+  },
+  "loss_weights": {
+    "28_1": 0.15,
+    "28_2": 0.25,
+    "56": 0.1,
+    "deep": 0.5
+  },
+  "optimizer_lr_multipliers": {
+    "backbone_bias": 2,
+    "backbone_weight": 1,
+    "scratch_bias": 20,
+    "scratch_weight_and_gamma": 10
+  },
+  "scratch_membership": {
+    "fc8.weight": [
+      2
+    ],
+    "hfrm_28_1.context_conv.weight": [
+      2
+    ],
+    "hfrm_28_1.gamma_context": [
+      2
+    ],
+    "hfrm_28_1.gamma_veto": [
+      2
+    ],
+    "hfrm_28_2.context_conv.weight": [
+      2
+    ],
+    "hfrm_28_2.gamma_context": [
+      2
+    ],
+    "hfrm_28_2.gamma_veto": [
+      2
+    ],
+    "hfrm_56.context_conv.weight": [
+      2
+    ],
+    "hfrm_56.gamma_context": [
+      2
+    ],
+    "hfrm_56.gamma_veto": [
+      2
+    ],
+    "ic1.weight": [
+      2
+    ],
+    "ic2.weight": [
+      2
+    ],
+    "ic_56.weight": [
+      2
+    ]
+  }
+}
