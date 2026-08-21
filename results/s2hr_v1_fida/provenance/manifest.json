@@ -1,0 +1,72 @@
+{
+  "a0_runtime": {
+    "elapsed_seconds": 38.43902659416199,
+    "fusion": [
+      0.0,
+      0.6,
+      0.2,
+      0.2
+    ],
+    "images": 3418,
+    "precision": "bf16",
+    "s2hr_tta_presence_two_pass": false,
+    "seconds_per_image": 0.011246058102446456,
+    "thresholds": [
+      0.800000011920929,
+      0.8999999761581421,
+      0.800000011920929,
+      0.6000000238418579
+    ],
+    "tta": [
+      [
+        [],
+        []
+      ],
+      [
+        [
+          3
+        ],
+        [
+          2
+        ]
+      ],
+      [
+        [
+          2
+        ],
+        [
+          1
+        ]
+      ]
+    ]
+  },
+  "a0_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "audit_seconds": 91.6274802684784,
+  "boundary_quality_protocol": "all three actual controller maps, unflipped at native 28x28 and pooled",
+  "checkpoint_mutated": false,
+  "command": "tools/audit_s2hr_fida.py --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val --a0-checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --s2hr-checkpoint /home/duyanhong/experiments/S2HR_V1_FULL_25EP_SEED42_5740a43_retry2/checkpoints/epoch25_final.pth --output-dir /home/duyanhong/experiments/S2HR_V1_FIDA_c7ea4d5 --num-workers 4 --parity-images 32",
+  "counterfactual_variants_per_base": 5,
+  "full_audit_base_forwards": 10254,
+  "learned_gamma_spatial": -1.0526387691497803,
+  "learned_rho_boundary": 0.12448687851428986,
+  "luad_used": false,
+  "optimizer_constructed": false,
+  "optimizer_step": false,
+  "precision": "bf16",
+  "reference_delta_pp": {
+    "a0": 0.0,
+    "s2hr_full": 0.00041957450180873934
+  },
+  "reference_mIoU": {
+    "a0": 0.6732834150110829,
+    "s2hr_full": 0.6704998279876101
+  },
+  "s2hr_sha256_after": "129ad097ad73f9f564d8778baa8e914f92c8200ed90dc1f8763677dffe91b9ac",
+  "s2hr_sha256_before": "129ad097ad73f9f564d8778baa8e914f92c8200ed90dc1f8763677dffe91b9ac",
+  "source_commit": "c7ea4d5a058f5d872de4bcead81569ccd79a01a8",
+  "state_dict_sha256_after": "41aeb822dabec73d19895558cdfedb49d55e126c2573c6067b04fffd983d931b",
+  "state_dict_sha256_before": "41aeb822dabec73d19895558cdfedb49d55e126c2573c6067b04fffd983d931b",
+  "teacher_protocol": "TTA-averaged deep/raw28_1 logits with GT/deployed presence applied only after forward",
+  "test_used": false,
+  "validation_images": 3418
+}

@@ -1,0 +1,13 @@
+{
+  "BPS given SPSR off": -0.07809175793354939,
+  "BPS given SPSR on": -0.11848845194914759,
+  "BPS main effect": -0.09829010494134849,
+  "Decomposition identity residual": 0.0,
+  "Full - A0 total effect": -0.27793912784548525,
+  "Full - V00 direct innovation effect": -0.4361697947044121,
+  "Interaction": -0.0403966940155982,
+  "SPSR given BPS off": -0.3176813427552645,
+  "SPSR given BPS on": -0.3580780367708627,
+  "SPSR main effect": -0.3378796897630636,
+  "Training trajectory: V00 - A0": 0.15823066685892684
+}

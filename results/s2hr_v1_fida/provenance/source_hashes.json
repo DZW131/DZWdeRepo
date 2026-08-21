@@ -1,0 +1,10 @@
+{
+  "network/resnet38_cls_s2hr.py": "41ac86af5487584b1709240fa527fa3e3bd4ce8b0a44ddd85a4b5a997f25dbf7",
+  "network/s2hfrm28_1.py": "ab30c18dd385958c9f097b15242881fe5b6fb02132c348269eec599b7c463a3c",
+  "tests/test_s2hr_fida.py": "48807631100dddc8db467335370dfe819f6081b7ee77a3640a9788578f91044d",
+  "tool/infer_s2hr.py": "bb82950546282ea4d4ed1301f70f6123c348045799948bb4a4977123a7de3c2e",
+  "tool/infer_s2hr_fida.py": "cba3d7762e6abdb1af110091cde9f8e84c255d197f09915b644b2105e28c5b69",
+  "tool/iouutils.py": "7614fd9b75f13c65cfe6121efe1e44fa2b3a0d9a0d441f6985e8c307dc460490",
+  "tools/audit_s2hr_fida.py": "486524eb62dfe5dcb089f94cf4c4a4092db9ab43d80d75cb917eda1abb5aba93",
+  "tools/s2hr_fida_metrics.py": "59160ce4de42e989e84112a3b26072bc24f98b1a233128deb8fc08f344ae2e16"
+}

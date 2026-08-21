@@ -121,11 +121,18 @@ per_class_factorial.png
 
 | Audit | Split | Status | Route |
 |---|---|---|---|
-| S²HR-v1 FIDA-v0 | BCSS validation (3,418) | pending | pending |
+| S²HR-v1 FIDA-v0 | BCSS validation (3,418) | complete | Route D — close the S²HR-v1 dual-innovation design |
+
+The frozen factorial found V00/A0/V11 mIoU of
+67.4866/67.3283/67.0504%. The training-trajectory effect was +0.1582 pp,
+while the direct BPS and SPSR main effects were −0.0983 and −0.3379 pp.
+The positive SPSR sign flip was +0.4230 pp better than the learned negative
+sign, so the learned SPSR direction was rejected. No fresh-training claim is
+made from these frozen-checkpoint effects.
 
 The populated result is written to
 `docs/s2hr_v1_frozen_innovation_decomposition.md` and
-`fida_summary.json`.
+`results/s2hr_v1_fida/fida_summary.json`.
 
 ## Stop boundary
 
