@@ -173,6 +173,10 @@ def run_gradient_audit(model, train_root, num_workers=4, amp_dtype="bf16"):
         worker_init_fn=_seed_worker,
         generator=generator,
     )
+    # Apply the released training-mode freeze contract before constructing the
+    # differentiated parameter inventory; initial nn.Module mode alone does
+    # not execute this custom train() hook.
+    model.train()
     parameter_items, group_indices = parameter_inventory(model)
     parameters = [item[1] for item in parameter_items]
     names = [item[0] for item in parameter_items]
@@ -180,7 +184,6 @@ def run_gradient_audit(model, train_root, num_workers=4, amp_dtype="bf16"):
     buffer_snapshot = {
         name: buffer.detach().clone() for name, buffer in model.named_buffers()
     }
-    model.train()
     dtype = torch.bfloat16 if amp_dtype == "bf16" else None
     rows, component_rows = [], []
     early_cosines = defaultdict(list)
