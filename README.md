@@ -138,6 +138,9 @@ layout, safety boundaries, and final-result workflow are documented in
 The completed BCSS seed42 epoch-25 validation experiment is archived in the
 [`S²HR-v1 final report`](docs/s2hr_v1_fullmodel_25ep_report.md).
 
+The frozen checkpoint innovation decomposition workflow is documented in the
+[`S²HR-v1 FIDA-v0 guide`](docs/s2hr_v1_fida_README.md).
+
 This branch is based directly on the official A0 commit and does not include
 any archived FA-MPR, SC-MPR, CDSR, CLRR, OSMF, RSBR, RGR, CRRA or HST code.
 
