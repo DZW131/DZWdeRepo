@@ -200,8 +200,8 @@ def render_report(summary, output_path):
         lines.append(
             f"| L{branch} | {LOSS_WEIGHTS[branch]:.2f} | "
             f"{_num(groups['shared_early']['gradient_norm']['mean'])} | "
-            f"{_num(groups['mid']['gradient_norm']['mean'])} | "
-            f"{_num(groups['late']['gradient_norm']['mean'])} | "
+            f"{_num(groups['mid_backbone']['gradient_norm']['mean'])} | "
+            f"{_num(groups['late_backbone']['gradient_norm']['mean'])} | "
             f"{_num(gradient['feat_deep_gradient_norm'][branch]['mean'])} | {target} |"
         )
     lines += [
