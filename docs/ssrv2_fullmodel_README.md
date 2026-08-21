@@ -120,11 +120,20 @@ figures/mechanism_trajectory.png
 
 | Model | Dataset / split | Epoch | mIoU | mDice | Decision |
 |---|---|---:|---:|---:|---|
-| SSHR A0 | BCSS validation | 25 FINAL | pending | pending | reference |
-| SSR-v2 Full | BCSS validation | 25 FINAL | pending | pending | pending |
+| SSHR A0 | BCSS validation | 25 FINAL | 67.3283 | 80.2683 | reference |
+| SSR-v2 Full | BCSS validation | 25 FINAL | 66.8575 | 79.9354 | `SSRV2_FULLMODEL_NO_CLEAR_GAIN` |
+
+SSR-v2 changed mIoU by −0.4708 pp and mDice by −0.3328 pp. C3 IoU
+regressed by −1.3625 pp, triggering `SSRV2_CLASS_REGRESSION_REVIEW`.
+At epoch25, gamma_spatial reached 0.141493. The validation-only GT-present
+diagnostic found deep spatial accuracy 84.4096% and raw CAM28_1 accuracy
+85.0509%, so the trained student exceeded the detached teacher by 0.6414 pp.
 
 The completed report is written to `docs/ssrv2_full_25ep_report.md`, with
-machine-readable metrics under `validation/` in the experiment directory.
+machine-readable metrics under `results/ssrv2_full_25ep/` and the primary
+checkpoint retained on the server at
+`/home/duyanhong/experiments/SSRV2_FULL_25EP_SEED42_04e4631/checkpoints/epoch25_final.pth`
+(SHA256 `34265e42164f85dc5a59dcadaf56685bd1c34a89ab71300005dbc6d51c4ea6c3`).
 
 ## Stop boundary
 

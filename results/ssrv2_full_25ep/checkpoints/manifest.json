@@ -1,0 +1,62 @@
+[
+  {
+    "config_sha256": "fe9b678eb3d2399534aac8a2c4db991f74e2065dbcec22d02239663236728e74",
+    "dataset": "BCSS",
+    "epoch": 5,
+    "filename": "epoch05.pth",
+    "primary_final": false,
+    "seed": 42,
+    "selection": "epoch-number only; epoch25 FINAL is primary",
+    "sha256": "3a7ad268f7f65e349418a440da7a39584c3a62bccdbec9e41251b5a3b199c264",
+    "size_bytes": 451128949,
+    "source_commit": "04e4631b0c581692ca377501fed45d904bdf34d6"
+  },
+  {
+    "config_sha256": "fe9b678eb3d2399534aac8a2c4db991f74e2065dbcec22d02239663236728e74",
+    "dataset": "BCSS",
+    "epoch": 10,
+    "filename": "epoch10.pth",
+    "primary_final": false,
+    "seed": 42,
+    "selection": "epoch-number only; epoch25 FINAL is primary",
+    "sha256": "a731fdc5ba5de533c399c7ec62fb076302a2116397e2c5118283aec83a111000",
+    "size_bytes": 451128949,
+    "source_commit": "04e4631b0c581692ca377501fed45d904bdf34d6"
+  },
+  {
+    "config_sha256": "fe9b678eb3d2399534aac8a2c4db991f74e2065dbcec22d02239663236728e74",
+    "dataset": "BCSS",
+    "epoch": 15,
+    "filename": "epoch15.pth",
+    "primary_final": false,
+    "seed": 42,
+    "selection": "epoch-number only; epoch25 FINAL is primary",
+    "sha256": "375191fe3ad6858c73662196c88047b510dac220642c429a830680d55484ee19",
+    "size_bytes": 451128949,
+    "source_commit": "04e4631b0c581692ca377501fed45d904bdf34d6"
+  },
+  {
+    "config_sha256": "fe9b678eb3d2399534aac8a2c4db991f74e2065dbcec22d02239663236728e74",
+    "dataset": "BCSS",
+    "epoch": 20,
+    "filename": "epoch20.pth",
+    "primary_final": false,
+    "seed": 42,
+    "selection": "epoch-number only; epoch25 FINAL is primary",
+    "sha256": "ed3502c9b743ce6f436238fb7db30567f7ecc914d20222418503b7b268509870",
+    "size_bytes": 451128949,
+    "source_commit": "04e4631b0c581692ca377501fed45d904bdf34d6"
+  },
+  {
+    "config_sha256": "fe9b678eb3d2399534aac8a2c4db991f74e2065dbcec22d02239663236728e74",
+    "dataset": "BCSS",
+    "epoch": 25,
+    "filename": "epoch25_final.pth",
+    "primary_final": true,
+    "seed": 42,
+    "selection": "epoch-number only; epoch25 FINAL is primary",
+    "sha256": "34265e42164f85dc5a59dcadaf56685bd1c34a89ab71300005dbc6d51c4ea6c3",
+    "size_bytes": 451131063,
+    "source_commit": "04e4631b0c581692ca377501fed45d904bdf34d6"
+  }
+]

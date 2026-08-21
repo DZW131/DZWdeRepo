@@ -114,6 +114,9 @@ The final checkpoint is saved as `stage1_last.pth`.
 The isolated SSR-v2 PCSD/PTCR implementation, frozen BCSS seed42 25-epoch
 protocol, preflight, evaluation and artifact layout are documented in
 [`docs/ssrv2_fullmodel_README.md`](docs/ssrv2_fullmodel_README.md).
+The completed frozen experiment is archived in the
+[`SSR-v2 epoch25 report`](docs/ssrv2_full_25ep_report.md), with machine-readable
+evidence under [`results/ssrv2_full_25ep/`](results/ssrv2_full_25ep/).
 
 ### Evaluation
 
