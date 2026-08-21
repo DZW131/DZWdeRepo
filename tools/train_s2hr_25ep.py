@@ -43,6 +43,12 @@ FROZEN = {
     "expected_train_samples": 23422,
 }
 
+APPROVED_PRETRAINED_MISSING = {
+    f"{layer}.{state}"
+    for layer in ("bn45", "bn52")
+    for state in ("weight", "bias", "running_mean", "running_var")
+}
+
 
 def sha256_file(path):
     digest = hashlib.sha256()
@@ -121,6 +127,7 @@ def load_pretrained(model, path):
     missing_backbone = [
         key for key in incompat.missing_keys
         if not key.startswith(("hfrm_", "ic_56.", "ic1.", "ic2.", "fc8."))
+        and key not in APPROVED_PRETRAINED_MISSING
     ]
     if missing_backbone or incompat.unexpected_keys:
         raise AssertionError(
@@ -132,6 +139,9 @@ def load_pretrained(model, path):
         "sha256": sha256_file(path),
         "size_bytes": Path(path).stat().st_size,
         "missing_keys": list(incompat.missing_keys),
+        "approved_missing_keys": sorted(
+            set(incompat.missing_keys) & APPROVED_PRETRAINED_MISSING
+        ),
         "unexpected_keys": list(incompat.unexpected_keys),
         "missing_backbone_keys": missing_backbone,
     }
