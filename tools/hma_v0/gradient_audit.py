@@ -68,6 +68,11 @@ def _parameter_group(name):
 def parameter_inventory(model):
     items, groups = [], defaultdict(list)
     for name, parameter in model.named_parameters():
+        # The released train()/eval() freezes the early stem and every BN.
+        # autograd.grad must receive only the parameters that the official
+        # training protocol actually leaves trainable.
+        if not parameter.requires_grad:
+            continue
         group = _parameter_group(name)
         if group is not None:
             index = len(items)
@@ -239,13 +244,15 @@ def run_gradient_audit(model, train_root, num_workers=4, amp_dtype="bf16"):
             for stage, values in components.items():
                 component_rows.append({"batch": batch_index + 1, "stage": stage, **values})
             early_gradients[branch] = {
-                name: gradient.detach().float()
+                name: gradient.detach().float().cpu()
                 for name, gradient in named_gradients.items()
                 if _parameter_group(name) == "shared_early"
             }
             if feature_gradient is None:
                 feature_gradient = torch.zeros_like(audit["feat_deep"])
-            feature_gradients[branch] = feature_gradient.detach().float()
+            # Keep the four branch maps on CPU while computing pairwise cosine;
+            # retaining all [B,4096,H,W] FP32 maps on the GPU is unnecessary.
+            feature_gradients[branch] = feature_gradient.detach().float().cpu()
             deep_norms[branch].append(float(feature_gradient.detach().float().norm().item()))
 
         for left_index, left in enumerate(BRANCHES):

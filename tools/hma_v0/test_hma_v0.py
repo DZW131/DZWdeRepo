@@ -6,6 +6,7 @@ import torch
 from network.resnet38_cls import HFRM
 from tool import iouutils
 from tools.hma_v0.instrumentation import HMAAuditNet, presence_from_probability
+from tools.hma_v0.gradient_audit import parameter_inventory
 from tools.hma_v0.kernels import channel_kernel_metrics
 from tools.hma_v0.metrics import (
     OfficialMetricAccumulator,
@@ -81,3 +82,12 @@ def test_uniform_kernel_is_homogenizer_like():
     assert all(row["uniform_cosine"] > 0.999999 for row in rows)
     assert all(row["negative_fraction"] == 0.0 for row in rows)
     assert all(abs(row["dc_gain"] - 1.0) < 1e-6 for row in rows)
+
+
+def test_gradient_inventory_excludes_officially_frozen_parameters():
+    model = HMAAuditNet(4)
+    model.eval()
+    items, groups = parameter_inventory(model)
+    assert items
+    assert all(parameter.requires_grad for _, parameter, _ in items)
+    assert all(groups[name] for name in groups)
