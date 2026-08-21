@@ -110,8 +110,13 @@ docs/s2hr_v1_fullmodel_25ep_report.md
 
 | Model | Epoch | mIoU | mDice | C0 | C1 | C2 | C3 |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| SSHR A0 seed42 | 25 | pending | pending | pending | pending | pending | pending |
-| S²HR-v1 Full | 25 | pending | pending | pending | pending | pending | pending |
+| SSHR A0 seed42 | 25 | 67.3283 | 80.2683 | 76.4494 | 70.5721 | 57.8272 | 64.4646 |
+| S²HR-v1 Full | 25 | 67.0500 | 80.0680 | 76.3745 | 70.1144 | 57.7191 | 63.9919 |
+
+The frozen validation delta is **-0.2784 pp mIoU** and **-0.2003 pp
+mDice**, giving `S2HR_FULLMODEL_NO_CLEAR_GAIN`. See the
+[complete report](s2hr_v1_fullmodel_25ep_report.md) and the machine-readable
+[`final_comparison.json`](../results/s2hr_v1_bcss_seed42/final_comparison.json).
 
 ## Resume and failure boundaries
 

@@ -1,0 +1,76 @@
+{
+  "class_safety": "NO_CLASS_REGRESSION_OVER_0.50PP",
+  "decision": "S2HR_FULLMODEL_NO_CLEAR_GAIN",
+  "delta": {
+    "class_iou_pp": {
+      "0": -0.07485506804107978,
+      "1": -0.4577317430238925,
+      "2": -0.10811402352488564,
+      "3": -0.4727339747992665
+    },
+    "mDice_pp": -0.20025422027653006,
+    "mIoU_pp": -0.2783587023472811
+  },
+  "models": {
+    "s2hr_v1": {
+      "class_dice": {
+        "0": 0.8660495306981685,
+        "1": 0.824320563251401,
+        "2": 0.7319226739577703,
+        "3": 0.7804275526920416
+      },
+      "class_iou": {
+        "0": 0.7637454669703444,
+        "1": 0.7011439832026843,
+        "2": 0.5771908849140607,
+        "3": 0.6399189768633508
+      },
+      "frequency_weighted_iou": 0.7057527625701624,
+      "mDice": 0.8006800801498454,
+      "mIoU": 0.6704998279876101,
+      "mean_accuracy": 0.7807564964002089,
+      "pixel_accuracy": 0.8271630786170985
+    },
+    "sshr_a0": {
+      "class_dice": {
+        "0": 0.8665305861094406,
+        "1": 0.8274755088900619,
+        "2": 0.7327913261271969,
+        "3": 0.7839330682837431
+      },
+      "class_iou": {
+        "0": 0.7644940176507552,
+        "1": 0.7057213006329233,
+        "2": 0.5782720251493095,
+        "3": 0.6446463166113434
+      },
+      "frequency_weighted_iou": 0.7083913791666917,
+      "mDice": 0.8026826223526107,
+      "mIoU": 0.6732834150110829,
+      "mean_accuracy": 0.782046863069872,
+      "pixel_accuracy": 0.8290387104157547
+    }
+  },
+  "parameters": {
+    "new_parameters": 2,
+    "official_trainable_after_freeze": 111837972,
+    "overhead_fraction": 1.7744699449774135e-08,
+    "s2hr_total": 112709716,
+    "sshr_total": 112709714
+  },
+  "provenance": {
+    "a0_checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+    "precision": "bf16",
+    "s2hr_checkpoint_sha256": "129ad097ad73f9f564d8778baa8e914f92c8200ed90dc1f8763677dffe91b9ac",
+    "source_commit": "5740a434ea15c5de010991180b3e919a31ee99cc",
+    "training_config_sha256": "eb808c451814dc5be65c26b47477093361d124d683b74f51dbef9925cd040703",
+    "training_source_commit": "5740a434ea15c5de010991180b3e919a31ee99cc",
+    "validation_images": 3418
+  },
+  "runtime": {
+    "a0_seconds_per_image": 0.011926387750035215,
+    "mean_training_seconds_per_epoch": 111.11113115310668,
+    "s2hr_seconds_per_image": 0.020918594249303472,
+    "training_peak_cuda_memory_gib": 3.942178249359131
+  }
+}

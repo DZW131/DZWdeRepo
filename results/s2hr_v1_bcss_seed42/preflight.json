@@ -1,0 +1,197 @@
+{
+  "all_finite": true,
+  "batches": [
+    {
+      "batch": 1,
+      "boundary_fraction": 0.3056122362613678,
+      "cam_shapes": [
+        [
+          20,
+          4,
+          56,
+          56
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ]
+      ],
+      "logit_shapes": [
+        [
+          20,
+          4
+        ],
+        [
+          20,
+          4
+        ],
+        [
+          20,
+          4
+        ],
+        [
+          20,
+          4
+        ]
+      ],
+      "loss": 0.7515219449996948
+    },
+    {
+      "batch": 2,
+      "boundary_fraction": 0.48571425676345825,
+      "cam_shapes": [
+        [
+          20,
+          4,
+          56,
+          56
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ]
+      ],
+      "logit_shapes": [
+        [
+          20,
+          4
+        ],
+        [
+          20,
+          4
+        ],
+        [
+          20,
+          4
+        ],
+        [
+          20,
+          4
+        ]
+      ],
+      "loss": 0.7214139699935913
+    }
+  ],
+  "decision": "S2HR_MINIMAL_PREFLIGHT_PASS",
+  "dense_gt_enters_model": false,
+  "gamma_context_init": 0.0,
+  "gamma_spatial_init": 0.0,
+  "gamma_veto_init": 0.0,
+  "optimizer_built": true,
+  "optimizer_groups": [
+    {
+      "lr": 0.01,
+      "momentum": 0.0005,
+      "parameters": 104202240,
+      "weight_decay": 0.0005
+    },
+    {
+      "lr": 0.02,
+      "momentum": 0.0005,
+      "parameters": 0,
+      "weight_decay": 0.0
+    },
+    {
+      "lr": 0.1,
+      "momentum": 0.0005,
+      "parameters": 7635720,
+      "weight_decay": 0.0005
+    },
+    {
+      "lr": 0.2,
+      "momentum": 0.0005,
+      "parameters": 12,
+      "weight_decay": 0.0
+    }
+  ],
+  "optimizer_step": false,
+  "peak_cuda_memory_gib": 1.714311122894287,
+  "pretrained": {
+    "approved_missing_keys": [
+      "bn45.bias",
+      "bn45.running_mean",
+      "bn45.running_var",
+      "bn45.weight",
+      "bn52.bias",
+      "bn52.running_mean",
+      "bn52.running_var",
+      "bn52.weight"
+    ],
+    "missing_backbone_keys": [],
+    "missing_keys": [
+      "bn45.weight",
+      "bn45.bias",
+      "bn45.running_mean",
+      "bn45.running_var",
+      "bn52.weight",
+      "bn52.bias",
+      "bn52.running_mean",
+      "bn52.running_var",
+      "hfrm_56.gamma_veto",
+      "hfrm_56.gamma_context",
+      "hfrm_56.veto_mlp.0.weight",
+      "hfrm_56.veto_mlp.2.weight",
+      "hfrm_56.context_conv.weight",
+      "hfrm_28_1.gamma_veto",
+      "hfrm_28_1.gamma_context",
+      "hfrm_28_1.gamma_spatial",
+      "hfrm_28_1.rho_boundary_raw",
+      "hfrm_28_1.veto_mlp.0.weight",
+      "hfrm_28_1.veto_mlp.2.weight",
+      "hfrm_28_1.context_conv.weight",
+      "hfrm_28_2.gamma_veto",
+      "hfrm_28_2.gamma_context",
+      "hfrm_28_2.veto_mlp.0.weight",
+      "hfrm_28_2.veto_mlp.2.weight",
+      "hfrm_28_2.context_conv.weight",
+      "ic_56.weight",
+      "ic_56.bias",
+      "ic1.weight",
+      "ic1.bias",
+      "ic2.weight",
+      "ic2.bias",
+      "fc8.weight"
+    ],
+    "path": "/home/duyanhong/sshr-reproduction/SSHR/init_weights/ilsvrc-cls_rna-a1_cls1000_ep-0001.params",
+    "sha256": "f668a2add80e33dfa8f1a0695df91f6d8cfad5ffbb26d1dc7bcd35903a1f6e16",
+    "size_bytes": 436873620,
+    "unexpected_keys": []
+  },
+  "rho_boundary_init": 0.01798621006309986,
+  "single_class_boundary_pixels": 0,
+  "single_sample_residual_gradient_abs": {
+    "gamma_context": 0.001480416627600789,
+    "gamma_spatial": 0.0008019773522391915,
+    "gamma_veto": 0.0009239751962013543
+  },
+  "two_region_boundary_pixels": 32,
+  "zero_init_identity_max_abs_difference": 0.0
+}
