@@ -58,7 +58,9 @@ class FIDAInstrumentor:
     """Compute all frozen counterfactuals without rerunning the backbone."""
 
     def __init__(self, model, amp_dtype="bf16"):
-        self.model = model.cuda().eval()
+        # Released ResNet38 ``train`` (and therefore ``eval``) returns None.
+        self.model = model.cuda()
+        self.model.eval()
         self.dtype = _amp_dtype(amp_dtype)
         self.amp_name = amp_dtype
         self.backbone_forwards = 0

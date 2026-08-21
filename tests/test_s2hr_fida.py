@@ -32,6 +32,18 @@ def test_masked_argmax_never_selects_absent_class():
     assert np.all(prediction == 3)
 
 
+def test_instrumentor_keeps_model_when_released_eval_returns_none():
+    class ReleasedStyleModel:
+        def cuda(self):
+            return self
+
+        def eval(self):
+            return None
+
+    model = ReleasedStyleModel()
+    assert FIDAInstrumentor(model).model is model
+
+
 def test_streaming_metric_matches_released_scores():
     truth = [
         np.asarray([[0, 0, 1], [2, 3, 4]], dtype=np.uint8),
