@@ -109,6 +109,12 @@ python train_sshr.py \
 
 The final checkpoint is saved as `stage1_last.pth`.
 
+## SSR-v2 research execution
+
+The isolated SSR-v2 PCSD/PTCR implementation, frozen BCSS seed42 25-epoch
+protocol, preflight, evaluation and artifact layout are documented in
+[`docs/ssrv2_fullmodel_README.md`](docs/ssrv2_fullmodel_README.md).
+
 ### Evaluation
 
 ```bash
