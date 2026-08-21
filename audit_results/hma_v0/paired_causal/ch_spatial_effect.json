@@ -1,0 +1,60 @@
+{
+  "gsr_to_full": {
+    "B0_le_2": {
+      "accuracy_delta": -0.004069678923752279,
+      "baseline_correct": 2533755,
+      "candidate_correct": 2512665,
+      "harmed": 217362,
+      "net": -21090,
+      "pixels": 5182227,
+      "recovered": 196272
+    },
+    "B1_3_7": {
+      "accuracy_delta": -0.008919163262590336,
+      "baseline_correct": 4211223,
+      "candidate_correct": 4142322,
+      "harmed": 340400,
+      "net": -68901,
+      "pixels": 7725052,
+      "recovered": 271499
+    },
+    "B2_ge_8": {
+      "accuracy_delta": 0.011515351741462308,
+      "baseline_correct": 123185015,
+      "candidate_correct": 124863171,
+      "harmed": 1656722,
+      "net": 1678156,
+      "pixels": 145732066,
+      "recovered": 3334878
+    }
+  },
+  "raw_to_ch": {
+    "B0_le_2": {
+      "accuracy_delta": -0.004772658550078953,
+      "baseline_correct": 2534538,
+      "candidate_correct": 2509805,
+      "harmed": 242598,
+      "net": -24733,
+      "pixels": 5182227,
+      "recovered": 217865
+    },
+    "B1_3_7": {
+      "accuracy_delta": -0.010021550663995531,
+      "baseline_correct": 4207537,
+      "candidate_correct": 4130120,
+      "harmed": 379730,
+      "net": -77417,
+      "pixels": 7725052,
+      "recovered": 302313
+    },
+    "B2_ge_8": {
+      "accuracy_delta": 0.012219630510144555,
+      "baseline_correct": 123065404,
+      "candidate_correct": 124846196,
+      "harmed": 1878115,
+      "net": 1780792,
+      "pixels": 145732066,
+      "recovered": 3658907
+    }
+  }
+}

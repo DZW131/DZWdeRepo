@@ -1,0 +1,92 @@
+{
+  "ch_only": {
+    "absent_class": {
+      "candidate_wrong": 4038116,
+      "harmed": 247900,
+      "net": 351164,
+      "raw_wrong": 4365373,
+      "recovered": 599064
+    },
+    "boundary": {
+      "candidate_wrong": 6267354,
+      "harmed": 622328,
+      "net": -102150,
+      "raw_wrong": 6165204,
+      "recovered": 520178
+    },
+    "interior": {
+      "candidate_wrong": 20885870,
+      "harmed": 1878115,
+      "net": 1780792,
+      "raw_wrong": 22666662,
+      "recovered": 3658907
+    },
+    "present_confusion": {
+      "candidate_wrong": 23115108,
+      "harmed": 2252543,
+      "net": 1327478,
+      "raw_wrong": 24466493,
+      "recovered": 3580021
+    }
+  },
+  "gsr_only": {
+    "absent_class": {
+      "candidate_wrong": 4357892,
+      "harmed": 29163,
+      "net": 15324,
+      "raw_wrong": 4365373,
+      "recovered": 44487
+    },
+    "boundary": {
+      "candidate_wrong": 6162301,
+      "harmed": 35991,
+      "net": 2903,
+      "raw_wrong": 6165204,
+      "recovered": 38894
+    },
+    "interior": {
+      "candidate_wrong": 22547051,
+      "harmed": 145815,
+      "net": 119611,
+      "raw_wrong": 22666662,
+      "recovered": 265426
+    },
+    "present_confusion": {
+      "candidate_wrong": 24351460,
+      "harmed": 152643,
+      "net": 107190,
+      "raw_wrong": 24466493,
+      "recovered": 259833
+    }
+  },
+  "official_full": {
+    "absent_class": {
+      "candidate_wrong": 4036548,
+      "harmed": 220733,
+      "net": 353051,
+      "raw_wrong": 4365373,
+      "recovered": 573784
+    },
+    "boundary": {
+      "candidate_wrong": 6252292,
+      "harmed": 569008,
+      "net": -87088,
+      "raw_wrong": 6165204,
+      "recovered": 481920
+    },
+    "interior": {
+      "candidate_wrong": 20868895,
+      "harmed": 1673865,
+      "net": 1797767,
+      "raw_wrong": 22666662,
+      "recovered": 3471632
+    },
+    "present_confusion": {
+      "candidate_wrong": 23084639,
+      "harmed": 2022140,
+      "net": 1357628,
+      "raw_wrong": 24466493,
+      "recovered": 3379768
+    }
+  }
+}

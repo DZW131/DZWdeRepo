@@ -1,0 +1,234 @@
+{
+  "absent_primary": {
+    "28_1": {
+      "cases": 7570,
+      "fraction_suppressed": 0.9266842800528402,
+      "mean_delta_logit": -0.1965543185940192,
+      "median_delta_logit": -0.2109375
+    },
+    "28_2": {
+      "cases": 7570,
+      "fraction_suppressed": 0.9446499339498019,
+      "mean_delta_logit": -0.3485262918661261,
+      "median_delta_logit": -0.359375
+    },
+    "56": {
+      "cases": 7570,
+      "fraction_suppressed": 0.8487450462351387,
+      "mean_delta_logit": -0.32909979990325483,
+      "median_delta_logit": -0.28125
+    },
+    "all_stages": {
+      "cases": 22710,
+      "fraction_suppressed": 0.9066930867459269,
+      "mean_delta_logit": -0.29139347012113337,
+      "median_delta_logit": -0.265625
+    }
+  },
+  "by_stage_class": {
+    "28_1": {
+      "0": {
+        "absent_cases": 1372,
+        "absent_delta_logit_mean": -0.11097300760773807,
+        "absent_delta_logit_median": -0.11181640625,
+        "absent_delta_normalized_cam_mass_mean": -0.0037007200875816427,
+        "absent_delta_raw_cam_mass_mean": 0.0632752969782289,
+        "absent_fraction_logit_suppressed": 0.8571428571428571,
+        "absolute_range_scaled_raw_delta_median": 0.1145004050911596,
+        "normalization_amplification_ratio_median": 0.42583678790886137,
+        "present_cases": 2046,
+        "present_delta_logit_mean": 0.34628659842184445,
+        "present_delta_other_foreground_mass_mean": 0.17097225059624643,
+        "present_delta_target_gt_mass_mean": 0.5710547928617166
+      },
+      "1": {
+        "absent_cases": 705,
+        "absent_delta_logit_mean": -0.034869415878404114,
+        "absent_delta_logit_median": -0.0513916015625,
+        "absent_delta_normalized_cam_mass_mean": -0.004256133601756383,
+        "absent_delta_raw_cam_mass_mean": 0.06772201474465377,
+        "absent_fraction_logit_suppressed": 0.6737588652482269,
+        "absolute_range_scaled_raw_delta_median": 0.24345743655557817,
+        "normalization_amplification_ratio_median": 0.40498644047427856,
+        "present_cases": 2713,
+        "present_delta_logit_mean": 0.26881365524725065,
+        "present_delta_other_foreground_mass_mean": 0.1526699091501938,
+        "present_delta_target_gt_mass_mean": 0.41390247661703167
+      },
+      "2": {
+        "absent_cases": 2466,
+        "absent_delta_logit_mean": -0.19096001163306317,
+        "absent_delta_logit_median": -0.2109375,
+        "absent_delta_normalized_cam_mass_mean": 0.0015937001560059347,
+        "absent_delta_raw_cam_mass_mean": 0.024054580342316997,
+        "absent_fraction_logit_suppressed": 0.9533657745336578,
+        "absolute_range_scaled_raw_delta_median": 0.010915138726161648,
+        "normalization_amplification_ratio_median": 0.4831267815106888,
+        "present_cases": 952,
+        "present_delta_logit_mean": 0.16979726072119064,
+        "present_delta_other_foreground_mass_mean": 0.11745972212901068,
+        "present_delta_target_gt_mass_mean": 0.42022677553141374
+      },
+      "3": {
+        "absent_cases": 3027,
+        "absent_delta_logit_mean": -0.2775589357243145,
+        "absent_delta_logit_median": -0.265625,
+        "absent_delta_normalized_cam_mass_mean": 0.0018968975853632126,
+        "absent_delta_raw_cam_mass_mean": 0.004981968207225808,
+        "absent_fraction_logit_suppressed": 0.9953749587049885,
+        "absolute_range_scaled_raw_delta_median": 0.006010484168354187,
+        "normalization_amplification_ratio_median": 0.4984541101147212,
+        "present_cases": 391,
+        "present_delta_logit_mean": -0.03463592919547235,
+        "present_delta_other_foreground_mass_mean": 0.04180184850750032,
+        "present_delta_target_gt_mass_mean": 0.10835771188461985
+      }
+    },
+    "28_2": {
+      "0": {
+        "absent_cases": 1372,
+        "absent_delta_logit_mean": -0.2558061972303919,
+        "absent_delta_logit_median": -0.265625,
+        "absent_delta_normalized_cam_mass_mean": -0.000931637715558459,
+        "absent_delta_raw_cam_mass_mean": 0.03759838189477998,
+        "absent_fraction_logit_suppressed": 0.9540816326530612,
+        "absolute_range_scaled_raw_delta_median": 0.1346332167602804,
+        "normalization_amplification_ratio_median": 0.334028733767756,
+        "present_cases": 2046,
+        "present_delta_logit_mean": 0.4411114387847811,
+        "present_delta_other_foreground_mass_mean": 0.23567043457186668,
+        "present_delta_target_gt_mass_mean": 0.8082269005746207
+      },
+      "1": {
+        "absent_cases": 705,
+        "absent_delta_logit_mean": -0.08842290377785973,
+        "absent_delta_logit_median": -0.10546875,
+        "absent_delta_normalized_cam_mass_mean": -0.008866289921157748,
+        "absent_delta_raw_cam_mass_mean": 0.07789839888197958,
+        "absent_fraction_logit_suppressed": 0.7205673758865249,
+        "absolute_range_scaled_raw_delta_median": 0.2464016263978997,
+        "normalization_amplification_ratio_median": 0.2584361916153872,
+        "present_cases": 2713,
+        "present_delta_logit_mean": 0.42510128197000335,
+        "present_delta_other_foreground_mass_mean": 0.28050319699393633,
+        "present_delta_target_gt_mass_mean": 0.6391195148390314
+      },
+      "2": {
+        "absent_cases": 2466,
+        "absent_delta_logit_mean": -0.33542206107554934,
+        "absent_delta_logit_median": -0.359375,
+        "absent_delta_normalized_cam_mass_mean": 0.0024570276540011433,
+        "absent_delta_raw_cam_mass_mean": 0.030539866546120113,
+        "absent_fraction_logit_suppressed": 0.9448499594484996,
+        "absolute_range_scaled_raw_delta_median": 0.017640460654697078,
+        "normalization_amplification_ratio_median": 0.3127836934753995,
+        "present_cases": 952,
+        "present_delta_logit_mean": 0.2798672523819098,
+        "present_delta_other_foreground_mass_mean": 0.22312542507336855,
+        "present_delta_target_gt_mass_mean": 0.6365872700933767
+      },
+      "3": {
+        "absent_cases": 3027,
+        "absent_delta_logit_mean": -0.461806731764381,
+        "absent_delta_logit_median": -0.4375,
+        "absent_delta_normalized_cam_mass_mean": 0.0019078536737457332,
+        "absent_delta_raw_cam_mass_mean": 0.015184254184635678,
+        "absent_fraction_logit_suppressed": 0.992401717872481,
+        "absolute_range_scaled_raw_delta_median": 0.007273651730657251,
+        "normalization_amplification_ratio_median": 0.3585748118829475,
+        "present_cases": 391,
+        "present_delta_logit_mean": 0.14829501959369007,
+        "present_delta_other_foreground_mass_mean": 0.17919767658435565,
+        "present_delta_target_gt_mass_mean": 0.48743312549596884
+      }
+    },
+    "56": {
+      "0": {
+        "absent_cases": 1372,
+        "absent_delta_logit_mean": -0.13068203119772864,
+        "absent_delta_logit_median": -0.140869140625,
+        "absent_delta_normalized_cam_mass_mean": -0.008272414002024485,
+        "absent_delta_raw_cam_mass_mean": 0.09362567187648038,
+        "absent_fraction_logit_suppressed": 0.7973760932944607,
+        "absolute_range_scaled_raw_delta_median": 0.26672574074640903,
+        "normalization_amplification_ratio_median": 0.2680343609052406,
+        "present_cases": 2046,
+        "present_delta_logit_mean": 0.31071414928865104,
+        "present_delta_other_foreground_mass_mean": 0.20439281179558538,
+        "present_delta_target_gt_mass_mean": 0.44237721017799586
+      },
+      "1": {
+        "absent_cases": 705,
+        "absent_delta_logit_mean": 0.20760749113475177,
+        "absent_delta_logit_median": 0.1875,
+        "absent_delta_normalized_cam_mass_mean": -0.020945956647818814,
+        "absent_delta_raw_cam_mass_mean": 0.23023955868491044,
+        "absent_fraction_logit_suppressed": 0.0014184397163120568,
+        "absolute_range_scaled_raw_delta_median": 0.17719588393332708,
+        "normalization_amplification_ratio_median": 0.7427301513083271,
+        "present_cases": 2713,
+        "present_delta_logit_mean": 0.4448603943973461,
+        "present_delta_other_foreground_mass_mean": 0.30901961203597217,
+        "present_delta_target_gt_mass_mean": 0.5078342471980973
+      },
+      "2": {
+        "absent_cases": 2466,
+        "absent_delta_logit_mean": -0.19288633706989272,
+        "absent_delta_logit_median": -0.21484375,
+        "absent_delta_normalized_cam_mass_mean": 0.0009376176195604377,
+        "absent_delta_raw_cam_mass_mean": 0.06985898802721788,
+        "absent_fraction_logit_suppressed": 0.9339010543390105,
+        "absolute_range_scaled_raw_delta_median": 0.02213735575094336,
+        "normalization_amplification_ratio_median": 0.5060248064225781,
+        "present_cases": 952,
+        "present_delta_logit_mean": 0.14502622700538956,
+        "present_delta_other_foreground_mass_mean": 0.1611125680929709,
+        "present_delta_target_gt_mass_mean": 0.4238968103171515
+      },
+      "3": {
+        "absent_cases": 3027,
+        "absent_delta_logit_mean": -0.6550034068384539,
+        "absent_delta_logit_median": -0.6640625,
+        "absent_delta_normalized_cam_mass_mean": 0.0006027350619751905,
+        "absent_delta_raw_cam_mass_mean": 0.003272297980699829,
+        "absent_fraction_logit_suppressed": 1.0,
+        "absolute_range_scaled_raw_delta_median": 0.010065716399519146,
+        "normalization_amplification_ratio_median": 0.5088080925477643,
+        "present_cases": 391,
+        "present_delta_logit_mean": -0.4384690696930946,
+        "present_delta_other_foreground_mass_mean": 0.01762478719825683,
+        "present_delta_target_gt_mass_mean": 0.02967943964735069
+      }
+    }
+  },
+  "normalization": {
+    "28_1": {
+      "amplification_ratio_median": 0.4496154537190945,
+      "fraction_amplified_over_2x": 0.0520040959625512,
+      "normalized_full_minus_raw_mass_abs_median": 0.02427638601511717,
+      "range_scaled_raw_delta_abs_median": 0.04129952840923203,
+      "raw_full_minus_raw_mass_abs_median": 0.15070491284132004
+    },
+    "28_2": {
+      "amplification_ratio_median": 0.3106300900112165,
+      "fraction_amplified_over_2x": 0.027501462843768285,
+      "normalized_full_minus_raw_mass_abs_median": 0.020901886746287346,
+      "range_scaled_raw_delta_abs_median": 0.056313141429287845,
+      "raw_full_minus_raw_mass_abs_median": 0.2096894085407257
+    },
+    "56": {
+      "amplification_ratio_median": 0.4621193156855018,
+      "fraction_amplified_over_2x": 0.12412229373902867,
+      "normalized_full_minus_raw_mass_abs_median": 0.03062121383845806,
+      "range_scaled_raw_delta_abs_median": 0.06522241754839637,
+      "raw_full_minus_raw_mass_abs_median": 0.301117479801178
+    },
+    "all_stages": {
+      "amplification_ratio_median": 0.3928661481935519,
+      "fraction_amplified_over_2x": 0.06787595084844938,
+      "normalized_full_minus_raw_mass_abs_median": 0.025141622871160507,
+      "range_scaled_raw_delta_abs_median": 0.05453408669178235,
+      "raw_full_minus_raw_mass_abs_median": 0.22111763060092926
+    }
+  }
+}
