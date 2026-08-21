@@ -73,7 +73,8 @@ def render_report(summary, output_path):
         f"- Checkpoint: `{provenance['checkpoint']}`",
         f"- Checkpoint SHA256: `{provenance['checkpoint_sha256']}`",
         f"- BCSS validation: {provenance['validation_images']} images / {provenance['validation_slides']} slides",
-        f"- Fixed gradient audit: {gradient['batches']} batches × {gradient['batch_size']}, seed={gradient['seed']}",
+        f"- Fixed gradient audit: {gradient['batches']} logical batches × {gradient['batch_size']} "
+        f"(microbatch={gradient['microbatch_size']} with mean-gradient accumulation), seed={gradient['seed']}",
         f"- Parameter SHA before/after gradient audit: `{gradient['parameter_hash_before']}` / `{gradient['parameter_hash_after']}`",
         f"- Buffer SHA before/after gradient audit: `{gradient['buffer_hash_before']}` / `{gradient['buffer_hash_after']}`",
         f"- Runtime: {provenance['runtime_seconds'] / 60:.2f} min; peak CUDA memory: {provenance['peak_cuda_memory_gib']:.3f} GiB",

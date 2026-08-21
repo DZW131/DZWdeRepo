@@ -8,7 +8,8 @@ Safety properties:
 - exact checkpoint SHA256 enforcement;
 - 32-image, three-TTA, same-process hard instrumentation parity before downstream analysis;
 - BCSS validation-only causal inference;
-- exactly 32 fixed training batches for gradient observation, using `torch.autograd.grad` only;
+- exactly 32 fixed logical training batches for gradient observation, using
+  microbatch mean-gradient accumulation and `torch.autograd.grad` only;
 - no optimizer construction, optimizer step, test/LUAD evaluation, or model update;
 - parameter and buffer SHA256 equality before/after the gradient audit.
 

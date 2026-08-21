@@ -15,6 +15,7 @@ from tool.GenDataset import Stage1_TrainDataset
 from tools.hma_v0 import (
     GRADIENT_BATCHES,
     GRADIENT_BATCH_SIZE,
+    GRADIENT_MICROBATCH_SIZE,
     IMAGE_SIZE,
     LOSS_WEIGHTS,
     SEED,
@@ -193,32 +194,59 @@ def run_gradient_audit(model, train_root, num_workers=4, amp_dtype="bf16"):
     for batch_index, (_, images, labels) in enumerate(loader):
         if batch_index >= GRADIENT_BATCHES:
             break
-        images = images.cuda(non_blocking=True)
-        labels = labels.cuda(non_blocking=True)
-        with torch.autocast(
-            device_type="cuda", dtype=dtype, enabled=dtype is not None
-        ):
-            audit = model.forward_hfrm_audit(images, apply_deep_dropout=True)
-            losses = {
-                stage: LOSS_WEIGHTS[stage] * F.multilabel_soft_margin_loss(
-                    audit["pooled_logits"]["full"][stage], labels
+        logical_batch_size = int(images.shape[0])
+        parameter_sums = {
+            branch: [None] * len(parameters) for branch in BRANCHES
+        }
+        feature_chunks = {branch: [] for branch in BRANCHES}
+        loss_sums = {branch: 0.0 for branch in BRANCHES}
+        for micro_start in range(0, logical_batch_size, GRADIENT_MICROBATCH_SIZE):
+            micro_end = min(micro_start + GRADIENT_MICROBATCH_SIZE, logical_batch_size)
+            micro_images = images[micro_start:micro_end].cuda(non_blocking=True)
+            micro_labels = labels[micro_start:micro_end].cuda(non_blocking=True)
+            scale = float((micro_end - micro_start) / logical_batch_size)
+            with torch.autocast(
+                device_type="cuda", dtype=dtype, enabled=dtype is not None
+            ):
+                audit = model.forward_hfrm_audit(micro_images, apply_deep_dropout=True)
+                losses = {
+                    stage: LOSS_WEIGHTS[stage] * F.multilabel_soft_margin_loss(
+                        audit["pooled_logits"]["full"][stage], micro_labels
+                    )
+                    for stage in STAGES
+                }
+                losses["deep"] = LOSS_WEIGHTS["deep"] * F.multilabel_soft_margin_loss(
+                    audit["deep_pooled"], micro_labels
                 )
-                for stage in STAGES
-            }
-            losses["deep"] = LOSS_WEIGHTS["deep"] * F.multilabel_soft_margin_loss(
-                audit["deep_pooled"], labels
-            )
+
+            for branch_index, branch in enumerate(BRANCHES):
+                gradients = torch.autograd.grad(
+                    losses[branch],
+                    [*parameters, audit["feat_deep"]],
+                    retain_graph=branch_index < len(BRANCHES) - 1,
+                    allow_unused=True,
+                )
+                loss_sums[branch] += scale * float(losses[branch].detach().float().item())
+                for index, gradient in enumerate(gradients[:-1]):
+                    if gradient is None:
+                        continue
+                    value = gradient.detach().float().cpu().mul_(scale)
+                    if parameter_sums[branch][index] is None:
+                        parameter_sums[branch][index] = value
+                    else:
+                        parameter_sums[branch][index].add_(value)
+                feature_gradient = gradients[-1]
+                if feature_gradient is None:
+                    feature_gradient = torch.zeros_like(audit["feat_deep"])
+                feature_chunks[branch].append(
+                    feature_gradient.detach().float().cpu().mul_(scale)
+                )
+            del audit, losses, gradients, micro_images, micro_labels
 
         early_gradients, feature_gradients = {}, {}
-        for branch_index, branch in enumerate(BRANCHES):
-            gradients = torch.autograd.grad(
-                losses[branch],
-                [*parameters, audit["feat_deep"]],
-                retain_graph=branch_index < len(BRANCHES) - 1,
-                allow_unused=True,
-            )
-            parameter_gradients = gradients[:-1]
-            feature_gradient = gradients[-1]
+        for branch in BRANCHES:
+            parameter_gradients = parameter_sums[branch]
+            feature_gradient = torch.cat(feature_chunks[branch], dim=0)
             named_gradients = {
                 name: gradient
                 for name, gradient in zip(names, parameter_gradients)
@@ -238,7 +266,7 @@ def run_gradient_audit(model, train_root, num_workers=4, amp_dtype="bf16"):
                     "batch": batch_index + 1,
                     "loss_branch": branch,
                     "loss_weight": LOSS_WEIGHTS[branch],
-                    "weighted_loss": float(losses[branch].detach().float().item()),
+                    "weighted_loss": loss_sums[branch],
                     "parameter_group": group,
                     "gradient_norm": group_norms[group],
                     "relative_norm": float(group_norms[group] / (total_norm + 1e-20)),
@@ -251,12 +279,8 @@ def run_gradient_audit(model, train_root, num_workers=4, amp_dtype="bf16"):
                 for name, gradient in named_gradients.items()
                 if _parameter_group(name) == "shared_early"
             }
-            if feature_gradient is None:
-                feature_gradient = torch.zeros_like(audit["feat_deep"])
-            # Keep the four branch maps on CPU while computing pairwise cosine;
-            # retaining all [B,4096,H,W] FP32 maps on the GPU is unnecessary.
-            feature_gradients[branch] = feature_gradient.detach().float().cpu()
-            deep_norms[branch].append(float(feature_gradient.detach().float().norm().item()))
+            feature_gradients[branch] = feature_gradient
+            deep_norms[branch].append(float(feature_gradient.norm().item()))
 
         for left_index, left in enumerate(BRANCHES):
             for right in BRANCHES[left_index:]:
@@ -320,6 +344,10 @@ def run_gradient_audit(model, train_root, num_workers=4, amp_dtype="bf16"):
         "summary": {
             "batches": GRADIENT_BATCHES,
             "batch_size": GRADIENT_BATCH_SIZE,
+            "microbatch_size": GRADIENT_MICROBATCH_SIZE,
+            "microbatch_accumulation": (
+                "mean-gradient-equivalent accumulation; fixed seed; no optimizer"
+            ),
             "seed": SEED,
             "optimizer_constructed": False,
             "optimizer_step": False,
