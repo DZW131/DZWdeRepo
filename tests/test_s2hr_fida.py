@@ -13,6 +13,7 @@ from tools.s2hr_fida_metrics import (
     foreground_boundary_bins,
     semantic_transition_band,
 )
+from tools.audit_s2hr_fida import spsr_direction_rejected
 
 
 def test_primary_factorial_is_exactly_preregistered():
@@ -42,6 +43,11 @@ def test_instrumentor_keeps_model_when_released_eval_returns_none():
 
     model = ReleasedStyleModel()
     assert FIDAInstrumentor(model).model is model
+
+
+def test_positive_sign_improvement_rejects_learned_negative_direction():
+    assert spsr_direction_rejected(0.6716889, 0.6759187)
+    assert not spsr_direction_rejected(0.6759187, 0.6716889)
 
 
 def test_streaming_metric_matches_released_scores():

@@ -116,6 +116,10 @@ def attribution_label(prefix, effect_pp):
     return f"{prefix}_NEUTRAL"
 
 
+def spsr_direction_rejected(negative_miou, positive_miou):
+    return 100 * (positive_miou - negative_miou) >= ATTRIBUTION_THRESHOLD_PP
+
+
 def flatten_spatial(summary):
     return [
         {"comparison": name, "region": region, **values}
@@ -620,13 +624,11 @@ def main():
     )
     interaction_label = attribution_label("INNOVATION_INTERACTION", effects["Interaction"])
     labels = [bps_label, spsr_label, trajectory_label, interaction_label]
-    if (
-        (
-            sign_metrics["negative"]["mIoU"] > sign_metrics["zero"]["mIoU"]
-            > sign_metrics["positive"]["mIoU"]
-        )
-        or 100 * (sign_metrics["negative"]["mIoU"] - sign_metrics["positive"]["mIoU"])
-        >= ATTRIBUTION_THRESHOLD_PP
+    positive_minus_learned_pp = 100 * (
+        sign_metrics["positive"]["mIoU"] - sign_metrics["negative"]["mIoU"]
+    )
+    if spsr_direction_rejected(
+        sign_metrics["negative"]["mIoU"], sign_metrics["positive"]["mIoU"]
     ):
         labels.append("SPSR_DIRECTION_REJECTED")
     oracle_overall = next(
@@ -674,7 +676,6 @@ def main():
         }
 
     negative_better = sign_metrics["negative"]["mIoU"] > sign_metrics["zero"]["mIoU"]
-    positive_worse = sign_metrics["positive"]["mIoU"] < sign_metrics["negative"]["mIoU"]
     present_lookup = {
         (row["presence"], row["method"]): row for row in present_confusion
     }
@@ -692,7 +693,7 @@ def main():
         f"SPSR-only V01-V00 is {effects['SPSR given BPS off']:+.4f} pp ({spsr_label}).",
         f"The factorial interaction is {effects['Interaction']:+.4f} pp ({interaction_label}).",
         f"Learned negative gamma is {'better' if negative_better else 'not better'} than zero by {sign_metrics['negative']['delta_vs_zero_pp']:+.4f} pp.",
-        f"Positive sign flip is {'worse' if positive_worse else 'not worse'} than learned negative by {100*(sign_metrics['positive']['mIoU']-sign_metrics['negative']['mIoU']):+.4f} pp.",
+        f"Positive sign flip is not worse; it is better than learned negative by {positive_minus_learned_pp:+.4f} pp, so the learned direction is rejected.",
         f"With GT-present classes, deep local accuracy is {100*oracle_overall['deep_accuracy']:.4f}% versus raw28_1 {100*oracle_overall['raw28_1_accuracy']:.4f}%; present-confusion error is {100*oracle_deep_confusion['present_confusion_error_rate']:.4f}% versus {100*oracle_raw_confusion['present_confusion_error_rate']:.4f}% ({teacher_present_confusion_finding}).",
         f"Deep teacher opportunities are help={oracle_overall['deep_help']:,}, harm={oracle_overall['deep_harm']:,}, net={oracle_overall['teacher_net']:,}.",
         f"At GT boundary bins, deep accuracy is {100*oracle_boundary['deep_accuracy']:.4f}% versus raw28_1 {100*oracle_boundary['raw28_1_accuracy']:.4f}% ({'unreliable' if oracle_boundary['deep_accuracy'] < oracle_boundary['raw28_1_accuracy'] else 'not worse'}).",
