@@ -156,8 +156,8 @@ def render_report(summary, output_path):
         "",
         "### Final official-fusion variants",
         "",
-        "| Variant | mIoU | Δ vs Full | mDice | C0 | C1 | C2 | C3 |",
-        "|---|---:|---:|---:|---:|---:|---:|---:|",
+        "| Variant | mIoU | Δ vs Full | mDice | C0 | C1 | C2 | C3 | Differing pixels |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     variant_labels = {
         "official_full": "Official Full", "all_hfrm_off": "All HFRM off",
@@ -170,7 +170,10 @@ def render_report(summary, output_path):
         item = final[key]
         delta = "—" if key == "official_full" else f"{100*(item['mean_iou']-full):+.4f}"
         classes = " | ".join(_pct(item["class_iou"][str(c)]) for c in range(4))
-        lines.append(f"| {label} | {_pct(item['mean_iou'])} | {delta} | {_pct(item['mean_dice'])} | {classes} |")
+        lines.append(
+            f"| {label} | {_pct(item['mean_iou'])} | {delta} | {_pct(item['mean_dice'])} | "
+            f"{classes} | {item['differing_pixels_vs_full']:,} |"
+        )
     lines += [
         "",
         f"Full vs Raw frozen-checkpoint effect: **{100*(full-raw):+.4f} mIoU points**. "
@@ -247,7 +250,12 @@ def render_report(summary, output_path):
         f"5. Trained CH labels: {kernel_behavior}; the conclusion uses direct spatial weights and zero-padded FFT, not module naming.",
         f"6. CH raw→CH boundary Δacc={100*boundary['accuracy_delta']:+.4f} pp; interior Δacc={100*interior['accuracy_delta']:+.4f} pp.",
         f"7. Boundary harm is {'supported' if boundary['net'] < 0 else 'not supported'} by the preregistered net-transition sign (net={boundary['net']:,}).",
-        f"8. GSR/CH recover-set Jaccard={comp['recovery_set_jaccard']:.4f}; the frozen label is " + ("complementary." if "GSR_CH_COMPLEMENTARY" in mechanism["labels"] else "redundant." if "GSR_CH_REDUNDANT" in mechanism["labels"] else "conflicting/mixed by the declared rule."),
+        f"8. GSR/CH recover-set Jaccard={comp['recovery_set_jaccard']:.4f}; the frozen label is " + (
+            "complementary." if "GSR_CH_COMPLEMENTARY" in mechanism["labels"] else
+            "redundant." if "GSR_CH_REDUNDANT" in mechanism["labels"] else
+            "conflicting." if "GSR_CH_CONFLICTING" in mechanism["labels"] else
+            "unclassified: no complementarity/redundancy/conflict rule fired, so the asymmetric/mixed pattern is reported without forcing a label."
+        ),
         f"9. Direct official-fusion removal costs: 28_1={100*impact_1:+.4f} pp, 28_2={100*impact_2:+.4f} pp; {dominant_stage} is larger.",
         f"10. CAM56 standalone Raw/GSR/CH/Full is reported in Section 5. It is excluded from released fusion, and frozen inference cannot establish its training-time causal contribution.",
         f"11. Same-checkpoint Full−Raw={100*(full-raw):+.4f} mIoU points.",
