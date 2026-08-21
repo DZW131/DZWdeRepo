@@ -195,7 +195,10 @@ def main():
     pd.DataFrame(kernel_rows).to_csv(output / "kernels" / "kernel_channel_metrics.csv", index=False)
     write_json(output / "kernels" / "kernel_summary.json", kernels)
 
-    model = model.cuda().eval()
+    # The released ResNet38 overrides train()/eval() and returns None instead
+    # of self, so the two calls must not be chained or assigned.
+    model = model.cuda()
+    model.eval()
     try:
         parity = run_instrumentation_parity(model, args.val_root, amp_dtype=args.amp_dtype)
     except RuntimeError as error:

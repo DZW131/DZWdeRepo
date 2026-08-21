@@ -36,4 +36,3 @@ FINAL_VARIANTS = {
     "gsr_28_2_off": ("full", "ch"),
     "ch_28_2_off": ("full", "gsr"),
 }
-
