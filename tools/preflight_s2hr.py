@@ -71,6 +71,7 @@ def main():
         pin_memory=True, drop_last=True,
     )
     batch_records = []
+    connectivity_images = connectivity_labels = None
     torch.cuda.reset_peak_memory_stats()
     with torch.no_grad():
         for batch_index, (_, images, labels) in enumerate(loader):
@@ -106,11 +107,15 @@ def main():
                     model.last_s2hr_diagnostics["boundary_fraction"].float().item()
                 ),
             })
+            connectivity_images = images[:1]
+            connectivity_labels = labels[:1]
 
     with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
-        connectivity_outputs = model(images[:1], image_label=labels[:1], mode="train")
+        connectivity_outputs = model(
+            connectivity_images, image_label=connectivity_labels, mode="train"
+        )
         connectivity_loss = sum(
-            weight * F.multilabel_soft_margin_loss(output, labels[:1])
+            weight * F.multilabel_soft_margin_loss(output, connectivity_labels)
             for weight, output in zip((0.10, 0.15, 0.25, 0.50), connectivity_outputs[:4])
         )
     connectivity_gradients = torch.autograd.grad(
