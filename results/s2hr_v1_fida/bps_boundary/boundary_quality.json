@@ -1,0 +1,24 @@
+{
+  "b2_interior_contamination": 0.7320866207325516,
+  "f1": 0.36389202340499766,
+  "ground_truth": 1317834,
+  "gt_boundary_fraction": 0.16392731756248433,
+  "intersection": 485490,
+  "iou": 0.22241320781426305,
+  "outside_foreground_fraction": 0.09876155603357312,
+  "pixels": 8039136,
+  "precision": 0.35949307100782313,
+  "predicted": 1350485,
+  "predicted_boundary_fraction": 0.16798882367458393,
+  "predicted_boundary_region_fraction": {
+    "B0_le_2": 0.06836506884563694,
+    "B1_3_7": 0.1007867543882383,
+    "B2_ge_8": 0.7320866207325516
+  },
+  "predicted_in_B0_le_2": 92326,
+  "predicted_in_B1_3_7": 136111,
+  "predicted_in_B2_ge_8": 988672,
+  "predicted_outside_foreground": 133376,
+  "recall": 0.3683999653977663,
+  "union": 2182829
+}

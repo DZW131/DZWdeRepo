@@ -1,0 +1,15 @@
+{
+  "deep_harm_opportunity": 4171071,
+  "deep_help_opportunity": 10931954,
+  "foreground": 158639345,
+  "harmed": 694976,
+  "harmed_fraction_in_deep_harm": 0.5675749953955245,
+  "harmed_in_deep_harm": 394451,
+  "harmed_in_deep_help": 426,
+  "net": 45564,
+  "recovered": 740540,
+  "recovered_fraction_in_deep_help": 0.5896724012207308,
+  "recovered_in_deep_harm": 306,
+  "recovered_in_deep_help": 436676,
+  "unchanged": 157203829
+}
