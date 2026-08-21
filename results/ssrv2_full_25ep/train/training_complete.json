@@ -1,0 +1,18 @@
+{
+  "epochs": 25,
+  "final_mechanism": {
+    "beta_spatial": -1.883923888206482,
+    "effective_gamma": 0.1414930820465088,
+    "gamma_context_28_1": 1.1889820098876953,
+    "gamma_global_28_1": 0.5407879948616028,
+    "gamma_spatial": 0.1414930820465088,
+    "mean_abs_pd_minus_ps": 0.0747915303046687,
+    "pcsd_loss_raw": 0.20401549574073619,
+    "valid_fraction": 0.5996157264068125
+  },
+  "mean_epoch_seconds": 109.8237714767456,
+  "peak_cuda_memory_gib": 4.075970649719238,
+  "primary_checkpoint": "checkpoints/epoch25_final.pth",
+  "status": "SSRV2_TRAINING_COMPLETE",
+  "total_seconds": 2747.8884875774384
+}

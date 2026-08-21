@@ -1,0 +1,207 @@
+{
+  "class_safety": "SSRV2_CLASS_REGRESSION_REVIEW",
+  "decision": "SSRV2_FULLMODEL_NO_CLEAR_GAIN",
+  "delta": {
+    "class_iou_pp": {
+      "0": -0.3341789746577062,
+      "1": -0.4368630733130985,
+      "2": 0.25035970721533074,
+      "3": -1.3625240278729134
+    },
+    "mDice_pp": -0.3328328364327726,
+    "mIoU_pp": -0.4708015921571107
+  },
+  "models": {
+    "sshr_a0": {
+      "class_dice": {
+        "0": 0.8665305861094406,
+        "1": 0.8274755088900619,
+        "2": 0.7327913261271969,
+        "3": 0.7839330682837431
+      },
+      "class_iou": {
+        "0": 0.7644940176507552,
+        "1": 0.7057213006329233,
+        "2": 0.5782720251493095,
+        "3": 0.6446463166113434
+      },
+      "frequency_weighted_iou": 0.7083913791666917,
+      "mDice": 0.8026826223526107,
+      "mIoU": 0.6732834150110829,
+      "mean_accuracy": 0.782046863069872,
+      "pixel_accuracy": 0.8290387104157547
+    },
+    "ssrv2": {
+      "class_dice": {
+        "0": 0.8643798257121376,
+        "1": 0.8244647712471056,
+        "2": 0.7347983028803281,
+        "3": 0.7737742761135603
+      },
+      "class_iou": {
+        "0": 0.7611522279041781,
+        "1": 0.7013526698997923,
+        "2": 0.5807756222214628,
+        "3": 0.6310210763326143
+      },
+      "frequency_weighted_iou": 0.7047769165577965,
+      "mDice": 0.799354293988283,
+      "mIoU": 0.6685753990895118,
+      "mean_accuracy": 0.779906806192567,
+      "pixel_accuracy": 0.8265348485900519
+    }
+  },
+  "parameters": {
+    "new_parameters": 1,
+    "sshr_total": 112709714,
+    "ssrv2_total": 112709715
+  },
+  "provenance": {
+    "a0_checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+    "checkpoint_selection": "epoch25 FINAL only",
+    "evaluation_command": "tools/eval_ssrv2.py --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val --a0-checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --ssrv2-checkpoint /home/duyanhong/experiments/SSRV2_FULL_25EP_SEED42_04e4631/checkpoints/epoch25_final.pth --experiment-dir /home/duyanhong/experiments/SSRV2_FULL_25EP_SEED42_04e4631 --num-workers 4",
+    "evaluation_source_commit": "04e4631b0c581692ca377501fed45d904bdf34d6",
+    "luad_used": false,
+    "precision": "bf16",
+    "ssrv2_checkpoint_sha256": "34265e42164f85dc5a59dcadaf56685bd1c34a89ab71300005dbc6d51c4ea6c3",
+    "test_used": false,
+    "training_config_sha256": "fe9b678eb3d2399534aac8a2c4db991f74e2065dbcec22d02239663236728e74",
+    "training_source_commit": "04e4631b0c581692ca377501fed45d904bdf34d6",
+    "validation_images": 3418
+  },
+  "runtime": {
+    "a0_seconds_per_image": 0.011975972676151603,
+    "mean_training_seconds_per_epoch": 109.8237714767456,
+    "ssrv2_seconds_per_image": 0.021173896253841393,
+    "training_peak_cuda_memory_gib": 4.075970649719238
+  },
+  "teacher_diagnosis": {
+    "deep_accuracy": 0.8440955237176503,
+    "deep_correct": 133906761,
+    "foreground": 158639345,
+    "presence": "GT-present diagnostic only",
+    "raw28_1_accuracy": 0.8505091470215034,
+    "raw28_1_correct": 134924214,
+    "teacher_advantage_pp": -0.6413623303853152,
+    "tta": 3
+  },
+  "training_manifest": {
+    "base_a0_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+    "command": "tools/train_ssrv2_25ep.py --trainroot /home/duyanhong/reseg-data/raw/BCSS-WSSS/training --weights /home/duyanhong/sshr-reproduction/SSHR/init_weights/ilsvrc-cls_rna-a1_cls1000_ep-0001.params --output-dir /home/duyanhong/experiments/SSRV2_FULL_25EP_SEED42_04e4631 --num-workers 4",
+    "config_sha256": "fe9b678eb3d2399534aac8a2c4db991f74e2065dbcec22d02239663236728e74",
+    "cuda_runtime": "12.8",
+    "dataset_samples": 23422,
+    "fresh_training": true,
+    "gpu": "NVIDIA GeForce RTX 5090 D v2",
+    "initial_mechanism": {
+      "beta_spatial": -4.0,
+      "gamma_context": 0.0,
+      "gamma_global": 0.0,
+      "gamma_spatial": 0.018149929121136665
+    },
+    "loaded_trained_checkpoint": false,
+    "maximum_steps": 29275,
+    "optimizer_param_groups_initial": [
+      {
+        "index": 0,
+        "lr": 0.01,
+        "momentum": 0.0005,
+        "parameters": 104202240,
+        "weight_decay": 0.0005
+      },
+      {
+        "index": 1,
+        "lr": 0.02,
+        "momentum": 0.0005,
+        "parameters": 0,
+        "weight_decay": 0.0
+      },
+      {
+        "index": 2,
+        "lr": 0.1,
+        "momentum": 0.0005,
+        "parameters": 7635719,
+        "weight_decay": 0.0005
+      },
+      {
+        "index": 3,
+        "lr": 0.2,
+        "momentum": 0.0005,
+        "parameters": 12,
+        "weight_decay": 0.0
+      }
+    ],
+    "parameters": {
+      "new_parameters": 1,
+      "sshr_total": 112709714,
+      "ssrv2_total": 112709715
+    },
+    "platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.35",
+    "pretrained": {
+      "approved_missing_keys": [
+        "bn45.bias",
+        "bn45.running_mean",
+        "bn45.running_var",
+        "bn45.weight",
+        "bn52.bias",
+        "bn52.running_mean",
+        "bn52.running_var",
+        "bn52.weight"
+      ],
+      "missing_backbone_keys": [],
+      "missing_keys": [
+        "bn45.weight",
+        "bn45.bias",
+        "bn45.running_mean",
+        "bn45.running_var",
+        "bn52.weight",
+        "bn52.bias",
+        "bn52.running_mean",
+        "bn52.running_var",
+        "hfrm_56.gamma_veto",
+        "hfrm_56.gamma_context",
+        "hfrm_56.veto_mlp.0.weight",
+        "hfrm_56.veto_mlp.2.weight",
+        "hfrm_56.context_conv.weight",
+        "hfrm_28_1.gamma_veto",
+        "hfrm_28_1.gamma_context",
+        "hfrm_28_1.beta_spatial",
+        "hfrm_28_1.veto_mlp.0.weight",
+        "hfrm_28_1.veto_mlp.2.weight",
+        "hfrm_28_1.context_conv.weight",
+        "hfrm_28_2.gamma_veto",
+        "hfrm_28_2.gamma_context",
+        "hfrm_28_2.veto_mlp.0.weight",
+        "hfrm_28_2.veto_mlp.2.weight",
+        "hfrm_28_2.context_conv.weight",
+        "ic_56.weight",
+        "ic_56.bias",
+        "ic1.weight",
+        "ic1.bias",
+        "ic2.weight",
+        "ic2.bias",
+        "fc8.weight"
+      ],
+      "path": "/home/duyanhong/sshr-reproduction/SSHR/init_weights/ilsvrc-cls_rna-a1_cls1000_ep-0001.params",
+      "sha256": "f668a2add80e33dfa8f1a0695df91f6d8cfad5ffbb26d1dc7bcd35903a1f6e16",
+      "size_bytes": 436873620,
+      "unexpected_keys": []
+    },
+    "python": "3.10.20 (main, Jun 11 2026, 15:17:37) [GCC 14.3.0]",
+    "source_sha256": {
+      "network/hfrm28_1_ssrv2.py": "14269afeb20550fd580a784c636ac4e16eb231ed9b5b89ed74819ef27f2966b1",
+      "network/resnet38_cls.py": "570c9cffdeb0beb22eadd05a748c3917e48a26d48fdf1b6b4563b529d774b0ec",
+      "network/resnet38_cls_ssrv2.py": "04bd2e01c78dc2fe5fe5c7f61ca91090c1801a0336960bee3512d8da2ade0c63",
+      "tests/test_ssrv2_preflight.py": "be49f5dafb9ca510615b9195b58c2415c946652672bb60e8919418b767c7ff76",
+      "tool/infer_ssrv2.py": "c3ccc7b33a8166bc25d78fb39627c8e63ecd5cf2e93b88ceb70bc589938703ce",
+      "tools/eval_ssrv2.py": "c6f9a604ce7257d956af931d87df60e2bb81619aacc0c3d1261d677fd3b7a36e",
+      "tools/preflight_ssrv2.py": "ac6ccfaa58a4df8f1d0a8923a5e8236367b7e0ac2aa55bf3ba19940f7e04ee12",
+      "tools/train_ssrv2_25ep.py": "73f91ebe626f9d0039df80ffb5defc224aec9da547aa3d7fbe4cbe9d552b272b"
+    },
+    "ssrv2_source_commit": "04e4631b0c581692ca377501fed45d904bdf34d6",
+    "steps_per_epoch": 1171,
+    "test_or_luad_used": false,
+    "torch": "2.11.0+cu128",
+    "validation_during_training": false
+  }
+}

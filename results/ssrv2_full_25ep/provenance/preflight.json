@@ -1,0 +1,208 @@
+{
+  "all_finite": true,
+  "alpha0_identity_max_abs_difference": 0.0,
+  "batches": [
+    {
+      "batch": 1,
+      "cam_shapes": [
+        [
+          20,
+          4,
+          56,
+          56
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ]
+      ],
+      "classification_loss": 0.7468054294586182,
+      "logit_shapes": [
+        [
+          20,
+          4
+        ],
+        [
+          20,
+          4
+        ],
+        [
+          20,
+          4
+        ],
+        [
+          20,
+          4
+        ]
+      ],
+      "pcsd_raw": 0.23910655081272125,
+      "total_loss": 0.7497942447662354
+    },
+    {
+      "batch": 2,
+      "cam_shapes": [
+        [
+          20,
+          4,
+          56,
+          56
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ]
+      ],
+      "classification_loss": 0.7135377526283264,
+      "logit_shapes": [
+        [
+          20,
+          4
+        ],
+        [
+          20,
+          4
+        ],
+        [
+          20,
+          4
+        ],
+        [
+          20,
+          4
+        ]
+      ],
+      "pcsd_raw": 0.21949121356010437,
+      "total_loss": 0.7162814140319824
+    }
+  ],
+  "beta_gradient_after_alpha_positive": -9.538298400002532e-07,
+  "beta_optimizer_occurrences": 1,
+  "dataset_samples": 23422,
+  "decision": "SSRV2_MINIMAL_PREFLIGHT_PASS",
+  "dense_gt_enters_model_or_loss": false,
+  "epoch1_alpha": 0.0,
+  "epoch1_pcsd_coefficient": 0.0,
+  "optimizer_built": true,
+  "optimizer_groups": [
+    {
+      "lr": 0.01,
+      "momentum": 0.0005,
+      "parameters": 104202240,
+      "weight_decay": 0.0005
+    },
+    {
+      "lr": 0.02,
+      "momentum": 0.0005,
+      "parameters": 0,
+      "weight_decay": 0.0
+    },
+    {
+      "lr": 0.1,
+      "momentum": 0.0005,
+      "parameters": 7635719,
+      "weight_decay": 0.0005
+    },
+    {
+      "lr": 0.2,
+      "momentum": 0.0005,
+      "parameters": 12,
+      "weight_decay": 0.0
+    }
+  ],
+  "optimizer_step": false,
+  "parameters": {
+    "added": 1,
+    "sshr": 112709714,
+    "ssrv2": 112709715
+  },
+  "pcsd_student_gradient_l1": 0.5918741822242737,
+  "pcsd_teacher_gradient": null,
+  "peak_cuda_memory_gib": 3.0873894691467285,
+  "positive_gamma_checks": {
+    "-100.0": 3.783505853677006e-44,
+    "-4.0": 0.018149929121136665,
+    "0.0": 0.6931471824645996,
+    "10.0": 10.000045776367188
+  },
+  "pretrained": {
+    "approved_missing_keys": [
+      "bn45.bias",
+      "bn45.running_mean",
+      "bn45.running_var",
+      "bn45.weight",
+      "bn52.bias",
+      "bn52.running_mean",
+      "bn52.running_var",
+      "bn52.weight"
+    ],
+    "missing_backbone_keys": [],
+    "missing_keys": [
+      "bn45.weight",
+      "bn45.bias",
+      "bn45.running_mean",
+      "bn45.running_var",
+      "bn52.weight",
+      "bn52.bias",
+      "bn52.running_mean",
+      "bn52.running_var",
+      "hfrm_56.gamma_veto",
+      "hfrm_56.gamma_context",
+      "hfrm_56.veto_mlp.0.weight",
+      "hfrm_56.veto_mlp.2.weight",
+      "hfrm_56.context_conv.weight",
+      "hfrm_28_1.gamma_veto",
+      "hfrm_28_1.gamma_context",
+      "hfrm_28_1.beta_spatial",
+      "hfrm_28_1.veto_mlp.0.weight",
+      "hfrm_28_1.veto_mlp.2.weight",
+      "hfrm_28_1.context_conv.weight",
+      "hfrm_28_2.gamma_veto",
+      "hfrm_28_2.gamma_context",
+      "hfrm_28_2.veto_mlp.0.weight",
+      "hfrm_28_2.veto_mlp.2.weight",
+      "hfrm_28_2.context_conv.weight",
+      "ic_56.weight",
+      "ic_56.bias",
+      "ic1.weight",
+      "ic1.bias",
+      "ic2.weight",
+      "ic2.bias",
+      "fc8.weight"
+    ],
+    "path": "/home/duyanhong/sshr-reproduction/SSHR/init_weights/ilsvrc-cls_rna-a1_cls1000_ep-0001.params",
+    "sha256": "f668a2add80e33dfa8f1a0695df91f6d8cfad5ffbb26d1dc7bcd35903a1f6e16",
+    "size_bytes": 436873620,
+    "unexpected_keys": []
+  },
+  "ptcr_residual_requires_grad": false,
+  "single_present_pcsd": -0.0,
+  "single_present_ptcr_nonzero": 0
+}

@@ -1,0 +1,12 @@
+{
+  "config_sha256": "fe9b678eb3d2399534aac8a2c4db991f74e2065dbcec22d02239663236728e74",
+  "dataset": "BCSS",
+  "epoch": 5,
+  "filename": "epoch05.pth",
+  "primary_final": false,
+  "seed": 42,
+  "selection": "epoch-number only; epoch25 FINAL is primary",
+  "sha256": "3a7ad268f7f65e349418a440da7a39584c3a62bccdbec9e41251b5a3b199c264",
+  "size_bytes": 451128949,
+  "source_commit": "04e4631b0c581692ca377501fed45d904bdf34d6"
+}
