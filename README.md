@@ -129,6 +129,18 @@ python train_sshr.py \
   --amp-dtype bf16
 ```
 
+## S²HR-v1 research execution
+
+The isolated S²HR-v1 full-model implementation, frozen commands, artifact
+layout, safety boundaries, and final-result workflow are documented in
+[`docs/s2hr_v1_fullmodel_README.md`](docs/s2hr_v1_fullmodel_README.md).
+
+The completed BCSS seed42 epoch-25 validation experiment is archived in the
+[`S²HR-v1 final report`](docs/s2hr_v1_fullmodel_25ep_report.md).
+
+This branch is based directly on the official A0 commit and does not include
+any archived FA-MPR, SC-MPR, CDSR, CLRR, OSMF, RSBR, RGR, CRRA or HST code.
+
 ## Acknowledgement
 
 We thank the authors of [ESFAN](https://github.com/OceanPetal/ESFAN), whose codebase provided a valuable foundation for this repository.

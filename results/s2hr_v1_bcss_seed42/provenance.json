@@ -1,0 +1,115 @@
+{
+  "base_a0_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "command": "tools/train_s2hr_25ep.py --trainroot /home/duyanhong/reseg-data/raw/BCSS-WSSS/training --weights /home/duyanhong/sshr-reproduction/SSHR/init_weights/ilsvrc-cls_rna-a1_cls1000_ep-0001.params --output-dir /home/duyanhong/experiments/S2HR_V1_FULL_25EP_SEED42_5740a43_retry2 --num-workers 4",
+  "config_sha256": "eb808c451814dc5be65c26b47477093361d124d683b74f51dbef9925cd040703",
+  "cuda_runtime": "12.8",
+  "dataset_samples": 23422,
+  "fresh_training": true,
+  "gpu": "NVIDIA GeForce RTX 5090 D v2",
+  "loaded_trained_sshr": false,
+  "maximum_steps": 29275,
+  "optimizer_param_groups_initial": [
+    {
+      "index": 0,
+      "lr": 0.01,
+      "momentum": 0.0005,
+      "parameters": 104202240,
+      "weight_decay": 0.0005
+    },
+    {
+      "index": 1,
+      "lr": 0.02,
+      "momentum": 0.0005,
+      "parameters": 0,
+      "weight_decay": 0.0
+    },
+    {
+      "index": 2,
+      "lr": 0.1,
+      "momentum": 0.0005,
+      "parameters": 7635720,
+      "weight_decay": 0.0005
+    },
+    {
+      "index": 3,
+      "lr": 0.2,
+      "momentum": 0.0005,
+      "parameters": 12,
+      "weight_decay": 0.0
+    }
+  ],
+  "parameters": {
+    "new_parameters": 2,
+    "official_trainable_after_freeze": 111837972,
+    "overhead_fraction": 1.7744699449774135e-08,
+    "s2hr_total": 112709716,
+    "sshr_total": 112709714
+  },
+  "platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.35",
+  "pretrained": {
+    "approved_missing_keys": [
+      "bn45.bias",
+      "bn45.running_mean",
+      "bn45.running_var",
+      "bn45.weight",
+      "bn52.bias",
+      "bn52.running_mean",
+      "bn52.running_var",
+      "bn52.weight"
+    ],
+    "missing_backbone_keys": [],
+    "missing_keys": [
+      "bn45.weight",
+      "bn45.bias",
+      "bn45.running_mean",
+      "bn45.running_var",
+      "bn52.weight",
+      "bn52.bias",
+      "bn52.running_mean",
+      "bn52.running_var",
+      "hfrm_56.gamma_veto",
+      "hfrm_56.gamma_context",
+      "hfrm_56.veto_mlp.0.weight",
+      "hfrm_56.veto_mlp.2.weight",
+      "hfrm_56.context_conv.weight",
+      "hfrm_28_1.gamma_veto",
+      "hfrm_28_1.gamma_context",
+      "hfrm_28_1.gamma_spatial",
+      "hfrm_28_1.rho_boundary_raw",
+      "hfrm_28_1.veto_mlp.0.weight",
+      "hfrm_28_1.veto_mlp.2.weight",
+      "hfrm_28_1.context_conv.weight",
+      "hfrm_28_2.gamma_veto",
+      "hfrm_28_2.gamma_context",
+      "hfrm_28_2.veto_mlp.0.weight",
+      "hfrm_28_2.veto_mlp.2.weight",
+      "hfrm_28_2.context_conv.weight",
+      "ic_56.weight",
+      "ic_56.bias",
+      "ic1.weight",
+      "ic1.bias",
+      "ic2.weight",
+      "ic2.bias",
+      "fc8.weight"
+    ],
+    "path": "/home/duyanhong/sshr-reproduction/SSHR/init_weights/ilsvrc-cls_rna-a1_cls1000_ep-0001.params",
+    "sha256": "f668a2add80e33dfa8f1a0695df91f6d8cfad5ffbb26d1dc7bcd35903a1f6e16",
+    "size_bytes": 436873620,
+    "unexpected_keys": []
+  },
+  "python": "3.10.20 (main, Jun 11 2026, 15:17:37) [GCC 14.3.0]",
+  "s2hr_source_commit": "5740a434ea15c5de010991180b3e919a31ee99cc",
+  "source_sha256": {
+    "network/resnet38_cls.py": "570c9cffdeb0beb22eadd05a748c3917e48a26d48fdf1b6b4563b529d774b0ec",
+    "network/resnet38_cls_s2hr.py": "41ac86af5487584b1709240fa527fa3e3bd4ce8b0a44ddd85a4b5a997f25dbf7",
+    "network/s2hfrm28_1.py": "ab30c18dd385958c9f097b15242881fe5b6fb02132c348269eec599b7c463a3c",
+    "tests/test_s2hr_preflight.py": "28ac9c6f8bcaac6c1bb37c40305e599869870521508f3016e3a0b1953132bbe9",
+    "tool/infer_s2hr.py": "bb82950546282ea4d4ed1301f70f6123c348045799948bb4a4977123a7de3c2e",
+    "tools/eval_s2hr.py": "77e753c446c04f3eef1e5cf9ad74acdd24248b59b73e8534b72430acd40a3d5d",
+    "tools/preflight_s2hr.py": "efd0ad46c91abaa808cf0d3d67fda270b193bc1dad8652220b23345e41506dde",
+    "tools/train_s2hr_25ep.py": "9d54d8539750cc5471c40920bbc90abcfac46f06e9b27dcb33a5d27987090155"
+  },
+  "steps_per_epoch": 1171,
+  "test_or_luad_used": false,
+  "torch": "2.11.0+cu128"
+}
