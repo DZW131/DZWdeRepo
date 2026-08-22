@@ -129,6 +129,13 @@ python train_sshr.py \
   --amp-dtype bf16
 ```
 
+## MATR-v1 frozen full-model experiment
+
+The isolated OT-MTR/SACR implementation, minimal preflight, BCSS seed42
+25-epoch FINAL protocol, official inference evaluation and artifact layout are
+documented in
+[`docs/matr_v1_fullmodel_README.md`](docs/matr_v1_fullmodel_README.md).
+
 ## Acknowledgement
 
 We thank the authors of [ESFAN](https://github.com/OceanPetal/ESFAN), whose codebase provided a valuable foundation for this repository.
