@@ -7,12 +7,17 @@ import argparse
 import csv
 import json
 from pathlib import Path
+import sys
 
 import cv2
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 from tools.tcrd_common import BRANCH_DIRS, write_json
 
