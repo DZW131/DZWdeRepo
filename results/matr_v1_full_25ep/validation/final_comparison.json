@@ -1,0 +1,294 @@
+{
+  "class_safety": "MATR_CLASS_SAFETY_NOT_TRIGGERED",
+  "decision": "MATR_V1_NO_CLEAR_GAIN",
+  "delta": {
+    "class_iou_pp": {
+      "0": -1.0258837191302717,
+      "1": -0.7199799513336824,
+      "2": 0.19736089186250805,
+      "3": -0.05278408017044267
+    },
+    "mDice_pp": -0.26016278233930157,
+    "mIoU_pp": -0.40032171469297495
+  },
+  "final_mechanism": {
+    "context15_rms": 0.41207793563680706,
+    "delta_context15_ratio": 0.004218434187226525,
+    "delta_context_rms": 0.001734782207159152,
+    "gamma_adapt": 0.14600636065006256,
+    "mean_abs_offset": 0.008684358464905485,
+    "mean_modulation": 0.998586062841391,
+    "mode_activation_ratio": [
+      0.5075023963245747,
+      0.37192487141497615,
+      0.07750265436711459,
+      0.25879022584039874
+    ],
+    "mode_cosine": [
+      0.9999997615814209,
+      0.9999755620956421,
+      0.9999973773956299,
+      0.9999785423278809
+    ],
+    "ot_mean_seeds_by_class": [
+      108.27595269382391,
+      102.28923380142892,
+      86.43939935645334,
+      101.45438718662953
+    ],
+    "ot_transport_mass_by_class": [
+      [
+        0.49999998911294924,
+        0.49999999309181387
+      ],
+      [
+        0.4999999994419866,
+        0.49999999547715435
+      ],
+      [
+        0.4999999844382224,
+        0.4999999844755153
+      ],
+      [
+        0.4999999886062152,
+        0.4999999938569029
+      ]
+    ],
+    "ot_valid_pairs": 39922.0,
+    "p95_abs_offset": 0.05982851051589447
+  },
+  "models": {
+    "matr_v1": {
+      "class_dice": {
+        "0": 0.8599020118407503,
+        "1": 0.8225053385066406,
+        "2": 0.7343739752335109,
+        "3": 0.7835426525359684
+      },
+      "class_iou": {
+        "0": 0.7542351804594525,
+        "1": 0.6985215011195864,
+        "2": 0.5802456340679346,
+        "3": 0.644118475809639
+      },
+      "frequency_weighted_iou": 0.7015890036312469,
+      "mDice": 0.8000809945292177,
+      "mIoU": 0.6692801978641532,
+      "mean_accuracy": 0.7845460830010078,
+      "pixel_accuracy": 0.8240887530139512
+    },
+    "sshr_a0": {
+      "class_dice": {
+        "0": 0.8665305861094406,
+        "1": 0.8274755088900619,
+        "2": 0.7327913261271969,
+        "3": 0.7839330682837431
+      },
+      "class_iou": {
+        "0": 0.7644940176507552,
+        "1": 0.7057213006329233,
+        "2": 0.5782720251493095,
+        "3": 0.6446463166113434
+      },
+      "frequency_weighted_iou": 0.7083913791666917,
+      "mDice": 0.8026826223526107,
+      "mIoU": 0.6732834150110829,
+      "mean_accuracy": 0.782046863069872,
+      "pixel_accuracy": 0.8290387104157547
+    }
+  },
+  "parameters": {
+    "matr_total": 112766830,
+    "new_parameters": 57116,
+    "overhead_percent": 0.05067531268866497,
+    "sshr_total": 112709714
+  },
+  "provenance": {
+    "a0_checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+    "checkpoint_selection": "epoch25 FINAL only",
+    "evaluation_command": "tools/eval_matr.py --val-root /home/duyanhong/reseg-data/raw/BCSS-WSSS/val --a0-checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --matr-checkpoint /home/duyanhong/experiments/MATR_V1_FULL_25EP_SEED42_7aefd5a/checkpoints/epoch25_final.pth --experiment-dir /home/duyanhong/experiments/MATR_V1_FULL_25EP_SEED42_7aefd5a --num-workers 4",
+    "evaluation_source_commit": "7aefd5a3a8535f7076f6c4b84488581d92017511",
+    "luad_used": false,
+    "matr_checkpoint_sha256": "50edaff87955f991a9ff0c1ada0cc4fd012f964c6914b2c4ba61f5886ca046fe",
+    "precision": "bf16",
+    "test_used": false,
+    "training_config_sha256": "5c4ddc54f269ef311ef70bcafff82f3301d6e694c2392a99ff7f76612ab32148",
+    "training_source_commit": "7aefd5a3a8535f7076f6c4b84488581d92017511",
+    "validation_images": 3418
+  },
+  "runtime": {
+    "a0_seconds_per_image": 0.023874461057940864,
+    "matr_seconds_per_image": 0.026791270955254836,
+    "mean_training_seconds_per_epoch": 355.6364374732971,
+    "training_peak_cuda_memory_gib": 4.81206750869751
+  },
+  "standalone_cam28_1": {
+    "matr_v1": {
+      "class_dice": {
+        "0": 0.8372874307074031,
+        "1": 0.8058450769023476,
+        "2": 0.7177325977796505,
+        "3": 0.7694311076287221
+      },
+      "class_iou": {
+        "0": 0.72011557526794,
+        "1": 0.6748245653185231,
+        "2": 0.5597370693014878,
+        "3": 0.6252645523535428
+      },
+      "frequency_weighted_iou": 0.6745331946824175,
+      "mDice": 0.7825740532545309,
+      "mIoU": 0.6449854405603734,
+      "mean_accuracy": 0.7647459725227221,
+      "pixel_accuracy": 0.8059007807930624
+    },
+    "sshr_a0": {
+      "class_dice": {
+        "0": 0.8654204582464652,
+        "1": 0.826890723824532,
+        "2": 0.7305723038088814,
+        "3": 0.7789503582408546
+      },
+      "class_iou": {
+        "0": 0.7627675507958884,
+        "1": 0.7048710129718979,
+        "2": 0.5755131276881248,
+        "3": 0.6379350450638798
+      },
+      "frequency_weighted_iou": 0.7066070092772573,
+      "mDice": 0.8004584610301833,
+      "mIoU": 0.6702716841299478,
+      "mean_accuracy": 0.7783967848105936,
+      "pixel_accuracy": 0.8279751344157403
+    }
+  },
+  "training_manifest": {
+    "base_a0_commit": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+    "command": "tools/train_matr_25ep.py --trainroot /home/duyanhong/reseg-data/raw/BCSS-WSSS/training --weights /home/duyanhong/sshr-reproduction/SSHR/init_weights/ilsvrc-cls_rna-a1_cls1000_ep-0001.params --output-dir /home/duyanhong/experiments/MATR_V1_FULL_25EP_SEED42_7aefd5a --num-workers 4",
+    "config_sha256": "5c4ddc54f269ef311ef70bcafff82f3301d6e694c2392a99ff7f76612ab32148",
+    "cuda_runtime": "12.8",
+    "dataset_samples": 23422,
+    "fresh_training": true,
+    "gpu": "NVIDIA GeForce RTX 5090 D v2",
+    "loaded_trained_checkpoint": false,
+    "matr_source_commit": "7aefd5a3a8535f7076f6c4b84488581d92017511",
+    "maximum_steps": 29275,
+    "optimizer_param_groups_initial": [
+      {
+        "index": 0,
+        "lr": 0.01,
+        "momentum": 0.0005,
+        "parameters": 104202240,
+        "weight_decay": 0.0005
+      },
+      {
+        "index": 1,
+        "lr": 0.02,
+        "momentum": 0.0005,
+        "parameters": 0,
+        "weight_decay": 0.0
+      },
+      {
+        "index": 2,
+        "lr": 0.1,
+        "momentum": 0.0005,
+        "parameters": 7692743,
+        "weight_decay": 0.0005
+      },
+      {
+        "index": 3,
+        "lr": 0.2,
+        "momentum": 0.0005,
+        "parameters": 103,
+        "weight_decay": 0.0
+      }
+    ],
+    "parameters": {
+      "matr_total": 112766830,
+      "new_parameters": 57116,
+      "overhead_percent": 0.05067531268866497,
+      "sshr_total": 112709714
+    },
+    "platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.35",
+    "pretrained": {
+      "approved_missing_keys": [
+        "bn45.bias",
+        "bn45.running_mean",
+        "bn45.running_var",
+        "bn45.weight",
+        "bn52.bias",
+        "bn52.running_mean",
+        "bn52.running_var",
+        "bn52.weight"
+      ],
+      "missing_backbone_keys": [],
+      "missing_keys": [
+        "bn45.weight",
+        "bn45.bias",
+        "bn45.running_mean",
+        "bn45.running_var",
+        "bn52.weight",
+        "bn52.bias",
+        "bn52.running_mean",
+        "bn52.running_var",
+        "hfrm_56.gamma_veto",
+        "hfrm_56.gamma_context",
+        "hfrm_56.veto_mlp.0.weight",
+        "hfrm_56.veto_mlp.2.weight",
+        "hfrm_56.context_conv.weight",
+        "hfrm_28_1.gamma_veto",
+        "hfrm_28_1.gamma_context",
+        "hfrm_28_1.veto_mlp.0.weight",
+        "hfrm_28_1.veto_mlp.2.weight",
+        "hfrm_28_1.context_conv.weight",
+        "hfrm_28_1.sacr.a_logits",
+        "hfrm_28_1.sacr.beta_adapt",
+        "hfrm_28_1.sacr.anchors",
+        "hfrm_28_1.sacr.predictor.0.weight",
+        "hfrm_28_1.sacr.predictor.0.bias",
+        "hfrm_28_1.sacr.predictor.2.weight",
+        "hfrm_28_1.sacr.predictor.2.bias",
+        "hfrm_28_2.gamma_veto",
+        "hfrm_28_2.gamma_context",
+        "hfrm_28_2.veto_mlp.0.weight",
+        "hfrm_28_2.veto_mlp.2.weight",
+        "hfrm_28_2.context_conv.weight",
+        "ic_56.weight",
+        "ic_56.bias",
+        "ic1.d_raw",
+        "ic1.base.weight",
+        "ic1.base.bias",
+        "ic2.weight",
+        "ic2.bias",
+        "fc8.weight"
+      ],
+      "path": "/home/duyanhong/sshr-reproduction/SSHR/init_weights/ilsvrc-cls_rna-a1_cls1000_ep-0001.params",
+      "sha256": "f668a2add80e33dfa8f1a0695df91f6d8cfad5ffbb26d1dc7bcd35903a1f6e16",
+      "size_bytes": 436873620,
+      "unexpected_keys": []
+    },
+    "python": "3.10.20 (main, Jun 11 2026, 15:17:37) [GCC 14.3.0]",
+    "segmentation_gt_used_in_training": false,
+    "source_sha256": {
+      "network/matr_hfrm28.py": "9f41e49b75dd01d66094d806e6952430f32cc0a79aa1394f3e7c2bfbbd34d5bf",
+      "network/matr_multiprototype_head.py": "ae2a98e9c66da777d8b5dcdeecdf7162d7750e5be9e03e0fe75633f61f29d5fc",
+      "network/matr_sparse_context.py": "a4595dca0bd51d35fd4342732760dcecc260c9cd6483912ea8791fd78aaff86b",
+      "network/resnet38_cls.py": "570c9cffdeb0beb22eadd05a748c3917e48a26d48fdf1b6b4563b529d774b0ec",
+      "network/resnet38_cls_matr.py": "0857dfdfba0156c5b16952ce708716089095bcb452a129206093212880ed2742",
+      "tests/test_matr_head.py": "5932811fc564778d409365ec41792a2744cb8e11b856917c6279876e3e95ea64",
+      "tests/test_matr_ot.py": "6cd528a4d1770844280475051c1dd69ae5c456b4d448fbdc344df0944aa3fd6a",
+      "tests/test_matr_protocol.py": "37d3e8c26995d4d0e22a620602d0df46fcdc1b669954caff90f469fda114d1b7",
+      "tests/test_matr_sparse_context.py": "0a8af3e99f7f572e74bc515c044beee0e4c6d2628ed54dc00b5e5b12e36fd254",
+      "tool/infer_matr.py": "6bd5d3e504f21f4e4aa2ca241483fe16570042ce7bfa07d554fa81a6e30d9993",
+      "tool/sinkhorn.py": "764d1fa6eb9ca20e21652de59a0ee7b5b70317f57a0493e38ab2feeb8650130f",
+      "tools/eval_matr.py": "7b3541623daa5953102ad2e6e8347d60970a989f0d623d4a553f10d1fa192c8f",
+      "tools/matr_objectives.py": "a7ae46937cb70c37ce471ad2f68a0e487ce4ebc5e26b886fec862adfe6a4d35f",
+      "tools/preflight_matr.py": "a8a6fb41015f571ad23b5310b25d5143dd27483af5240f78df6ff028bc4cd4da",
+      "tools/train_matr_25ep.py": "ad1b7a0fec05bb8466b831162b2f9f81b4008a9a80d5421e2c847b7dff51292f"
+    },
+    "steps_per_epoch": 1171,
+    "test_or_luad_used": false,
+    "torch": "2.11.0+cu128",
+    "validation_during_training": false
+  }
+}

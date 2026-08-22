@@ -135,6 +135,10 @@ The isolated OT-MTR/SACR implementation, minimal preflight, BCSS seed42
 25-epoch FINAL protocol, official inference evaluation and artifact layout are
 documented in
 [`docs/matr_v1_fullmodel_README.md`](docs/matr_v1_fullmodel_README.md).
+The completed frozen experiment is archived in the
+[`MATR-v1 epoch25 report`](docs/matr_v1_full_25ep_report.md), with
+machine-readable evidence under
+[`results/matr_v1_full_25ep/`](results/matr_v1_full_25ep/).
 
 ## Acknowledgement
 

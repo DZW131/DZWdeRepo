@@ -131,11 +131,19 @@ figures/sacr_dynamics.png
 
 | Model | Dataset / split | Epoch | mIoU | mDice | Decision |
 |---|---|---:|---:|---:|---|
-| SSHR A0 | BCSS validation | 25 FINAL | pending | pending | reference |
-| MATR-v1 | BCSS validation | 25 FINAL | pending | pending | pending |
+| SSHR A0 | BCSS validation | 25 FINAL | 67.3283 | 80.2683 | reference |
+| MATR-v1 | BCSS validation | 25 FINAL | 66.9280 | 80.0081 | `MATR_V1_NO_CLEAR_GAIN` |
 
-The completed report will be written to `docs/matr_v1_full_25ep_report.md`, with
-machine-readable evidence under the experiment directory.
+MATR-v1 changed mIoU by -0.4003 pp and mDice by -0.2602 pp. Its standalone
+CAM28_1 regressed by 2.5286 pp mIoU. At epoch25, mode-pair cosine similarity
+remained 0.99997556–0.99999976 and the SACR residual was only 0.4218% of the
+original CH15 RMS, so neither intended mechanism became functionally strong.
+
+The completed report is available at `docs/matr_v1_full_25ep_report.md`, with
+machine-readable evidence under `results/matr_v1_full_25ep/`. The primary
+checkpoint remains on the server at
+`/home/duyanhong/experiments/MATR_V1_FULL_25EP_SEED42_7aefd5a/checkpoints/epoch25_final.pth`
+(SHA256 `50edaff87955f991a9ff0c1ada0cc4fd012f964c6914b2c4ba61f5886ca046fe`).
 
 ## Stop boundary
 

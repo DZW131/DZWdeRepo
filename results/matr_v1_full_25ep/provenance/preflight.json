@@ -1,0 +1,154 @@
+{
+  "all_finite": true,
+  "batch_size": 20,
+  "beta_adapt_gradient": 0.0,
+  "cam_shapes": {
+    "cam28_1": [
+      20,
+      4,
+      28,
+      28
+    ],
+    "cam28_2": [
+      20,
+      4,
+      28,
+      28
+    ],
+    "cam56": [
+      20,
+      4,
+      56,
+      56
+    ],
+    "camdeep": [
+      20,
+      4,
+      28,
+      28
+    ],
+    "mode_logits": [
+      20,
+      4,
+      2,
+      28,
+      28
+    ]
+  },
+  "classification_loss": 0.7739936113357544,
+  "dataset_samples": 23422,
+  "decision": "MATR_V1_MINIMAL_PREFLIGHT_PASS",
+  "dense_segmentation_gt_enters_training": false,
+  "epoch1_alpha_ot": 0.0,
+  "epoch1_weighted_ot": 0.0,
+  "initial_gamma_adapt": 0.018149929121136665,
+  "initial_modulation_mean": 1.0,
+  "initial_offset_mean_abs": 0.0,
+  "initial_sacr_delta_rms": 0.0,
+  "mode_zero_exact_base_identity": true,
+  "offset_predictor_gradient_l1": 8.202748722396791e-05,
+  "optimizer_built": true,
+  "optimizer_groups": [
+    {
+      "lr": 0.01,
+      "momentum": 0.0005,
+      "parameters": 104202240,
+      "weight_decay": 0.0005
+    },
+    {
+      "lr": 0.02,
+      "momentum": 0.0005,
+      "parameters": 0,
+      "weight_decay": 0.0
+    },
+    {
+      "lr": 0.1,
+      "momentum": 0.0005,
+      "parameters": 7692743,
+      "weight_decay": 0.0005
+    },
+    {
+      "lr": 0.2,
+      "momentum": 0.0005,
+      "parameters": 103,
+      "weight_decay": 0.0
+    }
+  ],
+  "optimizer_step": false,
+  "ot_d_raw_gradient_l1": 0.00946180522441864,
+  "ot_loss": 0.9386960864067078,
+  "ot_mean_seeds": 102.82353210449219,
+  "ot_valid_pairs": 34.0,
+  "parameters": {
+    "added": 57116,
+    "matr": 112766830,
+    "overhead_percent": 0.05067531268866497,
+    "sshr": 112709714
+  },
+  "peak_cuda_memory_gib": 4.3333353996276855,
+  "precision": "bf16",
+  "pretrained": {
+    "approved_missing_keys": [
+      "bn45.bias",
+      "bn45.running_mean",
+      "bn45.running_var",
+      "bn45.weight",
+      "bn52.bias",
+      "bn52.running_mean",
+      "bn52.running_var",
+      "bn52.weight"
+    ],
+    "missing_backbone_keys": [],
+    "missing_keys": [
+      "bn45.weight",
+      "bn45.bias",
+      "bn45.running_mean",
+      "bn45.running_var",
+      "bn52.weight",
+      "bn52.bias",
+      "bn52.running_mean",
+      "bn52.running_var",
+      "hfrm_56.gamma_veto",
+      "hfrm_56.gamma_context",
+      "hfrm_56.veto_mlp.0.weight",
+      "hfrm_56.veto_mlp.2.weight",
+      "hfrm_56.context_conv.weight",
+      "hfrm_28_1.gamma_veto",
+      "hfrm_28_1.gamma_context",
+      "hfrm_28_1.veto_mlp.0.weight",
+      "hfrm_28_1.veto_mlp.2.weight",
+      "hfrm_28_1.context_conv.weight",
+      "hfrm_28_1.sacr.a_logits",
+      "hfrm_28_1.sacr.beta_adapt",
+      "hfrm_28_1.sacr.anchors",
+      "hfrm_28_1.sacr.predictor.0.weight",
+      "hfrm_28_1.sacr.predictor.0.bias",
+      "hfrm_28_1.sacr.predictor.2.weight",
+      "hfrm_28_1.sacr.predictor.2.bias",
+      "hfrm_28_2.gamma_veto",
+      "hfrm_28_2.gamma_context",
+      "hfrm_28_2.veto_mlp.0.weight",
+      "hfrm_28_2.veto_mlp.2.weight",
+      "hfrm_28_2.context_conv.weight",
+      "ic_56.weight",
+      "ic_56.bias",
+      "ic1.d_raw",
+      "ic1.base.weight",
+      "ic1.base.bias",
+      "ic2.weight",
+      "ic2.bias",
+      "fc8.weight"
+    ],
+    "path": "/home/duyanhong/sshr-reproduction/SSHR/init_weights/ilsvrc-cls_rna-a1_cls1000_ep-0001.params",
+    "sha256": "f668a2add80e33dfa8f1a0695df91f6d8cfad5ffbb26d1dc7bcd35903a1f6e16",
+    "size_bytes": 436873620,
+    "unexpected_keys": []
+  },
+  "raw_optimizer_occurrences": {
+    "a_logits": 1,
+    "beta_adapt": 1,
+    "d_raw": 1
+  },
+  "sinkhorn_max_col_error": 1.7881393432617188e-07,
+  "sinkhorn_max_row_error": 1.862645149230957e-08
+}
