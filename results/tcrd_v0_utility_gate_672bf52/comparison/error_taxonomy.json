@@ -1,0 +1,389 @@
+{
+  "boundary_comparisons": {
+    "DR_vs_C0": {
+      "B0_le_2": {
+        "accuracy_delta_pp": -0.02292030335479896,
+        "base_wrong": 207019,
+        "candidate_wrong": 207144,
+        "harmed": 1365,
+        "net": -125,
+        "recovered": 1240,
+        "total": 545368,
+        "wrong_relative_change": 0.0006038093121887363
+      },
+      "B1_3_to_7": {
+        "accuracy_delta_pp": 0.04593438898910938,
+        "base_wrong": 120055,
+        "candidate_wrong": 119780,
+        "harmed": 759,
+        "net": 275,
+        "recovered": 1034,
+        "total": 598680,
+        "wrong_relative_change": -0.002290616800633043
+      },
+      "B2_ge_8": {
+        "accuracy_delta_pp": 0.05932162130784701,
+        "base_wrong": 98719,
+        "candidate_wrong": 97927,
+        "harmed": 386,
+        "net": 792,
+        "recovered": 1178,
+        "total": 1335095,
+        "wrong_relative_change": -0.008022771705548071
+      }
+    },
+    "DR_vs_D": {
+      "B0_le_2": {
+        "accuracy_delta_pp": 0.01301873230552581,
+        "base_wrong": 207215,
+        "candidate_wrong": 207144,
+        "harmed": 1104,
+        "net": 71,
+        "recovered": 1175,
+        "total": 545368,
+        "wrong_relative_change": -0.00034263928769635404
+      },
+      "B1_3_to_7": {
+        "accuracy_delta_pp": 0.019208926304536647,
+        "base_wrong": 119895,
+        "candidate_wrong": 119780,
+        "harmed": 747,
+        "net": 115,
+        "recovered": 862,
+        "total": 598680,
+        "wrong_relative_change": -0.000959172609366529
+      },
+      "B2_ge_8": {
+        "accuracy_delta_pp": 0.051007606200307844,
+        "base_wrong": 98608,
+        "candidate_wrong": 97927,
+        "harmed": 284,
+        "net": 681,
+        "recovered": 965,
+        "total": 1335095,
+        "wrong_relative_change": -0.006906133376602304
+      }
+    },
+    "D_vs_C0": {
+      "B0_le_2": {
+        "accuracy_delta_pp": -0.03593903566032477,
+        "base_wrong": 207019,
+        "candidate_wrong": 207215,
+        "harmed": 1024,
+        "net": -196,
+        "recovered": 828,
+        "total": 545368,
+        "wrong_relative_change": 0.0009467730015119385
+      },
+      "B1_3_to_7": {
+        "accuracy_delta_pp": 0.026725462684572727,
+        "base_wrong": 120055,
+        "candidate_wrong": 119895,
+        "harmed": 567,
+        "net": 160,
+        "recovered": 727,
+        "total": 598680,
+        "wrong_relative_change": -0.0013327225021864978
+      },
+      "B2_ge_8": {
+        "accuracy_delta_pp": 0.008314015107539164,
+        "base_wrong": 98719,
+        "candidate_wrong": 98608,
+        "harmed": 603,
+        "net": 111,
+        "recovered": 714,
+        "total": 1335095,
+        "wrong_relative_change": -0.0011244036102472676
+      }
+    }
+  },
+  "boundary_grid": "28x28 nearest-neighbor diagnostic grid",
+  "boundary_significant_increase_definition": ">=0.5% relative increase in B0 wrong pixels",
+  "present_confusion": {
+    "absolute": {
+      "C0": {
+        "pair_confusion_matrix": [
+          [
+            0,
+            6112454,
+            323375,
+            331145
+          ],
+          [
+            5919068,
+            0,
+            2496759,
+            453122
+          ],
+          [
+            582840,
+            5091088,
+            0,
+            0
+          ],
+          [
+            1265421,
+            540890,
+            5197,
+            0
+          ]
+        ],
+        "wrong_pixels": 23121359,
+        "wrong_pixels_by_true_class": [
+          6766974,
+          8868949,
+          5673928,
+          1811508
+        ]
+      },
+      "D": {
+        "pair_confusion_matrix": [
+          [
+            0,
+            6122219,
+            323244,
+            330355
+          ],
+          [
+            5914275,
+            0,
+            2502560,
+            453968
+          ],
+          [
+            582408,
+            5084657,
+            0,
+            0
+          ],
+          [
+            1268030,
+            521185,
+            5244,
+            0
+          ]
+        ],
+        "wrong_pixels": 23108145,
+        "wrong_pixels_by_true_class": [
+          6775818,
+          8870803,
+          5667065,
+          1794459
+        ]
+      },
+      "DR": {
+        "pair_confusion_matrix": [
+          [
+            0,
+            6084637,
+            325180,
+            326808
+          ],
+          [
+            5943493,
+            0,
+            2504346,
+            452297
+          ],
+          [
+            585035,
+            5073779,
+            0,
+            0
+          ],
+          [
+            1273571,
+            521456,
+            5253,
+            0
+          ]
+        ],
+        "wrong_pixels": 23095855,
+        "wrong_pixels_by_true_class": [
+          6736625,
+          8900136,
+          5658814,
+          1800280
+        ]
+      },
+      "R": {
+        "pair_confusion_matrix": [
+          [
+            0,
+            6082754,
+            325193,
+            328021
+          ],
+          [
+            5936229,
+            0,
+            2497526,
+            452670
+          ],
+          [
+            585007,
+            5081500,
+            0,
+            0
+          ],
+          [
+            1272052,
+            522187,
+            5218,
+            0
+          ]
+        ],
+        "wrong_pixels": 23088357,
+        "wrong_pixels_by_true_class": [
+          6735968,
+          8886425,
+          5666507,
+          1799457
+        ]
+      }
+    },
+    "comparisons": {
+      "DR_vs_C0": {
+        "base_by_true_class": [
+          6766974,
+          8868949,
+          5673928,
+          1811508
+        ],
+        "base_wrong_pixels": 23121359,
+        "candidate_by_true_class": [
+          6736625,
+          8900136,
+          5658814,
+          1800280
+        ],
+        "candidate_pair_confusion_matrix": [
+          [
+            0,
+            6084637,
+            325180,
+            326808
+          ],
+          [
+            5943493,
+            0,
+            2504346,
+            452297
+          ],
+          [
+            585035,
+            5073779,
+            0,
+            0
+          ],
+          [
+            1273571,
+            521456,
+            5253,
+            0
+          ]
+        ],
+        "candidate_wrong_pixels": 23095855,
+        "harmed": 158381,
+        "net": 25424,
+        "nonworse_true_classes": 3,
+        "recovered": 183805,
+        "relative_reduction": 0.0011030493493051166
+      },
+      "DR_vs_D": {
+        "base_by_true_class": [
+          6775818,
+          8870803,
+          5667065,
+          1794459
+        ],
+        "base_wrong_pixels": 23108145,
+        "candidate_by_true_class": [
+          6736625,
+          8900136,
+          5658814,
+          1800280
+        ],
+        "candidate_pair_confusion_matrix": [
+          [
+            0,
+            6084637,
+            325180,
+            326808
+          ],
+          [
+            5943493,
+            0,
+            2504346,
+            452297
+          ],
+          [
+            585035,
+            5073779,
+            0,
+            0
+          ],
+          [
+            1273571,
+            521456,
+            5253,
+            0
+          ]
+        ],
+        "candidate_wrong_pixels": 23095855,
+        "harmed": 139070,
+        "net": 14114,
+        "nonworse_true_classes": 2,
+        "recovered": 153184,
+        "relative_reduction": 0.0005318471041271379
+      },
+      "R_vs_C0": {
+        "base_by_true_class": [
+          6766974,
+          8868949,
+          5673928,
+          1811508
+        ],
+        "base_wrong_pixels": 23121359,
+        "candidate_by_true_class": [
+          6735968,
+          8886425,
+          5666507,
+          1799457
+        ],
+        "candidate_pair_confusion_matrix": [
+          [
+            0,
+            6082754,
+            325193,
+            328021
+          ],
+          [
+            5936229,
+            0,
+            2497526,
+            452670
+          ],
+          [
+            585007,
+            5081500,
+            0,
+            0
+          ],
+          [
+            1272052,
+            522187,
+            5218,
+            0
+          ]
+        ],
+        "candidate_wrong_pixels": 23088357,
+        "harmed": 130680,
+        "net": 34541,
+        "nonworse_true_classes": 3,
+        "recovered": 165221,
+        "relative_reduction": 0.0014273382459915095
+      }
+    }
+  }
+}

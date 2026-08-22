@@ -1,0 +1,82 @@
+[
+  {
+    "all_finite": true,
+    "branch": "C0",
+    "classification_loss": 0.17824532047715785,
+    "epoch": 1,
+    "epoch_seconds": 125.12963724136353,
+    "global_step": 1171,
+    "lr_end": 0.001922168351569974,
+    "mechanism_parameters": {
+      "competition_matrix": null,
+      "eta_d": null,
+      "eta_r": null,
+      "kappa": null,
+      "steps": 0
+    }
+  },
+  {
+    "all_finite": true,
+    "branch": "C0",
+    "classification_loss": 0.17498917474286563,
+    "epoch": 2,
+    "epoch_seconds": 126.01504421234131,
+    "global_step": 2342,
+    "lr_end": 0.0014837965879669016,
+    "mechanism_parameters": {
+      "competition_matrix": null,
+      "eta_d": null,
+      "eta_r": null,
+      "kappa": null,
+      "steps": 0
+    }
+  },
+  {
+    "all_finite": true,
+    "branch": "C0",
+    "classification_loss": 0.1715536841042626,
+    "epoch": 3,
+    "epoch_seconds": 125.98932886123657,
+    "global_step": 3513,
+    "lr_end": 0.0010302623906800026,
+    "mechanism_parameters": {
+      "competition_matrix": null,
+      "eta_d": null,
+      "eta_r": null,
+      "kappa": null,
+      "steps": 0
+    }
+  },
+  {
+    "all_finite": true,
+    "branch": "C0",
+    "classification_loss": 0.16833692881971418,
+    "epoch": 4,
+    "epoch_seconds": 126.02967309951782,
+    "global_step": 4684,
+    "lr_end": 0.0005523160161440765,
+    "mechanism_parameters": {
+      "competition_matrix": null,
+      "eta_d": null,
+      "eta_r": null,
+      "kappa": null,
+      "steps": 0
+    }
+  },
+  {
+    "all_finite": true,
+    "branch": "C0",
+    "classification_loss": 0.16550551070477798,
+    "epoch": 5,
+    "epoch_seconds": 126.00976991653442,
+    "global_step": 5855,
+    "lr_end": 9.553286155452028e-07,
+    "mechanism_parameters": {
+      "competition_matrix": null,
+      "eta_d": null,
+      "eta_r": null,
+      "kappa": null,
+      "steps": 0
+    }
+  }
+]

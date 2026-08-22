@@ -1,0 +1,13 @@
+{
+  "batch_size": 20,
+  "common_model_seed_per_step": true,
+  "dataset_order_sha256": "c0817cf906f36370f3109ed24dac2cfa6f4b7b434bb95bf1728570021c5c5841",
+  "dataset_samples": 23422,
+  "dropped_samples_per_epoch": 2,
+  "epochs": 5,
+  "schedule_sha256": "3998960668cc91161150b7561e12194b15f89639e3283de6fa0d720432288e41",
+  "scheduled_samples_per_epoch": 23420,
+  "seed": 42,
+  "steps_per_epoch": 1171,
+  "worker_independent_augmentation": true
+}

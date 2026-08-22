@@ -1,0 +1,82 @@
+[
+  {
+    "all_finite": true,
+    "branch": "D",
+    "classification_loss": 0.178237419731336,
+    "epoch": 1,
+    "epoch_seconds": 116.00138664245605,
+    "global_step": 1171,
+    "lr_end": 0.001922168351569974,
+    "mechanism_parameters": {
+      "competition_matrix": null,
+      "eta_d": 0.10116346180438995,
+      "eta_r": null,
+      "kappa": 0.9957479238510132,
+      "steps": 3
+    }
+  },
+  {
+    "all_finite": true,
+    "branch": "D",
+    "classification_loss": 0.1749833881931362,
+    "epoch": 2,
+    "epoch_seconds": 115.89407205581665,
+    "global_step": 2342,
+    "lr_end": 0.0014837965879669016,
+    "mechanism_parameters": {
+      "competition_matrix": null,
+      "eta_d": 0.10209757089614868,
+      "eta_r": null,
+      "kappa": 0.9924032688140869,
+      "steps": 3
+    }
+  },
+  {
+    "all_finite": true,
+    "branch": "D",
+    "classification_loss": 0.1715479841810531,
+    "epoch": 3,
+    "epoch_seconds": 124.21073293685913,
+    "global_step": 3513,
+    "lr_end": 0.0010302623906800026,
+    "mechanism_parameters": {
+      "competition_matrix": null,
+      "eta_d": 0.10279056429862976,
+      "eta_r": null,
+      "kappa": 0.9899578094482422,
+      "steps": 3
+    }
+  },
+  {
+    "all_finite": true,
+    "branch": "D",
+    "classification_loss": 0.1683327922904522,
+    "epoch": 4,
+    "epoch_seconds": 131.02097463607788,
+    "global_step": 4684,
+    "lr_end": 0.0005523160161440765,
+    "mechanism_parameters": {
+      "competition_matrix": null,
+      "eta_d": 0.10322925448417664,
+      "eta_r": null,
+      "kappa": 0.9884264469146729,
+      "steps": 3
+    }
+  },
+  {
+    "all_finite": true,
+    "branch": "D",
+    "classification_loss": 0.16550291061121414,
+    "epoch": 5,
+    "epoch_seconds": 131.0085732936859,
+    "global_step": 5855,
+    "lr_end": 9.553286155452028e-07,
+    "mechanism_parameters": {
+      "competition_matrix": null,
+      "eta_d": 0.10339008271694183,
+      "eta_r": null,
+      "kappa": 0.9878677129745483,
+      "steps": 3
+    }
+  }
+]

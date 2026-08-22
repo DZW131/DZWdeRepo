@@ -1,0 +1,297 @@
+{
+  "a0_checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "active_lt2_exact_identity": true,
+  "batch_size": 20,
+  "branches": {
+    "C0": {
+      "cam_shapes": [
+        [
+          20,
+          4,
+          56,
+          56
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ]
+      ],
+      "finite": true,
+      "initial_group_lrs": [
+        0.0023492378861760376,
+        0.004698475772352075,
+        0.023492378861760376,
+        0.04698475772352075
+      ],
+      "loss": 0.3088070750236511,
+      "new_parameter_gradients": {},
+      "new_parameter_group2_coverage": {},
+      "optimizer_momentum": [
+        0.0005,
+        0.0005,
+        0.0005,
+        0.0005
+      ],
+      "tail_base_lr": 0.0023492378861760376
+    },
+    "D": {
+      "cam_shapes": [
+        [
+          20,
+          4,
+          56,
+          56
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ]
+      ],
+      "finite": true,
+      "initial_group_lrs": [
+        0.0023492378861760376,
+        0.004698475772352075,
+        0.023492378861760376,
+        0.04698475772352075
+      ],
+      "loss": 0.30881762504577637,
+      "new_parameter_gradients": {
+        "beta_d": 4.03060948883649e-06,
+        "theta_kappa": 6.201955784490565e-07
+      },
+      "new_parameter_group2_coverage": {
+        "136405417798976": 1,
+        "136405417799376": 1
+      },
+      "optimizer_momentum": [
+        0.0005,
+        0.0005,
+        0.0005,
+        0.0005
+      ],
+      "tail_base_lr": 0.0023492378861760376
+    },
+    "DR": {
+      "cam_shapes": [
+        [
+          20,
+          4,
+          56,
+          56
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ]
+      ],
+      "finite": true,
+      "initial_group_lrs": [
+        0.0023492378861760376,
+        0.004698475772352075,
+        0.023492378861760376,
+        0.04698475772352075
+      ],
+      "loss": 0.31039512157440186,
+      "new_parameter_gradients": {
+        "beta_d": 2.811669219227042e-06,
+        "beta_r": 0.0007391226245090365,
+        "pair_raw": 1.1111256981166662e-06,
+        "theta_kappa": 6.58817612020357e-07
+      },
+      "new_parameter_group2_coverage": {
+        "136405419924016": 1,
+        "136405419926256": 1,
+        "136405419926336": 1,
+        "136405419926656": 1
+      },
+      "optimizer_momentum": [
+        0.0005,
+        0.0005,
+        0.0005,
+        0.0005
+      ],
+      "tail_base_lr": 0.0023492378861760376
+    },
+    "R": {
+      "cam_shapes": [
+        [
+          20,
+          4,
+          56,
+          56
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ],
+        [
+          20,
+          4,
+          28,
+          28
+        ]
+      ],
+      "finite": true,
+      "initial_group_lrs": [
+        0.0023492378861760376,
+        0.004698475772352075,
+        0.023492378861760376,
+        0.04698475772352075
+      ],
+      "loss": 0.31042104959487915,
+      "new_parameter_gradients": {
+        "beta_r": 0.0007369893719442189,
+        "pair_raw": 1.1181710988239502e-06
+      },
+      "new_parameter_group2_coverage": {
+        "136405419779360": 1,
+        "136405420280144": 1
+      },
+      "optimizer_momentum": [
+        0.0005,
+        0.0005,
+        0.0005,
+        0.0005
+      ],
+      "tail_base_lr": 0.0023492378861760376
+    }
+  },
+  "common_model_seed_per_step": true,
+  "common_parameter_checks": {
+    "C0": {
+      "candidate_only_missing_keys": [],
+      "common_loaded_exactly": true
+    },
+    "D": {
+      "candidate_only_missing_keys": [
+        "tcrd.theta_kappa",
+        "tcrd.beta_d"
+      ],
+      "common_loaded_exactly": true
+    },
+    "DR": {
+      "candidate_only_missing_keys": [
+        "tcrd.theta_kappa",
+        "tcrd.beta_d",
+        "tcrd.pair_raw",
+        "tcrd.beta_r"
+      ],
+      "common_loaded_exactly": true
+    },
+    "R": {
+      "candidate_only_missing_keys": [
+        "tcrd.pair_raw",
+        "tcrd.beta_r"
+      ],
+      "common_loaded_exactly": true
+    }
+  },
+  "conductance_normalization_max_error": 1.1920928955078125e-07,
+  "decision": "TCRD_V0_PREFLIGHT_PASS",
+  "eta_d_initial": 0.10000000149011612,
+  "eta_r_initial": 0.10000000149011612,
+  "eta_ranges_valid": true,
+  "hard_epoch_limit": 5,
+  "inference_present_mask_source": "official predicted deep presence with fallback",
+  "kappa_initial": 1.0,
+  "luad_used": false,
+  "optimizer_step": false,
+  "precision": "bf16",
+  "reaction_matrix": [
+    [
+      0.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    [
+      1.0,
+      0.0,
+      1.0,
+      1.0
+    ],
+    [
+      1.0,
+      1.0,
+      0.0,
+      1.0
+    ],
+    [
+      1.0,
+      1.0,
+      1.0,
+      0.0
+    ]
+  ],
+  "reaction_matrix_positive_offdiagonal": true,
+  "reaction_matrix_symmetric": true,
+  "reaction_matrix_zero_diagonal": true,
+  "reaction_zero_sum_max_errors": [
+    2.9802322387695312e-08,
+    1.4901161193847656e-08
+  ],
+  "schedule_reused_by_all_branches": true,
+  "schedule_sha256": "3998960668cc91161150b7561e12194b15f89639e3283de6fa0d720432288e41",
+  "schedule_shape": [
+    5,
+    1171,
+    20
+  ],
+  "segmentation_gt_enters_training": false,
+  "t_steps": 3,
+  "test_used": false,
+  "train_samples": 23422,
+  "training_present_mask_source": "image-level GT labels only",
+  "validation_pairs": 3418,
+  "worker_independent_augmentation": true
+}

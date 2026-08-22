@@ -1,0 +1,674 @@
+[
+  {
+    "branch": "D",
+    "checkpoint_selection": "none; fixed evaluation points only",
+    "diagnostics": {
+      "coactive_definition": "fraction of pixels with second active-class softmax probability >= 0.25",
+      "coactive_overlap_z0": 0.11050565575067237,
+      "coactive_overlap_zt": 0.11080426356589147,
+      "conductance_cross_edges": 579682,
+      "conductance_cross_mean": 0.1311840137478542,
+      "conductance_same_cross_ratio": 1.006406491577112,
+      "conductance_same_edges": 18049666,
+      "conductance_same_mean": 0.13202444302698157,
+      "diffusion_update_ratio": 0.021661147896096727,
+      "diffusion_update_rms": 0.12907515193983424,
+      "present_entropy_z0": 0.16112812324860978,
+      "present_entropy_zt": 0.1618299030395762,
+      "present_top1_top2_margin_z0": 0.8632911046647777,
+      "present_top1_top2_margin_zt": 0.8626932412117196,
+      "reaction_update_ratio": 0.0,
+      "reaction_update_rms": 0.0,
+      "z0_rms": 5.958832493964606
+    },
+    "epoch": 0,
+    "luad_used": false,
+    "mechanism_parameters": {
+      "competition_matrix": null,
+      "eta_d": 0.10000000149011612,
+      "eta_r": null,
+      "kappa": 1.0,
+      "steps": 3
+    },
+    "point": "step0",
+    "runtime": {
+      "elapsed_seconds": 58.69915843009949,
+      "fusion": [
+        0.0,
+        0.6,
+        0.2,
+        0.2
+      ],
+      "images": 3418,
+      "precision": "bf16",
+      "seconds_per_image": 0.017173539622615416,
+      "thresholds": [
+        0.800000011920929,
+        0.8999999761581421,
+        0.800000011920929,
+        0.6000000238418579
+      ],
+      "tta": [
+        [
+          [],
+          []
+        ],
+        [
+          [
+            3
+          ],
+          [
+            2
+          ]
+        ],
+        [
+          [
+            2
+          ],
+          [
+            1
+          ]
+        ]
+      ]
+    },
+    "scores": {
+      "class_dice": {
+        "0": 0.8664852335907746,
+        "1": 0.827412205325397,
+        "2": 0.7329021565235702,
+        "3": 0.7838885896683133
+      },
+      "class_iou": {
+        "0": 0.7644234193222261,
+        "1": 0.7056292152136947,
+        "2": 0.5784100733000761,
+        "3": 0.6445861645640778
+      },
+      "frequency_weighted_iou": 0.7083395761950053,
+      "mDice": 0.8026720462770138,
+      "mIoU": 0.6732622181000186,
+      "mean_accuracy": 0.7820659081926429,
+      "pixel_accuracy": 0.8289988085868609
+    },
+    "standalone_cam28_1": {
+      "class_dice": {
+        "0": 0.8653794276748222,
+        "1": 0.8268237597632663,
+        "2": 0.7308759019887257,
+        "3": 0.7790229458958655
+      },
+      "class_iou": {
+        "0": 0.7627038049393027,
+        "1": 0.704773700153033,
+        "2": 0.5758900198444052,
+        "3": 0.6380324210658134
+      },
+      "frequency_weighted_iou": 0.706596088967723,
+      "mDice": 0.8005255088306699,
+      "mIoU": 0.6703499865006386,
+      "mean_accuracy": 0.7785502484616428,
+      "pixel_accuracy": 0.8279558327727589
+    },
+    "test_used": false
+  },
+  {
+    "branch": "D",
+    "checkpoint_selection": "none; fixed evaluation points only",
+    "diagnostics": {
+      "coactive_definition": "fraction of pixels with second active-class softmax probability >= 0.25",
+      "coactive_overlap_z0": 0.11822422168249061,
+      "coactive_overlap_zt": 0.11858992051225437,
+      "conductance_cross_edges": 579682,
+      "conductance_cross_mean": 0.1311656954289508,
+      "conductance_same_cross_ratio": 1.0065529127696762,
+      "conductance_same_edges": 18049666,
+      "conductance_same_mean": 0.13202521278947063,
+      "diffusion_update_ratio": 0.021244478564864347,
+      "diffusion_update_rms": 0.1224485217966619,
+      "present_entropy_z0": 0.17080697642776585,
+      "present_entropy_zt": 0.17156613526692344,
+      "present_top1_top2_margin_z0": 0.8544660674184406,
+      "present_top1_top2_margin_zt": 0.8537694710653084,
+      "reaction_update_ratio": 0.0,
+      "reaction_update_rms": 0.0,
+      "z0_rms": 5.763780994802861
+    },
+    "epoch": 1,
+    "luad_used": false,
+    "mechanism_parameters": {
+      "competition_matrix": null,
+      "eta_d": 0.10116346180438995,
+      "eta_r": null,
+      "kappa": 0.9957479238510132,
+      "steps": 3
+    },
+    "point": "epoch1",
+    "runtime": {
+      "elapsed_seconds": 54.91093158721924,
+      "fusion": [
+        0.0,
+        0.6,
+        0.2,
+        0.2
+      ],
+      "images": 3418,
+      "precision": "bf16",
+      "seconds_per_image": 0.016065222816623533,
+      "thresholds": [
+        0.800000011920929,
+        0.8999999761581421,
+        0.800000011920929,
+        0.6000000238418579
+      ],
+      "tta": [
+        [
+          [],
+          []
+        ],
+        [
+          [
+            3
+          ],
+          [
+            2
+          ]
+        ],
+        [
+          [
+            2
+          ],
+          [
+            1
+          ]
+        ]
+      ]
+    },
+    "scores": {
+      "class_dice": {
+        "0": 0.8664923690394991,
+        "1": 0.8282366841765286,
+        "2": 0.7257666016096515,
+        "3": 0.7807092531746191
+      },
+      "class_iou": {
+        "0": 0.7644345263959618,
+        "1": 0.7068293340404457,
+        "2": 0.5695711653190558,
+        "3": 0.6402978577565039
+      },
+      "frequency_weighted_iou": 0.7074442828596893,
+      "mDice": 0.8003012270000747,
+      "mIoU": 0.6702832208779917,
+      "mean_accuracy": 0.7754137023640475,
+      "pixel_accuracy": 0.8286269777525872
+    },
+    "standalone_cam28_1": {
+      "class_dice": {
+        "0": 0.8649101143296418,
+        "1": 0.8275728911730631,
+        "2": 0.7254402594742047,
+        "3": 0.7739697660093636
+      },
+      "class_iou": {
+        "0": 0.7619749988511664,
+        "1": 0.7058629785531699,
+        "2": 0.5691692875650836,
+        "3": 0.6312811418117725
+      },
+      "frequency_weighted_iou": 0.7054980038956525,
+      "mDice": 0.7979732577465684,
+      "mIoU": 0.6670721016952981,
+      "mean_accuracy": 0.7716267083676945,
+      "pixel_accuracy": 0.8274493947261318
+    },
+    "test_used": false
+  },
+  {
+    "branch": "D",
+    "checkpoint_selection": "none; fixed evaluation points only",
+    "diagnostics": {
+      "coactive_definition": "fraction of pixels with second active-class softmax probability >= 0.25",
+      "coactive_overlap_z0": 0.1112410940707644,
+      "coactive_overlap_zt": 0.11146967239981369,
+      "conductance_cross_edges": 579682,
+      "conductance_cross_mean": 0.13118831038368717,
+      "conductance_same_cross_ratio": 1.0063725695412704,
+      "conductance_same_edges": 18049666,
+      "conductance_same_mean": 0.13202431701460898,
+      "diffusion_update_ratio": 0.021572939416068387,
+      "diffusion_update_rms": 0.1278019512315984,
+      "present_entropy_z0": 0.1626131578688398,
+      "present_entropy_zt": 0.16331571169562717,
+      "present_top1_top2_margin_z0": 0.8619140329061041,
+      "present_top1_top2_margin_zt": 0.8613214330087361,
+      "reaction_update_ratio": 0.0,
+      "reaction_update_rms": 0.0,
+      "z0_rms": 5.924178841220237
+    },
+    "epoch": 2,
+    "luad_used": false,
+    "mechanism_parameters": {
+      "competition_matrix": null,
+      "eta_d": 0.10209757089614868,
+      "eta_r": null,
+      "kappa": 0.9924032688140869,
+      "steps": 3
+    },
+    "point": "epoch2",
+    "runtime": {
+      "elapsed_seconds": 54.877025842666626,
+      "fusion": [
+        0.0,
+        0.6,
+        0.2,
+        0.2
+      ],
+      "images": 3418,
+      "precision": "bf16",
+      "seconds_per_image": 0.01605530305519796,
+      "thresholds": [
+        0.800000011920929,
+        0.8999999761581421,
+        0.800000011920929,
+        0.6000000238418579
+      ],
+      "tta": [
+        [
+          [],
+          []
+        ],
+        [
+          [
+            3
+          ],
+          [
+            2
+          ]
+        ],
+        [
+          [
+            2
+          ],
+          [
+            1
+          ]
+        ]
+      ]
+    },
+    "scores": {
+      "class_dice": {
+        "0": 0.863140389397057,
+        "1": 0.8258610110529288,
+        "2": 0.7310529051562766,
+        "3": 0.7828850258778391
+      },
+      "class_iou": {
+        "0": 0.7592321702230965,
+        "1": 0.7033758514343633,
+        "2": 0.5761098379332427,
+        "3": 0.643230132340202
+      },
+      "frequency_weighted_iou": 0.7049885611811975,
+      "mDice": 0.8007348328710254,
+      "mIoU": 0.670486997982726,
+      "mean_accuracy": 0.7782658842256254,
+      "pixel_accuracy": 0.8270282949037643
+    },
+    "standalone_cam28_1": {
+      "class_dice": {
+        "0": 0.8616308563780524,
+        "1": 0.8250078076821099,
+        "2": 0.7297234931806619,
+        "3": 0.776925071503721
+      },
+      "class_iou": {
+        "0": 0.7568993425424398,
+        "1": 0.7021389700084976,
+        "2": 0.5744603550984548,
+        "3": 0.6352227924898427
+      },
+      "frequency_weighted_iou": 0.7028739644448339,
+      "mDice": 0.7983218071861363,
+      "mIoU": 0.6671803650348088,
+      "mean_accuracy": 0.7744781379048529,
+      "pixel_accuracy": 0.825676807982282
+    },
+    "test_used": false
+  },
+  {
+    "branch": "D",
+    "checkpoint_selection": "none; fixed evaluation points only",
+    "diagnostics": {
+      "coactive_definition": "fraction of pixels with second active-class softmax probability >= 0.25",
+      "coactive_overlap_z0": 0.11232424540578284,
+      "coactive_overlap_zt": 0.11271205605103628,
+      "conductance_cross_edges": 579682,
+      "conductance_cross_mean": 0.1311833563647596,
+      "conductance_same_cross_ratio": 1.0064122504609723,
+      "conductance_same_edges": 18049666,
+      "conductance_same_mean": 0.13202453690208144,
+      "diffusion_update_ratio": 0.021918251150141566,
+      "diffusion_update_rms": 0.12990821734221022,
+      "present_entropy_z0": 0.16374232294400037,
+      "present_entropy_zt": 0.1644708733159941,
+      "present_top1_top2_margin_z0": 0.8612337763808079,
+      "present_top1_top2_margin_zt": 0.8606226599598225,
+      "reaction_update_ratio": 0.0,
+      "reaction_update_rms": 0.0,
+      "z0_rms": 5.926942640283195
+    },
+    "epoch": 3,
+    "luad_used": false,
+    "mechanism_parameters": {
+      "competition_matrix": null,
+      "eta_d": 0.10279056429862976,
+      "eta_r": null,
+      "kappa": 0.9899578094482422,
+      "steps": 3
+    },
+    "point": "epoch3",
+    "runtime": {
+      "elapsed_seconds": 88.2166314125061,
+      "fusion": [
+        0.0,
+        0.6,
+        0.2,
+        0.2
+      ],
+      "images": 3418,
+      "precision": "bf16",
+      "seconds_per_image": 0.02580942990418552,
+      "thresholds": [
+        0.800000011920929,
+        0.8999999761581421,
+        0.800000011920929,
+        0.6000000238418579
+      ],
+      "tta": [
+        [
+          [],
+          []
+        ],
+        [
+          [
+            3
+          ],
+          [
+            2
+          ]
+        ],
+        [
+          [
+            2
+          ],
+          [
+            1
+          ]
+        ]
+      ]
+    },
+    "scores": {
+      "class_dice": {
+        "0": 0.8688976962280086,
+        "1": 0.8271219206152535,
+        "2": 0.736841785518903,
+        "3": 0.7755849520701901
+      },
+      "class_iou": {
+        "0": 0.7681866559111542,
+        "1": 0.705207075785008,
+        "2": 0.5833329325428931,
+        "3": 0.6334330449315507
+      },
+      "frequency_weighted_iou": 0.7096158652086357,
+      "mDice": 0.8021115886080887,
+      "mIoU": 0.6725399272926514,
+      "mean_accuracy": 0.7813348618553929,
+      "pixel_accuracy": 0.8299024242693387
+    },
+    "standalone_cam28_1": {
+      "class_dice": {
+        "0": 0.8674480784424338,
+        "1": 0.8264673363736227,
+        "2": 0.7344915463605314,
+        "3": 0.7701478814501648
+      },
+      "class_iou": {
+        "0": 0.7659234529834688,
+        "1": 0.7042559291189433,
+        "2": 0.5803924456199493,
+        "3": 0.6262117776877719
+      },
+      "frequency_weighted_iou": 0.7075263531278261,
+      "mDice": 0.7996387106566882,
+      "mIoU": 0.6691959013525334,
+      "mean_accuracy": 0.7775542604979322,
+      "pixel_accuracy": 0.828633520896093
+    },
+    "test_used": false
+  },
+  {
+    "branch": "D",
+    "checkpoint_selection": "none; fixed evaluation points only",
+    "diagnostics": {
+      "coactive_definition": "fraction of pixels with second active-class softmax probability >= 0.25",
+      "coactive_overlap_z0": 0.10881340991810737,
+      "coactive_overlap_zt": 0.10919626608605225,
+      "conductance_cross_edges": 579682,
+      "conductance_cross_mean": 0.1311936972377479,
+      "conductance_same_cross_ratio": 1.0063295119473834,
+      "conductance_same_edges": 18049666,
+      "conductance_same_mean": 0.13202408931183562,
+      "diffusion_update_ratio": 0.0221702626120733,
+      "diffusion_update_rms": 0.1330229531226808,
+      "present_entropy_z0": 0.15920627285286554,
+      "present_entropy_zt": 0.15992613290661134,
+      "present_top1_top2_margin_z0": 0.8649013875814775,
+      "present_top1_top2_margin_zt": 0.8642957667667256,
+      "reaction_update_ratio": 0.0,
+      "reaction_update_rms": 0.0,
+      "z0_rms": 6.000062130533368
+    },
+    "epoch": 4,
+    "luad_used": false,
+    "mechanism_parameters": {
+      "competition_matrix": null,
+      "eta_d": 0.10322925448417664,
+      "eta_r": null,
+      "kappa": 0.9884264469146729,
+      "steps": 3
+    },
+    "point": "epoch4",
+    "runtime": {
+      "elapsed_seconds": 87.91796231269836,
+      "fusion": [
+        0.0,
+        0.6,
+        0.2,
+        0.2
+      ],
+      "images": 3418,
+      "precision": "bf16",
+      "seconds_per_image": 0.02572204865789888,
+      "thresholds": [
+        0.800000011920929,
+        0.8999999761581421,
+        0.800000011920929,
+        0.6000000238418579
+      ],
+      "tta": [
+        [
+          [],
+          []
+        ],
+        [
+          [
+            3
+          ],
+          [
+            2
+          ]
+        ],
+        [
+          [
+            2
+          ],
+          [
+            1
+          ]
+        ]
+      ]
+    },
+    "scores": {
+      "class_dice": {
+        "0": 0.8644731845137422,
+        "1": 0.8256920648242704,
+        "2": 0.7298490727947134,
+        "3": 0.7825964429957996
+      },
+      "class_iou": {
+        "0": 0.7612970233059231,
+        "1": 0.703130788859661,
+        "2": 0.5746160217357795,
+        "3": 0.642840608188809
+      },
+      "frequency_weighted_iou": 0.7054716074887253,
+      "mDice": 0.8006526912821313,
+      "mIoU": 0.6704711105225432,
+      "mean_accuracy": 0.7777185488400779,
+      "pixel_accuracy": 0.8271750491657666
+    },
+    "standalone_cam28_1": {
+      "class_dice": {
+        "0": 0.8632899069780432,
+        "1": 0.8250410943848339,
+        "2": 0.7271472905731463,
+        "3": 0.7766841128325639
+      },
+      "class_iou": {
+        "0": 0.7594635714749194,
+        "1": 0.702187191774909,
+        "2": 0.5712737107662439,
+        "3": 0.6349006997946872
+      },
+      "frequency_weighted_iou": 0.7034580450391763,
+      "mDice": 0.7980406011921468,
+      "mIoU": 0.6669562934526898,
+      "mean_accuracy": 0.7739426680264402,
+      "pixel_accuracy": 0.825936125744846
+    },
+    "test_used": false
+  },
+  {
+    "branch": "D",
+    "checkpoint_selection": "none; fixed evaluation points only",
+    "diagnostics": {
+      "coactive_definition": "fraction of pixels with second active-class softmax probability >= 0.25",
+      "coactive_overlap_z0": 0.10689935929629123,
+      "coactive_overlap_zt": 0.10753758998006362,
+      "conductance_cross_edges": 579682,
+      "conductance_cross_mean": 0.1312041998613858,
+      "conductance_same_cross_ratio": 1.0062455537970714,
+      "conductance_same_edges": 18049666,
+      "conductance_same_mean": 0.1320236427500218,
+      "diffusion_update_ratio": 0.022146576602586926,
+      "diffusion_update_rms": 0.13620462422093776,
+      "present_entropy_z0": 0.1565553418622193,
+      "present_entropy_zt": 0.15729215089542128,
+      "present_top1_top2_margin_z0": 0.8674250529297852,
+      "present_top1_top2_margin_zt": 0.8667682259959669,
+      "reaction_update_ratio": 0.0,
+      "reaction_update_rms": 0.0,
+      "z0_rms": 6.150143503670351
+    },
+    "epoch": 5,
+    "luad_used": false,
+    "mechanism_parameters": {
+      "competition_matrix": null,
+      "eta_d": 0.10339008271694183,
+      "eta_r": null,
+      "kappa": 0.9878677129745483,
+      "steps": 3
+    },
+    "point": "epoch5",
+    "runtime": {
+      "elapsed_seconds": 88.33582639694214,
+      "fusion": [
+        0.0,
+        0.6,
+        0.2,
+        0.2
+      ],
+      "images": 3418,
+      "precision": "bf16",
+      "seconds_per_image": 0.025844302632224148,
+      "thresholds": [
+        0.800000011920929,
+        0.8999999761581421,
+        0.800000011920929,
+        0.6000000238418579
+      ],
+      "tta": [
+        [
+          [],
+          []
+        ],
+        [
+          [
+            3
+          ],
+          [
+            2
+          ]
+        ],
+        [
+          [
+            2
+          ],
+          [
+            1
+          ]
+        ]
+      ]
+    },
+    "scores": {
+      "class_dice": {
+        "0": 0.8660245586896878,
+        "1": 0.8262053048987587,
+        "2": 0.7322774170467001,
+        "3": 0.7839927527059793
+      },
+      "class_iou": {
+        "0": 0.7637066263877759,
+        "1": 0.703875480394378,
+        "2": 0.5776322256094696,
+        "3": 0.6447270396213489
+      },
+      "frequency_weighted_iou": 0.7072281747210905,
+      "mDice": 0.8021250083352814,
+      "mIoU": 0.6724853430032431,
+      "mean_accuracy": 0.7811187945480788,
+      "pixel_accuracy": 0.8282343387133879
+    },
+    "standalone_cam28_1": {
+      "class_dice": {
+        "0": 0.8649718394040259,
+        "1": 0.8257175787547213,
+        "2": 0.7300809205334037,
+        "3": 0.7785481854545208
+      },
+      "class_iou": {
+        "0": 0.7620708185335696,
+        "1": 0.7031677932120294,
+        "2": 0.5749034976622758,
+        "3": 0.6373957418404019
+      },
+      "frequency_weighted_iou": 0.7055067773420127,
+      "mDice": 0.7998296310366679,
+      "mIoU": 0.6693844628120691,
+      "mean_accuracy": 0.7774756489319028,
+      "pixel_accuracy": 0.8272021924951846
+    },
+    "test_used": false
+  }
+]

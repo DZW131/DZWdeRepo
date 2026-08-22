@@ -1,0 +1,64 @@
+{
+  "a0_checkpoint": "/home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth",
+  "a0_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "all_original_sshr_parameters_trainable": true,
+  "batch_size": 20,
+  "branch": "DR",
+  "common_checkpoint_missing_keys": [
+    "tcrd.theta_kappa",
+    "tcrd.beta_d",
+    "tcrd.pair_raw",
+    "tcrd.beta_r"
+  ],
+  "common_checkpoint_unexpected_keys": [],
+  "common_model_seed_per_step": true,
+  "dataset_order_sha256": "c0817cf906f36370f3109ed24dac2cfa6f4b7b434bb95bf1728570021c5c5841",
+  "deterministic_augmentation": true,
+  "epochs": 5,
+  "initial_group_lrs": [
+    0.0023492378861760376,
+    0.004698475772352075,
+    0.023492378861760376,
+    0.04698475772352075
+  ],
+  "luad_used": false,
+  "optimizer_groups": [
+    {
+      "index": 0,
+      "lr": 0.0023492378861760376,
+      "momentum": 0.0005,
+      "parameters": 104202240,
+      "weight_decay": 0.0005
+    },
+    {
+      "index": 1,
+      "lr": 0.004698475772352075,
+      "momentum": 0.0005,
+      "parameters": 0,
+      "weight_decay": 0.0
+    },
+    {
+      "index": 2,
+      "lr": 0.023492378861760376,
+      "momentum": 0.0005,
+      "parameters": 7635727,
+      "weight_decay": 0.0005
+    },
+    {
+      "index": 3,
+      "lr": 0.04698475772352075,
+      "momentum": 0.0005,
+      "parameters": 12,
+      "weight_decay": 0.0
+    }
+  ],
+  "poly_power": 0.9,
+  "precision": "bf16",
+  "schedule": "/home/duyanhong/experiments/TCRD_V0_UTILITY_GATE_672bf52/schedule/utility_schedule.npz",
+  "schedule_sha256": "3998960668cc91161150b7561e12194b15f89639e3283de6fa0d720432288e41",
+  "seed": 42,
+  "segmentation_gt_used_in_training": false,
+  "source_commit": "672bf5222dbe992f401c9c1c6106dc3b8d90f290",
+  "tail_base_lr_derived_at_epoch20_of_25": 0.0023492378861760376,
+  "test_used": false
+}

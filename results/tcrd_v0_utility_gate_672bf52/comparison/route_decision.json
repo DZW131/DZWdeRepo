@@ -1,0 +1,68 @@
+{
+  "best_epoch_not_used_for_gate": true,
+  "branch_decisions": {
+    "D": "SPED_UTILITY_NOGO",
+    "DR": "TCRD_FULL_REVIEW",
+    "R": "TCER_UTILITY_REVIEW"
+  },
+  "deltas": {
+    "D": {
+      "cam28_1_mIoU_pp": 0.03440518816021365,
+      "class_iou_pp": {
+        "0": -0.001464123086170055,
+        "1": 0.004658398174217648,
+        "2": 0.004681957871000009,
+        "3": 0.061614167187040714
+      },
+      "final_mDice_pp": 0.01290023360255299,
+      "final_mIoU_pp": 0.017372600036535957
+    },
+    "DR": {
+      "cam28_1_mIoU_pp": 0.1034986936053639,
+      "class_iou_pp": {
+        "0": 0.038598592349881056,
+        "1": 0.04549760699192884,
+        "2": 0.09130855512068381,
+        "3": 0.05183818076544
+      },
+      "final_mDice_pp": 0.0419559987194007,
+      "final_mIoU_pp": 0.05681073380698898
+    },
+    "R": {
+      "cam28_1_mIoU_pp": 0.10222324790321036,
+      "class_iou_pp": {
+        "0": 0.055976991108630525,
+        "1": 0.06381520415982278,
+        "2": 0.08769232802031679,
+        "3": 0.061265412522970575
+      },
+      "final_mDice_pp": 0.048917598461428735,
+      "final_mIoU_pp": 0.06718748395294627
+    }
+  },
+  "luad_used": false,
+  "mechanism_checks": {
+    "DR_boundary_nonincreasing": false,
+    "DR_present_confusion_decreased": true,
+    "D_boundary_nonincreasing": false,
+    "D_same_cross_ratio_ge_1_05": false,
+    "D_update_ratio_ge_0_005": true,
+    "REACTION_OVERCONFIDENCE_REVIEW": false,
+    "R_present_confusion_nonworse_classes": 3,
+    "R_present_confusion_relative_reduction": 0.0014273382459915095,
+    "R_update_ratio_ge_0_005": true
+  },
+  "primary_comparison": "epoch5 candidate minus epoch5 C0",
+  "route": "ROUTE_E_CLOSE",
+  "step0_catastrophic_drop": {
+    "D": false,
+    "DR": false,
+    "R": false
+  },
+  "step0_delta_mIoU_pp": {
+    "D": -0.0021196911064280677,
+    "DR": 0.03917793026868566,
+    "R": 0.03996562849195584
+  },
+  "test_used": false
+}
