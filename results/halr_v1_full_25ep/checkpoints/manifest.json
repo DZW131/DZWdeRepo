@@ -1,0 +1,107 @@
+[
+  {
+    "config_sha256": "776305a374cf50f54d1831f5c0abdec9a9e370151867ae7925bd744d82bf28b1",
+    "dataset": "BCSS",
+    "epoch": 5,
+    "filename": "epoch05.pth",
+    "primary_final": false,
+    "seed": 42,
+    "selection": "epoch-number only; epoch25 FINAL is primary",
+    "sha256": "9fdb8bd6c9a3f355ebe767454f91dbdd8e8ae6b90a4634db208f0cf20edb7b27",
+    "size_bytes": 451128631,
+    "source_commit": "ed8c98e23c821a4b72b6a2627d6627720295054f",
+    "teacher_dynamics": {
+      "fraction_weight28_gt": 0.9812742450825686,
+      "fraction_weightdeep_gt": 0.018725762628877804,
+      "hierarchy_agreement": 0.8973705239727597,
+      "jsd28": 0.007458766353897986,
+      "jsddeep": 0.019978773012680952,
+      "weight28": 0.5031298685033132,
+      "weightdeep": 0.49687016058640027
+    }
+  },
+  {
+    "config_sha256": "776305a374cf50f54d1831f5c0abdec9a9e370151867ae7925bd744d82bf28b1",
+    "dataset": "BCSS",
+    "epoch": 10,
+    "filename": "epoch10.pth",
+    "primary_final": false,
+    "seed": 42,
+    "selection": "epoch-number only; epoch25 FINAL is primary",
+    "sha256": "11a8b66759e904f96991964a0860b97181607e6bdd7759921820013f35eac740",
+    "size_bytes": 451128631,
+    "source_commit": "ed8c98e23c821a4b72b6a2627d6627720295054f",
+    "teacher_dynamics": {
+      "fraction_weight28_gt": 0.9779272553352695,
+      "fraction_weightdeep_gt": 0.022072753734587607,
+      "hierarchy_agreement": 0.9176979675749039,
+      "jsd28": 0.007464243886661481,
+      "jsddeep": 0.01900784947283496,
+      "weight28": 0.5028857933874318,
+      "weightdeep": 0.49711423516782505
+    }
+  },
+  {
+    "config_sha256": "776305a374cf50f54d1831f5c0abdec9a9e370151867ae7925bd744d82bf28b1",
+    "dataset": "BCSS",
+    "epoch": 15,
+    "filename": "epoch15.pth",
+    "primary_final": false,
+    "seed": 42,
+    "selection": "epoch-number only; epoch25 FINAL is primary",
+    "sha256": "e115c8b5a60b042b9f7bbc3610b4d3865c1213e9c6dff89467df817c4bd19e50",
+    "size_bytes": 451128631,
+    "source_commit": "ed8c98e23c821a4b72b6a2627d6627720295054f",
+    "teacher_dynamics": {
+      "fraction_weight28_gt": 0.9615777491708783,
+      "fraction_weightdeep_gt": 0.03842226429870249,
+      "hierarchy_agreement": 0.922786818418006,
+      "jsd28": 0.008280295501665922,
+      "jsddeep": 0.019151638157388958,
+      "weight28": 0.5027177331286755,
+      "weightdeep": 0.49728229738625573
+    }
+  },
+  {
+    "config_sha256": "776305a374cf50f54d1831f5c0abdec9a9e370151867ae7925bd744d82bf28b1",
+    "dataset": "BCSS",
+    "epoch": 20,
+    "filename": "epoch20.pth",
+    "primary_final": false,
+    "seed": 42,
+    "selection": "epoch-number only; epoch25 FINAL is primary",
+    "sha256": "6895eea89951468ed4baa0f947b6682443847eb459865b8086f3aaa0d4a3b828",
+    "size_bytes": 451128631,
+    "source_commit": "ed8c98e23c821a4b72b6a2627d6627720295054f",
+    "teacher_dynamics": {
+      "fraction_weight28_gt": 0.9500541124050684,
+      "fraction_weightdeep_gt": 0.049945903803602844,
+      "hierarchy_agreement": 0.9256624554488315,
+      "jsd28": 0.009141010363895627,
+      "jsddeep": 0.019652555436595803,
+      "weight28": 0.502627783764335,
+      "weightdeep": 0.49737224601253704
+    }
+  },
+  {
+    "config_sha256": "776305a374cf50f54d1831f5c0abdec9a9e370151867ae7925bd744d82bf28b1",
+    "dataset": "BCSS",
+    "epoch": 25,
+    "filename": "epoch25_final.pth",
+    "primary_final": true,
+    "seed": 42,
+    "selection": "epoch-number only; epoch25 FINAL is primary",
+    "sha256": "0be9d31dfe9a6b1e31c606562132c10ba3f1f71dcecf1670d9e1aff62d53171f",
+    "size_bytes": 451130739,
+    "source_commit": "ed8c98e23c821a4b72b6a2627d6627720295054f",
+    "teacher_dynamics": {
+      "fraction_weight28_gt": 0.9444058765009058,
+      "fraction_weightdeep_gt": 0.05559414168970896,
+      "hierarchy_agreement": 0.9243472341184021,
+      "jsd28": 0.01035617502170824,
+      "jsddeep": 0.02164276530385577,
+      "weight28": 0.50282151285753,
+      "weightdeep": 0.49717851686844144
+    }
+  }
+]

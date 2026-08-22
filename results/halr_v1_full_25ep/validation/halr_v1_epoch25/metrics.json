@@ -1,0 +1,95 @@
+{
+  "runtime": {
+    "double_view_inference": false,
+    "elapsed_seconds": 46.24688243865967,
+    "extra_inference_parameters": 0,
+    "fusion": [
+      0.0,
+      0.6,
+      0.2,
+      0.2
+    ],
+    "images": 3418,
+    "precision": "bf16",
+    "seconds_per_image": 0.01353039275560552,
+    "thresholds": [
+      0.800000011920929,
+      0.8999999761581421,
+      0.800000011920929,
+      0.6000000238418579
+    ],
+    "tta": [
+      [
+        [],
+        []
+      ],
+      [
+        [
+          3
+        ],
+        [
+          2
+        ]
+      ],
+      [
+        [
+          2
+        ],
+        [
+          1
+        ]
+      ]
+    ]
+  },
+  "scores": {
+    "class_dice": {
+      "0": 0.8647210857412434,
+      "1": 0.8230860720774914,
+      "2": 0.7270243033217754,
+      "3": 0.7820331493299069
+    },
+    "class_iou": {
+      "0": 0.7616816227982485,
+      "1": 0.6993596154736693,
+      "2": 0.5711219037558329,
+      "3": 0.6420808159923671
+    },
+    "frequency_weighted_iou": 0.7035316564376094,
+    "mDice": 0.7992161526176043,
+    "mIoU": 0.6685609895050294,
+    "mean_accuracy": 0.7798190482352804,
+    "pixel_accuracy": 0.825656579709151
+  },
+  "teacher_diagnosis": {
+    "boundary_definition": "foreground pixels touching a different 4-neighbor label",
+    "gt_enters_forward": false,
+    "presence": "GT-present diagnosis only",
+    "regions": {
+      "boundary": {
+        "deep_accuracy": 0.5380087249546199,
+        "deep_advantage_pp": 0.14687227091151747,
+        "deep_correct": 1059004,
+        "pixels": 1968377,
+        "raw28_1_accuracy": 0.5365400022455048,
+        "raw28_1_correct": 1056113
+      },
+      "foreground": {
+        "deep_accuracy": 0.8551137802541986,
+        "deep_advantage_pp": -0.3478210276271627,
+        "deep_correct": 135654690,
+        "pixels": 158639345,
+        "raw28_1_accuracy": 0.8585919905304702,
+        "raw28_1_correct": 136206471
+      },
+      "interior": {
+        "deep_accuracy": 0.8590978131953586,
+        "deep_advantage_pp": -0.354036237268924,
+        "deep_correct": 134595686,
+        "pixels": 156670968,
+        "raw28_1_accuracy": 0.8626381755680478,
+        "raw28_1_correct": 135150358
+      }
+    },
+    "tta": 3
+  }
+}

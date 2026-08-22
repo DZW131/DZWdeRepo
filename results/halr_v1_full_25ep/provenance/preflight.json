@@ -1,0 +1,158 @@
+{
+  "all_finite": true,
+  "batch_size": 20,
+  "cam_shapes_view1": [
+    [
+      20,
+      4,
+      28,
+      28
+    ],
+    [
+      20,
+      4,
+      28,
+      28
+    ]
+  ],
+  "cam_shapes_view2": [
+    [
+      20,
+      4,
+      28,
+      28
+    ],
+    [
+      20,
+      4,
+      28,
+      28
+    ]
+  ],
+  "classification_loss": 0.6992374062538147,
+  "cvle_loss": 0.05807681381702423,
+  "dataset_samples": 23422,
+  "decision": "HALR_V1_MINIMAL_PREFLIGHT_PASS",
+  "dense_segmentation_gt_enters_forward_or_loss": false,
+  "effective_forward_images": 40,
+  "epoch1_alpha": 0.0,
+  "epoch1_weighted_localization": 0.0,
+  "flip_codes": [
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1
+  ],
+  "flip_inverse_exact": true,
+  "localization_cam_gradient_l1": [
+    0.07497350871562958,
+    0.12011775374412537
+  ],
+  "mean_weight28": 0.5285714268684387,
+  "mean_weightdeep": 0.47142863273620605,
+  "model_class": "network.resnet38_cls.Net",
+  "new_model_parameters": 0,
+  "optimizer_built": true,
+  "optimizer_groups": [
+    {
+      "lr": 0.01,
+      "momentum": 0.0005,
+      "parameters": 104202240,
+      "weight_decay": 0.0005
+    },
+    {
+      "lr": 0.02,
+      "momentum": 0.0005,
+      "parameters": 0,
+      "weight_decay": 0.0
+    },
+    {
+      "lr": 0.1,
+      "momentum": 0.0005,
+      "parameters": 7635718,
+      "weight_decay": 0.0005
+    },
+    {
+      "lr": 0.2,
+      "momentum": 0.0005,
+      "parameters": 12,
+      "weight_decay": 0.0
+    }
+  ],
+  "optimizer_step": false,
+  "parameter_count": 112709714,
+  "peak_cuda_memory_gib": 5.303794860839844,
+  "precision": "bf16",
+  "pretrained": {
+    "approved_missing_keys": [
+      "bn45.bias",
+      "bn45.running_mean",
+      "bn45.running_var",
+      "bn45.weight",
+      "bn52.bias",
+      "bn52.running_mean",
+      "bn52.running_var",
+      "bn52.weight"
+    ],
+    "missing_backbone_keys": [],
+    "missing_keys": [
+      "bn45.weight",
+      "bn45.bias",
+      "bn45.running_mean",
+      "bn45.running_var",
+      "bn52.weight",
+      "bn52.bias",
+      "bn52.running_mean",
+      "bn52.running_var",
+      "hfrm_56.gamma_veto",
+      "hfrm_56.gamma_context",
+      "hfrm_56.veto_mlp.0.weight",
+      "hfrm_56.veto_mlp.2.weight",
+      "hfrm_56.context_conv.weight",
+      "hfrm_28_1.gamma_veto",
+      "hfrm_28_1.gamma_context",
+      "hfrm_28_1.veto_mlp.0.weight",
+      "hfrm_28_1.veto_mlp.2.weight",
+      "hfrm_28_1.context_conv.weight",
+      "hfrm_28_2.gamma_veto",
+      "hfrm_28_2.gamma_context",
+      "hfrm_28_2.veto_mlp.0.weight",
+      "hfrm_28_2.veto_mlp.2.weight",
+      "hfrm_28_2.context_conv.weight",
+      "ic_56.weight",
+      "ic_56.bias",
+      "ic1.weight",
+      "ic1.bias",
+      "ic2.weight",
+      "ic2.bias",
+      "fc8.weight"
+    ],
+    "path": "/home/duyanhong/sshr-reproduction/SSHR/init_weights/ilsvrc-cls_rna-a1_cls1000_ep-0001.params",
+    "sha256": "f668a2add80e33dfa8f1a0695df91f6d8cfad5ffbb26d1dc7bcd35903a1f6e16",
+    "size_bytes": 436873620,
+    "unexpected_keys": []
+  },
+  "rahd_loss": 0.16906136274337769,
+  "reliability_finite": true,
+  "reliability_requires_grad": false,
+  "reliability_sum_max_error": 0.0,
+  "single_present_cvle": 0.0,
+  "single_present_rahd": 0.0,
+  "teacher_requires_grad": false
+}

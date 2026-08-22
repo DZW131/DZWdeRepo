@@ -1,0 +1,21 @@
+{
+  "config_sha256": "776305a374cf50f54d1831f5c0abdec9a9e370151867ae7925bd744d82bf28b1",
+  "dataset": "BCSS",
+  "epoch": 25,
+  "filename": "epoch25_final.pth",
+  "primary_final": true,
+  "seed": 42,
+  "selection": "epoch-number only; epoch25 FINAL is primary",
+  "sha256": "0be9d31dfe9a6b1e31c606562132c10ba3f1f71dcecf1670d9e1aff62d53171f",
+  "size_bytes": 451130739,
+  "source_commit": "ed8c98e23c821a4b72b6a2627d6627720295054f",
+  "teacher_dynamics": {
+    "fraction_weight28_gt": 0.9444058765009058,
+    "fraction_weightdeep_gt": 0.05559414168970896,
+    "hierarchy_agreement": 0.9243472341184021,
+    "jsd28": 0.01035617502170824,
+    "jsddeep": 0.02164276530385577,
+    "weight28": 0.50282151285753,
+    "weightdeep": 0.49717851686844144
+  }
+}

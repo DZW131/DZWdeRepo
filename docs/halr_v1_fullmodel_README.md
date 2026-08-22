@@ -117,12 +117,20 @@ checkpoint selection or the decision.
 
 | Model | Dataset / split | Epoch | mIoU | mDice | Decision |
 |---|---|---:|---:|---:|---|
-| SSHR A0 | BCSS validation | 25 FINAL | pending | pending | reference |
-| HALR-v1 | BCSS validation | 25 FINAL | pending | pending | pending |
+| SSHR A0 | BCSS validation | 25 FINAL | 67.3283 | 80.2683 | reference |
+| HALR-v1 | BCSS validation | 25 FINAL | 66.8561 | 79.9216 | `HALR_V1_NO_CLEAR_GAIN` |
 
-The completed report will be written to
-`docs/halr_v1_full_25ep_report.md`, with machine-readable metrics under the
-experiment directory's `validation/` folder.
+HALR-v1 changed mIoU by -0.4722 pp and mDice by -0.3466 pp. All four
+classes regressed, with the largest changes on C2 (-0.7150 pp) and C1
+(-0.6362 pp). At epoch25, CAM28_1 had lower cross-view JSD than CAMdeep for
+94.44% of valid samples, but the exponential reliability normalization kept
+the mean teacher weights close to equal (w28=0.5028, wdeep=0.4972).
+
+The completed report is available at `docs/halr_v1_full_25ep_report.md`, with
+machine-readable evidence under `results/halr_v1_full_25ep/`. The primary
+checkpoint remains on the server at
+`/home/duyanhong/experiments/HALR_V1_FULL_25EP_SEED42_ed8c98e/checkpoints/epoch25_final.pth`
+(SHA256 `0be9d31dfe9a6b1e31c606562132c10ba3f1f71dcecf1670d9e1aff62d53171f`).
 
 ## Stop boundary
 

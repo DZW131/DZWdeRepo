@@ -1,0 +1,19 @@
+{
+  "epochs": 25,
+  "final_mechanism": {
+    "fraction_weight28_gt": 0.9444058765009058,
+    "fraction_weightdeep_gt": 0.05559414168970896,
+    "gamma_context_28_1": 1.5659987926483154,
+    "gamma_veto_28_1": 0.49481886625289917,
+    "hierarchy_agreement": 0.9243472341184021,
+    "jsd28": 0.01035617502170824,
+    "jsddeep": 0.02164276530385577,
+    "weight28": 0.50282151285753,
+    "weightdeep": 0.49717851686844144
+  },
+  "mean_epoch_seconds": 220.28846360206603,
+  "peak_cuda_memory_gib": 6.207747936248779,
+  "primary_checkpoint": "checkpoints/epoch25_final.pth",
+  "status": "HALR_V1_TRAINING_COMPLETE",
+  "total_seconds": 5509.465667724609
+}
