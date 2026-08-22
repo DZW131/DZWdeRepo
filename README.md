@@ -133,3 +133,10 @@ python train_sshr.py \
 
 We thank the authors of [ESFAN](https://github.com/OceanPetal/ESFAN), whose codebase provided a valuable foundation for this repository.
 
+## Research experiments
+
+The TCRD-v0 matched five-epoch BCSS utility gate is isolated from the official
+training entry point. Its frozen protocol, verification commands, runner, and
+artifact contract are documented in
+[`docs/tcrd_v0_utility_gate_README.md`](docs/tcrd_v0_utility_gate_README.md).
+
