@@ -129,6 +129,17 @@ python train_sshr.py \
   --amp-dtype bf16
 ```
 
+## HALR-v1 frozen full-model experiment
+
+The isolated training-only CVLE/RAHD implementation, minimal preflight,
+BCSS seed42 25-epoch FINAL protocol, official inference evaluation and artifact
+layout are documented in
+[`docs/halr_v1_fullmodel_README.md`](docs/halr_v1_fullmodel_README.md).
+The completed frozen experiment is archived in the
+[`HALR-v1 epoch25 report`](docs/halr_v1_full_25ep_report.md), with
+machine-readable evidence under
+[`results/halr_v1_full_25ep/`](results/halr_v1_full_25ep/).
+
 ## Acknowledgement
 
 We thank the authors of [ESFAN](https://github.com/OceanPetal/ESFAN), whose codebase provided a valuable foundation for this repository.
