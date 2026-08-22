@@ -140,3 +140,6 @@ training entry point. Its frozen protocol, verification commands, runner, and
 artifact contract are documented in
 [`docs/tcrd_v0_utility_gate_README.md`](docs/tcrd_v0_utility_gate_README.md).
 
+The separately authorized post-gate R-only fresh-25 experiment is documented in
+[`docs/tcer_r_full25_exploratory_README.md`](docs/tcer_r_full25_exploratory_README.md).
+
