@@ -96,7 +96,12 @@ def run(args):
     output = Path(args.output_dir)
     resume_path = output / "resume_latest.pth"
     if output.exists() and not args.resume:
-        unexpected = [path.name for path in output.iterdir() if path.name != "preflight.json"]
+        # Shell redirection creates run.log before this process begins.
+        allowed_bootstrap_files = {"preflight.json", "run.log"}
+        unexpected = [
+            path.name for path in output.iterdir()
+            if path.name not in allowed_bootstrap_files
+        ]
         if unexpected:
             raise FileExistsError(
                 f"Refusing to overwrite experiment {output}; existing={unexpected}"
