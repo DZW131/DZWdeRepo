@@ -36,33 +36,65 @@ PY
 mkdir -p "${EXPERIMENT_DIR}/schedule" "${EXPERIMENT_DIR}/provenance"
 git rev-parse HEAD > "${EXPERIMENT_DIR}/provenance/implementation_commit.txt"
 
-python tools/build_wdch_schedule.py \
-  --train-root "${TRAIN_ROOT}" \
-  --output "${SCHEDULE}"
+if [[ -e "${SCHEDULE}" ]]; then
+  echo "WDCH_REUSE_EXISTING_SCHEDULE ${SCHEDULE}"
+else
+  python tools/build_wdch_schedule.py \
+    --train-root "${TRAIN_ROOT}" \
+    --output "${SCHEDULE}"
+fi
 
-python tools/train_wdch_matched.py \
-  --mode common \
-  --train-root "${TRAIN_ROOT}" \
-  --pretrained "${PRETRAINED}" \
-  --schedule "${SCHEDULE}" \
-  --output-dir "${COMMON_DIR}" \
-  --num-workers "${NUM_WORKERS}"
+if [[ -e "${COMMON_DIR}/complete.json" ]]; then
+  python - "${COMMON_DIR}/complete.json" <<'PY'
+import json
+import sys
+
+completion = json.load(open(sys.argv[1], encoding="utf-8"))
+if completion.get("status") != "WDCH_COMMON_EPOCH20_COMPLETE":
+    raise SystemExit("Existing common run is not complete")
+if completion.get("epoch") != 20 or completion.get("global_step") != 23420:
+    raise SystemExit("Existing common run has the wrong continuation state")
+print("WDCH_REUSE_COMMON_EPOCH20", flush=True)
+PY
+else
+  python tools/train_wdch_matched.py \
+    --mode common \
+    --train-root "${TRAIN_ROOT}" \
+    --pretrained "${PRETRAINED}" \
+    --schedule "${SCHEDULE}" \
+    --output-dir "${COMMON_DIR}" \
+    --num-workers "${NUM_WORKERS}"
+fi
 
 for BRANCH in C0 W1; do
   BRANCH_DIR="${C0_DIR}"
   if [[ "${BRANCH}" == "W1" ]]; then
     BRANCH_DIR="${W1_DIR}"
   fi
-  python tools/train_wdch_matched.py \
-    --mode branch \
-    --branch "${BRANCH}" \
-    --train-root "${TRAIN_ROOT}" \
-    --val-root "${VAL_ROOT}" \
-    --schedule "${SCHEDULE}" \
-    --common-checkpoint "${COMMON_DIR}/common_epoch20.pth" \
-    --phase0-summary "${REPORTS}/wdch_phase0_summary.json" \
-    --output-dir "${BRANCH_DIR}" \
-    --num-workers "${NUM_WORKERS}"
+  if [[ -e "${BRANCH_DIR}/complete.json" ]]; then
+    python - "${BRANCH_DIR}/complete.json" "${BRANCH}" <<'PY'
+import json
+import sys
+
+completion = json.load(open(sys.argv[1], encoding="utf-8"))
+if completion.get("status") != "WDCH_MATCHED_BRANCH_COMPLETE":
+    raise SystemExit("Existing branch run is not complete")
+if completion.get("branch") != sys.argv[2] or completion.get("epochs") != [21, 22, 23, 24, 25]:
+    raise SystemExit("Existing branch run has the wrong identity or epochs")
+print(f"WDCH_REUSE_COMPLETE_BRANCH {sys.argv[2]}", flush=True)
+PY
+  else
+    python tools/train_wdch_matched.py \
+      --mode branch \
+      --branch "${BRANCH}" \
+      --train-root "${TRAIN_ROOT}" \
+      --val-root "${VAL_ROOT}" \
+      --schedule "${SCHEDULE}" \
+      --common-checkpoint "${COMMON_DIR}/common_epoch20.pth" \
+      --phase0-summary "${REPORTS}/wdch_phase0_summary.json" \
+      --output-dir "${BRANCH_DIR}" \
+      --num-workers "${NUM_WORKERS}"
+  fi
 done
 
 python tools/analyze_wdch_gate.py \
