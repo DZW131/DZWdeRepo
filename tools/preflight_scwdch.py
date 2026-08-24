@@ -102,6 +102,11 @@ def run(args):
 
     trainable = [parameter for parameter in model.parameters() if parameter.requires_grad]
     grouped = [parameter for group in optimizer.param_groups for parameter in group["params"]]
+    grouped_ids = [id(parameter) for parameter in grouped]
+    trainable_ids = {id(parameter) for parameter in trainable}
+    extra_frozen = [
+        parameter for parameter in grouped if id(parameter) not in trainable_ids
+    ]
     finite = bool(
         torch.isfinite(loss)
         and torch.isfinite(sc_output).all()
@@ -128,10 +133,15 @@ def run(args):
         "gamma_context_grad_rms": rms(model.hfrm_28_1.gamma_context.grad),
         "gamma_veto_grad_rms": rms(model.hfrm_28_1.gamma_veto.grad),
         "all_finite": finite,
-        "optimizer_coverage_exactly_once": (
-            len(grouped) == len({id(parameter) for parameter in grouped})
-            and {id(parameter) for parameter in grouped}
-            == {id(parameter) for parameter in trainable}
+        "optimizer_parameters_unique": len(grouped_ids) == len(set(grouped_ids)),
+        "optimizer_trainable_coverage_exactly_once": (
+            trainable_ids.issubset(set(grouped_ids))
+            and all(grouped_ids.count(identifier) == 1 for identifier in trainable_ids)
+        ),
+        "optimizer_extra_parameters": len(extra_frozen),
+        "optimizer_extra_parameters_all_frozen_and_gradless": all(
+            not parameter.requires_grad and parameter.grad is None
+            for parameter in extra_frozen
         ),
         "optimizer": optimizer_summary(optimizer),
         "optimizer_global_step": optimizer.global_step,
@@ -143,7 +153,12 @@ def run(args):
     }
     if not result["scale_is_buffer"] or result["scale_is_parameter"]:
         raise AssertionError("Scale must be a fixed persistent buffer")
-    if not result["optimizer_coverage_exactly_once"] or not finite:
+    if (
+        not result["optimizer_parameters_unique"]
+        or not result["optimizer_trainable_coverage_exactly_once"]
+        or not result["optimizer_extra_parameters_all_frozen_and_gradless"]
+        or not finite
+    ):
         raise RuntimeError(result)
     write_json(output, result)
     print(json.dumps(result, indent=2), flush=True)
