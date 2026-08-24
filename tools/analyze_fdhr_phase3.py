@@ -85,6 +85,21 @@ def run(args):
     completions = {name: read_json(path / "complete.json") for name, path in directories.items()}
     for name, completion in completions.items():
         validate_completion(name, completion)
+    provenance = {
+        name: read_json(directories[name] / "provenance.json")
+        for name in ("A", "B", "C")
+    }
+    implementation_commits = {row["source_commit"] for row in provenance.values()}
+    if len(implementation_commits) != 1:
+        raise AssertionError(f"A/B/C implementation commits differ: {implementation_commits}")
+    implementation_commit = implementation_commits.pop()
+    locked_common_sha = sha256_file(args.common_checkpoint)
+    locked_schedule_sha = sha256_file(args.schedule)
+    for name, row in provenance.items():
+        if row["common_checkpoint_sha256"] != locked_common_sha:
+            raise AssertionError(f"{name}: common checkpoint provenance differs")
+        if row["schedule_sha256"] != locked_schedule_sha:
+            raise AssertionError(f"{name}: schedule provenance differs")
     predictions = {
         name: load_predictions(path / "predictions" / "epoch25_validation.npz")
         for name, path in directories.items()
@@ -221,6 +236,24 @@ def run(args):
         name: evaluations[name]["feature_diagnostics"]
         for name in ("A", "B", "C")
     }
+    w1_cam28_delta = next(
+        row["delta_mIoU_pp"]
+        for row in cam_rows
+        if row["variant"] == "W1" and row["stage"] == "28_1"
+    )
+    best_semantic_name = max(
+        ("A", "B", "C"), key=lambda name: gates[name]["CAM28_1_delta_pp"]
+    )
+    semantic_recovered_pp = (
+        gates[best_semantic_name]["CAM28_1_delta_pp"] - w1_cam28_delta
+    )
+    semantic_recovered_fraction = semantic_recovered_pp / abs(w1_cam28_delta)
+    w1_boundary_delta = next(
+        row["boundary_delta_pp"] for row in main_rows if row["variant"] == "W1"
+    )
+    best_overall_name = max(
+        ("A", "B", "C"), key=lambda name: gates[name]["mIoU_delta_pp"]
+    )
     summary = {
         "experiment_id": "EXP-FDHR-003",
         "decision": decision,
@@ -240,8 +273,9 @@ def run(args):
             }
             for name in VARIANTS
         },
-        "common_checkpoint_sha256": sha256_file(args.common_checkpoint),
-        "schedule_sha256": sha256_file(args.schedule),
+        "training_implementation_commit": implementation_commit,
+        "common_checkpoint_sha256": locked_common_sha,
+        "schedule_sha256": locked_schedule_sha,
         "checkpoint_rule": "epoch25 FINAL only",
         "test_used": False,
         "luad_used": False,
@@ -335,6 +369,7 @@ def run(args):
         "",
         "## 7. Reproducibility",
         "",
+        f"- Training implementation commit: `{implementation_commit}`.",
         f"- Common Epoch 20 checkpoint SHA256: `{summary['common_checkpoint_sha256']}`.",
         f"- Schedule SHA256: `{summary['schedule_sha256']}`.",
     ]
@@ -343,7 +378,15 @@ def run(args):
     lines += [
         "- Validation prediction order and GT masks were byte-equal across all five variants.",
         "",
-        "## 8. Scientific decision",
+        "## 8. Core scientific interpretation",
+        "",
+        f"- Best semantic result: Variant {best_semantic_name}, CAM28_1 Δ {gates[best_semantic_name]['CAM28_1_delta_pp']:+.4f} pp. It recovers only {semantic_recovered_pp:.4f} pp ({100*semantic_recovered_fraction:.2f}%) of W1's {abs(w1_cam28_delta):.4f} pp loss, below the required 50%.",
+        f"- Best overall result: Variant {best_overall_name}, final mIoU Δ {gates[best_overall_name]['mIoU_delta_pp']:+.4f} pp, below the +0.10 pp utility threshold.",
+        f"- W1 already gives Boundary Δ {w1_boundary_delta:+.4f} pp. A/B/C give {gates['A']['boundary_delta_pp']:+.4f}/{gates['B']['boundary_delta_pp']:+.4f}/{gates['C']['boundary_delta_pp']:+.4f} pp, so the fixed interactions mostly preserve rather than create W1's structural gain.",
+        "- Variant B has the largest measured interaction RMS but still fails semantic recovery; within these frozen mechanisms, the failure is not explained by an interaction that is merely too small.",
+        "- Answer to the core question: these three fixed minimal cross-band interactions do not solve the semantic degradation caused by frequency decoupling.",
+        "",
+        "## 9. Decision",
         "",
         conclusion,
         "",
