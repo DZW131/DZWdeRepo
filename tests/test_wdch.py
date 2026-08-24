@@ -10,6 +10,7 @@ from tools.wdch_common import (
     PairedZoneAccumulator,
     foreground_boundary_distance,
 )
+from tools.wdch_evaluation import forward_cam_compatible
 
 
 @pytest.mark.parametrize("shape", [(2, 3, 28, 28), (1, 5, 56, 56)])
@@ -105,3 +106,18 @@ def test_hma_boundary_definition_is_reused_exactly():
     result = accumulator.result()
     assert result["boundary_le_7"]["delta_pp"] == 0.0
     assert result["interior_ge_8"]["delta_pp"] == 0.0
+
+
+def test_training_net_uses_released_forward_cam_equation():
+    torch.manual_seed(19)
+    reference = resnet38_cls.Net_CAM(4)
+    training_net = resnet38_cls.Net(4)
+    training_net.load_state_dict(reference.state_dict(), strict=True)
+    reference.eval()
+    training_net.eval()
+    image = torch.randn(1, 3, 32, 32)
+    with torch.no_grad():
+        expected = reference.forward_cam(image)
+        actual = forward_cam_compatible(training_net, image)
+    for expected_tensor, actual_tensor in zip(expected, actual):
+        torch.testing.assert_close(actual_tensor, expected_tensor, rtol=0, atol=0)

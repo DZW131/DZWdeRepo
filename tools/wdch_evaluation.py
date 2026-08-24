@@ -26,6 +26,40 @@ from tools.wdch_common import (
 STAGES = ("56", "28_1", "28_2", "deep")
 
 
+def forward_cam_compatible(model, x):
+    """Run the released CAM path for either the training Net or Net_CAM.
+
+    The public repository exposes ``forward_cam`` only on ``Net_CAM``, while
+    matched continuation necessarily keeps the trainable ``Net`` instance.
+    This is the same released forward_cam equation applied to that instance;
+    no state is copied and no evaluation-only model is introduced.
+    """
+    if hasattr(model, "forward_cam"):
+        return model.forward_cam(x)
+
+    x = model.conv1a(x)
+    x = model.b2(x); x = model.b2_1(x); x = model.b2_2(x)
+    x = model.b3(x); x = model.b3_1(x); x = model.b3_2(x)
+    feat_56 = x
+    x = model.b4(x); x = model.b4_1(x); x = model.b4_2(x)
+    x = model.b4_3(x); x = model.b4_4(x); x = model.b4_5(x)
+    feat_28_1 = F.relu(model.bn45(x))
+    x, _ = model.b5(x, get_x_bn_relu=True)
+    x = model.b5_1(x); x = model.b5_2(x)
+    feat_28_2 = F.relu(model.bn52(x))
+    x, _ = model.b6(x, get_x_bn_relu=True)
+    x = model.b7(x)
+    feat_deep = F.relu(model.bn7(x))
+
+    cam_56 = F.relu(model.ic_56(model.hfrm_56(feat_56, feat_deep)))
+    cam_28_1 = F.relu(model.ic1(model.hfrm_28_1(feat_28_1, feat_deep)))
+    cam_28_2 = F.relu(model.ic2(model.hfrm_28_2(feat_28_2, feat_deep)))
+    raw_deep = model.fc8(feat_deep)
+    cam_deep = F.relu(raw_deep)
+    probability = torch.sigmoid(F.adaptive_avg_pool2d(raw_deep, 1).flatten(1))
+    return cam_56, cam_28_1, cam_28_2, cam_deep, probability
+
+
 def _resize_unflip(cam, size, output_dims):
     cam = F.interpolate(cam, size, mode="bilinear", align_corners=False)[0]
     return torch.flip(cam, dims=output_dims) if output_dims else cam
@@ -100,8 +134,8 @@ def evaluate_bcss(
                 for view_index, (input_dims, output_dims) in enumerate(TTA_TRANSFORMS):
                     augmented = torch.flip(image, dims=input_dims) if input_dims else image
                     with torch.autocast("cuda", dtype=torch.bfloat16):
-                        cam56, cam28, cam28_2, camdeep, probability = model.forward_cam(
-                            augmented
+                        cam56, cam28, cam28_2, camdeep, probability = (
+                            forward_cam_compatible(model, augmented)
                         )
                         if view_index == 0:
                             feature_row = _feature_diagnostics(
