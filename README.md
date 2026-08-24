@@ -21,6 +21,14 @@ Experiments on the LUAD-HistoSeg and BCSS datasets demonstrate that SSHR outperf
   <img src="assets/main_flow.png" width="700" alt="WaveDiT architecture">
 </p>
 
+### WD-CH mechanism gate
+
+The isolated `research/wdch-utility-gate` branch implements a mechanism-only
+Wavelet-Decoupled Contextual Homogenization audit from official A0. It changes
+only HFRM28_1, locks the LL kernel by a zero-training receptive-field test, and
+uses a matched epoch20→25 continuation before making a preregistered four-way
+decision. See [`docs/wdch_utility_gate_protocol.md`](docs/wdch_utility_gate_protocol.md).
+
 ## Directory Structure
 
 ```text
