@@ -3,8 +3,15 @@ import pytest
 import torch
 
 from network import resnet38_cls
+from network.resnet38_scwdch import Net as SCWDCHNet
 from network.resnet38_wdch import Net as WDCHNet
-from research.wdch import FixedHaarDWT2D, HFRMWDCH, WaveletDecoupledContext
+from research.wdch import (
+    FixedHaarDWT2D,
+    HFRMSCWDCH,
+    HFRMWDCH,
+    StrengthCalibratedWaveletContext,
+    WaveletDecoupledContext,
+)
 from tools.wdch_common import (
     OfficialMetricAccumulator,
     PairedZoneAccumulator,
@@ -121,3 +128,44 @@ def test_training_net_uses_released_forward_cam_equation():
         actual = forward_cam_compatible(training_net, image)
     for expected_tensor, actual_tensor in zip(expected, actual):
         torch.testing.assert_close(actual_tensor, expected_tensor, rtol=0, atol=0)
+
+
+def test_strength_calibration_equation_is_exact():
+    torch.manual_seed(23)
+    scale = 1.75
+    operator = StrengthCalibratedWaveletContext(3, 7, scale)
+    value = torch.randn(2, 3, 28, 28)
+    wd_output, _, _ = operator.unscaled_forward_with_bands(value)
+    actual = operator(value)
+    expected = value + scale * (wd_output - value)
+    torch.testing.assert_close(actual, expected, rtol=0, atol=0)
+
+
+def test_scale_one_recovers_wdch_and_scale_is_fixed_buffer():
+    torch.manual_seed(29)
+    wdch = WaveletDecoupledContext(2, 7)
+    scwdch = StrengthCalibratedWaveletContext(2, 7, 1.0)
+    scwdch.load_state_dict({**wdch.state_dict(), "scale": scwdch.scale}, strict=True)
+    value = torch.randn(1, 2, 28, 28)
+    torch.testing.assert_close(scwdch(value), wdch(value), rtol=0, atol=1.0e-6)
+    assert "scale" in dict(scwdch.named_buffers())
+    assert "scale" not in dict(scwdch.named_parameters())
+    assert scwdch.scale.requires_grad is False
+
+
+def test_scwdch_modifies_only_hfrm28_1_and_optimizer_coverage_is_exact():
+    model = SCWDCHNet(4, wdch_kernel_size=7, scwdch_scale=1.5)
+    assert isinstance(model.hfrm_56, resnet38_cls.HFRM)
+    assert isinstance(model.hfrm_28_1, HFRMSCWDCH)
+    assert isinstance(model.hfrm_28_2, resnet38_cls.HFRM)
+    groups = model.get_parameter_groups()
+    grouped = [parameter for group in groups for parameter in group]
+    trainable = [parameter for parameter in model.parameters() if parameter.requires_grad]
+    assert len(grouped) == len({id(parameter) for parameter in grouped})
+    assert {id(parameter) for parameter in grouped} == {
+        id(parameter) for parameter in trainable
+    }
+    assert model.hfrm_28_1.wdch.scale.requires_grad is False
+    assert all(
+        parameter is not model.hfrm_28_1.wdch.scale for parameter in grouped
+    )

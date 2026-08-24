@@ -73,7 +73,11 @@ def _feature_diagnostics(module, feature):
     input_rms = _rms(feature)
     if hasattr(module, "wdch"):
         context = module.wdch(feature)
-        operator = f"WDCH{module.wdch.kernel_size}"
+        operator = getattr(
+            module.wdch,
+            "operator_name",
+            f"WDCH{module.wdch.kernel_size}",
+        )
         ablated = list(module.wdch.ablated_bands)
     else:
         context = module.context_conv(feature)
@@ -85,11 +89,81 @@ def _feature_diagnostics(module, feature):
         "input_rms": input_rms,
         "context_output_rms": _rms(context),
         "output_input_rms": _rms(context) / max(input_rms, 1.0e-12),
+        "rectification_rms_absolute": _rms(context - feature),
         "rectification_rms": _rms(context - feature) / max(input_rms, 1.0e-12),
         "effective_context_residual_rms": _rms(module.gamma_context * context)
         / max(input_rms, 1.0e-12),
         "gamma_context": float(module.gamma_context.detach().float()),
         "gamma_veto": float(module.gamma_veto.detach().float()),
+    }
+
+
+def _summarize_feature_rows(feature_rows):
+    feature_summary = {}
+    for key in (
+        "input_rms",
+        "context_output_rms",
+        "output_input_rms",
+        "rectification_rms_absolute",
+        "rectification_rms",
+        "effective_context_residual_rms",
+    ):
+        values = np.asarray([row[key] for row in feature_rows], dtype=np.float64)
+        feature_summary[key] = {
+            "mean": float(values.mean()),
+            "std": float(values.std()),
+        }
+    feature_summary.update(
+        {
+            "operator": feature_rows[0]["operator"],
+            "ablated_bands": feature_rows[0]["ablated_bands"],
+            "gamma_context": feature_rows[0]["gamma_context"],
+            "gamma_veto": feature_rows[0]["gamma_veto"],
+        }
+    )
+    return feature_summary
+
+
+def summarize_feature_magnitude(model, val_root: str, num_workers: int = 4):
+    """One-view, observation-only HFRM28_1 magnitude audit on BCSS validation."""
+    verify_validation_root(val_root)
+    model = model.cuda()
+    model.eval()
+    dataset = Stage1_InferDataset(os.path.join(val_root, "img"), img_size=224)
+    if len(dataset) != 3418:
+        raise AssertionError(f"Expected 3418 images, found {len(dataset)}")
+    loader = DataLoader(
+        dataset, batch_size=1, shuffle=False, num_workers=num_workers, pin_memory=True
+    )
+    captured = {}
+
+    def capture_input(_module, inputs):
+        captured["feature"] = inputs[0].detach()
+
+    hook = model.hfrm_28_1.register_forward_pre_hook(capture_input)
+    rows = []
+    started = time.time()
+    try:
+        with torch.no_grad():
+            for index, (_, image) in enumerate(loader, start=1):
+                image = image.cuda(non_blocking=True)
+                with torch.autocast("cuda", dtype=torch.bfloat16):
+                    forward_cam_compatible(model, image)
+                    rows.append(_feature_diagnostics(model.hfrm_28_1, captured["feature"]))
+                if index % 400 == 0:
+                    print(
+                        f"SCWDCH_FEATURE_AUDIT operator={rows[-1]['operator']} "
+                        f"progress={index}/{len(dataset)}",
+                        flush=True,
+                    )
+    finally:
+        hook.remove()
+    return {
+        **_summarize_feature_rows(rows),
+        "images": len(dataset),
+        "runtime_seconds": time.time() - started,
+        "precision": "bf16",
+        "view": "original only",
     }
 
 
@@ -188,27 +262,7 @@ def evaluate_bcss(
             predictions=np.stack(predictions),
             truths=np.stack(truths),
         )
-    feature_summary = {}
-    for key in (
-        "input_rms",
-        "context_output_rms",
-        "output_input_rms",
-        "rectification_rms",
-        "effective_context_residual_rms",
-    ):
-        values = np.asarray([row[key] for row in feature_rows], dtype=np.float64)
-        feature_summary[key] = {
-            "mean": float(values.mean()),
-            "std": float(values.std()),
-        }
-    feature_summary.update(
-        {
-            "operator": feature_rows[0]["operator"],
-            "ablated_bands": feature_rows[0]["ablated_bands"],
-            "gamma_context": feature_rows[0]["gamma_context"],
-            "gamma_veto": feature_rows[0]["gamma_veto"],
-        }
-    )
+    feature_summary = _summarize_feature_rows(feature_rows)
     return {
         "scores": {stage: accumulator.result() for stage, accumulator in metrics.items()},
         "feature_diagnostics": feature_summary,

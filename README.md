@@ -29,6 +29,15 @@ only HFRM28_1, locks the LL kernel by a zero-training receptive-field test, and
 uses a matched epoch20→25 continuation before making a preregistered four-way
 decision. See [`docs/wdch_utility_gate_protocol.md`](docs/wdch_utility_gate_protocol.md).
 
+### SC-WDCH strength calibration
+
+The isolated `research/wdch-v2-strength-calibration` branch implements
+`EXP-WDCH-002`. It derives one fixed, non-learnable scale from the complete BCSS
+training split and the common seed42 epoch20 state, then runs W2 for epochs
+21-25 with the exact matched schedule used by C0/W1. Calibration never reads
+validation or test data, and only epoch25 FINAL is used for the primary
+comparison. See [`docs/scwdch_v2_protocol.md`](docs/scwdch_v2_protocol.md).
+
 ## Directory Structure
 
 ```text

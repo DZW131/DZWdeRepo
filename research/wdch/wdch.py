@@ -64,6 +64,35 @@ class WaveletDecoupledContext(nn.Module):
         return self.haar.reconstruct(x)
 
 
+class StrengthCalibratedWaveletContext(WaveletDecoupledContext):
+    """Fixed-strength SC-WDCH: ``F + scale * (WDCH(F) - F)``.
+
+    ``scale`` is a persistent, non-learnable buffer obtained once from the
+    epoch20 training-set-only calibration audit.  The Haar transform, LL
+    contextual operator and all high-frequency identity paths are unchanged.
+    """
+
+    def __init__(self, channels: int, kernel_size: int, scale: float) -> None:
+        if not torch.isfinite(torch.tensor(float(scale))) or float(scale) <= 0:
+            raise ValueError("SC-WDCH scale must be finite and positive")
+        super().__init__(channels, kernel_size)
+        self.register_buffer(
+            "scale", torch.tensor(float(scale), dtype=torch.float32), persistent=True
+        )
+
+    @property
+    def operator_name(self) -> str:
+        return f"SC-WDCH{self.kernel_size}(s={float(self.scale):.8f})"
+
+    def unscaled_forward_with_bands(self, x: torch.Tensor):
+        return super().forward_with_bands(x)
+
+    def forward_with_bands(self, x: torch.Tensor):
+        wd_output, bands, ll_rectified = self.unscaled_forward_with_bands(x)
+        output = x + self.scale.to(dtype=x.dtype) * (wd_output - x)
+        return output, bands, ll_rectified
+
+
 class HFRMWDCH(nn.Module):
     """Original HFRM equation with WD-CH replacing only its CH operator."""
 
@@ -94,4 +123,20 @@ class HFRMWDCH(nn.Module):
             feat_nong
             + self.gamma_veto * feat_vetoed
             + self.gamma_context * feat_smoothed
+        )
+
+
+class HFRMSCWDCH(HFRMWDCH):
+    """Original HFRM equation with fixed-strength SC-WDCH at its CH path."""
+
+    def __init__(
+        self,
+        in_channels: int,
+        deep_channels: int = 4096,
+        kernel_size: int = 7,
+        scale: float = 1.0,
+    ) -> None:
+        super().__init__(in_channels, deep_channels, kernel_size)
+        self.wdch = StrengthCalibratedWaveletContext(
+            in_channels, kernel_size, scale
         )
