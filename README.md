@@ -1,5 +1,13 @@
 # SSHR: Single-Stage Hierarchical Rectification for Weakly Supervised Histopathology Segmentation (MICCAI 2026)
 
+## Research experiment: FDHR Phase 3
+
+The isolated `research/fdhr-phase3-cross-band` branch implements the frozen
+`EXP-FDHR-003` utility gate on top of the matched WD-CH Epoch 20 protocol.
+Equations, dimensional interpretation, execution command, locked artifacts and
+forbidden changes are documented in
+[`docs/fdhr_phase3_cross_band_protocol.md`](docs/fdhr_phase3_cross_band_protocol.md).
+
 ## Abstract
   <details>
   <summary>Click to expand</summary>

@@ -71,7 +71,13 @@ def _rms(tensor):
 
 def _feature_diagnostics(module, feature):
     input_rms = _rms(feature)
-    if hasattr(module, "wdch"):
+    frequency = {}
+    if hasattr(module, "wdch") and hasattr(module.wdch, "variant"):
+        context, raw = module.wdch.forward_with_diagnostics(feature)
+        operator = f"FDHR-{module.wdch.variant}-k{module.wdch.kernel_size}"
+        ablated = []
+        frequency = {key: float(value) for key, value in raw.items()}
+    elif hasattr(module, "wdch"):
         context = module.wdch(feature)
         operator = f"WDCH{module.wdch.kernel_size}"
         ablated = list(module.wdch.ablated_bands)
@@ -90,6 +96,7 @@ def _feature_diagnostics(module, feature):
         / max(input_rms, 1.0e-12),
         "gamma_context": float(module.gamma_context.detach().float()),
         "gamma_veto": float(module.gamma_veto.detach().float()),
+        **frequency,
     }
 
 
@@ -201,6 +208,13 @@ def evaluate_bcss(
             "mean": float(values.mean()),
             "std": float(values.std()),
         }
+    for key in ("E_LL", "E_HF", "interaction_rms", "interaction_input_rms"):
+        if key in feature_rows[0]:
+            values = np.asarray([row[key] for row in feature_rows], dtype=np.float64)
+            feature_summary[key] = {
+                "mean": float(values.mean()),
+                "std": float(values.std()),
+            }
     feature_summary.update(
         {
             "operator": feature_rows[0]["operator"],
