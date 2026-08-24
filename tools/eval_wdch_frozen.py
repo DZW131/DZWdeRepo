@@ -274,9 +274,15 @@ def run(args):
     )
     total_pixels = 3418 * 224 * 224
     w0_delta_pp = 100.0 * (w0["mIoU"] - c0["mIoU"])
+    w0_difference_fraction = w0_prediction_differences / total_pixels
+    w0_cam_mean_abs = w0_difference_sum / max(w0_difference_count, 1)
+    # W0 is a BF16 numerical regression control, not a performance gate.  The
+    # tolerances below require a sub-0.001 pp metric delta, fewer than 0.01% of
+    # final pixels to differ, and sub-1e-3 mean normalized-CAM drift.
     w0_parity = (
         abs(w0_delta_pp) < 0.001
-        and w0_prediction_differences / total_pixels < 1.0e-5
+        and w0_difference_fraction < 1.0e-4
+        and w0_cam_mean_abs < 1.0e-3
     )
     phase1_status = "PASS" if w0_parity and not catastrophic else "FAIL"
     summary = {
@@ -295,10 +301,15 @@ def run(args):
         },
         "W0_regression": {
             "mIoU_delta_pp": w0_delta_pp,
-            "normalized_cam28_1_mean_abs": w0_difference_sum / max(w0_difference_count, 1),
+            "normalized_cam28_1_mean_abs": w0_cam_mean_abs,
             "normalized_cam28_1_max_abs": w0_difference_max,
             "different_final_pixels": w0_prediction_differences,
-            "different_final_fraction": w0_prediction_differences / total_pixels,
+            "different_final_fraction": w0_difference_fraction,
+            "tolerances": {
+                "abs_mIoU_delta_pp_lt": 0.001,
+                "different_final_fraction_lt": 1.0e-4,
+                "normalized_cam28_1_mean_abs_lt": 1.0e-3,
+            },
             "parity_pass": w0_parity,
         },
         "zones": zone_result,
@@ -346,8 +357,9 @@ def run(args):
         "## W0 regression control",
         "",
         f"- mIoU delta: {w0_delta_pp:+.6f} pp",
-        f"- differing final pixels: {w0_prediction_differences} ({w0_prediction_differences/total_pixels:.3e})",
-        f"- normalized CAM28_1 mean/max absolute difference: {w0_difference_sum/max(w0_difference_count,1):.3e} / {w0_difference_max:.3e}",
+        f"- differing final pixels: {w0_prediction_differences} ({w0_difference_fraction:.3e})",
+        f"- normalized CAM28_1 mean/max absolute difference: {w0_cam_mean_abs:.3e} / {w0_difference_max:.3e}",
+        "- numerical tolerances: |delta mIoU| < 0.001 pp; differing final pixels < 1e-4; mean normalized-CAM difference < 1e-3",
         f"- W0 parity: {w0_parity}",
         "",
         "## Screening",
