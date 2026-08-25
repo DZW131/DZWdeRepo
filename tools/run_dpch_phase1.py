@@ -820,9 +820,17 @@ def run(args):
         failed = [name for name, row in gates.items() if not row["pass"]]
         interpretation = "The frozen CH-anchor hypothesis fails: " + ", ".join(failed) + "."
         scientific = (
-            "Under the preregistered definitions, the existing checkpoints do not justify "
-            "starting Dual-path CH training. The result should be treated as a mechanism no-go, "
-            "not repaired by post-hoc threshold or representation changes."
+            f"CH strongly raises interior within-class concentration "
+            f"(delta={bootstrap['mean']:.6f}), and F_b is directionally compatible "
+            f"with F_s (cosine={boundary_compatibility['boundary_fb_fs']:.6f}). "
+            f"However, CH also raises inter-class centroid cosine by "
+            f"{semantic_summary['interclass_delta']:.6f}, while the same F_b-to-F_s "
+            f"similarity is non-discriminative for corrections versus harms "
+            f"(AUROC={guidance_c0['pixel_level']['auroc']:.6f}, "
+            f"Cohen d={guidance_c0['pixel_level']['cohen_d']:.6f}). Thus semantic "
+            "concentration and directional alignment do not establish a useful teacher "
+            "signal. The existing checkpoints do not justify Dual-path CH training, and "
+            "this no-go must not be repaired by post-hoc threshold or representation changes."
         )
     else:
         interpretation = "Smoke execution only; no scientific decision is permitted."
