@@ -134,8 +134,12 @@ def load_models(c0_checkpoint: Path, cbcch_checkpoint: Path, device: str):
     if incompat.missing_keys or incompat.unexpected_keys:
         raise AssertionError(str(incompat))
     cbcch.hfrm_28_1.set_semantic_probe(cbcch.ic1)
-    c0 = c0.to(device).eval()
-    cbcch = cbcch.to(device).eval()
+    # SSHR overrides ``train`` without returning ``self``; consequently its
+    # inherited ``eval`` also returns None and must not be call-chained.
+    c0 = c0.to(device)
+    cbcch = cbcch.to(device)
+    c0.eval()
+    cbcch.eval()
     return c0, cbcch
 
 
