@@ -259,6 +259,22 @@ def run(args):
         next_step = "Do not add contrastive learning on this router; reformulate learned boundary semantics first."
 
     feature = evaluations["BC-CH"]["feature_diagnostics"]
+    w1_cam28_delta = next(
+        row["delta_mIoU_pp"]
+        for row in cam_rows
+        if row["variant"] == "W1" and row["stage"] == "28_1"
+    )
+    bcch_cam28_delta = next(
+        row["delta_mIoU_pp"]
+        for row in cam_rows
+        if row["variant"] == "BC-CH" and row["stage"] == "28_1"
+    )
+    semantic_recovery_pp = bcch_cam28_delta - w1_cam28_delta
+    semantic_recovery_fraction = semantic_recovery_pp / abs(w1_cam28_delta)
+    boundary_miou_delta = 100.0 * (
+        zone_iou["BC-CH"]["boundary_le_7"]["mIoU"]
+        - zone_iou["C0"]["boundary_le_7"]["mIoU"]
+    )
     summary = {
         "experiment_id": "EXP-BCCH-001",
         "decision": decision,
@@ -376,7 +392,15 @@ def run(args):
     lines += [
         "- Prediction order and GT masks are byte-equal across C0/W1/BC-CH.",
         "",
-        "## 8. Interpretation and decision",
+        "## 8. Mechanism interpretation",
+        "",
+        f"- The router is active: boundary-weighted CH residual retention is {feature['boundary_residual_retention']['mean']:.4f}, versus {feature['interior_residual_retention']['mean']:.4f} in interiors. It therefore suppresses contextual mixing more strongly where HF energy is high.",
+        f"- BC-CH recovers {semantic_recovery_pp:.4f} pp ({100*semantic_recovery_fraction:.2f}%) of W1's CAM28_1 loss, but CAM28_1 remains {bcch_cam28_delta:+.4f} pp below C0.",
+        f"- Boundary accuracy improves {bcch_main['boundary_accuracy_delta_pp']:+.4f} pp and zone-restricted Boundary mIoU improves {boundary_miou_delta:+.4f} pp, so the structural signal is consistent across both spatial definitions.",
+        f"- Object-size deltas versus C0 are Small {objects['BC-CH']['small']['delta_pp']:+.4f} pp, Medium {objects['BC-CH']['medium']['delta_pp']:+.4f} pp and Large {objects['BC-CH']['large']['delta_pp']:+.4f} pp. The gain remains concentrated in small structures.",
+        f"- Final mIoU is {bcch_main['delta_mIoU_pp']:+.4f} pp versus C0. Thus the fixed router validates selective boundary suppression, but does not supply enough semantic discrimination for positive overall utility.",
+        "",
+        "## 9. Decision",
         "",
         interpretation,
         "",
