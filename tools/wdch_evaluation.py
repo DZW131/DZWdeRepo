@@ -78,7 +78,15 @@ def _weighted_spatial_rms(tensor, weight):
 def _feature_diagnostics(module, feature):
     input_rms = _rms(feature)
     extra = {}
-    if hasattr(module, "context_with_maps"):
+    if hasattr(module, "context_with_diagnostics"):
+        context, values = module.context_with_diagnostics(feature)
+        operator = f"CBCCH-{module.variant}"
+        ablated = []
+        extra = {
+            key: float(value.detach().float())
+            for key, value in values.items()
+        }
+    elif hasattr(module, "context_with_maps"):
         context, raw_context, boundary, alpha = module.context_with_maps(feature)
         raw_residual = raw_context - feature
         selected_residual = context - feature
@@ -259,6 +267,13 @@ def evaluate_bcss(
         "alpha_std",
         "alpha_min",
         "alpha_max",
+        "affinity_entropy",
+        "affinity_max",
+        "affinity_self",
+        "affinity_effective_neighbors",
+        "propagation_residual_rms",
+        "boundary_propagation_rms",
+        "interior_propagation_rms",
     ):
         if key in feature_rows[0]:
             values = np.asarray([row[key] for row in feature_rows], dtype=np.float64)

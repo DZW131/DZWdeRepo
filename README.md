@@ -1,6 +1,15 @@
 # SSHR: Single-Stage Hierarchical Rectification for Weakly Supervised Histopathology Segmentation (MICCAI 2026)
 
-## Research experiment: BCCH Phase 1
+## Research experiment: CBCCH Phase 2
+
+The active isolated branch implements `EXP-CBCCH-002`, a matched five-epoch
+utility gate for contrastive local semantic-affinity propagation. See
+[`docs/cbcch_phase2_frozen_protocol.md`](docs/cbcch_phase2_frozen_protocol.md)
+for the frozen A2/A3 equations, loss and preregistered validation gates.
+
+Phase-1 BC-CH remains available below as the locked A1 mechanism reference.
+
+## Archived research experiment: BCCH Phase 1
 
 The isolated `research/bcch-phase1-boundary-aware` branch implements the frozen
 `EXP-BCCH-001` boundary-aware contextual homogenization mechanism gate. Its
