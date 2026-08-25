@@ -1,6 +1,16 @@
 # SSHR: Single-Stage Hierarchical Rectification for Weakly Supervised Histopathology Segmentation (MICCAI 2026)
 
-## Research experiment: CBCCH Phase 2
+## Research experiment: BCP-CH Phase 3
+
+The active stacked branch implements `EXP-BCPCH-003`, a matched five-epoch
+utility gate for wavelet low-frequency semantic prototype recovery. See
+[`docs/bcpch_phase3_frozen_protocol.md`](docs/bcpch_phase3_frozen_protocol.md)
+for the frozen LL reconstruction, prototype equation, training command and
+preregistered validation gates.
+
+Phase-2 CBCCH remains below as the locked contrastive-affinity reference.
+
+## Archived research experiment: CBCCH Phase 2
 
 The active isolated branch implements `EXP-CBCCH-002`, a matched five-epoch
 utility gate for contrastive local semantic-affinity propagation. See

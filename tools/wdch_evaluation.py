@@ -15,6 +15,7 @@ from torch.utils.data import DataLoader
 from tool.GenDataset import Stage1_InferDataset
 from tools.wdch_common import (
     CAM_WEIGHTS,
+    foreground_boundary_distance,
     OfficialMetricAccumulator,
     TTA_TRANSFORMS,
     minmax_normalize,
@@ -75,10 +76,40 @@ def _weighted_spatial_rms(tensor, weight):
     return float((energy * weight).sum().div(weight.sum().clamp_min(1.0e-12)).sqrt())
 
 
-def _feature_diagnostics(module, feature):
+def _feature_diagnostics(module, feature, deep_feature=None, truth=None):
     input_rms = _rms(feature)
     extra = {}
-    if hasattr(module, "context_with_diagnostics"):
+    if hasattr(module, "prototype_with_diagnostics"):
+        if deep_feature is None:
+            raise AssertionError("BCP-CH diagnostics require the shared deep feature")
+        context, values, auxiliary = module.prototype_with_diagnostics(
+            feature, deep_feature
+        )
+        operator = "BCPCH15-LL-IDWT"
+        ablated = []
+        extra = {
+            key: float(value.detach().float())
+            for key, value in values.items()
+        }
+        if truth is not None:
+            similarity = F.interpolate(
+                auxiliary["class_similarity"].float(),
+                size=truth.shape,
+                mode="bilinear",
+                align_corners=False,
+            )[0].detach().cpu().numpy()
+            valid = auxiliary["valid_prototypes"][0].detach().cpu().numpy()
+            boundary = foreground_boundary_distance(truth)["boundary_le_7"]
+            similarity_sum = 0.0
+            similarity_count = 0
+            for class_index in range(4):
+                selected = boundary & (truth == class_index) & bool(valid[class_index])
+                if selected.any():
+                    similarity_sum += float(similarity[class_index][selected].sum())
+                    similarity_count += int(selected.sum())
+            extra["gt_boundary_prototype_similarity_sum"] = similarity_sum
+            extra["gt_boundary_prototype_similarity_count"] = similarity_count
+    elif hasattr(module, "context_with_diagnostics"):
         context, values = module.context_with_diagnostics(feature)
         operator = f"CBCCH-{module.variant}"
         ablated = []
@@ -164,6 +195,7 @@ def evaluate_bcss(
 
     def capture_input(_module, inputs):
         captured["feature"] = inputs[0].detach()
+        captured["deep_feature"] = inputs[1].detach()
 
     hook = model.hfrm_28_1.register_forward_pre_hook(capture_input)
     torch.cuda.synchronize()
@@ -188,7 +220,10 @@ def evaluate_bcss(
                         )
                         if view_index == 0:
                             feature_row = _feature_diagnostics(
-                                model.hfrm_28_1, captured["feature"]
+                                model.hfrm_28_1,
+                                captured["feature"],
+                                captured["deep_feature"],
+                                truth,
                             )
                     for stage, value in (
                         ("56", cam56),
@@ -274,6 +309,20 @@ def evaluate_bcss(
         "propagation_residual_rms",
         "boundary_propagation_rms",
         "interior_propagation_rms",
+        "cam_confidence_fraction",
+        "predicted_presence_per_image",
+        "valid_prototypes_per_image",
+        "fallback_fraction",
+        "prototype_similarity_max",
+        "prototype_similarity_boundary",
+        "affinity_output_rms",
+        "prototype_output_rms",
+        "affinity_residual_rms",
+        "prototype_residual_rms",
+        "context_residual_rms",
+        "boundary_context_residual_rms",
+        "interior_context_residual_rms",
+        "ll_reconstruction_rms",
     ):
         if key in feature_rows[0]:
             values = np.asarray([row[key] for row in feature_rows], dtype=np.float64)
@@ -281,6 +330,17 @@ def evaluate_bcss(
                 "mean": float(values.mean()),
                 "std": float(values.std()),
             }
+    if "gt_boundary_prototype_similarity_count" in feature_rows[0]:
+        similarity_sum = sum(
+            row["gt_boundary_prototype_similarity_sum"] for row in feature_rows
+        )
+        similarity_count = sum(
+            row["gt_boundary_prototype_similarity_count"] for row in feature_rows
+        )
+        feature_summary["gt_boundary_prototype_similarity"] = {
+            "mean": float(similarity_sum / max(similarity_count, 1)),
+            "pixels": int(similarity_count),
+        }
     feature_summary.update(
         {
             "operator": feature_rows[0]["operator"],
