@@ -4,6 +4,7 @@ import torch
 from tools.run_dpch_phase1 import (
     binary_auroc,
     cohen_d,
+    finite_mean,
     paired_bootstrap_ci,
     semantic_concentration,
 )
@@ -28,6 +29,10 @@ def test_paired_bootstrap_is_reproducible_and_positive():
     second = paired_bootstrap_ci(values, resamples=500, seed=42)
     assert first == second
     assert first["ci95_low"] > 0.0
+
+
+def test_finite_mean_accepts_generator_and_ignores_nan():
+    assert finite_mean(value for value in (1.0, float("nan"), 3.0)) == 2.0
 
 
 def test_semantic_concentration_reports_expected_regions():

@@ -266,13 +266,13 @@ def semantic_concentration(
 
 
 def finite_mean(values) -> float:
-    array = np.asarray(values, dtype=np.float64)
+    array = np.asarray(list(values), dtype=np.float64)
     array = array[np.isfinite(array)]
     return float(array.mean()) if array.size else float("nan")
 
 
 def finite_std(values) -> float:
-    array = np.asarray(values, dtype=np.float64)
+    array = np.asarray(list(values), dtype=np.float64)
     array = array[np.isfinite(array)]
     return float(array.std(ddof=1)) if array.size > 1 else float("nan")
 
