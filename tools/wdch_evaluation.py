@@ -69,9 +69,49 @@ def _rms(tensor):
     return float(tensor.detach().float().square().mean().sqrt())
 
 
+def _weighted_spatial_rms(tensor, weight):
+    energy = tensor.detach().float().square().mean(dim=1, keepdim=True)
+    weight = weight.detach().float()
+    return float((energy * weight).sum().div(weight.sum().clamp_min(1.0e-12)).sqrt())
+
+
 def _feature_diagnostics(module, feature):
     input_rms = _rms(feature)
-    if hasattr(module, "wdch"):
+    extra = {}
+    if hasattr(module, "context_with_maps"):
+        context, raw_context, boundary, alpha = module.context_with_maps(feature)
+        raw_residual = raw_context - feature
+        selected_residual = context - feature
+        boundary_raw = _weighted_spatial_rms(raw_residual, boundary)
+        interior_raw = _weighted_spatial_rms(raw_residual, 1.0 - boundary)
+        boundary_selected = _weighted_spatial_rms(selected_residual, boundary)
+        interior_selected = _weighted_spatial_rms(selected_residual, 1.0 - boundary)
+        operator = "BCCH15"
+        ablated = []
+        extra = {
+            "raw_ch_residual_rms": _rms(raw_residual) / max(input_rms, 1.0e-12),
+            "selected_ch_residual_rms": _rms(selected_residual)
+            / max(input_rms, 1.0e-12),
+            "boundary_raw_residual_rms": boundary_raw / max(input_rms, 1.0e-12),
+            "boundary_selected_residual_rms": boundary_selected
+            / max(input_rms, 1.0e-12),
+            "interior_raw_residual_rms": interior_raw / max(input_rms, 1.0e-12),
+            "interior_selected_residual_rms": interior_selected
+            / max(input_rms, 1.0e-12),
+            "boundary_residual_retention": boundary_selected
+            / max(boundary_raw, 1.0e-12),
+            "interior_residual_retention": interior_selected
+            / max(interior_raw, 1.0e-12),
+            "boundary_map_mean": float(boundary.detach().float().mean()),
+            "boundary_map_std": float(boundary.detach().float().std(unbiased=False)),
+            "boundary_map_min": float(boundary.detach().float().min()),
+            "boundary_map_max": float(boundary.detach().float().max()),
+            "alpha_mean": float(alpha.detach().float().mean()),
+            "alpha_std": float(alpha.detach().float().std(unbiased=False)),
+            "alpha_min": float(alpha.detach().float().min()),
+            "alpha_max": float(alpha.detach().float().max()),
+        }
+    elif hasattr(module, "wdch"):
         context = module.wdch(feature)
         operator = f"WDCH{module.wdch.kernel_size}"
         ablated = list(module.wdch.ablated_bands)
@@ -90,6 +130,7 @@ def _feature_diagnostics(module, feature):
         / max(input_rms, 1.0e-12),
         "gamma_context": float(module.gamma_context.detach().float()),
         "gamma_veto": float(module.gamma_veto.detach().float()),
+        **extra,
     }
 
 
@@ -201,6 +242,30 @@ def evaluate_bcss(
             "mean": float(values.mean()),
             "std": float(values.std()),
         }
+    for key in (
+        "raw_ch_residual_rms",
+        "selected_ch_residual_rms",
+        "boundary_raw_residual_rms",
+        "boundary_selected_residual_rms",
+        "interior_raw_residual_rms",
+        "interior_selected_residual_rms",
+        "boundary_residual_retention",
+        "interior_residual_retention",
+        "boundary_map_mean",
+        "boundary_map_std",
+        "boundary_map_min",
+        "boundary_map_max",
+        "alpha_mean",
+        "alpha_std",
+        "alpha_min",
+        "alpha_max",
+    ):
+        if key in feature_rows[0]:
+            values = np.asarray([row[key] for row in feature_rows], dtype=np.float64)
+            feature_summary[key] = {
+                "mean": float(values.mean()),
+                "std": float(values.std()),
+            }
     feature_summary.update(
         {
             "operator": feature_rows[0]["operator"],

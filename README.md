@@ -1,5 +1,13 @@
 # SSHR: Single-Stage Hierarchical Rectification for Weakly Supervised Histopathology Segmentation (MICCAI 2026)
 
+## Research experiment: BCCH Phase 1
+
+The isolated `research/bcch-phase1-boundary-aware` branch implements the frozen
+`EXP-BCCH-001` boundary-aware contextual homogenization mechanism gate. Its
+equations, alignment decisions, execution command, locked artifacts and
+forbidden changes are documented in
+[`docs/bcch_phase1_protocol.md`](docs/bcch_phase1_protocol.md).
+
 ## Abstract
   <details>
   <summary>Click to expand</summary>
