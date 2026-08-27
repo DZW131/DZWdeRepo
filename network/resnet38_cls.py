@@ -2,11 +2,16 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import network.resnet38d
+from network.wavelet_gate import SharedLearnableWaveletBank, SubbandStructuralGate
 
 
 class HFRM(nn.Module):
-    def __init__(self, in_channels, deep_channels=4096, context_kernel=15):
+    def __init__(self, in_channels, deep_channels=4096, context_kernel=15,
+                 wavelet_mode="none"):
         super(HFRM, self).__init__()
+        if wavelet_mode not in ("none", "fixed", "learnable", "joint"):
+            raise ValueError(f"Unsupported wavelet HFRM mode: {wavelet_mode}")
+        self.wavelet_mode = wavelet_mode
         
 
         self.veto_mlp = nn.Sequential(
@@ -33,7 +38,16 @@ class HFRM(nn.Module):
         self.gamma_veto = nn.Parameter(torch.zeros(1))
         self.gamma_context = nn.Parameter(torch.zeros(1))
 
-    def forward(self, feat_nong, feat_deep):
+        self.wavelet_gate = (
+            SubbandStructuralGate(in_channels) if wavelet_mode != "none" else None
+        )
+        if wavelet_mode == "joint":
+            self.lambda_sf = nn.Parameter(torch.zeros(1))
+        else:
+            self.register_parameter("lambda_sf", None)
+
+    def forward(self, feat_nong, feat_deep, wavelet_bank=None,
+                return_diagnostics=False):
         B, C, H, W = feat_nong.size()
         
 
@@ -48,24 +62,88 @@ class HFRM(nn.Module):
         feat_smoothed = self.context_conv(feat_nong)
         
         # 3. (Residual sum)
-        feat_rectified = feat_nong + \
-                         self.gamma_veto * feat_vetoed + \
-                         self.gamma_context * feat_smoothed
-                         
+        diagnostics = None
+        if self.wavelet_gate is None:
+            feat_rectified = feat_nong + \
+                             self.gamma_veto * feat_vetoed + \
+                             self.gamma_context * feat_smoothed
+        else:
+            if wavelet_bank is None:
+                raise ValueError("Wavelet-enabled HFRM requires a shared wavelet bank")
+            if return_diagnostics:
+                wavelet_logits, wavelet_details = self.wavelet_gate(
+                    feat_nong, wavelet_bank, return_details=True
+                )
+            else:
+                wavelet_logits = self.wavelet_gate(feat_nong, wavelet_bank)
+                wavelet_details = None
+
+            semantic_logits = None
+            joint_logits = wavelet_logits
+            if self.wavelet_mode == "joint":
+                semantic_logits = torch.logit(veto_weights.clamp(1.0e-4, 1.0 - 1.0e-4))
+                joint_logits = wavelet_logits + self.lambda_sf * semantic_logits
+            wavelet_gate = 2.0 * torch.sigmoid(joint_logits)
+            gated_context = wavelet_gate * feat_smoothed
+            feat_rectified = feat_nong + \
+                             self.gamma_veto * feat_vetoed + \
+                             self.gamma_context * gated_context
+            if return_diagnostics:
+                diagnostics = {
+                    "wavelet_logits": wavelet_logits,
+                    "semantic_logits": semantic_logits,
+                    "joint_logits": joint_logits,
+                    "wavelet_gate": wavelet_gate,
+                    "raw_context": feat_smoothed,
+                    "gated_context": gated_context,
+                    "veto_weights": veto_weights,
+                    "wavelet_details": wavelet_details,
+                }
+
+        if return_diagnostics:
+            return feat_rectified, diagnostics
         return feat_rectified
 
 # =========================================================================
 # 2.  (Main Training Network)
 # =========================================================================
 class Net(network.resnet38d.Net):
-    def __init__(self, n_class):
+    def __init__(self, n_class, wavelet_hfrm_mode="none",
+                 wavelet_hfrm_stages="28_1"):
         super().__init__()
+
+        if isinstance(wavelet_hfrm_stages, str):
+            wavelet_stages = tuple(
+                item.strip() for item in wavelet_hfrm_stages.split(",") if item.strip()
+            )
+        else:
+            wavelet_stages = tuple(wavelet_hfrm_stages)
+        if wavelet_hfrm_mode == "none":
+            wavelet_stages = ()
+        elif wavelet_stages != ("28_1",):
+            raise ValueError("Phase-1 LW-SHR is frozen to HFRM28_1 only")
+        if wavelet_hfrm_mode not in ("none", "fixed", "learnable", "joint"):
+            raise ValueError(f"Unsupported wavelet HFRM mode: {wavelet_hfrm_mode}")
+        self.wavelet_hfrm_mode = wavelet_hfrm_mode
+        self.wavelet_hfrm_stages = wavelet_stages
+        self.wavelet_bank = (
+            SharedLearnableWaveletBank(
+                trainable=wavelet_hfrm_mode in ("learnable", "joint")
+            )
+            if wavelet_hfrm_mode != "none"
+            else None
+        )
 
         self.dropout7 = torch.nn.Dropout2d(0.5)     
 
 
         self.hfrm_56 = HFRM(in_channels=256, deep_channels=4096, context_kernel=15)
-        self.hfrm_28_1 = HFRM(in_channels=512, deep_channels=4096, context_kernel=15)
+        self.hfrm_28_1 = HFRM(
+            in_channels=512,
+            deep_channels=4096,
+            context_kernel=15,
+            wavelet_mode=wavelet_hfrm_mode if "28_1" in wavelet_stages else "none",
+        )
         self.hfrm_28_2 = HFRM(in_channels=1024, deep_channels=4096, context_kernel=15)
 
 
@@ -107,7 +185,9 @@ class Net(network.resnet38d.Net):
 
 
         feat_56_rectified = self.hfrm_56(feat_56, feat_deep)
-        feat_28_1_rectified = self.hfrm_28_1(feat_28_1, feat_deep)
+        feat_28_1_rectified = self.hfrm_28_1(
+            feat_28_1, feat_deep, wavelet_bank=self.wavelet_bank
+        )
         feat_28_2_rectified = self.hfrm_28_2(feat_28_2, feat_deep)
 
 
@@ -150,6 +230,13 @@ class Net(network.resnet38d.Net):
             elif isinstance(m, HFRM):
                 groups[2].append(m.gamma_veto)
                 groups[2].append(m.gamma_context)
+                if m.lambda_sf is not None and m.lambda_sf.requires_grad:
+                    groups[2].append(m.lambda_sf)
+
+        if self.wavelet_bank is not None:
+            for parameter in (self.wavelet_bank.dec_lo, self.wavelet_bank.dec_hi):
+                if parameter.requires_grad:
+                    groups[2].append(parameter)
                 
         return groups
 
@@ -163,8 +250,13 @@ class Net(network.resnet38d.Net):
                 nn.init.constant_(m.bias, 0)
 
 class Net_CAM(Net):
-    def __init__(self, n_class):
-        super().__init__(n_class)
+    def __init__(self, n_class, wavelet_hfrm_mode="none",
+                 wavelet_hfrm_stages="28_1"):
+        super().__init__(
+            n_class,
+            wavelet_hfrm_mode=wavelet_hfrm_mode,
+            wavelet_hfrm_stages=wavelet_hfrm_stages,
+        )
 
     def forward(self, x):
         out_56, out_28_1, out_28_2, out_deep, y_deep, _, _, _, _, _ = super().forward(x)
@@ -188,7 +280,9 @@ class Net_CAM(Net):
 
 
         feat_56_rectified = self.hfrm_56(feat_56, feat_deep)
-        feat_28_1_rectified = self.hfrm_28_1(feat_28_1, feat_deep)
+        feat_28_1_rectified = self.hfrm_28_1(
+            feat_28_1, feat_deep, wavelet_bank=self.wavelet_bank
+        )
         feat_28_2_rectified = self.hfrm_28_2(feat_28_2, feat_deep)
 
 

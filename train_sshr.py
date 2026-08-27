@@ -83,6 +83,12 @@ def get_cam_weights(args):
 def get_loss_weights(args):
     return (args.loss_w_56, args.loss_w_28_1, args.loss_w_28_2, args.loss_w_deep)
 
+def get_model_kwargs(args):
+    return {
+        'wavelet_hfrm_mode': args.wavelet_hfrm_mode,
+        'wavelet_hfrm_stages': args.wavelet_hfrm_stages,
+    }
+
 def apply_palette(mask_np, dataset='luad'):
     mask_img = Image.fromarray(mask_np.astype(np.uint8))
     if dataset == 'bcss':
@@ -163,7 +169,9 @@ def train_phase(args):
     global time_test
 
     set_seed(args.seed)
-    model = getattr(importlib.import_module(args.network), 'Net')(n_class=args.n_class).cuda()
+    model = getattr(importlib.import_module(args.network), 'Net')(
+        n_class=args.n_class, **get_model_kwargs(args)
+    ).cuda()
 
     loss_weights = None
     amp_dtype = get_amp_dtype(args)
@@ -298,7 +306,9 @@ def train_phase(args):
 
 
 def test_phase(args, dataroot=None, split_name='test', checkpoint_path=None, state_dict=None):
-    model = getattr(importlib.import_module(args.network), 'Net_CAM')(n_class=args.n_class)
+    model = getattr(importlib.import_module(args.network), 'Net_CAM')(
+        n_class=args.n_class, **get_model_kwargs(args)
+    )
     model = model.cuda()
     if dataroot is None:
         dataroot = args.testroot
@@ -349,6 +359,12 @@ if __name__ == '__main__':
     parser.add_argument("--save_checkpoints", "--save-checkpoints", dest="save_checkpoints", action="store_true", default=True)
     parser.add_argument("--no-save_checkpoints", "--no-save-checkpoints", dest="save_checkpoints", action="store_false")
     parser.add_argument("--save_last_k_checkpoints", "--save-last-k-checkpoints", default=5, type=int)
+    parser.add_argument(
+        "--wavelet-hfrm-mode",
+        default="none",
+        choices=["none", "fixed", "learnable", "joint"],
+    )
+    parser.add_argument("--wavelet-hfrm-stages", default="28_1", type=str)
     args = parser.parse_args()
     if args.evaluate_only:
         set_seed(args.seed)
