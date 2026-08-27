@@ -129,7 +129,9 @@ def shape_audit():
 
 def identity_audit(common, image):
     set_seed(42, deterministic=True)
-    baseline = resnet38_cls.Net(4).cuda().eval()
+    baseline = resnet38_cls.Net(4).cuda()
+    # SSHR's custom train()/eval() mutates in place but returns None.
+    baseline.eval()
     baseline.load_state_dict(common["model_state"], strict=True)
     with torch.no_grad():
         baseline_fp32 = [value.detach().float().cpu() for value in baseline(image[:1])]
