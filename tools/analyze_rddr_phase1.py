@@ -6,6 +6,7 @@ import argparse
 import csv
 import json
 import math
+import re
 import shlex
 import sys
 import time
@@ -315,6 +316,12 @@ def load_optimizer_audits(uc_dir, dd_dir):
     }
 
 
+def training_runtime(directory):
+    text = (Path(directory) / "train.log").read_text(errors="replace")
+    matches = re.findall(r"Total Training Time:\s*([0-9.]+)s", text)
+    return float(matches[-1]) if matches else float("nan")
+
+
 def render_report(summary):
     metric = summary["metrics"]
     zones = summary["zones"]
@@ -345,7 +352,12 @@ def render_report(summary):
         "`F_clean=F-q*DDA(F)` with detached normalized JSD q. HFRM56, "
         "HFRM28_2, heads, loss, optimizer, inference, and metric are unchanged.",
         f"Initial C0/DD FP32 maximum absolute difference: `{summary['engineering']['identity_max_abs_diff']:.8g}`.",
-        f"DDA parameters: `{summary['engineering']['dda_parameters']}`; DDA MACs at 28x28: `{summary['engineering']['dda_macs_28x28']}`.",
+        "",
+        "| Variant | Total parameters | Added parameters | Added MACs@28×28 | Added conv FLOPs@28×28 |",
+        "|---|---:|---:|---:|---:|",
+        f"| C0 | {summary['engineering']['parameters']['C0']} | 0 | 0 | 0 |",
+        f"| UC | {summary['engineering']['parameters']['UC']} | {summary['engineering']['dda_parameters']} | {summary['engineering']['dda_macs_28x28']} | {2*summary['engineering']['dda_macs_28x28']} |",
+        f"| DD | {summary['engineering']['parameters']['DD']} | {summary['engineering']['dda_parameters']} | {summary['engineering']['dda_macs_28x28']} + analytical JSD | {2*summary['engineering']['dda_macs_28x28']} + analytical JSD |",
         "",
         "## 3. Training protocol equivalence",
         "",
@@ -402,10 +414,31 @@ def render_report(summary):
         "",
         "## 7. q dynamics, disposal, and feature preservation",
         "",
-        "The complete epoch1/5/10/15/20/25 q trajectories and Bottom20→Top20 "
-        "disposal/feature-preservation statistics are stored in the machine-readable CSVs.",
+        "| Source | Epoch | Mean | Std | p05 | p25 | p50 | p75 | p95 |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    for row in summary["q_dynamics"]:
+        lines.append(
+            f"| {row['source']} | {row['epoch']} | {row['mean']:.6f} | {row['std']:.6f} | "
+            f"{row['p05']:.6f} | {row['p25']:.6f} | {row['p50']:.6f} | "
+            f"{row['p75']:.6f} | {row['p95']:.6f} |"
+        )
+    lines += [
+        "",
         f"At Epoch25 DD: q={summary['disposal']['DD']['q_mean']:.6f}±{summary['disposal']['DD']['q_std']:.6f}; "
         f"RMS(ΔF)/RMS(F)={summary['disposal']['DD']['RMS_DeltaF_over_RMS_F']:.6f}.",
+        "",
+        "| Variant/bin | q mean | ΔF pixel RMS | cos(Fclean,F) | norm ratio |",
+        "|---|---:|---:|---:|---:|",
+    ]
+    for variant in ("UC", "DD"):
+        for row in summary["disposal_bins"][variant]:
+            lines.append(
+                f"| {variant}/{row['bin']} | {row['q_mean']:.6f} | "
+                f"{row['delta_pixel_rms']:.6f} | {row['feature_cosine']:.6f} | "
+                f"{row['feature_norm_ratio']:.6f} |"
+            )
+    lines += [
         "",
         "## 8. Frozen Phase-0 strata and CH transition re-audit",
         "",
@@ -420,10 +453,33 @@ def render_report(summary):
     lines += [
         "",
         "C0-defined Corrected-by-CH / Still-Wrong / Harmed-by-CH / Stable-Correct "
-        "group results are reported in `rddr_phase1_ch_transition.csv`; groups are never "
-        "redefined using UC or DD.",
+        "groups are never redefined using UC or DD.",
+        "",
+        "| Variant/group | Repair | Harm | Net accuracy change |",
+        "|---|---:|---:|---:|",
+    ]
+    for variant in ("UC", "DD"):
+        for row in summary["ch_transition"][variant]:
+            lines.append(
+                f"| {variant}/{row['group']} | {100*row['repair_rate']:.4f} pp | "
+                f"{100*row['harm_rate']:.4f} pp | {100*row['net_repair']:+.4f} pp |"
+            )
+    lines += [
         "",
         "## 9. UC versus DD and paired bootstrap",
+        "",
+        "| Variant | Correction RMS ratio | Top20 repair | Bottom80 harm | CAM28_1 mIoU | Final mIoU |",
+        "|---|---:|---:|---:|---:|---:|",
+    ]
+    for variant in ("UC", "DD"):
+        lines.append(
+            f"| {variant} | {summary['disposal'][variant]['RMS_DeltaF_over_RMS_F']:.6f} | "
+            f"{100*fixed[variant]['Top20']['repair_rate']:.4f} pp | "
+            f"{100*fixed[variant]['Bottom80']['harm_rate']:.4f} pp | "
+            f"{100*metric[variant]['CAM28_1']['mIoU']:.4f} | "
+            f"{100*metric[variant]['Final']['mIoU']:.4f} |"
+        )
+    lines += [
         "",
         "| Comparison | Observed ΔmIoU | Bootstrap mean | 95% CI |",
         "|---|---:|---:|---:|",
@@ -457,6 +513,8 @@ def render_report(summary):
         "",
         f"- Analysis runtime: {summary['runtime']['seconds']/60:.2f} min; peak CUDA memory "
         f"{summary['runtime']['peak_cuda_memory_bytes']/2**30:.3f} GiB.",
+        f"- UC/DD training runtime: {summary['runtime']['training_seconds']['UC']/60:.2f} / "
+        f"{summary['runtime']['training_seconds']['DD']/60:.2f} min.",
         "- Required optimizer, training-curve, q, disposal, fixed-strata, CH, per-class, "
         "bootstrap, and summary artifacts were generated.",
         "- No BCSS test, LUAD, best-epoch selection, or post-hoc parameter tuning was used.",
@@ -475,6 +533,9 @@ def main():
     parser.add_argument("--phase0-dir", required=True)
     parser.add_argument("--val-root", required=True)
     parser.add_argument("--smoke-json", required=True)
+    parser.add_argument("--pretrained", required=True)
+    parser.add_argument("--train-root", required=True)
+    parser.add_argument("--python-executable", required=True)
     parser.add_argument("--output-dir", required=True)
     parser.add_argument("--num-workers", type=int, default=4)
     parser.add_argument("--bootstrap-resamples", type=int, default=10000)
@@ -593,10 +654,12 @@ def main():
         name: accumulator.result() for name, accumulator in components.items()
     }
     disposal_results = {}
+    disposal_bin_results = {}
     disposal_rows = []
     for name, accumulator in disposal.items():
         overall, rows = accumulator.result()
         disposal_results[name] = overall
+        disposal_bin_results[name] = rows
         disposal_rows.append({"variant": name, "bin": "Overall", **overall})
         disposal_rows.extend(rows)
     fixed_rows = [
@@ -730,7 +793,17 @@ def main():
         "a0_commit": A0_COMMIT,
         "checkpoint_sha256": checkpoint_sha,
         "commands": {
-            "training": "bash tools/run_rddr_phase1_server.sh <OUTPUT_ROOT> <PRETRAINED> <BCSS_TRAIN> <PYTHON>",
+            "training": " ".join(
+                shlex.quote(item)
+                for item in (
+                    "bash",
+                    "tools/run_rddr_phase1_server.sh",
+                    str(Path(args.uc_dir).parent),
+                    args.pretrained,
+                    args.train_root,
+                    args.python_executable,
+                )
+            ),
             "analysis": " ".join(shlex.quote(item) for item in sys.argv),
         },
         "images": len(dataset),
@@ -738,6 +811,7 @@ def main():
         "zones": zone_results,
         "object_size": object_results,
         "disposal": disposal_results,
+        "disposal_bins": disposal_bin_results,
         "fixed_strata": fixed_summary,
         "ch_transition": {name: accumulator.rows(name, "c0_ch_groups") for name, accumulator in ch.items()},
         "q_dynamics": q_rows,
@@ -748,6 +822,12 @@ def main():
             "identity_max_abs_diff": smoke["identity"]["max_abs_diff"],
             "dda_parameters": smoke["variants"]["dd"]["parameters"]["dda"],
             "dda_macs_28x28": smoke["variants"]["dd"]["dda_macs_28x28"],
+            "parameters": {
+                "C0": smoke["variants"]["dd"]["parameters"]["total"]
+                - smoke["variants"]["dd"]["parameters"]["dda"],
+                "UC": smoke["variants"]["uc"]["parameters"]["total"],
+                "DD": smoke["variants"]["dd"]["parameters"]["total"],
+            },
             "optimizer_audits": optimizer_audits,
             "test_used": False,
             "luad_used": False,
@@ -756,6 +836,10 @@ def main():
         "runtime": {
             "seconds": elapsed,
             "peak_cuda_memory_bytes": int(torch.cuda.max_memory_allocated()),
+            "training_seconds": {
+                "UC": training_runtime(args.uc_dir),
+                "DD": training_runtime(args.dd_dir),
+            },
         },
     }
     write_csv(output / "rddr_phase1_training_curves.csv", training_rows)
