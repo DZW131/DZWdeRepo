@@ -421,19 +421,30 @@ def render_report(summary):
         "",
         "## 7. q dynamics, disposal, and feature preservation",
         "",
-        "| Source | Epoch | Mean | Std | p05 | p25 | p50 | p75 | p95 |",
-        "|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+        "| Source | Epoch | Mean | Std | Min | p05 | p25 | p50 | p75 | p95 | Max |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for row in summary["q_dynamics"]:
         lines.append(
-            f"| {row['source']} | {row['epoch']} | {row['mean']:.6f} | {row['std']:.6f} | "
+            f"| {row['source']} | {row['epoch']} | {row['mean']:.6f} | {row['std']:.6f} | {row['min']:.6f} | "
             f"{row['p05']:.6f} | {row['p25']:.6f} | {row['p50']:.6f} | "
-            f"{row['p75']:.6f} | {row['p95']:.6f} |"
+            f"{row['p75']:.6f} | {row['p95']:.6f} | {row['max']:.6f} |"
         )
     lines += [
         "",
         f"At Epoch25 DD: q={summary['disposal']['DD']['q_mean']:.6f}±{summary['disposal']['DD']['q_std']:.6f}; "
         f"RMS(ΔF)/RMS(F)={summary['disposal']['DD']['RMS_DeltaF_over_RMS_F']:.6f}.",
+        "",
+        "| Variant | RMS(F) | RMS(D(F)) | RMS(ΔF) | RMS(ΔF)/RMS(F) |",
+        "|---|---:|---:|---:|---:|",
+    ]
+    for variant in ("UC", "DD"):
+        row = summary["disposal"][variant]
+        lines.append(
+            f"| {variant} | {row['RMS_F']:.6f} | {row['RMS_D']:.6f} | "
+            f"{row['RMS_DeltaF']:.6f} | {row['RMS_DeltaF_over_RMS_F']:.6f} |"
+        )
+    lines += [
         "",
         "| Variant/bin | q mean | ΔF pixel RMS | cos(Fclean,F) | norm ratio |",
         "|---|---:|---:|---:|---:|",
