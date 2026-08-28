@@ -129,6 +129,31 @@ python train_sshr.py \
   --amp-dtype bf16
 ```
 
+## RDDR Phase-0 Feasibility Audit
+
+The diagnostic-only BCSS validation audit is implemented in
+`tools/run_rddr_phase0_dross_audit.py`. It uses the frozen A0 model in
+evaluation mode, performs no training, and does not access BCSS test or LUAD.
+
+```bash
+python tools/run_rddr_phase0_dross_audit.py \
+  --checkpoint /path/to/bcss_seed42/stage1_last.pth \
+  --val-root /path/to/BCSS-WSSS/val \
+  --output-dir /path/to/rddr_phase0 \
+  --num-workers 4 \
+  --bootstrap-resamples 10000
+```
+
+Using the frozen BCSS seed-42 final checkpoint, the primary hierarchical-JSD
+signal achieved image-balanced AUROC `0.7650` (95% CI `0.7605–0.7695`),
+Top-20% error enrichment `2.3517` (95% CI `2.3019–2.4046`), and deep net
+correction `+25.06 pp` (95% CI `+23.09–+27.00 pp`). All four preregistered
+gates passed, giving `RDDR_PHASE0_GO`.
+
+The complete report is in
+[`docs/rddr_phase0_spatial_semantic_dross_feasibility_report.md`](docs/rddr_phase0_spatial_semantic_dross_feasibility_report.md),
+with machine-readable outputs under [`audit/results/rddr_phase0/`](audit/results/rddr_phase0/).
+
 ## Acknowledgement
 
 We thank the authors of [ESFAN](https://github.com/OceanPetal/ESFAN), whose codebase provided a valuable foundation for this repository.
