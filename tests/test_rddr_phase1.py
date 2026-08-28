@@ -98,6 +98,25 @@ def test_q_range_0_1():
     assert float(q.max()) <= 1.0
 
 
+def test_js_matches_frozen_phase0_formula():
+    shallow = torch.randn(2, 4, 7, 7)
+    deep = torch.randn(2, 4, 7, 7)
+    p_shallow = torch.softmax(shallow.float(), dim=1)
+    p_deep = torch.softmax(deep.float(), dim=1)
+    midpoint = 0.5 * (p_shallow + p_deep)
+    expected_js = 0.5 * (
+        p_shallow
+        * ((p_shallow + 1.0e-8).log() - (midpoint + 1.0e-8).log())
+    ).sum(1, keepdim=True)
+    expected_js += 0.5 * (
+        p_deep * ((p_deep + 1.0e-8).log() - (midpoint + 1.0e-8).log())
+    ).sum(1, keepdim=True)
+    expected = (expected_js / torch.log(torch.tensor(2.0))).clamp(0.0, 1.0)
+    torch.testing.assert_close(
+        compute_rddr_dross_score(shallow, deep), expected, rtol=0.0, atol=1.0e-7
+    )
+
+
 def test_optimizer_membership_once():
     model = Net(4, rddr_phase1_mode="dd")
     groups = model.get_parameter_groups()

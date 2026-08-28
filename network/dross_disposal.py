@@ -43,14 +43,13 @@ def compute_rddr_dross_score(
     shallow_probability = F.softmax(shallow_logits.float() / temperature, dim=1)
     deep_probability = F.softmax(deep_logits.float() / temperature, dim=1)
     mixture = 0.5 * (shallow_probability + deep_probability)
-    shallow_probability = shallow_probability.clamp_min(epsilon)
-    deep_probability = deep_probability.clamp_min(epsilon)
-    mixture = mixture.clamp_min(epsilon)
     js = 0.5 * (
-        shallow_probability * (shallow_probability.log() - mixture.log())
+        shallow_probability
+        * ((shallow_probability + epsilon).log() - (mixture + epsilon).log())
     ).sum(dim=1, keepdim=True)
     js = js + 0.5 * (
-        deep_probability * (deep_probability.log() - mixture.log())
+        deep_probability
+        * ((deep_probability + epsilon).log() - (mixture + epsilon).log())
     ).sum(dim=1, keepdim=True)
     return (js / JS_MAXIMUM).clamp_(0.0, 1.0).detach()
 

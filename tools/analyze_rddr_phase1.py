@@ -86,10 +86,13 @@ def official_tta_predictions(model, image, output_size):
         tta_image = torch.flip(image, dims=input_flip_dims) if input_flip_dims else image
         with torch.autocast("cuda", dtype=torch.bfloat16):
             cam56, cam28_1, cam28_2, camdeep, probability = model.forward_cam(tta_image)
-        for name, cam in zip(cam_lists, (cam56, cam28_1, cam28_2, camdeep)):
-            cam = F.interpolate(
-                cam, output_size, mode="bilinear", align_corners=False
-            )[0]
+            upsampled = tuple(
+                F.interpolate(
+                    cam, output_size, mode="bilinear", align_corners=False
+                )[0]
+                for cam in (cam56, cam28_1, cam28_2, camdeep)
+            )
+        for name, cam in zip(cam_lists, upsampled):
             if cam_flip_dims:
                 cam = torch.flip(cam, dims=cam_flip_dims)
             cam_lists[name].append(cam.float().cpu().numpy())
@@ -117,11 +120,22 @@ def canonical_diagnostics(model, image, output_size):
         raw_logits = model.ic1(values["F28_raw"])
         rect_logits = model.ic1(values["F28_rect"])
         deep_logits = model.fc8(values["Ddeep"])
-    raw_up = F.interpolate(raw_logits.float(), output_size, mode="bilinear", align_corners=False)
-    rect_up = F.interpolate(rect_logits.float(), output_size, mode="bilinear", align_corners=False)
-    deep_up = F.interpolate(deep_logits.float(), output_size, mode="bilinear", align_corners=False)
+        raw_up = F.interpolate(
+            raw_logits, output_size, mode="bilinear", align_corners=False
+        )
+        rect_up = F.interpolate(
+            rect_logits, output_size, mode="bilinear", align_corners=False
+        )
+        deep_up = F.interpolate(
+            deep_logits, output_size, mode="bilinear", align_corners=False
+        )
     phase0_q = compute_rddr_dross_score(raw_up, deep_up)[0, 0].cpu().numpy()
-    return values, phase0_q, raw_up.argmax(1)[0].cpu().numpy(), rect_up.argmax(1)[0].cpu().numpy()
+    return (
+        values,
+        phase0_q,
+        raw_up.argmax(1)[0].cpu().numpy(),
+        F.relu(rect_up).argmax(1)[0].cpu().numpy(),
+    )
 
 
 class StageAccumulator:
