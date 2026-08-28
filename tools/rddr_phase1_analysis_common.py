@@ -112,8 +112,8 @@ class SortedValidationDataset(Dataset):
     def __getitem__(self, index):
         image_path = self.images[index]
         image = Image.open(image_path).convert("RGB")
-        original = np.asarray(image, dtype=np.uint8)
-        truth = np.asarray(Image.open(self.masks[index]), dtype=np.uint8)
+        original = np.asarray(image, dtype=np.uint8).copy()
+        truth = np.asarray(Image.open(self.masks[index]), dtype=np.uint8).copy()
         if image.size != (self.image_size, self.image_size):
             image = TF.resize(
                 image,
