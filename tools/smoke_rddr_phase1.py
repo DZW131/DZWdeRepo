@@ -6,11 +6,16 @@ import argparse
 import hashlib
 import importlib
 import json
+import sys
 import time
 from pathlib import Path
 
 import torch
 import torch.nn.functional as F
+
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+if str(REPOSITORY_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPOSITORY_ROOT))
 
 from network.resnet38_cls import Net
 from tool import torchutils
