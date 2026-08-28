@@ -1,6 +1,8 @@
 import numpy as np
 
-from tools.analyze_rddr_phase1 import TransitionAccumulator
+import torch
+
+from tools.analyze_rddr_phase1 import DisposalAccumulator, TransitionAccumulator
 from tools.rddr_phase1_analysis_common import (
     foreground_boundary_distance,
     official_histogram,
@@ -62,3 +64,22 @@ def test_paired_bootstrap_reproducible():
     assert first == second
     np.testing.assert_array_equal(first_values, second_values)
     assert first["observed_delta_mIoU"] > 0
+
+
+def test_uc_constant_q_has_single_nonempty_bin():
+    feature = torch.randn(1, 4, 3, 3)
+    component = torch.randn_like(feature)
+    accumulator = DisposalAccumulator("UC")
+    accumulator.update(
+        {
+            "F28_raw": feature,
+            "F28_clean": feature - component,
+            "dross_component": component,
+            "delta_feature": component,
+            "q": torch.ones(1, 1, 3, 3),
+        }
+    )
+    _, rows = accumulator.result()
+    assert len(rows) == 1
+    assert rows[0]["bin"] == "AllPixels"
+    assert rows[0]["pixels"] == 9

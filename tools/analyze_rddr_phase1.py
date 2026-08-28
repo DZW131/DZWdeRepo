@@ -221,12 +221,19 @@ class DisposalAccumulator:
         delta = np.concatenate(self.delta_pixel_rms)
         cosine = np.concatenate(self.cosine)
         norm_ratio = np.concatenate(self.norm_ratio)
-        quantiles = np.quantile(q, (0.2, 0.4, 0.6, 0.8))
-        bins = np.digitize(q, quantiles, right=True)
         rows = []
-        names = ("Bottom20", "20-40", "40-60", "60-80", "Top20")
-        for index, name in enumerate(names):
-            mask = bins == index
+        if np.all(q == q[0]):
+            named_masks = (("AllPixels", np.ones(q.shape, dtype=bool)),)
+        else:
+            quantiles = np.quantile(q, (0.2, 0.4, 0.6, 0.8))
+            bins = np.digitize(q, quantiles, right=True)
+            named_masks = tuple(
+                (name, bins == index)
+                for index, name in enumerate(
+                    ("Bottom20", "20-40", "40-60", "60-80", "Top20")
+                )
+            )
+        for name, mask in named_masks:
             rows.append(
                 {
                     "variant": self.variant,
