@@ -376,6 +376,10 @@ def render_report(summary):
         f"- UC checkpoint SHA256: `{summary['checkpoint_sha256']['UC']}`",
         f"- DD checkpoint SHA256: `{summary['checkpoint_sha256']['DD']}`",
         "- Dataset/split: BCSS validation only; no test or LUAD access.",
+        "- Provenance note: UC started from the immediately preceding candidate; the "
+        "only later correction was inside the DD-only JSD helper, so the executed UC "
+        "forward/backward graph is identical to the locked implementation. DD was "
+        "started only after the exact Phase-0 JSD expression was synchronized and re-smoked.",
         "",
         "```bash",
         summary["commands"]["training"],
