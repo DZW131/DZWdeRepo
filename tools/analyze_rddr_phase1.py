@@ -571,6 +571,13 @@ def main():
     loader = DataLoader(
         dataset, batch_size=1, shuffle=False, num_workers=args.num_workers, pin_memory=True
     )
+    q_loader = DataLoader(
+        dataset,
+        batch_size=20,
+        shuffle=False,
+        num_workers=args.num_workers,
+        pin_memory=True,
+    )
     thresholds = component_thresholds(args.val_root)
     models = {
         "C0": load_model("none", checkpoints["C0"]),
@@ -708,7 +715,7 @@ def main():
     ]
     training_rows = load_training_curves(args.uc_dir, args.dd_dir)
     optimizer_audits = load_optimizer_audits(args.uc_dir, args.dd_dir)
-    q_rows = compute_q_dynamics(args.dd_dir, args.c0_checkpoint, loader)
+    q_rows = compute_q_dynamics(args.dd_dir, args.c0_checkpoint, q_loader)
 
     per_class_rows = []
     for variant in ("C0", "UC", "DD"):
