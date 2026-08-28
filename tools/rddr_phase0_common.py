@@ -274,8 +274,13 @@ def bootstrap_indices(n_images, resamples=10000, seed=42):
 def bootstrap_mean(values, indices):
     values = np.asarray(values, dtype=np.float64)
     sampled = values[indices]
-    with np.errstate(invalid="ignore"):
-        estimates = np.nanmean(sampled, axis=1)
+    valid = np.isfinite(sampled)
+    estimates = np.divide(
+        np.where(valid, sampled, 0.0).sum(axis=1),
+        valid.sum(axis=1),
+        out=np.full(sampled.shape[0], np.nan, dtype=np.float64),
+        where=valid.sum(axis=1) > 0,
+    )
     finite = estimates[np.isfinite(estimates)]
     return estimates, {
         "observed": float(np.nanmean(values)) if np.isfinite(values).any() else float("nan"),

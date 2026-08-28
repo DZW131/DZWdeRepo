@@ -92,3 +92,11 @@ def test_bootstrap_reproducibility():
     second, second_summary = bootstrap_mean(values, second_indices)
     assert np.array_equal(first, second)
     assert first_summary == second_summary
+
+
+def test_bootstrap_empty_stratum_returns_nan_without_failure():
+    indices = bootstrap_indices(3, resamples=10, seed=42)
+    values, summary = bootstrap_mean(np.asarray([np.nan, np.nan, np.nan]), indices)
+    assert np.isnan(values).all()
+    assert np.isnan(summary["observed"])
+    assert np.isnan(summary["ci95_low"])

@@ -223,9 +223,9 @@ def enrichment_ci(rows, prefix, population_prefix, indices):
     )
     return values, {
         "observed": float(observed),
-        "bootstrap_mean": float(finite.mean()),
-        "ci95_low": float(np.quantile(finite, 0.025)),
-        "ci95_high": float(np.quantile(finite, 0.975)),
+        "bootstrap_mean": float(finite.mean()) if finite.size else float("nan"),
+        "ci95_low": float(np.quantile(finite, 0.025)) if finite.size else float("nan"),
+        "ci95_high": float(np.quantile(finite, 0.975)) if finite.size else float("nan"),
     }
 
 
@@ -290,8 +290,8 @@ def aggregate_ch(rows, indices):
                 "left": left,
                 "right": right,
                 "observed_difference": result[left]["mean_S_JS"] - result[right]["mean_S_JS"],
-                "ci95_low": float(np.quantile(finite, 0.025)),
-                "ci95_high": float(np.quantile(finite, 0.975)),
+                "ci95_low": float(np.quantile(finite, 0.025)) if finite.size else float("nan"),
+                "ci95_high": float(np.quantile(finite, 0.975)) if finite.size else float("nan"),
             })
     auc_values, auc_ci = bootstrap_mean(
         [row["ch_harmed_vs_stable_AUROC"] for row in rows], indices
