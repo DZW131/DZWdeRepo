@@ -285,6 +285,14 @@ def render_report(args, result, c0, candidates):
     if result["a3_unlocked"] and "A3" not in candidates:
         raise AssertionError("A3 was unlocked but has not completed")
 
+    first_completion = next(iter(candidates.values()))["complete"]
+    common = first_completion["common_checkpoint"]
+    schedule = first_completion["schedule"]
+    phase0 = first_completion["phase0_summary"]
+    train_root = str(Path(args.val_root).resolve().parent / "training")
+    val_root = str(Path(args.val_root).resolve())
+    experiment_root = str(Path(args.experiment_root).resolve())
+    output_dir = str(Path(args.output_dir).resolve())
     lines = [
         "# LW-SHR Phase-1 LWTformer Transfer Utility Report",
         "",
@@ -296,14 +304,17 @@ def render_report(args, result, c0, candidates):
         "## 2. Exact commands",
         "",
         "```bash",
-        "python tools/run_lw_shr_phase0.py --common-checkpoint <COMMON> --schedule <SCHEDULE> --train-root <BCSS_TRAIN> --output-dir <OUTPUT>/phase0",
-        "python tools/train_lw_shr_matched.py --variant A1 --common-checkpoint <COMMON> --schedule <SCHEDULE> --phase0-summary <OUTPUT>/phase0/lw_shr_phase0_summary.json --train-root <BCSS_TRAIN> --val-root <BCSS_VAL> --output-dir <OUTPUT>/matched",
-        "python tools/train_lw_shr_matched.py --variant A2 --common-checkpoint <COMMON> --schedule <SCHEDULE> --phase0-summary <OUTPUT>/phase0/lw_shr_phase0_summary.json --train-root <BCSS_TRAIN> --val-root <BCSS_VAL> --output-dir <OUTPUT>/matched",
+        f"python tools/run_lw_shr_phase0.py --common-checkpoint {common} --schedule {schedule} --train-root {train_root} --output-dir {str(Path(phase0).parent)}",
+        f"python tools/train_lw_shr_matched.py --variant A1 --common-checkpoint {common} --schedule {schedule} --phase0-summary {phase0} --train-root {train_root} --val-root {val_root} --output-dir {experiment_root}",
+        f"python tools/train_lw_shr_matched.py --variant A2 --common-checkpoint {common} --schedule {schedule} --phase0-summary {phase0} --train-root {train_root} --val-root {val_root} --output-dir {experiment_root}",
     ]
     if "A3" in candidates:
         lines.append(
-            "python tools/train_lw_shr_matched.py --variant A3 --common-checkpoint <COMMON> --schedule <SCHEDULE> --phase0-summary <OUTPUT>/phase0/lw_shr_phase0_summary.json --train-root <BCSS_TRAIN> --val-root <BCSS_VAL> --output-dir <OUTPUT>/matched"
+            f"python tools/train_lw_shr_matched.py --variant A3 --common-checkpoint {common} --schedule {schedule} --phase0-summary {phase0} --train-root {train_root} --val-root {val_root} --output-dir {experiment_root}"
         )
+    lines += [
+        f"python tools/analyze_lw_shr_phase1.py --mode final --c0-dir {str(Path(args.c0_dir).resolve())} --experiment-root {experiment_root} --val-root {val_root} --output-dir {output_dir}"
+    ]
     lines += [
         "```",
         "",
