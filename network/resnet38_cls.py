@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import network.resnet38d
+from network.dross_disposal import DrossDisposalAdapter, compute_rddr_dross_score
 
 
 class HFRM(nn.Module):
@@ -58,8 +59,12 @@ class HFRM(nn.Module):
 # 2.  (Main Training Network)
 # =========================================================================
 class Net(network.resnet38d.Net):
-    def __init__(self, n_class):
+    def __init__(self, n_class, rddr_phase1_mode="none"):
         super().__init__()
+
+        if rddr_phase1_mode not in {"none", "uc", "dd"}:
+            raise ValueError(f"Unknown RDDR Phase-1 mode: {rddr_phase1_mode}")
+        self.rddr_phase1_mode = rddr_phase1_mode
 
         self.dropout7 = torch.nn.Dropout2d(0.5)     
 
@@ -80,34 +85,64 @@ class Net(network.resnet38d.Net):
 
         self.fc8 = nn.Conv2d(4096, n_class, 1, bias=False)
         torch.nn.init.xavier_uniform_(self.fc8.weight)
+
+        self.dross_disposal = (
+            DrossDisposalAdapter(channels=512, hidden_channels=128)
+            if rddr_phase1_mode != "none"
+            else None
+        )
         
         self.not_training = [self.conv1a, self.b2, self.b2_1, self.b2_2]
         
 
         self.from_scratch_layers = [self.ic_56, self.ic1, self.ic2, self.fc8, 
                                     self.hfrm_56, self.hfrm_28_1, self.hfrm_28_2]
+        if self.dross_disposal is not None:
+            self.from_scratch_layers.append(self.dross_disposal)
         self.pool = nn.MaxPool2d(2, 2)
 
-    def forward(self, x):
- 
+    def _extract_hierarchy(self, x):
         x = self.conv1a(x)
         x = self.b2(x); x = self.b2_1(x); x = self.b2_2(x)
-        
+
         x = self.b3(x); x = self.b3_1(x); x = self.b3_2(x)
-        feat_56 = x  
+        feat_56 = x
 
         x = self.b4(x); x = self.b4_1(x); x = self.b4_2(x); x = self.b4_3(x); x = self.b4_4(x); x = self.b4_5(x)
-        feat_28_1 = F.relu(self.bn45(x)) 
-        
+        feat_28_1 = F.relu(self.bn45(x))
+
         x, _ = self.b5(x, get_x_bn_relu=True); x = self.b5_1(x); x = self.b5_2(x)
-        feat_28_2 = F.relu(self.bn52(x)) 
-        
+        feat_28_2 = F.relu(self.bn52(x))
+
         x, _ = self.b6(x, get_x_bn_relu=True); x = self.b7(x)
-        feat_deep = F.relu(self.bn7(x)) 
+        feat_deep = F.relu(self.bn7(x))
+        return feat_56, feat_28_1, feat_28_2, feat_deep
+
+    def _dispose_dross(self, feat_28_1, feat_deep):
+        if self.rddr_phase1_mode == "none":
+            return feat_28_1, None, None, None
+
+        dross_component = self.dross_disposal(feat_28_1)
+        if self.rddr_phase1_mode == "uc":
+            q = torch.ones(
+                (feat_28_1.shape[0], 1, feat_28_1.shape[2], feat_28_1.shape[3]),
+                device=feat_28_1.device,
+                dtype=feat_28_1.dtype,
+            )
+        else:
+            q = compute_rddr_dross_score(
+                self.ic1(feat_28_1), self.fc8(feat_deep)
+            ).to(dtype=feat_28_1.dtype)
+        delta_feature = q * dross_component
+        return feat_28_1 - delta_feature, q, dross_component, delta_feature
+
+    def forward(self, x):
+        feat_56, feat_28_1, feat_28_2, feat_deep = self._extract_hierarchy(x)
+        feat_28_1_clean, _, _, _ = self._dispose_dross(feat_28_1, feat_deep)
 
 
         feat_56_rectified = self.hfrm_56(feat_56, feat_deep)
-        feat_28_1_rectified = self.hfrm_28_1(feat_28_1, feat_deep)
+        feat_28_1_rectified = self.hfrm_28_1(feat_28_1_clean, feat_deep)
         feat_28_2_rectified = self.hfrm_28_2(feat_28_2, feat_deep)
 
 
@@ -118,14 +153,39 @@ class Net(network.resnet38d.Net):
         feat_deep_drop = self.dropout7(feat_deep)
         cam_deep = self.fc8(feat_deep_drop)
 
-        out_56 = F.avg_pool2d(cam_56, kernel_size=(cam_56.size(2), cam_56.size(3)), padding=0).view(x.size(0), -1)
-        out_28_1 = F.avg_pool2d(cam_28_1, kernel_size=(cam_28_1.size(2), cam_28_1.size(3)), padding=0).view(x.size(0), -1)
-        out_28_2 = F.avg_pool2d(cam_28_2, kernel_size=(cam_28_2.size(2), cam_28_2.size(3)), padding=0).view(x.size(0), -1)
-        out_deep = F.avg_pool2d(cam_deep, kernel_size=(cam_deep.size(2), cam_deep.size(3)), padding=0).view(x.size(0), -1)
+        out_56 = F.avg_pool2d(cam_56, kernel_size=(cam_56.size(2), cam_56.size(3)), padding=0).view(cam_56.size(0), -1)
+        out_28_1 = F.avg_pool2d(cam_28_1, kernel_size=(cam_28_1.size(2), cam_28_1.size(3)), padding=0).view(cam_28_1.size(0), -1)
+        out_28_2 = F.avg_pool2d(cam_28_2, kernel_size=(cam_28_2.size(2), cam_28_2.size(3)), padding=0).view(cam_28_2.size(0), -1)
+        out_deep = F.avg_pool2d(cam_deep, kernel_size=(cam_deep.size(2), cam_deep.size(3)), padding=0).view(cam_deep.size(0), -1)
 
         y_deep = torch.sigmoid(out_deep)
 
         return out_56, out_28_1, out_28_2, out_deep, y_deep, cam_56, cam_28_1, cam_28_2, cam_deep, feat_56_rectified
+
+    def forward_rddr_diagnostics(self, x):
+        """Expose Phase-1 tensors without changing the normal forward contract."""
+
+        feat_56, feat_28_1, feat_28_2, feat_deep = self._extract_hierarchy(x)
+        feat_clean, q, component, delta = self._dispose_dross(feat_28_1, feat_deep)
+        feat_56_rect = self.hfrm_56(feat_56, feat_deep)
+        feat_28_1_rect = self.hfrm_28_1(feat_clean, feat_deep)
+        feat_28_2_rect = self.hfrm_28_2(feat_28_2, feat_deep)
+        return {
+            "F28_raw": feat_28_1,
+            "Ddeep": feat_deep,
+            "q": q,
+            "dross_component": component,
+            "delta_feature": delta,
+            "F28_clean": feat_clean,
+            "F28_rect": feat_28_1_rect,
+            "cam_56": F.relu(self.ic_56(feat_56_rect)),
+            "cam_28_1": F.relu(self.ic1(feat_28_1_rect)),
+            "cam_28_2": F.relu(self.ic2(feat_28_2_rect)),
+            "cam_deep": F.relu(self.fc8(feat_deep)),
+            "deep_probability": torch.sigmoid(
+                F.adaptive_avg_pool2d(self.fc8(feat_deep), 1).flatten(1)
+            ),
+        }
 
     def get_parameter_groups(self):
         groups = ([], [], [], [])
@@ -163,32 +223,20 @@ class Net(network.resnet38d.Net):
                 nn.init.constant_(m.bias, 0)
 
 class Net_CAM(Net):
-    def __init__(self, n_class):
-        super().__init__(n_class)
+    def __init__(self, n_class, rddr_phase1_mode="none"):
+        super().__init__(n_class, rddr_phase1_mode=rddr_phase1_mode)
 
     def forward(self, x):
         out_56, out_28_1, out_28_2, out_deep, y_deep, _, _, _, _, _ = super().forward(x)
         return y_deep
 
     def forward_cam(self, x):
-        x = self.conv1a(x)
-        x = self.b2(x); x = self.b2_1(x); x = self.b2_2(x)
-        
-        x = self.b3(x); x = self.b3_1(x); x = self.b3_2(x)
-        feat_56 = x  
-
-        x = self.b4(x); x = self.b4_1(x); x = self.b4_2(x); x = self.b4_3(x); x = self.b4_4(x); x = self.b4_5(x)
-        feat_28_1 = F.relu(self.bn45(x)) 
-        
-        x, _ = self.b5(x, get_x_bn_relu=True); x = self.b5_1(x); x = self.b5_2(x)
-        feat_28_2 = F.relu(self.bn52(x)) 
-        
-        x, _ = self.b6(x, get_x_bn_relu=True); x = self.b7(x)
-        feat_deep = F.relu(self.bn7(x))  
+        feat_56, feat_28_1, feat_28_2, feat_deep = self._extract_hierarchy(x)
+        feat_28_1_clean, _, _, _ = self._dispose_dross(feat_28_1, feat_deep)
 
 
         feat_56_rectified = self.hfrm_56(feat_56, feat_deep)
-        feat_28_1_rectified = self.hfrm_28_1(feat_28_1, feat_deep)
+        feat_28_1_rectified = self.hfrm_28_1(feat_28_1_clean, feat_deep)
         feat_28_2_rectified = self.hfrm_28_2(feat_28_2, feat_deep)
 
 
@@ -197,7 +245,7 @@ class Net_CAM(Net):
         cam_28_2 = F.relu(self.ic2(feat_28_2_rectified))
         cam_deep = F.relu(self.fc8(feat_deep)) 
         
-        out_deep = F.avg_pool2d(self.fc8(feat_deep), kernel_size=(feat_deep.size(2), feat_deep.size(3)), padding=0).view(x.size(0), -1)
+        out_deep = F.avg_pool2d(self.fc8(feat_deep), kernel_size=(feat_deep.size(2), feat_deep.size(3)), padding=0).view(feat_deep.size(0), -1)
         y_deep = torch.sigmoid(out_deep)
 
         return cam_56, cam_28_1, cam_28_2, cam_deep, y_deep
