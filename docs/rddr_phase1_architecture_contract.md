@@ -3,7 +3,7 @@
 This implementation is anchored to pure SSHR A0 commit
 `4e9a2887b220d17e27649d72a3d13f32b7ebe8f9`. The model implementation used
 for training is locked at
-`4e08c9d228ee269f7754c5f6b78ca734cd165c61`.
+`bacd3dc11797271acc2173964b0e6af846f92929`.
 
 Only the input to `hfrm_28_1` may change. `hfrm_56`, `hfrm_28_2`, the deep
 branch, all four CAM heads, all four classification losses, optimizer,
