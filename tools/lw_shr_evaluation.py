@@ -236,7 +236,13 @@ class MechanismAccumulator:
         return summary
 
 
-def evaluate_bcss(model, val_root, num_workers=4, prediction_output=None):
+def evaluate_bcss(
+    model,
+    val_root,
+    num_workers=4,
+    prediction_output=None,
+    mechanism_diagnostics=True,
+):
     verify_validation_root(val_root)
     model = model.cuda()
     model.eval()
@@ -247,7 +253,7 @@ def evaluate_bcss(model, val_root, num_workers=4, prediction_output=None):
     metrics = {stage: OfficialMetricAccumulator() for stage in (*STAGES, "final")}
     zones = ZoneMetricAccumulator()
     components = ComponentMetricAccumulator(component_thresholds(val_root))
-    mechanism = MechanismAccumulator(model)
+    mechanism = MechanismAccumulator(model) if mechanism_diagnostics else None
     image_ids, predictions, truths, histograms = [], [], [], []
 
     torch.cuda.synchronize()
@@ -268,7 +274,9 @@ def evaluate_bcss(model, val_root, num_workers=4, prediction_output=None):
                 with torch.autocast("cuda", dtype=torch.bfloat16):
                     cam56, cam28, cam28_2, camdeep, probability, details = (
                         forward_cam_with_diagnostics(
-                            model, augmented, diagnostics=view_index == 0
+                            model,
+                            augmented,
+                            diagnostics=view_index == 0 and mechanism is not None,
                         )
                     )
                 if view_index == 0:
@@ -282,7 +290,8 @@ def evaluate_bcss(model, val_root, num_workers=4, prediction_output=None):
                     views[stage].append(_resize_unflip(value, truth.shape, output_dims))
                 probabilities.append(probability[0])
 
-            mechanism.update(canonical_details, truth)
+            if mechanism is not None:
+                mechanism.update(canonical_details, truth)
             probability = torch.stack(probabilities).mean(0).float().cpu().numpy()
             presence = presence_from_probability(probability)
             normalized = {
@@ -327,7 +336,7 @@ def evaluate_bcss(model, val_root, num_workers=4, prediction_output=None):
             "zones": zones.result(),
             "components": components.result(),
         },
-        "mechanism": mechanism.result(),
+        "mechanism": None if mechanism is None else mechanism.result(),
         "runtime": {
             "images": len(dataset),
             "seconds": elapsed,
