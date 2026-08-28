@@ -170,6 +170,7 @@ def optimizer_membership_audit(model, optimizer):
             for index, group in enumerate(optimizer.param_groups)
             if any(candidate is parameter for candidate in group["params"])
         ]
+        expected_group = 3 if name.endswith(".bias") else 2
         row = {
             "name": name,
             "shape": list(parameter.shape),
@@ -177,10 +178,15 @@ def optimizer_membership_audit(model, optimizer):
             "requires_grad": parameter.requires_grad,
             "occurrences": counts.get(id(parameter), 0),
             "optimizer_groups": groups,
-            "scratch_group": groups == [2],
+            "expected_scratch_group": expected_group,
+            "scratch_group": groups == [expected_group],
         }
         rows.append(row)
-        if not parameter.requires_grad or row["occurrences"] != 1 or groups != [2]:
+        if (
+            not parameter.requires_grad
+            or row["occurrences"] != 1
+            or groups != [expected_group]
+        ):
             failures.append(row)
     if failures:
         raise AssertionError(f"A2 optimizer membership failure: {failures}")
