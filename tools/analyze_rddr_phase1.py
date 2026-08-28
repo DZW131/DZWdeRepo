@@ -47,6 +47,7 @@ from tools.rddr_phase1_analysis_common import (  # noqa: E402
 A0_COMMIT = "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9"
 IMPLEMENTATION_COMMIT = "bacd3dc11797271acc2173964b0e6af846f92929"
 C0_SHA256 = "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579"
+DROSS_HELPER_SHA256 = "32f5b1152010837359ab8fc0ced1fba7327ef0f9da8b3eeb2f07bd2c48b38aaa"
 MILESTONES = (1, 5, 10, 15, 20, 25)
 
 
@@ -375,6 +376,7 @@ def render_report(summary):
         f"- C0 checkpoint SHA256: `{summary['checkpoint_sha256']['C0']}`",
         f"- UC checkpoint SHA256: `{summary['checkpoint_sha256']['UC']}`",
         f"- DD checkpoint SHA256: `{summary['checkpoint_sha256']['DD']}`",
+        f"- Locked JSD/DDA source SHA256: `{summary['engineering']['dross_helper_sha256']}`",
         "- Dataset/split: BCSS validation only; no test or LUAD access.",
         "- Provenance note: UC started from the immediately preceding candidate; the "
         "only later correction was inside the DD-only JSD helper, so the executed UC "
@@ -600,6 +602,9 @@ def main():
         raise AssertionError("Phase-0 GO artifact is required")
     if sha256_file(args.c0_checkpoint) != C0_SHA256:
         raise AssertionError("C0 checkpoint SHA256 mismatch")
+    helper_sha = sha256_file(REPOSITORY_ROOT / "network" / "dross_disposal.py")
+    if helper_sha != DROSS_HELPER_SHA256:
+        raise AssertionError("Locked RDDR Phase-1 JSD/DDA source SHA256 mismatch")
     set_seed(42)
     phase0_threshold = float(phase0["thresholds"]["S_JS"]["0.2"]) / math.log(2.0)
     checkpoints = {
@@ -867,6 +872,7 @@ def main():
         "scientific_interpretation": scientific,
         "engineering": {
             "identity_max_abs_diff": smoke["identity"]["max_abs_diff"],
+            "dross_helper_sha256": helper_sha,
             "dda_parameters": smoke["variants"]["dd"]["parameters"]["dda"],
             "dda_macs_28x28": smoke["variants"]["dd"]["dda_macs_28x28"],
             "parameters": {
