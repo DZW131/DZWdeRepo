@@ -254,6 +254,9 @@ def main():
     write_json(output / "analysis.json", analysis)
 
     delta = criteria["delta_mIoU_pp"]
+    delta_mdice = delta_pp(
+        a2["scores"]["final"]["mDice"], c0["scores"]["final"]["mDice"]
+    )
     lines = [
         "# LW-SHR Phase-1.5 A2 Full-25 Report",
         "",
@@ -302,6 +305,7 @@ def main():
         "## 5. Epoch-wise overall metrics",
         "",
         "The reused C0 run retained only Epoch25 FINAL. C0 intermediate validation metrics are therefore unavailable and are shown as `N/A`; A2 values are measured at all required epochs.",
+        "The archived A0 validation readout was 67.3102 mIoU. Re-evaluating its SHA-locked FINAL checkpoint with this run's exact BF16/TTA diagnostic harness gives 67.3360 (+0.0258 pp). The paired comparison below uses the latter because C0 and A2 must pass through the same evaluator.",
         "",
         "| Epoch | C0 mIoU | A2 mIoU | A2 mDice |",
         "|---:|---:|---:|---:|",
@@ -408,6 +412,7 @@ def main():
         "## 15. Scientific interpretation",
         "",
         f"- Final mIoU changed from `{pct(c0['scores']['final']['mIoU']):.4f}` to `{pct(a2['scores']['final']['mIoU']):.4f}` ({delta:+.4f} pp).",
+        f"- Final mDice changed from `{pct(c0['scores']['final']['mDice']):.4f}` to `{pct(a2['scores']['final']['mDice']):.4f}` ({delta_mdice:+.4f} pp).",
         f"- CAM28_1 delta: `{criteria['cam28_1_delta_pp']:+.4f} pp`; boundary accuracy delta: `{criteria['boundary_accuracy_delta_pp']:+.4f} pp`; interior accuracy delta: `{criteria['interior_accuracy_delta_pp']:+.4f} pp`.",
         "- Because the reused baseline retained only FINAL, a relative C0-vs-A2 epoch-wise curve cannot be claimed. This is a documented consequence of not rerunning baseline, not missing A2 data.",
         "- No architecture, optimizer, loss, inference threshold or metric was changed based on validation results.",
