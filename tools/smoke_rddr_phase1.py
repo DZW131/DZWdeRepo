@@ -17,8 +17,8 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
-from network.resnet38_cls import Net
-from tool import torchutils
+from network.resnet38_cls import Net  # noqa: E402
+from tool import torchutils  # noqa: E402
 
 
 LOSS_WEIGHTS = (0.10, 0.15, 0.25, 0.50)
