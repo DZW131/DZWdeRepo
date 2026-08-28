@@ -292,13 +292,10 @@ def compute_q_dynamics(dd_dir, c0_checkpoint, loader):
                 image = image.cuda(non_blocking=True)
                 with torch.autocast("cuda", dtype=torch.bfloat16):
                     values = model.forward_rddr_diagnostics(image)
-                    if mode == "none":
-                        q = compute_rddr_dross_score(
-                            model.ic1(values["F28_raw"]),
-                            model.fc8(values["Ddeep"]),
-                        )
-                    else:
-                        q = values["q"]
+                    q = compute_rddr_dross_score(
+                        model.ic1(values["F28_raw"]),
+                        model.fc8(values["Ddeep"]),
+                    )
                 q_values.append(q.float().flatten().cpu().numpy())
         rows.append(distribution(q_values, epoch, source))
         del model
@@ -327,6 +324,24 @@ def training_runtime(directory):
     text = (Path(directory) / "train.log").read_text(errors="replace")
     matches = re.findall(r"Total Training Time:\s*([0-9.]+)s", text)
     return float(matches[-1]) if matches else float("nan")
+
+
+def phase1_decision(gates, full=True):
+    if not full:
+        return "RDDR_PHASE1_SMOKE_ONLY"
+    gate_a = gates["A"]["pass"]
+    gate_b = gates["B"]["pass"]
+    gate_c = gates["C"]["pass"]
+    gate_d = gates["D"]["pass"]
+    if gate_a and gate_b and gate_c and gate_d:
+        return "RDDR_PHASE1_GO"
+    if gate_a and gate_c and gate_d and not gate_b:
+        return "ADAPTER_GAIN_DROSS_SPECIFICITY_FAIL"
+    if not gate_c:
+        return "DROSS_DISPOSAL_SEMANTIC_DAMAGE"
+    if gate_d and not gate_a:
+        return "LOCAL_DROSS_REPAIR_NO_GLOBAL_GAIN"
+    return "RDDR_PHASE1_NOGO"
 
 
 def render_report(summary):
@@ -789,18 +804,7 @@ def main():
         },
     }
     full = len(dataset) == EXPECTED_VAL and args.bootstrap_resamples == 10000
-    if not full:
-        decision = "RDDR_PHASE1_SMOKE_ONLY"
-    elif all(row["pass"] for row in gates.values()):
-        decision = "RDDR_PHASE1_GO"
-    elif gate_a and gate_c and gate_d and not gate_b:
-        decision = "ADAPTER_GAIN_DROSS_SPECIFICITY_FAIL"
-    elif gate_d and not gate_a:
-        decision = "LOCAL_DROSS_REPAIR_NO_GLOBAL_GAIN"
-    elif not gate_c:
-        decision = "DROSS_DISPOSAL_SEMANTIC_DAMAGE"
-    else:
-        decision = "RDDR_PHASE1_NOGO"
+    decision = phase1_decision(gates, full=full)
     failed = [name for name, row in gates.items() if not row["pass"]]
     scientific = (
         "All preregistered gates pass; conditioned subtractive disposal improves the "

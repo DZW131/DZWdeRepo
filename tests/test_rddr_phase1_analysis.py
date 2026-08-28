@@ -2,7 +2,11 @@ import numpy as np
 
 import torch
 
-from tools.analyze_rddr_phase1 import DisposalAccumulator, TransitionAccumulator
+from tools.analyze_rddr_phase1 import (
+    DisposalAccumulator,
+    TransitionAccumulator,
+    phase1_decision,
+)
 from tools.rddr_phase1_analysis_common import (
     foreground_boundary_distance,
     official_histogram,
@@ -83,3 +87,13 @@ def test_uc_constant_q_has_single_nonempty_bin():
     assert len(rows) == 1
     assert rows[0]["bin"] == "AllPixels"
     assert rows[0]["pixels"] == 9
+
+
+def test_semantic_damage_decision_has_priority():
+    gates = {
+        "A": {"pass": False},
+        "B": {"pass": False},
+        "C": {"pass": False},
+        "D": {"pass": True},
+    }
+    assert phase1_decision(gates) == "DROSS_DISPOSAL_SEMANTIC_DAMAGE"
