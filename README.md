@@ -129,6 +129,70 @@ python train_sshr.py \
   --amp-dtype bf16
 ```
 
+## RDDR Phase-1: Spatial-Semantic Dross Disposal
+
+RDDR Phase-1 adds an identity-initialized Dross Disposal Adapter only before
+`HFRM28_1`. The `UC` parameter-matched control removes an unconditioned
+learned component; `DD` scales the same component by the detached normalized
+Jensen–Shannon disagreement between the raw shallow and deep CAM probes.
+Default mode `none` remains numerically identical to official A0.
+
+The frozen architecture and optimizer contract is documented in
+[`docs/rddr_phase1_architecture_contract.md`](docs/rddr_phase1_architecture_contract.md).
+
+### Training UC and DD
+
+The server runner executes UC Full25 followed by DD Full25 using the released
+training loop. It saves Epoch 1/5/10/15/20 plus `stage1_last.pth`; the latter is
+the Epoch-25 FINAL checkpoint. No validation or test metric participates in
+training or checkpoint selection.
+
+```bash
+bash tools/run_rddr_phase1_server.sh \
+  /path/to/RDDR_PHASE1_RUN \
+  /path/to/ilsvrc-cls_rna-a1_cls1000_ep-0001.params \
+  /path/to/BCSS-WSSS/training \
+  /path/to/python
+```
+
+### Validation analysis
+
+```bash
+python tools/analyze_rddr_phase1.py \
+  --c0-checkpoint /path/to/C0/stage1_last.pth \
+  --uc-dir /path/to/RDDR_PHASE1_RUN/UC \
+  --dd-dir /path/to/RDDR_PHASE1_RUN/DD \
+  --phase0-dir /path/to/RDDR_PHASE0/formal \
+  --val-root /path/to/BCSS-WSSS/val \
+  --smoke-json /path/to/rddr_phase1_smoke.json \
+  --pretrained /path/to/ilsvrc-cls_rna-a1_cls1000_ep-0001.params \
+  --train-root /path/to/BCSS-WSSS/training \
+  --python-executable /path/to/python \
+  --output-dir /path/to/RDDR_PHASE1_RUN/report \
+  --bootstrap-resamples 10000
+```
+
+The analysis reproduces official three-view TTA and reports the full CAM
+hierarchy, boundary/interior and object-size diagnostics, fixed Phase-0 dross
+strata, fixed C0 CH-transition groups, q dynamics, disposal magnitude,
+feature preservation, and paired image-level bootstrap intervals.
+
+### Phase-1 validation result
+
+| Variant | Dataset / split | Checkpoint | mIoU | mDice | Decision |
+|---|---|---|---:|---:|---|
+| C0 | BCSS validation | Epoch-25 FINAL | 67.3104 | 80.2564 | reference |
+| UC | BCSS validation | Epoch-25 FINAL | 67.1569 | 80.1397 | control |
+| DD | BCSS validation | Epoch-25 FINAL | 67.2081 | 80.1769 | `DROSS_DISPOSAL_SEMANTIC_DAMAGE` |
+
+DD recovered `+0.0513` mIoU points over the parameter-matched UC control but
+remained `-0.1022` points below C0 (paired 95% bootstrap CI
+`[-0.3971, +0.1700]` points). The preregistered overall-improvement and
+CAM28_1/interior-safety gates failed, so Phase-1 stops without a follow-on
+model experiment. See
+[`docs/rddr_phase1_spatial_semantic_dross_disposal_report.md`](docs/rddr_phase1_spatial_semantic_dross_disposal_report.md)
+for the complete validation-only analysis.
+
 ## Acknowledgement
 
 We thank the authors of [ESFAN](https://github.com/OceanPetal/ESFAN), whose codebase provided a valuable foundation for this repository.
