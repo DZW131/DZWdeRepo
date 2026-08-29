@@ -47,7 +47,8 @@ def _legacy_forward(model, x):
 
 def test_none_mode_equivalence():
     torch.manual_seed(7)
-    model = Net(4, rddr_context_mode="none").eval()
+    model = Net(4, rddr_context_mode="none")
+    model.eval()
     image = torch.randn(1, 3, 64, 64)
     with torch.no_grad():
         expected = _legacy_forward(model, image)
@@ -117,8 +118,10 @@ def test_no_new_trainable_params_and_optimizer_unchanged():
 
 def test_semantic_feature_is_not_modified_before_hfrm():
     torch.manual_seed(42)
-    baseline = Net(4, rddr_context_mode="none").eval()
-    receiver = Net(4, rddr_context_mode="receiver").eval()
+    baseline = Net(4, rddr_context_mode="none")
+    receiver = Net(4, rddr_context_mode="receiver")
+    baseline.eval()
+    receiver.eval()
     receiver.load_state_dict(baseline.state_dict(), strict=True)
     image = torch.randn(1, 3, 64, 64)
     with torch.no_grad():
@@ -156,7 +159,8 @@ def test_no_test_or_luad_access():
 @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA is required")
 @pytest.mark.parametrize("mode", ["global", "receiver"])
 def test_bf16_forward_backward(mode):
-    model = Net(4, rddr_context_mode=mode).cuda().train()
+    model = Net(4, rddr_context_mode=mode).cuda()
+    model.train()
     image = torch.randn(2, 3, 64, 64, device="cuda")
     label = torch.randint(0, 2, (2, 4), device="cuda").float()
     with torch.autocast("cuda", dtype=torch.bfloat16):
