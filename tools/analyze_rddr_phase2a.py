@@ -8,9 +8,12 @@ import json
 import math
 import re
 import shlex
+import subprocess
 import sys
 import time
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
 import numpy as np
 import torch
@@ -21,8 +24,11 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
-from network.rddr_context import compute_rddr_dross_score  # noqa: E402
+from network.rddr_context import compute_rddr_dross_score, context_reliability  # noqa: E402
 from network.resnet38_cls import Net_CAM  # noqa: E402
+from tools.smoke_rddr_phase2a import load_pretrained  # noqa: E402
+from tool import infer_fun, iouutils  # noqa: E402
+from tool.GenDataset import Stage1_InferDataset  # noqa: E402
 from tools.rddr_phase2a_analysis_common import (  # noqa: E402
     BACKGROUND,
     CAM_WEIGHTS,
@@ -97,13 +103,15 @@ def official_tta_predictions(model, image, output_size):
         for name, cam in zip(cam_lists, upsampled):
             if cam_flip_dims:
                 cam = torch.flip(cam, dims=cam_flip_dims)
-            cam_lists[name].append(cam.float().cpu().numpy())
-        probabilities.append(probability.float().cpu().numpy()[0])
+            cam_lists[name].append(cam)
+        probabilities.append(probability)
     averaged = {
-        name: minmax_normalize(np.mean(values, axis=0))
+        name: minmax_normalize(torch.stack(values).mean(0).float().cpu().numpy())
         for name, values in cam_lists.items()
     }
-    presence = presence_from_probability(np.mean(probabilities, axis=0))
+    presence = presence_from_probability(
+        torch.stack(probabilities).mean(0).float().cpu().numpy()[0]
+    )
     predictions = {
         name: cam_prediction(cam, presence) for name, cam in averaged.items()
     }
@@ -114,6 +122,40 @@ def official_tta_predictions(model, image, output_size):
     )
     predictions["Final"] = cam_prediction(fused, presence)
     return predictions
+
+
+def official_inference_parity(models, dataset, val_root, count=8):
+    """Call unchanged official infer() on the same small, sorted val subset."""
+    count = min(count, len(dataset))
+    native = Stage1_InferDataset(str(Path(val_root) / "img"), img_size=224)
+    native.object = [str(path) for path in dataset.images[:count]]
+    args = SimpleNamespace(dataset="bcss", img_size=224, num_workers=0, amp_dtype="bf16")
+    records = {}
+    official_scores = iouutils.scores
+    for variant, model in models.items():
+        captured = []
+
+        def capture_scores(truths, predictions, n_class):
+            captured.extend(np.array(prediction, copy=True) for prediction in predictions)
+            return official_scores(truths, predictions, n_class)
+
+        with patch.object(infer_fun, "Stage1_InferDataset", return_value=native), patch.object(
+            iouutils, "scores", side_effect=capture_scores
+        ):
+            result = infer_fun.infer(model, str(val_root), 4, args)
+        if result is None or len(captured) != count:
+            raise AssertionError("Official inference parity invocation failed")
+        mismatched = 0
+        with torch.inference_mode():
+            for index, expected in enumerate(captured):
+                _, image, _, truth = dataset[index]
+                actual = official_tta_predictions(model, image[None].cuda(), truth.shape)["Final"]
+                mismatched += int((actual != expected).sum())
+        records[variant] = {"images": count, "mismatched_prediction_pixels": mismatched}
+        if mismatched:
+            raise AssertionError(f"Official inference pixel parity failed: {variant}: {mismatched}")
+    print(f"RDDR_OFFICIAL_INFERENCE_PARITY {records}", flush=True)
+    return records
 
 
 def canonical_diagnostics(model, image, output_size):
@@ -434,6 +476,45 @@ def compute_dynamics(gs_dir, rcs_dir, c0_checkpoint, phase1_dir, loader):
     return rows, gamma_rows
 
 
+def audit_epoch0(pretrained, loader):
+    """Reconstruct seed42 initialization; observation only, no optimizer steps.
+
+    This is a retrospective eval-mode validation probe, not a saved epoch0
+    training measurement. Net_CAM adds no initialization beyond Net.
+    """
+    set_seed(42)
+    model = Net_CAM(4, rddr_context_mode="none").cuda()
+    pretrained_audit = load_pretrained(model, pretrained)
+    model.eval()
+    accumulators = {name: ContextAccumulator(name) for name in ("GS", "RCS")}
+    q_values = []
+    with torch.inference_mode():
+        for _, image, _, _ in loader:
+            with torch.autocast("cuda", dtype=torch.bfloat16):
+                values = model.forward_rddr_context_diagnostics(image.cuda())
+                q, before = values["q"], values["context_before"]
+                q_values.append(q.float().flatten().cpu().numpy())
+                for name, mode in (("GS", "global"), ("RCS", "receiver")):
+                    reliability = context_reliability(q, mode)
+                    after = reliability.to(before.dtype) * before
+                    accumulators[name].update({
+                        "q": q, "reliability": reliability,
+                        "context_before": before, "context_after": after,
+                    })
+    result = {
+        "method": "Retrospective seed42/pretrained reconstruction, eval mode, validation images, batch20 BF16; zero training steps",
+        "pretrained": pretrained_audit,
+        "q": distribution(q_values, 0, "Reconstructed-init"),
+        "context_strength": {name: acc.result() for name, acc in accumulators.items()},
+        "gamma_context": float(model.hfrm_28_1.gamma_context.item()),
+        "gamma_veto": float(model.hfrm_28_1.gamma_veto.item()),
+    }
+    del model
+    torch.cuda.empty_cache()
+    print("RDDR_EPOCH0_AUDIT completed (no training)", flush=True)
+    return result
+
+
 def load_training_curves(gs_dir, rcs_dir):
     rows = []
     for variant, directory in (("GS", gs_dir), ("RCS", rcs_dir)):
@@ -487,13 +568,14 @@ def render_report(summary):
         "## 1. Frozen provenance and commands",
         "",
         f"- Implementation commit: `{summary['implementation_commit']}`",
+        f"- Evaluation commit: `{summary['evaluation_commit']}`",
         f"- Pure A0 commit: `{summary['a0_commit']}`",
         f"- C0 checkpoint SHA256: `{summary['checkpoint_sha256']['C0']}`",
         f"- GS checkpoint SHA256: `{summary['checkpoint_sha256']['GS']}`",
         f"- RCS checkpoint SHA256: `{summary['checkpoint_sha256']['RCS']}`",
         f"- Locked JSD helper SHA256: `{summary['engineering']['context_helper_sha256']}`",
         f"- Locked model source SHA256: `{summary['engineering']['model_source_sha256']}`",
-        "- Dataset/split: BCSS validation only; no test or LUAD access.",
+        f"- Dataset/split: {summary['images']} BCSS validation images; no test or LUAD access.",
         "",
         "```bash",
         summary["commands"]["training"],
@@ -525,6 +607,20 @@ def render_report(summary):
         "evaluated validation or test.",
         "",
         "## 4. Overall metrics and CAM hierarchy",
+        "",
+        "Official three-view TTA is averaged in the native output dtype before FP32 "
+        "normalization. BCSS presence thresholds are [0.8,0.9,0.8,0.6], with argmax "
+        "fallback when none pass; final fusion is 0.6/0.2/0.2 (CAM56 diagnostic only). "
+        "The initial copied audit helper averaged after FP32 conversion; this was "
+        "corrected before this evaluation. Original infer()/metric/model files were not changed.",
+        "",
+        f"Direct pixel parity against unchanged official infer(): {summary['engineering']['official_inference_parity']}",
+        "",
+        "Metric retains official GT-background overwrite; foreground classes 0–3 "
+        "enter the mean. Absent-class IoU is NaN/excluded; absent-class Dice is 0. "
+        "Boundary masks include foreground-to-foreground transitions only. Size "
+        "bins use per-class 8-connected GT-component area q25/q75; recall is "
+        "pixel-weighted and size mIoU is mask-restricted, not instance IoU.",
         "",
         "| Variant | CAM56 mIoU | CAM28_1 mIoU | CAM28_2 mIoU | CAMdeep mIoU | Final mIoU | Final mDice |",
         "|---|---:|---:|---:|---:|---:|---:|",
@@ -572,14 +668,17 @@ def render_report(summary):
         "",
         "## 7. q dynamics",
         "",
-        "| Source | Epoch | Mean | Std | p05 | p25 | p50 | p75 | p95 |",
-        "|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+        "q is JS/ln(2), computed at 28x28; these dynamics include all grid positions. "
+        "Phase1-DD rows are imported observations, not re-trained models.",
+        "",
+        "| Source | Epoch | Mean | Std | Min | p05 | p25 | p50 | p75 | p95 | Max |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for row in summary["q_dynamics"]:
         lines.append(
             f"| {row['source']} | {row['epoch']} | {row['mean']:.6f} | {row['std']:.6f} | "
-            f"{row['p05']:.6f} | {row['p25']:.6f} | {row['p50']:.6f} | "
-            f"{row['p75']:.6f} | {row['p95']:.6f} |"
+            f"{row['min']:.6f} | {row['p05']:.6f} | {row['p25']:.6f} | {row['p50']:.6f} | "
+            f"{row['p75']:.6f} | {row['p95']:.6f} | {row['max']:.6f} |"
         )
     lines += [
         "",
@@ -641,12 +740,19 @@ def render_report(summary):
         "",
         "## 12. Frozen-C0 q-quintile selectivity",
         "",
-        "| Variant | Quintile | Mean r | Context RMS ratio | Accuracy delta vs C0 |",
-        "|---|---|---:|---:|---:|",
+        "All bins are defined from the locked C0, never from candidate q. "
+        "Prediction bins use full-resolution foreground q; context bins use "
+        "28x28 C0 q with nearest-resized foreground masks and separately computed "
+        "quintiles. They are resolution-specific populations, not identical pixels. "
+        "Exact thresholds and counts are in the JSON/CSV.",
+        "",
+        "| Variant | Quintile | Mean r | Context RMS before | after | ratio | Accuracy delta vs C0 |",
+        "|---|---|---:|---:|---:|---:|---:|",
     ]
     for row in summary["quintile_analysis"]:
         lines.append(
             f"| {row['variant']} | {row['quintile']} | {row['mean_reliability']:.6f} | "
+            f"{row['context_before_rms']:.6f} | {row['context_after_rms']:.6f} | "
             f"{row['context_rms_ratio']:.6f} | {100*row['prediction_accuracy_delta_vs_c0']:+.4f} pp |"
         )
     lines += [
@@ -683,13 +789,33 @@ def render_report(summary):
         "",
         "## 16. Engineering and artifact record",
         "",
-        f"- Analysis runtime: {summary['runtime']['seconds']/60:.2f} min; peak CUDA memory "
+        f"- Main final-checkpoint evaluation: {summary['runtime']['seconds']/60:.2f} min; "
+        f"complete evaluation including dynamics/bootstrap: {summary['runtime']['total_seconds']/60:.2f} min; peak CUDA memory "
         f"{summary['runtime']['peak_cuda_memory_bytes']/2**30:.3f} GiB.",
         f"- GS/RCS training runtime: {summary['runtime']['training_seconds']['GS']/60:.2f} / "
         f"{summary['runtime']['training_seconds']['RCS']/60:.2f} min.",
         "- All required curves, q/context/gamma, fixed-strata, CH, quintile, per-class, "
         "bootstrap, optimizer, per-image, and summary artifacts were generated.",
         "- No BCSS test, LUAD, best-epoch selection, or post-hoc tuning was used.",
+        "",
+        "## 17. Epoch0 initialization observation",
+        "",
+        summary["epoch0_audit"]["method"],
+        "",
+        "This reconstructs initialization after training has finished; it is not "
+        "a contemporaneous training log. Shared raw features and q are computed "
+        "once, then the frozen GS/RCS context scaling is applied. Initial gammas "
+        "are zero, so attenuated context does not yet contribute to the output.",
+        "",
+        "| Variant | Mean r | Mean suppression | Context RMS before | after | ratio |",
+        "|---|---:|---:|---:|---:|---:|",
+    ]
+    for variant, row in summary["epoch0_audit"]["context_strength"].items():
+        lines.append(
+            f"| {variant} | {row['mean_reliability']:.6f} | {row['mean_suppression']:.6f} | "
+            f"{row['context_before_rms']:.6f} | {row['context_after_rms']:.6f} | {row['context_rms_ratio']:.6f} |"
+        )
+    lines += [
         "",
         f"DECISION = {summary['decision']}",
         "",
@@ -726,6 +852,7 @@ def validate_run_artifacts(directory):
 
 
 def main():
+    total_started = time.perf_counter()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--c0-checkpoint", required=True)
     parser.add_argument("--gs-dir", required=True)
@@ -744,6 +871,8 @@ def main():
     args = parser.parse_args()
 
     output = Path(args.output_dir)
+    if (output / "rddr_phase2a_summary.json").exists():
+        raise FileExistsError("Use a new output directory; existing results are immutable")
     output.mkdir(parents=True, exist_ok=True)
     phase0 = json.loads(
         (Path(args.phase0_dir) / "rddr_phase0_summary.json").read_text()
@@ -783,6 +912,7 @@ def main():
         "GS": load_model("global", checkpoints["GS"]),
         "RCS": load_model("receiver", checkpoints["RCS"]),
     }
+    inference_parity = official_inference_parity(models, dataset, args.val_root)
     sample_image = dataset[0][1].unsqueeze(0).cuda()
     semantic_preservation = semantic_preservation_audit(
         models["RCS"], checkpoints["RCS"], sample_image
@@ -936,6 +1066,8 @@ def main():
         args.gs_dir, args.rcs_dir, args.c0_checkpoint,
         args.phase1_dir, q_loader,
     )
+    epoch0 = audit_epoch0(args.pretrained, q_loader)
+    q_rows.insert(0, epoch0["q"])
 
     per_class_rows = []
     for variant in ("C0", "GS", "RCS"):
@@ -1024,6 +1156,9 @@ def main():
     summary = {
         "decision": decision,
         "implementation_commit": IMPLEMENTATION_COMMIT,
+        "evaluation_commit": subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=REPOSITORY_ROOT, text=True
+        ).strip(),
         "a0_commit": A0_COMMIT,
         "checkpoint_sha256": checkpoint_sha,
         "commands": {
@@ -1035,7 +1170,7 @@ def main():
                     args.train_root, args.python_executable,
                 )
             ),
-            "analysis": " ".join(shlex.quote(item) for item in sys.argv),
+            "analysis": " ".join(shlex.quote(item) for item in [sys.executable, *sys.argv]),
         },
         "images": len(dataset),
         "metrics": metrics,
@@ -1053,6 +1188,7 @@ def main():
         },
         "quintile_analysis": quintile_rows,
         "q_dynamics": q_rows,
+        "epoch0_audit": epoch0,
         "gamma_dynamics": gamma_rows,
         "bootstrap": bootstrap,
         "gates": gates,
@@ -1070,6 +1206,7 @@ def main():
                 "RCS": smoke["variants"]["receiver"]["parameters"]["total"],
             },
             "semantic_preservation": semantic_preservation,
+            "official_inference_parity": inference_parity,
             "optimizer_audits": optimizer_audits,
             "test_used": False,
             "luad_used": False,
@@ -1077,6 +1214,7 @@ def main():
         },
         "runtime": {
             "seconds": elapsed,
+            "total_seconds": time.perf_counter() - total_started,
             "peak_cuda_memory_bytes": int(torch.cuda.max_memory_allocated()),
             "training_seconds": {
                 "GS": training_runtime(args.gs_dir),

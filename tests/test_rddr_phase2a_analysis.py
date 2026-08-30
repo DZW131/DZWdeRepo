@@ -1,5 +1,7 @@
 import numpy as np
 import torch
+from tool import iouutils
+from tools.rddr_phase2a_analysis_common import official_histogram, scores_from_histogram
 
 from tools.analyze_rddr_phase2a import (
     ContextAccumulator,
@@ -98,3 +100,14 @@ def test_fixed_c0_quintile_analysis():
 def test_checkpoint_contract(tmp_path):
     assert checkpoint_for_epoch(tmp_path, 25).name == "stage1_last.pth"
     assert checkpoint_for_epoch(tmp_path, 5).name == "stage1_epoch_0005.pth"
+
+
+def test_metrics_match_unchanged_official_iouutils():
+    rng = np.random.default_rng(42)
+    truths = [rng.integers(0, 5, (32, 32)) for _ in range(4)]
+    predictions = [rng.integers(0, 4, (32, 32)) for _ in range(4)]
+    official = iouutils.scores(truths, [p.copy() for p in predictions], n_class=4)
+    hist = sum(official_histogram(t, p) for t, p in zip(truths, predictions))
+    audited = scores_from_histogram(hist)
+    assert audited["mIoU"] == official["Mean IoU"]
+    assert audited["mDice"] == official["Mean Dice"]
