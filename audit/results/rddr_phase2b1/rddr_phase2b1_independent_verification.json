@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "images": 3418,
+  "required_files": 19,
+  "all_partitions_exact": true,
+  "native_all_image_rankdata_AUROC_exact": true,
+  "pooled_rankdata_AUROC": 0.638179880685981,
+  "independent_pooled_AP": 0.7650992606483913,
+  "independent_proper_scores_pass": true,
+  "independent_real_support_points": 9,
+  "max_support_error": 1.1920928955078125e-07,
+  "independent_bootstrap_replicates": 32,
+  "bootstrap_max_errors": {
+    "adjudication_image_auroc": 0.0,
+    "sign_balanced_accuracy": 0.0,
+    "anchor_fixed_accuracy_delta": 0.0,
+    "anchor_fixed_miou_delta": 0.0,
+    "Top20_anchor_fixed_accuracy_delta": 0.0,
+    "Deep_Wrong_anchor_fixed_accuracy_delta": 0.0,
+    "Top20_Deep_Wrong_anchor_fixed_accuracy_delta": 0.0
+  },
+  "all_10000_CI_quantiles_exact": true,
+  "all_15_safety_strata_verified": true,
+  "nonlinear_partition_miou_verified": true,
+  "gates": {
+    "A": true,
+    "B": false,
+    "C": false,
+    "D": true
+  },
+  "decision": "RDDR_PHASE2B1_NOGO",
+  "strong_signal": false
+}
