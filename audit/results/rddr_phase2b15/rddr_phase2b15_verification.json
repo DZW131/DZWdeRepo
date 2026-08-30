@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "images": 3418,
+  "required_artifacts_before_verification": 23,
+  "all_45_group_counts_exact": true,
+  "all_groups_native_confusions_exact": true,
+  "all_support_distribution_statistics_verified": true,
+  "native_rankdata_image_computations": 116212,
+  "pooled_auc_and_ap_verified": true,
+  "independent_real_neighbor_positions": 9,
+  "max_support_error": 9.011202461994827e-08,
+  "max_context_error": 6.231143090396074e-08,
+  "max_gt_composition_error": 2.905100338068678e-08,
+  "old_score_parity_max": {
+    "T_SS": 0.0,
+    "T_DS": 0.0,
+    "Delta_old": 0.0,
+    "ctx_S": 0.0
+  },
+  "rescue_intrusion_identities_verified": true,
+  "independent_bootstrap_replicates": 32,
+  "bootstrap_columns_verified": 159,
+  "max_bootstrap_error": 1.3322676295501878e-15,
+  "all_10000_ci_quantiles_exact": true,
+  "gates": {
+    "A": true,
+    "B": true,
+    "C": "UNDERPOWERED",
+    "D": true
+  },
+  "class_status": {
+    "class2": "PASS",
+    "class3": "UNDERPOWERED"
+  },
+  "decision": "SYMMETRY_PROMISING_CLASS_EVIDENCE_UNDERPOWERED",
+  "no_shared_helper_imports": true
+}

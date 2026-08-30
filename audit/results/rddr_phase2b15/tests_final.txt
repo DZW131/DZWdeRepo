@@ -1,0 +1,28 @@
+test_15x15_window_exact (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_anchor_sym_probability_sum (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_bootstrap_reproducible (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_branch_swap_symmetry (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_class_underpower_precedence (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_context_sym_formula (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_decision_all_branches (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_delta_sym_no_gt (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_exact_auc_ties_and_absence (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_four_way_support_shapes (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_frozen_group_counts (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_gt_context_denominator (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_no_checkpoint_write (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_no_gradient (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_no_optimizer (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_no_test_luad_access (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_ordered_pair_partition_exact (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_phase2b1_delta_exact_reproduction (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_same_family_bias_formula (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_self_edge_excluded (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_support_scores_no_gt (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_symmetric_support_formula (test_rddr_phase2b15.BiasAuditTests) ... ok
+test_third_class_metrics_gt_only_in_analysis (test_rddr_phase2b15.BiasAuditTests) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 0.065s
+
+OK
