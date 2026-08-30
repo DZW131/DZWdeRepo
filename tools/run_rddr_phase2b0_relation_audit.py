@@ -125,7 +125,9 @@ def main():
     loader = DataLoader(Subset(dataset, selected), batch_size=1, shuffle=False, num_workers=4, pin_memory=True)
     model = Net(4).cuda()
     load_info = model.load_state_dict(torch.load(args.checkpoint, map_location="cpu", weights_only=False), strict=True)
-    model.eval().requires_grad_(False)
+    # A0 overrides train() without returning self; do not chain eval().
+    model.eval()
+    model.requires_grad_(False)
     digest_before = state_digest(model)
     captured = {}
     def hook(module, inputs, result):
