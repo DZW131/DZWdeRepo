@@ -1,0 +1,124 @@
+{
+  "schema": "phase2b16-evidence-manifest-v1",
+  "report_sha256": "7a5a9bedb5c26f6572ed2fe7c5eb1cfdb9cf241ef4e566460741deac0e4760de",
+  "source_spec": "D:/work/RDDR_Phase2B1_6_Trainability_Integration_Audit_v1.0.md",
+  "source_spec_sha256": "e0bac40da10f25429ca4508b0f96b7f5adfb0f680e97007ed5aa1cbb29312ae3",
+  "evidence": [
+    {
+      "name": "rddr_phase2b16_bf16_smoke.json",
+      "bytes": 2532,
+      "sha256": "b325bb4b03cdcd5913be8fd3c2794ec36a1c2f3cf20999bfa7dd5ba3e9c0777c"
+    },
+    {
+      "name": "rddr_phase2b16_bootstrap_replicates.csv",
+      "bytes": 3665430,
+      "sha256": "14b4f2b7b446dc7448d83079eea96dd4a2e6d8cb179990d3168083695808fd7a"
+    },
+    {
+      "name": "rddr_phase2b16_bootstrap.csv",
+      "bytes": 1644,
+      "sha256": "de2cd0f06be3114141c365e6e0ed9be8ec75a00ce706a1b6b2d43de8d19eea19"
+    },
+    {
+      "name": "rddr_phase2b16_detach_audit.json",
+      "bytes": 614,
+      "sha256": "a922d2086bcaa343a59396fcaeb7123e25d7e4976c22df833ef90ce9485e9908"
+    },
+    {
+      "name": "rddr_phase2b16_feature_gradient.csv",
+      "bytes": 1512,
+      "sha256": "e73e2a639a2c78e14f84d01d4b662c8a65f9e4808af360923fe18d0a5a5a1295"
+    },
+    {
+      "name": "rddr_phase2b16_gradient_localization.csv",
+      "bytes": 636,
+      "sha256": "4669fe81046d4a53566f6fdab8e73f48fa7a199bd15cc3d7f55aafb10161ed4c"
+    },
+    {
+      "name": "rddr_phase2b16_gradient_path_attribution.csv",
+      "bytes": 350,
+      "sha256": "d4ca216aeaa01c5d79fd8845fe9dbc0eba91b91da274495f5ce84047674a0682"
+    },
+    {
+      "name": "rddr_phase2b16_gradient_semantic_utility.csv",
+      "bytes": 8418,
+      "sha256": "6af548440ecd5d995d49470079a1da390caf3419220a8582ebf5cb6ecd988112"
+    },
+    {
+      "name": "rddr_phase2b16_identity_audit.json",
+      "bytes": 1097,
+      "sha256": "42085bf2f24e8a74b412bb82573d72b06e90cbcc28040baf1e765460d5be5646"
+    },
+    {
+      "name": "rddr_phase2b16_logit_gradient.csv",
+      "bytes": 5129,
+      "sha256": "606397b632d55594b7950ec898d105ff867fd40d09fa2d2cc64a2a71811888f8"
+    },
+    {
+      "name": "rddr_phase2b16_mathematical_identities.json",
+      "bytes": 718,
+      "sha256": "dcfc9563aefcb1d580f7545a4c2179388b09ac6372940c3550ab97302b8c33f3"
+    },
+    {
+      "name": "rddr_phase2b16_parameter_gradient.csv",
+      "bytes": 703,
+      "sha256": "6f32cf71593ba97ff2c2bfe06b2d7fc905b7a254f675c98de52b7765b228f66e"
+    },
+    {
+      "name": "rddr_phase2b16_parameter_per_image.csv",
+      "bytes": 3703467,
+      "sha256": "040a3efe2ebf7e16d5abe2cb18e0530750564f24e9b3b3c109178b98bea1addd"
+    },
+    {
+      "name": "rddr_phase2b16_per_class_gradient.csv",
+      "bytes": 1847,
+      "sha256": "a1b99bdb8011419518c3d7cedd316952676fa89b1e580c8a0b9b61daf92549b7"
+    },
+    {
+      "name": "rddr_phase2b16_q_strata.csv",
+      "bytes": 864,
+      "sha256": "1e5887f0fdc8762b5e5de90df34789ae1fba250306f257941c6b409566643400"
+    },
+    {
+      "name": "rddr_phase2b16_runtime.json",
+      "bytes": 2498,
+      "sha256": "88486a159df783c6521deaa3dcb056b9385533baddd392c32e4d4fb8ed1695f7"
+    },
+    {
+      "name": "rddr_phase2b16_selection.json",
+      "bytes": 12510,
+      "sha256": "76498ba1b71cefcc841f1944a4cac1cbb91c3e3e4ec93a7df148d631293154f8"
+    },
+    {
+      "name": "rddr_phase2b16_summary.json",
+      "bytes": 4295,
+      "sha256": "194bfb4058ac8e2297d9c31161f3ef8bf35d15eef05136b05956e19283212edf"
+    },
+    {
+      "name": "rddr_phase2b16_teacher_advantage.csv",
+      "bytes": 6238,
+      "sha256": "983b34814a24734f3bbedbe6eb6a2b281e1c4a1bc53ab41a7d27d07c12213b85"
+    },
+    {
+      "name": "rddr_phase2b16_teacher_metrics.csv",
+      "bytes": 926,
+      "sha256": "746a1fd567e155d008c05f6a36130befa965cf2f2f7599be4bef836be227b27a"
+    },
+    {
+      "name": "rddr_phase2b16_teacher_transition.csv",
+      "bytes": 4942,
+      "sha256": "7182384c43d21f327f15089a494211e4ee8cb76c76eb3ce0cc4b6c196acbd20c"
+    },
+    {
+      "name": "rddr_phase2b16_test_results.txt",
+      "bytes": 2286,
+      "sha256": "93cd74c72b8a270d895e30f044723524ffb66719e3cbedc4d1a9e6ed8514e790"
+    },
+    {
+      "name": "rddr_phase2b16_verification.json",
+      "bytes": 2026,
+      "sha256": "bdf2670f70327404442c82253ed17e66b6534fbad42ececb76f0306dc0ef2b58"
+    }
+  ],
+  "note": "Original evidence bytes retained by directory .gitattributes; large NPZ kept on server and identified by runtime SHA256; manifest excludes itself."
+}

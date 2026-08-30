@@ -1,0 +1,21 @@
+{
+  "teacher_detached": true,
+  "q_detached": true,
+  "teacher_source_grad_none": true,
+  "q_source_grad_none": true,
+  "student_only_parameters": [
+    "hfrm_28_1.context_conv.weight",
+    "hfrm_28_1.veto_mlp.0.weight",
+    "hfrm_28_1.veto_mlp.2.weight",
+    "hfrm_28_1.gamma_context",
+    "hfrm_28_1.gamma_veto",
+    "ic1.weight",
+    "ic1.bias"
+  ],
+  "other_model_grads_none": true,
+  "shared_ic1_note": "ic1 has legitimate student gradients; raw-probe teacher branch is detached",
+  "no_gt_in_loss": true,
+  "no_third_evidence": true,
+  "optimizer_constructor_guard": true,
+  "checkpoint_write_guard": true
+}

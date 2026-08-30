@@ -1,0 +1,107 @@
+{
+  "batch": 20,
+  "indices": [
+    0,
+    110,
+    220,
+    330,
+    440,
+    551,
+    661,
+    771,
+    881,
+    992,
+    1102,
+    1212,
+    1322,
+    1432,
+    1543,
+    1653,
+    1763,
+    1873,
+    1984,
+    2094
+  ],
+  "loss": 1.2676459550857544,
+  "loss_dtype": "torch.float32",
+  "logit_dtype": "torch.bfloat16",
+  "seconds": 0.1000001600041287,
+  "peak_cuda_allocated_bytes": 1245016064,
+  "peak_cuda_reserved_bytes": 1382023168,
+  "reserved_budget_bytes": 23622320128,
+  "finite": true,
+  "parameter_gradients": [
+    {
+      "parameter": "hfrm_28_1.context_conv.weight",
+      "elements": 115200,
+      "sumsq": 1.9857573697512294,
+      "rms": 0.00415180408593414,
+      "max_abs": 0.06396484375,
+      "finite": true,
+      "nonzero_fraction": 1.0
+    },
+    {
+      "parameter": "hfrm_28_1.veto_mlp.0.weight",
+      "elements": 2097152,
+      "sumsq": 0.0009027768333140042,
+      "rms": 2.0747952662589772e-05,
+      "max_abs": 0.000331878662109375,
+      "finite": true,
+      "nonzero_fraction": 0.8962516784667969
+    },
+    {
+      "parameter": "hfrm_28_1.veto_mlp.2.weight",
+      "elements": 262144,
+      "sumsq": 0.00018671166787404393,
+      "rms": 2.668798397967517e-05,
+      "max_abs": 0.000972747802734375,
+      "finite": true,
+      "nonzero_fraction": 0.8963356018066406
+    },
+    {
+      "parameter": "hfrm_28_1.gamma_context",
+      "elements": 1,
+      "sumsq": 0.9598052560605197,
+      "rms": 0.97969651222229,
+      "max_abs": 0.97969651222229,
+      "finite": true,
+      "nonzero_fraction": 1.0
+    },
+    {
+      "parameter": "hfrm_28_1.gamma_veto",
+      "elements": 1,
+      "sumsq": 0.0082722435391267,
+      "rms": 0.09095187485218048,
+      "max_abs": 0.09095187485218048,
+      "finite": true,
+      "nonzero_fraction": 1.0
+    },
+    {
+      "parameter": "ic1.weight",
+      "elements": 2048,
+      "sumsq": 2.6463243901991467,
+      "rms": 0.03594649609004927,
+      "max_abs": 0.51953125,
+      "finite": true,
+      "nonzero_fraction": 1.0
+    },
+    {
+      "parameter": "ic1.bias",
+      "elements": 4,
+      "sumsq": 0.004086666740477085,
+      "rms": 0.03196352116271409,
+      "max_abs": 0.053955078125,
+      "finite": true,
+      "nonzero_fraction": 1.0
+    }
+  ],
+  "feature_gradient_nonzero": true,
+  "teacher_detached": true,
+  "q_detached": true,
+  "ps_teacher_grad_none": true,
+  "pd_teacher_grad_none": true,
+  "optimizer_created": false,
+  "optimizer_steps": 0,
+  "scope": "selected HFRM28_1/ic1 backward; NOT full-unfrozen training memory",
+  "budget_pass": true
+}
