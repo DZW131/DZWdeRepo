@@ -57,3 +57,8 @@ untouched. User review and PR merge are separate from execution.
 | Phase | Split | Model | New training | Output |
 |---|---|---|---|---|
 | 2B0 | BCSS validation | Frozen A0/C0 Full25 | None | Reliable-relation feasibility report |
+
+Completed: **RDDR_PHASE2B0_NOGO**. Image AUROC 0.622374; image purity gain
++1.167624 pp. A/B fail, C/D pass. See
+`rddr_phase2b0_reliable_relation_feasibility_report.md` for the full result and
+`rddr_phase2b0_delivery.md` for verification evidence and exact artifact paths.

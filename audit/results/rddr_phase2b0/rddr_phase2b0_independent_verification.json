@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "verified_images": 3418,
+  "required_artifacts": 15,
+  "all_population_partitions_exact": true,
+  "all_estimator_confusions_exact": true,
+  "independent_bootstrap_replicates": 32,
+  "bootstrap_max_errors": {
+    "SRSC_image_balanced_pair_AUROC": 3.3306690738754696e-15,
+    "SRSC_minus_U_purity": 6.245004513516506e-17,
+    "SRSC_Corrected_minus_Harmed_purity": 7.771561172376096e-16,
+    "Harmed_SRSC_minus_U_purity": 1.214306433183765e-17,
+    "SRSC_mean_N_eff": 6.252776074688882e-13,
+    "target_AUROC_purity": 1.7763568394002505e-15,
+    "target_AUROC_purity_gain": 1.5543122344752192e-15,
+    "target_AUROC_negative_wrong_mass": 1.9984014443252818e-15,
+    "SRSC_minus_U_neighbor_accuracy": 0.0,
+    "SRSC_minus_U_neighbor_mIoU": 0.0,
+    "Top20_SRSC_minus_U_NetRepair": 4.163336342344337e-17
+  },
+  "all_10000_replicate_CI_quantiles_exact": true,
+  "independently_recomputed_gates": {
+    "A": false,
+    "B": false,
+    "C": true,
+    "D": true
+  },
+  "decision": "RDDR_PHASE2B0_NOGO"
+}
