@@ -1,0 +1,26 @@
+test_15x15_window_contract (test_rddr_phase2b0.RelationTests) ... ok
+test_bootstrap_reproducible (test_rddr_phase2b0.RelationTests) ... ok
+test_boundary_width_is_full_resolution (test_rddr_phase2b0.RelationTests) ... ok
+test_confusion_absent_class (test_rddr_phase2b0.RelationTests) ... ok
+test_frozen_population_replay_counts (test_rddr_phase2b0.RelationTests) ... ok
+test_geometry_no_gt_padding_source (test_rddr_phase2b0.RelationTests) ... ok
+test_gt_used_only_in_metrics (test_rddr_phase2b0.RelationTests) ... ok
+test_js_matches_phase0_exactly (test_rddr_phase2b0.RelationTests) ... ok
+test_neighbor_distribution_sums_to_one (test_rddr_phase2b0.RelationTests) ... ok
+test_no_checkpoint_write (test_rddr_phase2b0.RelationTests) ... ok
+test_no_gradient (test_rddr_phase2b0.RelationTests) ... ok
+test_no_optimizer (test_rddr_phase2b0.RelationTests) ... ok
+test_no_test_luad_access (test_rddr_phase2b0.RelationTests) ... ok
+test_oracle_empty_no_fallback (test_rddr_phase2b0.RelationTests) ... ok
+test_pair_exact_hist_and_constant (test_rddr_phase2b0.RelationTests) ... ok
+test_q_range_0_1 (test_rddr_phase2b0.RelationTests) ... ok
+test_relation_score_range (test_rddr_phase2b0.RelationTests) ... ok
+test_self_edge_excluded (test_rddr_phase2b0.RelationTests) ... ok
+test_source_target_orientation_against_explicit_neighbors (test_rddr_phase2b0.RelationTests) ... ok
+test_srsc_no_gt_dependency (test_rddr_phase2b0.RelationTests) ... ok
+test_uniform_relation_constant (test_rddr_phase2b0.RelationTests) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 0.053s
+
+OK
