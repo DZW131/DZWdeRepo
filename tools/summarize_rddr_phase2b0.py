@@ -56,7 +56,10 @@ def main():
     manifest = json.loads((source / "rddr_phase2b0_population_manifest.json").read_text(encoding="utf-8"))
     assert runtime["images"] == 3418 and not runtime["smoke"]
     assert runtime["frozen_q_feature_max_abs_difference"] == 0 and runtime["unchanged_model_state"]
-    data = np.load(source / "rddr_phase2b0_sufficient_statistics.npz")
+    # Materialize small sufficient-statistic arrays once. NpzFile indexing
+    # otherwise decompresses an entire member at every per-image access.
+    with np.load(source / "rddr_phase2b0_sufficient_statistics.npz") as archive:
+        data = {key: archive[key] for key in archive.files}
     names, sums, counts = data["names"], data["sums"], data["counts"]
     means = ratio(sums, counts)
     cm, repair = data["cm"], data["repair"]
