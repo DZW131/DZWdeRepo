@@ -1,0 +1,152 @@
+{
+  "artifacts": [
+    {
+      "file": ".gitattributes",
+      "bytes": 35,
+      "sha256": "3e42af38b7ff4ec6da3fc88c2c98928889d91daeff9cc3ff83957a562986a6d6"
+    },
+    {
+      "file": "rddr_phase2b18_bf16_smoke.json",
+      "bytes": 480,
+      "sha256": "9c2e82fc8e1c6b9c1d9f2aa6f9280f6a4c0a0fd823077ef1e0cd0f3e2a678ecf"
+    },
+    {
+      "file": "rddr_phase2b18_bootstrap.csv",
+      "bytes": 1877,
+      "sha256": "69e132ddd3c0ace748ef3327b0600ea4cf6a0f4c7b3f7199e7f735be42125a2d"
+    },
+    {
+      "file": "rddr_phase2b18_bootstrap_replicates.csv",
+      "bytes": 3730649,
+      "sha256": "8c22fa2263a54e79c7ff2da22c754fa96da23d37ffb15d9623b3a480e7e7769a"
+    },
+    {
+      "file": "rddr_phase2b18_boundary_interior.csv",
+      "bytes": 843,
+      "sha256": "7e6dbfd90a928b72d3820c4db06da7ebe59bbcb7eb57f674ee96ace98c1c2bcd"
+    },
+    {
+      "file": "rddr_phase2b18_correct_wrong_safety.csv",
+      "bytes": 771,
+      "sha256": "de046cc65f02a2830dc6b0f9a4ba6fefdd38dc1dcebe4fa95fa7b038d712b344"
+    },
+    {
+      "file": "rddr_phase2b18_deep_shallow_win.csv",
+      "bytes": 1194,
+      "sha256": "c35cbc4443a3f5b0bf54cf1d6087cfd189fcb4266488aaabd4cd2cf2ad84e7dd"
+    },
+    {
+      "file": "rddr_phase2b18_detach_audit.json",
+      "bytes": 1640,
+      "sha256": "3fb8ac77a582e48da6b4908eaefadab72c821252006503c091cf3f644b01931f"
+    },
+    {
+      "file": "rddr_phase2b18_feature_gradient.csv",
+      "bytes": 1078,
+      "sha256": "c9cc28a87422e915c88b287d6096c3255ca957d9aca327f44ef919dcfed931fc"
+    },
+    {
+      "file": "rddr_phase2b18_gradient_localization.csv",
+      "bytes": 248,
+      "sha256": "161aaae27b10276ad68e267968876736e097019bf5af89b14a1565bd0455efc4"
+    },
+    {
+      "file": "rddr_phase2b18_hierarchy_direction.csv",
+      "bytes": 12087,
+      "sha256": "c226528b4846a20ebfd056886abd03232474e495c2557cc3b9e4d4d9cff7ed77"
+    },
+    {
+      "file": "rddr_phase2b18_identity_audit.json",
+      "bytes": 866,
+      "sha256": "a1c87bb7a4231c375140bbe234bda5d29475db36f57be369aa5511000da88bc9"
+    },
+    {
+      "file": "rddr_phase2b18_parameter_gradient.csv",
+      "bytes": 9403,
+      "sha256": "2b4f1e1a1116f238d03df52f45db0d58202453f1dcc12caeeeeab938e52552a6"
+    },
+    {
+      "file": "rddr_phase2b18_per_class.csv",
+      "bytes": 1363,
+      "sha256": "5d9d8479e5c0ae9f0e4c8e52c5946d950f0f5ff4e78adc1d6a24e861467dbef7"
+    },
+    {
+      "file": "rddr_phase2b18_per_image_losses.csv",
+      "bytes": 447133,
+      "sha256": "6e5b2a315a7199815eafd9d32596996e1007ac47ced3ef5d7bdcb16523e8bd20"
+    },
+    {
+      "file": "rddr_phase2b18_q_quintiles.csv",
+      "bytes": 1598,
+      "sha256": "b98793c8ebc48819cbb01d2eae5ef2be27624d864801460682a02b1ed1e98346"
+    },
+    {
+      "file": "rddr_phase2b18_raw_gradient.csv",
+      "bytes": 8893,
+      "sha256": "73dac6ab808bc6442a51699b774b705ad324840ba9320010f9fb20b01c2a0f72"
+    },
+    {
+      "file": "rddr_phase2b18_reconciliation_collapse.csv",
+      "bytes": 953,
+      "sha256": "8af169496faa68d40845d8398920aaba2b69800e6b6468d5f6b957374f757589"
+    },
+    {
+      "file": "rddr_phase2b18_runtime.json",
+      "bytes": 2418,
+      "sha256": "45e66ecfe67ff299b2e63d212b566cef4617844d8e08045fa95a6ee9ae16d7cf"
+    },
+    {
+      "file": "rddr_phase2b18_selection.json",
+      "bytes": 11272,
+      "sha256": "341cbbc24a5cd6d06250cc41c4f5576c1fc0efc2d59e1fd0ee36072c58bbaf10"
+    },
+    {
+      "file": "rddr_phase2b18_shared_head_diagnostic.csv",
+      "bytes": 636,
+      "sha256": "66e7dbea3ad7fc0657f544f67a979e1b24febc8411052d03ff057591d5e1ad68"
+    },
+    {
+      "file": "rddr_phase2b18_summary.json",
+      "bytes": 22129,
+      "sha256": "9f2244e4b55be903243a83c79aee0e826cf912e537c952006866533c30cacfcd"
+    },
+    {
+      "file": "rddr_phase2b18_teacher_advantage.csv",
+      "bytes": 2211,
+      "sha256": "0d17a0007af368dce8b65c587b9a18b2cbd6d817daf485cd8dec2f92a7eb2e8e"
+    },
+    {
+      "file": "rddr_phase2b18_teacher_raw_metrics.csv",
+      "bytes": 617,
+      "sha256": "519010238e4b8bafb2e7f32cb4345d9b6d639633cc13c6569cbe9f41f036c506"
+    },
+    {
+      "file": "rddr_phase2b18_teacher_raw_transition.csv",
+      "bytes": 1881,
+      "sha256": "b1c9aa13d90dd0d48292d7717c59d24a1129f1c789a214d00b32dffcd80a341f"
+    },
+    {
+      "file": "rddr_phase2b18_verification.json",
+      "bytes": 2068,
+      "sha256": "e69746ea2c004e475d4c9ae252fe3ed7f42a94e07751b936febfa09b0255b886"
+    },
+    {
+      "file": "unit_integration_tests.txt",
+      "bytes": 2909,
+      "sha256": "20b973a2218d34839ba69294233ac23c27ad3d7bf8148ab96a2cefaf3596ad6b"
+    }
+  ],
+  "report": {
+    "file": "rddr_phase2b18_prerectification_teacher_guidance_report.md",
+    "bytes": 42984,
+    "sha256": "d0ae9ce86e0f2fc0e0c42320593b85d0f3d41acb8f9555b0c9fe6a8e3d9808fb"
+  },
+  "observation_sha256": "740b2e80c9182e701509f5ed7a6fab4c8f1b6ddcd585df418ccefa9f288d8e52",
+  "source_sha256": {
+    "native": "767aa0f97ce2d53db2cc70e4fece0e181a44919f693184c2541490077e07325a",
+    "derived": "237268197426464ff4be2bb4761afddd1f1644eaaf66906e47439119d3c5d514",
+    "previous": "5ab5a048e932f27726cea7507685354f984432fb66b542b87b805cea24a72bd5",
+    "checkpoint": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579"
+  },
+  "note": "Manifest excludes itself; large caches remain server-only."
+}

@@ -1,0 +1,23 @@
+{
+  "state_before": "c56943fe7749a4ca8a9b66d08e5dfd1e83b95af04ae5a58d5009343c7b7090e5",
+  "state_after": "c56943fe7749a4ca8a9b66d08e5dfd1e83b95af04ae5a58d5009343c7b7090e5",
+  "state_unchanged": true,
+  "bn_unchanged": true,
+  "checkpoint_sha_before": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "checkpoint_sha_after": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "prediction_before": {
+    "images": 160,
+    "pixels": 8028160,
+    "sha256": "23e333ad8e5168c464cda0cfdaae1bed085bc4d304172166e4ca54b95fca8b93"
+  },
+  "prediction_after": {
+    "images": 160,
+    "pixels": 8028160,
+    "sha256": "23e333ad8e5168c464cda0cfdaae1bed085bc4d304172166e4ca54b95fca8b93"
+  },
+  "prediction_unchanged": true,
+  "raw_fixed160_exact": true,
+  "raw_gradient_replay_max_abs": 0.0,
+  "missing_keys": [],
+  "unexpected_keys": []
+}

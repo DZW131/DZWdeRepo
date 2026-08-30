@@ -1,0 +1,43 @@
+{
+  "code_commit": "56269a0bc292d8bc1c28e382c0980fcd8072ad4d",
+  "a0": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "images": 3418,
+  "command": "/home/duyanhong/miniconda3/envs/sshr5090/bin/python tools/run_rddr_phase2b18_audit.py --native /home/duyanhong/experiments/RDDR_PHASE2B1/formal_r1/rddr_phase2b1_native_observations.npz --derived /home/duyanhong/experiments/RDDR_PHASE2B15/formal_r1/rddr_phase2b15_derived_observations.npz --previous /home/duyanhong/experiments/RDDR_PHASE2B16/formal_r1/rddr_phase2b16_gradient_observations.npz --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --val-images /home/duyanhong/reseg-data/raw/BCSS-WSSS/val/img --output /home/duyanhong/experiments/RDDR_PHASE2B18/formal_r1",
+  "paths": {
+    "native": "/home/duyanhong/experiments/RDDR_PHASE2B1/formal_r1/rddr_phase2b1_native_observations.npz",
+    "derived": "/home/duyanhong/experiments/RDDR_PHASE2B15/formal_r1/rddr_phase2b15_derived_observations.npz",
+    "previous": "/home/duyanhong/experiments/RDDR_PHASE2B16/formal_r1/rddr_phase2b16_gradient_observations.npz",
+    "checkpoint": "/home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth"
+  },
+  "source_sha256": {
+    "native": "767aa0f97ce2d53db2cc70e4fece0e181a44919f693184c2541490077e07325a",
+    "derived": "237268197426464ff4be2bb4761afddd1f1644eaaf66906e47439119d3c5d514",
+    "previous": "5ab5a048e932f27726cea7507685354f984432fb66b542b87b805cea24a72bd5",
+    "checkpoint": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579"
+  },
+  "observation_sha256": "740b2e80c9182e701509f5ed7a6fab4c8f1b6ddcd585df418ccefa9f288d8e52",
+  "parity": {
+    "ps": 0.0,
+    "pd": 0.0,
+    "teacher": 0.0,
+    "q": 5.960464477539063e-08,
+    "raw_frozen_head_logits": 0.0,
+    "rect_logits": 0.0
+  },
+  "parity_seconds": 24.359336541005177,
+  "gradient_seconds": 45.89549114900001,
+  "total_seconds": 82.76400499600277,
+  "torch": "2.11.0+cu128",
+  "numpy": "1.23.5",
+  "gpu": "NVIDIA GeForce RTX 5090 D v2",
+  "precision": "BF16 forward/backward; FP32 loss/logit/q gradients; FP64 statistics",
+  "optimizer_created": false,
+  "optimizer_steps": 0,
+  "checkpoint_written": false,
+  "test_access": false,
+  "luad_access": false,
+  "training_split_access": false,
+  "original_sources_changed": false,
+  "all_finite": true,
+  "dataset_files_accessed": 3578
+}
