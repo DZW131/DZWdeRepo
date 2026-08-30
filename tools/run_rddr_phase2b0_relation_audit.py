@@ -22,7 +22,7 @@ sys.path.insert(0, str(ROOT))
 from tools.rddr_phase2b0_common import (
     A0, CKPT_SHA, EPS, BINS, VARIANTS, GROUPS, PAIR_GROUPS, FIELDS, ESTIMATORS,
     sha256, write_json, binary_hist, binary_metrics, exact_binary_metrics,
-    build_relations, relation_gt_metrics, project, boundary_masks, populations,
+    build_relations, relation_gt_metrics, project, boundary_masks, populations, phase0_js,
     confusion, nanmean,
 )
 
@@ -148,6 +148,7 @@ def main():
     finite_zero_fg_neighbors = 0
     exact_rows, names = [], []
     phase0_q_maxdiff = 0.
+    torch_numpy_q_maxdiff = 0.
     forward_seconds = stat_seconds = 0.
     torch.cuda.reset_peak_memory_stats()
     forward_start = time.perf_counter()
@@ -174,7 +175,10 @@ def main():
             with np.load(Path(args.population_cache) / (image_id + ".npz")) as cache:
                 group = {k: project(v).astype(bool).ravel() for k, v in populations(cache, truth_full).items()}
                 q_feature = cache["q_feature"].copy()
-            q_live = rel["q"][0].cpu().numpy()
+            # Original cache divided by ln2 in NumPy, not torch. Compare the
+            # exact original arithmetic; record torch division rounding apart.
+            q_live = phase0_js(ps, pd)[0].cpu().numpy() / math.log(2)
+            torch_numpy_q_maxdiff = max(torch_numpy_q_maxdiff, float(np.abs(rel["q"][0].cpu().numpy()-q_live).max()))
             diff = float(np.abs(q_live-q_feature).max())
             phase0_q_maxdiff = max(phase0_q_maxdiff, diff)
             assert diff == 0., ("Frozen feature q mismatch", image_id, diff)
@@ -265,6 +269,7 @@ def main():
                    checkpoint_missing_keys=load_info.missing_keys, checkpoint_unexpected_keys=load_info.unexpected_keys,
                    model_state_digest_before_after=digest_before, unchanged_model_state=True,
                    frozen_q_feature_max_abs_difference=phase0_q_maxdiff,
+                   torch_vs_numpy_q_division_max_abs_difference=torch_numpy_q_maxdiff,
                    target_count=int(population_counts[:, 0].sum()),
                    foreground_pair_count=int(pair_hist[0, 0].sum()),
                    foreground_targets_without_foreground_source=finite_zero_fg_neighbors,
