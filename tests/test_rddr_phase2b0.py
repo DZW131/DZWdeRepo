@@ -44,9 +44,9 @@ class RelationTests(unittest.TestCase):
     def test_gt_used_only_in_metrics(self):
         args = list(inspect.signature(c.build_relations).parameters)
         self.assertEqual(args, ["ps", "pd"])
-        source = inspect.getsource(c.build_relations)
-        self.assertNotIn("truth", source)
-        self.assertNotIn("oracle", source)
+        tree = ast.parse(inspect.getsource(c.build_relations))
+        identifiers = {v.id for v in ast.walk(tree) if isinstance(v, ast.Name)}
+        self.assertFalse(identifiers & {"truth", "gt", "oracle", "mask", "labels"})
 
     def test_15x15_window_contract(self):
         v = self.rel["valid"][0]
