@@ -1,0 +1,66 @@
+{
+  "new_checks": {
+    "all_input_sha_unchanged": true,
+    "original_sources_unchanged": true,
+    "checkpoint_sha": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+    "new_model_state_bn_prediction_test": false,
+    "model_instantiated": false,
+    "network_forward": false,
+    "backward": false,
+    "autograd": false,
+    "optimizer_created": false,
+    "optimizer_steps": 0,
+    "checkpoint_written": false,
+    "threshold_search": false,
+    "score_fusion": false,
+    "classifier_fit": false,
+    "test_access": false,
+    "luad_access": false,
+    "training_split_access": false,
+    "new_gate_design": false
+  },
+  "inherited_phase110_identity": {
+    "new_checks": {
+      "all_input_files_sha_unchanged": true,
+      "checkpoint_sha_before": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+      "checkpoint_sha_after": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+      "original_sources_unchanged": true,
+      "model_instantiated": false,
+      "network_forward": false,
+      "backward": false,
+      "optimizer_created": false,
+      "optimizer_steps": 0,
+      "checkpoint_written": false,
+      "new_state_bn_prediction_test": false
+    },
+    "inherited_phase2b19_identity": {
+      "state_before": "c56943fe7749a4ca8a9b66d08e5dfd1e83b95af04ae5a58d5009343c7b7090e5",
+      "state_after": "c56943fe7749a4ca8a9b66d08e5dfd1e83b95af04ae5a58d5009343c7b7090e5",
+      "state_unchanged": true,
+      "bn_before": "948d1a55cad3cbd0aee55b8aaf66a430ad0d788ae34a8693390b814d73eca293",
+      "bn_after": "948d1a55cad3cbd0aee55b8aaf66a430ad0d788ae34a8693390b814d73eca293",
+      "bn_unchanged": true,
+      "checkpoint_sha_before": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+      "checkpoint_sha_after": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+      "prediction_before": {
+        "images": 160,
+        "pixels": 8028160,
+        "sha256": "23e333ad8e5168c464cda0cfdaae1bed085bc4d304172166e4ca54b95fca8b93"
+      },
+      "prediction_after": {
+        "images": 160,
+        "pixels": 8028160,
+        "sha256": "23e333ad8e5168c464cda0cfdaae1bed085bc4d304172166e4ca54b95fca8b93"
+      },
+      "prediction_unchanged": true,
+      "raw_fixed160_exact": true,
+      "raw_gradient_replay_max_abs": 0.0,
+      "missing_keys": [],
+      "unexpected_keys": []
+    },
+    "inherited_identity_sha256": "4adffe179ac328db9ce922c7c7ab3f18de759c1cb0cff6bbd09631cde3cd6637",
+    "note": "Prior state/BN/prediction hashes are inherited evidence, not newly rerun tests. Current process never creates a model."
+  },
+  "inherited_sha256": "9a5e40333ed7431da9838b2b903bb2e69affb8c16b98dbd5b579504fd4c2f071",
+  "note": "Prior model/state/BN/prediction evidence is inherited, not a new model test."
+}

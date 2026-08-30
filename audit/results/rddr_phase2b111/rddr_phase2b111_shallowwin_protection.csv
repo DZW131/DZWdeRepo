@@ -1,0 +1,3 @@
+group,denominator,population_count,candidate,activation_rate,hard_harm_count,hard_harm_rate,third_intrusion_rate,rescue_count,rescue_rate,candidate_precision,unconditional_ctx_accuracy,count,beneficial,harmful,zero,benefit_rate,harm_rate,zero_rate,mean_dm,median_dm
+ShallowWin,full_residual_group,144662,8529,0.058958123073094525,8529,0.058958123073094525,0.058958123073094525,0,0.0,0.0,0.7318300590341624,144662,469,8060,136133,0.0032420400658085746,0.05571608300728595,0.9410418769269054,-0.024170979589987287,0.0
+ShallowWin,active_only,8529,8529,1.0,8529,1.0,1.0,0,0.0,0.0,0.0,8529,469,8060,0,0.05498886153124634,0.9450111384687536,0.0,-0.40996860704030264,-0.3808907726535865

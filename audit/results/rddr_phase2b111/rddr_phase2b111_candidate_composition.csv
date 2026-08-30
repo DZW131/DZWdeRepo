@@ -1,0 +1,7 @@
+group,count,fraction
+BothWrong_ctx_correct,108541,0.5355341971008201
+BothWrong_ctx_wrong,19165,0.09455885690602828
+DeepWin_intrusion,9966,0.04917159237805781
+ShallowWin_intrusion,8529,0.042081528335586496
+StableCorrect_intrusion,56477,0.2786538252795074
+other,0,0.0
