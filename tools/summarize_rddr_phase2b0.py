@@ -163,7 +163,7 @@ def main():
                 "RELATION_EXISTS_NO_PROPAGATION_UTILITY" if not gates["D"] else "RDDR_PHASE2B0_GO")
     target_rows = []
     for k, name in enumerate(("purity", "purity_gain", "negative_wrong_mass")):
-        target_rows.append(dict(score=name, positive="Corrected_by_CH", **binary_metrics(data["target_hist"][k]),
+        target_rows.append(dict(score=name, positive_label="Corrected_by_CH", **binary_metrics(data["target_hist"][k]),
                                **{x: y for x, y in ci["target_AUROC_"+name].items() if x != "metric"}))
     summary = dict(decision=decision, gates=gates, primary_comparison="SRSC_vs_U", ci=ci, images=n,
                    checkpoint_sha256=runtime["checkpoint_sha256"], extraction_commit=runtime["commit"],
