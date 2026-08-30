@@ -97,7 +97,7 @@ def main():
     pt=old['anchor_sym'].astype(float);q=data['q_feature'].astype(float)
     kl=(pt*(np.log(pt+1e-8)-np.log(p+1e-8))).sum(1)
     raw={'U':prev['gradients'][:,0],'CCA':prev['gradients'][:,2],'HA':obs['gradients'][:,0],'SA':obs['gradients'][:,1]};dm={};norm={}
-    loss_error=grad_error=0.
+    loss_error=grad_error=0.;analytic64={}
     others=np.array([[j for j in range(4) if j!=c] for c in range(4)])[y.clip(0,3)].transpose(0,2,1)
     lc=np.take_along_axis(log,others,axis=1);tied=lc==lc.max(1,keepdims=True)
     for j,(mode,g) in enumerate(raw.items()):
@@ -108,11 +108,36 @@ def main():
         expected_loss=(w*kl).sum(1);a=pt*p/(p+1e-8);expected_grad=(p*a.sum(1,keepdims=True)-a)*w[:,None]
         loss_error=max(loss_error,float(np.abs(expected_loss-obs['losses'][:,j]).max()))
         grad_error=max(grad_error,float(np.abs(expected_grad-g).max()))
+        if mode in ('HA','SA'):analytic64[mode]=expected_grad
         move=-g;true_move=np.take_along_axis(move,y.clip(0,3)[:,None],axis=1)[:,0]
         other_move=np.take_along_axis(move,others,axis=1)
         dm[mode]=true_move-np.where(tied,other_move,-np.inf).max(1);norm[mode]=np.sqrt((g.astype(float)**2).sum(1))
     errors.update(analytic_gradient_max_abs=grad_error,loss_max_abs=loss_error)
-    checks['independent_ha_sa_analytic_gradient']=grad_error<2e-8;checks['independent_loss_denominator']=loss_error<1e-5
+    # Compare like precision to like precision. A fixed FP64-vs-FP32 absolute
+    # bound is inappropriate for normalized SA gradients that can be ~0.58.
+    # The initial report_r2 absolute-only check is preserved; do not change any
+    # primary gradients, scores, thresholds, labels or gates to pass verification.
+    exact32=0.;math64=0.
+    for i in range(n):
+        for dtype in (torch.float32,torch.float64):
+            L=torch.as_tensor(prev['logits'][i:i+1].reshape(1,4,28,28),device='cuda',dtype=dtype).requires_grad_()
+            t=torch.as_tensor(old['anchor_sym'][i:i+1].reshape(1,4,28,28),device='cuda',dtype=dtype)
+            qq=torch.as_tensor(data['q_feature'][i:i+1].reshape(1,28,28),device='cuda',dtype=dtype)
+            dd=torch.as_tensor(delta[i:i+1].reshape(1,28,28),device='cuda',dtype=dtype)
+            for mode in ('HA','SA'):
+                pL=L.softmax(1)
+                weighted_q=qq*((dd>0) if mode=='HA' else dd.relu())
+                klL=(t*(torch.log(t+1e-8)-torch.log(pL+1e-8))).sum(1)
+                loss=(weighted_q*klL).sum()/(weighted_q.sum()+1e-8)
+                gg,=torch.autograd.grad(loss,L)
+                got=gg.detach().flatten(2).cpu().numpy()[0]
+                reference=raw[mode][i] if dtype==torch.float32 else analytic64[mode][i]
+                difference=float(np.max(np.abs(got-reference)))
+                if dtype==torch.float32:exact32=max(exact32,difference)
+                else:math64=max(math64,difference)
+    errors.update(independent_fp32_gradient_replay_max_abs=exact32,independent_fp64_autograd_vs_formula_max_abs=math64)
+    checks['independent_ha_sa_analytic_gradient']=exact32==0 and math64<1e-12
+    checks['independent_loss_denominator']=loss_error<1e-5
     checks['all_gradients_finite']=all(np.isfinite(g).all() for g in raw.values())
     checks['rejected_zero_gradient']=all(not np.any(g.transpose(0,2,1)[~accept]!=0) for k,g in raw.items() if k in ('HA','SA'))
     checks['accepted_direction_preserved']=all(not np.any((np.sign(dm[k])!=np.sign(dm['CCA']))&accept&fg) for k in ('HA','SA'))
@@ -212,6 +237,7 @@ def main():
     result=dict(status='PASS' if all(checks.values()) else 'FAIL',checks={k:bool(v) for k,v in checks.items()},errors=errors,
                 method='all3418 independent explicit-neighbor CUDA gather; SciPy average ranks/AP; FP64 analytical epsilon-KL; NumPy gather-sum bootstrap',
                 support_sign_note='Independent reduction order can differ near FP32 zero. Primary fixed Delta is never replaced or retuned.',
+                precision_verification_note='Initial absolute-only FP64-vs-FP32 check failed at 9.99e-8 for a 0.5835 SA gradient (relative 1.71e-7). Replaced by stricter exact independent FP32 replay AND FP64-autograd/analytic agreement; all primary arrays unchanged. Initial verification preserved in report_r2.',
                 images=n,resamples=10000,command=shlex.join([sys.executable,*sys.argv]),code_commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip())
     dest.write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2));assert result['status']=='PASS'
 
