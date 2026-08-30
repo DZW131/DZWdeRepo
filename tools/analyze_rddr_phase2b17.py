@@ -10,7 +10,7 @@ from pathlib import Path
 import numpy as np
 
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
-from tools.rddr_phase2b16_common import sha256,write_json,write_csv,margin_direction,bootstrap_indices
+from tools.rddr_phase2b16_common import sha256,write_json,write_csv,margin_direction,bootstrap_indices,clean
 from tools.rddr_phase2b17_common import PREFIX,MODES,HFRM_GROUPS,groups,rank_metrics,sign_metrics,decide
 
 
@@ -194,7 +194,7 @@ def main():
                  bootstrap_rng_sha256=rng_sha.hexdigest(),bootstrap_resamples=10000,analysis_seconds=time.perf_counter()-start,
                  command=shlex.join([sys.executable,*sys.argv]),run=str(run),optimizer_steps=0,test_access=False,full25_started=False,search=False)
     write_json(out/(PREFIX+'summary.json'),summary)
-    print(json.dumps({k:summary[k] for k in ('decision','gate_A','gate_B','gate_C','gate_D','engineering','winner','gradient_discrimination','HA_key','acceptance_rate')},indent=2),flush=True)
+    print(json.dumps(clean({k:summary[k] for k in ('decision','gate_A','gate_B','gate_C','gate_D','engineering','winner','gradient_discrimination','HA_key','acceptance_rate')}),indent=2),flush=True)
 
 
 if __name__=='__main__':main()
