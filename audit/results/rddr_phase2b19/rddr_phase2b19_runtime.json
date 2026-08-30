@@ -1,0 +1,48 @@
+{
+  "code_commit": "5f74edae64d36d2eeb4cbb716b37479f67b9ed9d",
+  "a0": "4e9a2887b220d17e27649d72a3d13f32b7ebe8f9",
+  "images": 3418,
+  "command": "/home/duyanhong/miniconda3/envs/sshr5090/bin/python tools/run_rddr_phase2b19_audit.py --native /home/duyanhong/experiments/RDDR_PHASE2B1/formal_r1/rddr_phase2b1_native_observations.npz --derived /home/duyanhong/experiments/RDDR_PHASE2B15/formal_r1/rddr_phase2b15_derived_observations.npz --previous /home/duyanhong/experiments/RDDR_PHASE2B18/formal_r1/rddr_phase2b18_observations.npz --checkpoint /home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth --val-images /home/duyanhong/reseg-data/raw/BCSS-WSSS/val/img --output /home/duyanhong/experiments/RDDR_PHASE2B19/formal_r1",
+  "paths": {
+    "native": "/home/duyanhong/experiments/RDDR_PHASE2B1/formal_r1/rddr_phase2b1_native_observations.npz",
+    "derived": "/home/duyanhong/experiments/RDDR_PHASE2B15/formal_r1/rddr_phase2b15_derived_observations.npz",
+    "previous": "/home/duyanhong/experiments/RDDR_PHASE2B18/formal_r1/rddr_phase2b18_observations.npz",
+    "checkpoint": "/home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth"
+  },
+  "source_sha256": {
+    "native": "767aa0f97ce2d53db2cc70e4fece0e181a44919f693184c2541490077e07325a",
+    "derived": "237268197426464ff4be2bb4761afddd1f1644eaaf66906e47439119d3c5d514",
+    "previous": "740b2e80c9182e701509f5ed7a6fab4c8f1b6ddcd585df418ccefa9f288d8e52",
+    "checkpoint": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579"
+  },
+  "observation_sha256": "d4f65c519920c010e307ba8f32fb8e110387e0e14db73baa7c43163072ad0f1a",
+  "random_gate_sha256": "6f5e9e2a667fc96f6246fbd5990249b9f0cbffba4fffa626075c976171876d2a",
+  "qgrad_replay_max_abs": 0.0,
+  "parity": {
+    "ps": 0.0,
+    "pd": 0.0,
+    "q": 5.960464477539063e-08,
+    "raw_frozen_head_logits": 0.0,
+    "raw_previous_logits": 0.0,
+    "delta_stored": 0.0,
+    "delta_recomputed": 0.0,
+    "supports": 0.0
+  },
+  "recomputed_gate_mismatches": 0,
+  "parity_seconds": 23.925360130000627,
+  "gradient_seconds": 32.97572117499658,
+  "total_seconds": 68.14581267000176,
+  "torch": "2.11.0+cu128",
+  "numpy": "1.23.5",
+  "gpu": "NVIDIA GeForce RTX 5090 D v2",
+  "precision": "BF16 network; FP32 loss/logit/q; FP64 statistics",
+  "optimizer_created": false,
+  "optimizer_steps": 0,
+  "checkpoint_written": false,
+  "test_access": false,
+  "luad_access": false,
+  "training_split_access": false,
+  "original_sources_changed": false,
+  "all_finite": true,
+  "dataset_files_accessed": 3578
+}

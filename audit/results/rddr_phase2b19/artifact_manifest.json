@@ -1,0 +1,133 @@
+{
+  "files": {
+    "rddr_phase2b19_active_only.csv": {
+      "bytes": 6272,
+      "sha256": "2464b81221bfe0ba0e75075de60ec5ab0faef7e0b364be2c1cf49b1cd8095fdd"
+    },
+    "rddr_phase2b19_adjudication_precision.csv": {
+      "bytes": 1412,
+      "sha256": "a8a5f6dbb40e1ea59c0c5e94c55e0da167efd885022f0d9d7c2f40dee89759f4"
+    },
+    "rddr_phase2b19_adjudication_replay.csv": {
+      "bytes": 2814,
+      "sha256": "8d1b457bd8e617dc15b0be199f895439c418d9bde31feb07fe7a042e3e163320"
+    },
+    "rddr_phase2b19_bf16_smoke.json": {
+      "bytes": 593,
+      "sha256": "bc98347480b101630080531604cd444b79eda2a7895cd950571ead7972dc252e"
+    },
+    "rddr_phase2b19_bootstrap.csv": {
+      "bytes": 2452,
+      "sha256": "17275cd4f7962a55a524f0a411b0fe786eadd1abbf74a8db9dd547b815209a31"
+    },
+    "rddr_phase2b19_bootstrap_replicates.csv": {
+      "bytes": 4918879,
+      "sha256": "afb182c026ec638ef99002071c5bd0e23171dec3d29ec4ca62713e228c6d6b09"
+    },
+    "rddr_phase2b19_bothwrong_stablecorrect.csv": {
+      "bytes": 1195,
+      "sha256": "e48b4c799d612bf72edc811b343b2587ceee16a7583bcaecb6bbd80d27a79c1a"
+    },
+    "rddr_phase2b19_boundary_interior.csv": {
+      "bytes": 1506,
+      "sha256": "fd291cd0543043235e7412b6bb085f9f038fdea8e16293b73c88446e3897c71a"
+    },
+    "rddr_phase2b19_brr_hhcr.csv": {
+      "bytes": 8292,
+      "sha256": "3fc7113953a72dde3ef01e099b21b578b9c43bbaf85efe8f6dc0a985618ebd7f"
+    },
+    "rddr_phase2b19_deepwin.csv": {
+      "bytes": 816,
+      "sha256": "1ce3d8f1756d7c5a454d04a0842818ce8aa4b173a2d43f796e16b145359f9e64"
+    },
+    "rddr_phase2b19_detach_audit.json": {
+      "bytes": 1600,
+      "sha256": "a9fe3a11d4b0c761d4c33000962d43a1a3b4d67365b094d258e1e8c192113cd9"
+    },
+    "rddr_phase2b19_feature_gradient.csv": {
+      "bytes": 1936,
+      "sha256": "25df467133ed373af0bc6d4307580d5dffbac0b251c4789f99726efe620ca7bf"
+    },
+    "rddr_phase2b19_gradient_controls.csv": {
+      "bytes": 21781,
+      "sha256": "8fda44ab808dab4bdd08a3bf96684c06e24d69b604235eeb0d33060af53d1e50"
+    },
+    "rddr_phase2b19_gradient_localization.csv": {
+      "bytes": 805,
+      "sha256": "03d3d7fc7e4237d8640f240231fd73ed944978ae55e808d2e44b9fadca27db4f"
+    },
+    "rddr_phase2b19_historical_comparison.csv": {
+      "bytes": 2474,
+      "sha256": "b557a70d92d2409126dfb64a2a14bf2a91401dc0f2fe62d1014c2760dc4deccc"
+    },
+    "rddr_phase2b19_identity_audit.json": {
+      "bytes": 1031,
+      "sha256": "4adffe179ac328db9ce922c7c7ab3f18de759c1cb0cff6bbd09631cde3cd6637"
+    },
+    "rddr_phase2b19_parameter_gradient.csv": {
+      "bytes": 4016,
+      "sha256": "e2be3ea4fc083528e523f8f50db34a9198986b74a296f4a25d7382454acf6911"
+    },
+    "rddr_phase2b19_per_class.csv": {
+      "bytes": 2579,
+      "sha256": "1f2e826b68b8ad2a7ff96257a8c20b75db47f18fe1512990ce03587a31fc29ef"
+    },
+    "rddr_phase2b19_per_image_losses.csv": {
+      "bytes": 463184,
+      "sha256": "0b7b55ca87c0ad113cd9c63ebaa05cc5262e4716c6d379ab33b79f267eeff7ac"
+    },
+    "rddr_phase2b19_q_direction_grid.csv": {
+      "bytes": 1308,
+      "sha256": "dbd231b693be822cfe0b90da68b456d0c7b01c14799d6b9360f05c818dd359ae"
+    },
+    "rddr_phase2b19_random_gate.csv": {
+      "bytes": 3058,
+      "sha256": "bcb33dcdbc521a23034f7d79063fff19c248caa3ab8ed90d0dfa20d64fd86953"
+    },
+    "rddr_phase2b19_raw_correct_wrong.csv": {
+      "bytes": 1299,
+      "sha256": "a16f3075d6ec2d8d5a99c431fc67dd93df239d88944091a6f15f80d3f016429d"
+    },
+    "rddr_phase2b19_runtime.json": {
+      "bytes": 2602,
+      "sha256": "bb54ae356e1258baabd8795894c51d12d5532137ac352cf1d6d0c4c88d3f48a0"
+    },
+    "rddr_phase2b19_selected_region_quality.csv": {
+      "bytes": 3623,
+      "sha256": "46867fb2d0e032ea16f78513f66fedd0d79a2a1a2cd55bdf5588c73895754550"
+    },
+    "rddr_phase2b19_selection.json": {
+      "bytes": 11272,
+      "sha256": "1dd6f5bb49f63203f4b5651d62a49ac622367e81d520f45b4d25b20096f0a07e"
+    },
+    "rddr_phase2b19_shallowwin.csv": {
+      "bytes": 870,
+      "sha256": "c0568c04d6e709f8133d0369d2bfd7b5bf102ab1c5cf850d254320e223fc036c"
+    },
+    "rddr_phase2b19_soft_directional.csv": {
+      "bytes": 6300,
+      "sha256": "44593e34e3260124428b14b2f640587b2f46a8a4bcf4577de522c57b8c332cd9"
+    },
+    "rddr_phase2b19_summary.json": {
+      "bytes": 13252,
+      "sha256": "84e009170aa335c0f625afdc097f86369e709ea004903881d10b9c264c7a0eb7"
+    },
+    "rddr_phase2b19_tests.txt": {
+      "bytes": 3960,
+      "sha256": "a49c1712a1747cb7c08dc1046d1e07c3d4ca655717ce3584cc6d83e108ac89ba"
+    },
+    "rddr_phase2b19_transfer_coverage.csv": {
+      "bytes": 1041,
+      "sha256": "496a2e6bb9f133ae90709c260f4f5722a08e452232524a476546cc64ece9ed99"
+    },
+    "rddr_phase2b19_verification.json": {
+      "bytes": 2115,
+      "sha256": "3e884795ee257ed08923da76f7c34dc0cbc4647d1583fe8e81c6784320ef977b"
+    }
+  },
+  "report": {
+    "path": "G:\\05_科研工作\\SSHR\\DZWdeRepo-rddr-phase2b19\\docs\\rddr_phase2b19_directional_transfer_report.md",
+    "bytes": 43440,
+    "sha256": "3b8ec5930a12eb8f40f2fb3750881cf2804e96d4f62ca9083797f18125551347"
+  }
+}
