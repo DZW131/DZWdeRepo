@@ -1,0 +1,19 @@
+{
+  "batch": 20,
+  "loss": 1.1699715852737427,
+  "active_transfer_fraction": 0.2790816128253937,
+  "seconds": 0.08161432899942156,
+  "allocated_bytes": 2616493568,
+  "reserved_bytes": 2730491904,
+  "budget_bytes": 23622320128,
+  "all_finite": true,
+  "upstream_conv_energy": 56.63577010019884,
+  "head_energy": 0.0,
+  "q_detached": true,
+  "delta_detached": true,
+  "gate_detached": true,
+  "source_ps_grad_none": true,
+  "deep_source_grad_none": true,
+  "scope": "temporary b4-stage/bn45 backward; live batch20 adjudication, not main batch1 cache; NOT full training memory",
+  "pass": true
+}

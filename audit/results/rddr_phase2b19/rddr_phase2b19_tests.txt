@@ -1,0 +1,57 @@
+test_active_direction_matches_deep_transfer (test_rddr_phase2b19.FormulaTests) ... ok
+test_adt_formula (test_rddr_phase2b19.FormulaTests) ... ok
+test_all_rejected_zero_loss_gradient (test_rddr_phase2b19.FormulaTests) ... ok
+test_bootstrap_reproducible (test_rddr_phase2b19.FormulaTests) ... ok
+test_decision_precedence (test_rddr_phase2b19.FormulaTests) ... ok
+test_direction_gate_formula (test_rddr_phase2b19.FormulaTests) ... ok
+test_dq_direction (test_rddr_phase2b19.FormulaTests) ... ok
+test_gt_margin_tie_direction (test_rddr_phase2b19.FormulaTests) ... ok
+test_ic1_detached (test_rddr_phase2b19.FormulaTests) ... ok
+test_no_gt_in_loss (test_rddr_phase2b19.FormulaTests) ... ok
+test_no_optimizer_step_in_runner (test_rddr_phase2b19.FormulaTests) ... ok
+test_q_delta_gate_deep_detached (test_rddr_phase2b19.FormulaTests) ... ok
+test_random_gate_rate_match (test_rddr_phase2b19.FormulaTests) ... ok
+test_random_gate_seed42_reproducible (test_rddr_phase2b19.FormulaTests) ... ok
+test_random_loss_formula (test_rddr_phase2b19.FormulaTests) ... ok
+test_rejected_logit_gradient_zero (test_rddr_phase2b19.FormulaTests) ... ok
+test_soft_directional_formula (test_rddr_phase2b19.FormulaTests) ... ok
+test_tie_preserves_shallow (test_rddr_phase2b19.FormulaTests) ... ok
+test_udt_formula (test_rddr_phase2b19.FormulaTests) ... ok
+test_zero_threshold_no_search (test_rddr_phase2b19.FormulaTests) ... ok
+test_active_direction_matches_deep_transfer (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_adt_formula (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_all_gates_independent (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_batch20_bf16 (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_bn_identity (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_bootstrap_reproducible (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_brr_definition (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_checkpoint_identity (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_class_power (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_deep_target_detached (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_delta_detached (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_dq_direction (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_gate_detached (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_gt_margin_tie_direction (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_hfrm_no_grad (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_hhcr_definition (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_ic1_detached (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_no_optimizer (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_no_step (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_no_test_luad (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_original_a0_untouched (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_phase2b15_delta_sym_exact_replay (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_phase2b18_raw_logits_exact_replay (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_prediction_identity (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_q_detached (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_q_exact_replay (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_random_gate_rate_match (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_random_gate_seed42_reproducible (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_rejected_logit_gradient_zero (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_soft_directional_formula (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_udt_formula (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+test_upstream_grad_nonzero (test_rddr_phase2b19_artifacts.ArtifactTests) ... ok
+
+----------------------------------------------------------------------
+Ran 52 tests in 0.151s
+
+OK
