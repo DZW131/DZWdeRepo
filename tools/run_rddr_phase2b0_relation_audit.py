@@ -145,6 +145,7 @@ def main():
     repair = np.zeros((n, len(GROUPS), len(ESTIMATORS), 3), dtype=np.int64)  # repair,harm,count
     echo = np.zeros((n, len(GROUPS), 5), dtype=np.int64)  # echo,count,not echo,SCorrectDWrong,SWrongDCorrect
     population_counts = np.zeros((n, len(GROUPS)), dtype=np.int64)
+    oracle_diag = np.zeros((n, 3))  # purity sum, valid target count, mass sum
     finite_zero_fg_neighbors = 0
     exact_rows, names = [], []
     phase0_q_maxdiff = 0.
@@ -194,9 +195,14 @@ def main():
             raw_pred, deep_pred = ps_np.argmax(0), pd_np.argmax(0)
             group["Deep_Correct"] = group["all"] & (deep_pred == truth)
             group["Deep_Wrong"] = group["all"] & (deep_pred != truth)
+            group["Top20_Deep_Correct"] = group["Top20"] & group["Deep_Correct"]
+            group["Top20_Deep_Wrong"] = group["Top20"] & group["Deep_Wrong"]
             distributions = np.concatenate([rel["distribution"][0].cpu().numpy(), ps_np[None], pd_np[None], gt["oracle"][0].cpu().numpy()[None]])
             predictions = distributions.argmax(1)
             oracle_valid = gt["oracle_valid"][0].cpu().numpy()
+            oracle_mass = gt["same"][0].sum(0).float().cpu().numpy()
+            oracle_diag[index] = [float((oracle_mass[oracle_valid]/(oracle_mass[oracle_valid]+EPS)).sum(dtype=np.float64)),
+                                  int(oracle_valid.sum()), float(oracle_mass[oracle_valid].sum(dtype=np.float64))]
             weights = rel["weights"][0].cpu().numpy()
             eligible = gt["eligible"][0].cpu().numpy()
             same = gt["same"][0].cpu().numpy()
@@ -261,7 +267,7 @@ def main():
     np.savez_compressed(output / "rddr_phase2b0_sufficient_statistics.npz", names=np.array(names),
                         sums=sums, counts=counts, value_hist=value_hist, pair_hist=pair_hist, pair_values=pair_values,
                         target_hist=target_hist, target_auc=target_auc, cm=cm, proper=proper,
-                        repair=repair, echo=echo, population_counts=population_counts)
+                        repair=repair, echo=echo, population_counts=population_counts, oracle_diag=oracle_diag)
     from tools.rddr_phase2b0_common import write_csv
     write_csv(output / "rddr_phase2b0_histogram_validation.csv", exact_rows)
     runtime = dict(commit=commit, a0_commit=A0, checkpoint=args.checkpoint, checkpoint_sha256=CKPT_SHA,

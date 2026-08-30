@@ -20,7 +20,7 @@ VARIANTS = ("U", "SR", "SC", "SRSC")
 GROUPS = ("all", "Corrected_by_CH", "Still_Wrong", "Harmed_by_CH",
           "Stable_Correct", "Top20", "Bottom80", "Q1", "Q2", "Q3", "Q4", "Q5",
           "boundary", "interior", "class0", "class1", "class2", "class3",
-          "Deep_Correct", "Deep_Wrong")
+          "Deep_Correct", "Deep_Wrong", "Top20_Deep_Correct", "Top20_Deep_Wrong")
 PAIR_GROUPS = ("all", "boundary", "interior", "class0", "class1", "class2", "class3")
 FIELDS = ("purity", "mass", "neff", "same_mass", "wrong_mass", "fg_mass")
 ESTIMATORS = (*VARIANTS, "raw", "deep", "oracle")
