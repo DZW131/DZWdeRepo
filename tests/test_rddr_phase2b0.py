@@ -132,6 +132,25 @@ class RelationTests(unittest.TestCase):
         self.assertTrue(torch.allclose(rel["distribution"], torch.full_like(rel["distribution"], .25)))
         self.assertTrue(torch.allclose(rel["neff"][:, 0], rel["mass"][:, 0]))
 
+    def test_source_target_orientation_against_explicit_neighbors(self):
+        for ty, tx in ((0, 0), (14, 14), (27, 10)):
+            total = torch.zeros(4)
+            mass = 0.
+            for sy in range(max(0, ty-7), min(28, ty+8)):
+                for sx in range(max(0, tx-7), min(28, tx+8)):
+                    if (sy, sx) == (ty, tx):
+                        continue
+                    p = self.ps[0, :, sy, sx]
+                    dsource = self.pd[0, :, sy, sx]
+                    dtarget = self.pd[0, :, ty, tx]
+                    r = (1-c.phase0_js(p, dsource, dim=0)/math.log(2)).clamp(0, 1)
+                    compatibility = (1-c.phase0_js(dtarget, p, dim=0)/math.log(2)).clamp(0, 1)
+                    a = r*compatibility
+                    total += a*p
+                    mass += a
+            expected = total/(mass+1e-8)
+            self.assertTrue(torch.allclose(expected, self.rel["distribution"][0, 3, :, ty*28+tx], atol=5e-7))
+
     def test_boundary_width_is_full_resolution(self):
         y = np.zeros((224, 224), dtype=np.uint8)
         y[:, 112:] = 1
