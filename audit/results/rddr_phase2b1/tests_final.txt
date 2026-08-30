@@ -1,0 +1,26 @@
+test_15x15_window_exact (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_anchor_probability_sum_one (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_bootstrap_reproducible (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_decision_all_cases_and_safety_precedence (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_delta_finite (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_exact_ties_and_absent_labels (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_fixed_average_sanity (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_frozen_population_counts (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_gt_only_used_for_audit_targets (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_no_checkpoint_write (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_no_grad (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_no_gt_in_support_score (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_no_optimizer (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_no_test_luad_access (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_phase0_js_exact_match (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_self_edge_excluded (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_sign_metrics_pooled (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_support_against_explicit_neighbors (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_support_range_0_1 (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_weights_sum_to_one (test_rddr_phase2b1.DualHypothesisTests) ... ok
+test_winner_population_excludes_agreement_and_both_wrong (test_rddr_phase2b1.DualHypothesisTests) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 0.056s
+
+OK

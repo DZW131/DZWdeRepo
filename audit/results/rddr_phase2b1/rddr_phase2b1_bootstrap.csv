@@ -1,0 +1,8 @@
+metric,observed,ci95_low,ci95_high,resamples,finite_resamples,seed,eligible_images,resampling_images,aggregation,unit
+adjudication_image_auroc,0.7348502223175151,0.7260860183122452,0.7437009521421651,10000,10000,42,3180,3418,image_balanced,fraction
+sign_balanced_accuracy,0.5939727493091467,0.587891326328424,0.6002023461800109,10000,10000,42,3410,3418,pooled_sign_confusion,fraction
+anchor_fixed_accuracy_delta,0.005205024478216802,0.003580300520632368,0.006855448892682716,10000,10000,42,3416,3418,pooled_segmentation_confusion,fraction
+anchor_fixed_miou_delta,-0.004433078964355963,-0.008294548270572782,-0.0003724422416962372,10000,10000,42,3416,3418,pooled_segmentation_confusion,fraction
+Top20_anchor_fixed_accuracy_delta,0.013144478021468675,0.005170697027879284,0.021390808995421312,10000,10000,42,3405,3418,pooled_segmentation_confusion,fraction
+Deep_Wrong_anchor_fixed_accuracy_delta,0.07494762182262182,0.07149450299150475,0.07857817667638917,10000,10000,42,3318,3418,pooled_segmentation_confusion,fraction
+Top20_Deep_Wrong_anchor_fixed_accuracy_delta,0.17929479315663288,0.17157693753271822,0.18705065405676968,10000,10000,42,3164,3418,pooled_segmentation_confusion,fraction
