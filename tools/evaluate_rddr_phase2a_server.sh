@@ -25,6 +25,7 @@ set +e
 "$python_bin" -u tools/analyze_rddr_phase2a.py \
   --c0-checkpoint "$c0" --gs-dir "$exp_root/GS" --rcs-dir "$exp_root/RCS" \
   --phase0-dir "$phase0" --phase1-dir "$phase1" --val-root "$val_root" \
+  --frozen-phase0-cache "$exp_root/diagnostics/frozen_phase0_populations" \
   --smoke-json "$exp_root/diagnostics/rddr_phase2a_smoke.json" \
   --pretrained "$pretrained" --train-root "$train_root" \
   --python-executable "$python_bin" --output-dir "$output" \

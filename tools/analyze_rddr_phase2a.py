@@ -565,6 +565,17 @@ def render_report(summary):
     lines = [
         "# RDDR Phase-2A Dross-Aware Context Suppression Report",
         "",
+        "## 0. 执行结论 / Executive conclusion",
+        "",
+        f"- 最终判定：`{summary['decision']}`。仅评估 BCSS validation，未使用 test。",
+        f"- 同一官方评估器：C0={100*metric['C0']['Final']['mIoU']:.4f}，"
+        f"GS={100*metric['GS']['Final']['mIoU']:.4f}，RCS={100*metric['RCS']['Final']['mIoU']:.4f} mIoU。",
+        f"- RCS−C0={100*bootstrap['RCS-C0']['observed_delta_mIoU']:+.4f} pp，"
+        f"95% CI=[{100*bootstrap['RCS-C0']['ci95_low']:+.4f}, {100*bootstrap['RCS-C0']['ci95_high']:+.4f}] pp。",
+        f"- Gate A/B/C/D：{' / '.join('PASS' if gates[key]['pass'] else 'FAIL' for key in ('A','B','C','D'))}。",
+        "- 全部比较使用 Epoch25 FINAL；Epoch1/5/10/15/20 权重仅用于机制轨迹观察，不用于模型选择。",
+        "- 本报告结束即停止，不启动 test、LUAD、多 seed、消融或下一种结构。",
+        "",
         "## 1. Frozen provenance and commands",
         "",
         f"- Implementation commit: `{summary['implementation_commit']}`",
@@ -605,6 +616,21 @@ def render_report(summary):
         "weights, released augmentation, loss 0.10/0.15/0.25/0.50, released "
         "PolyOptimizer/LR schedule, and Epoch-25 FINAL checkpoints. Training never "
         "evaluated validation or test.",
+        "",
+        "Training data: 23,422 parsed images, 1,171 batches/epoch with drop_last, "
+        "29,275 optimizer steps. Input 224x224; random horizontal/vertical flips; "
+        "ImageNet mean/std normalization. No learning-rate or momentum correction "
+        "was introduced. Poly decay exponent remains 0.9.",
+        "",
+        "| Optimizer group | Initial LR | Weight decay | Actual SGD momentum | Parameter tensors |",
+        "|---|---:|---:|---:|---:|",
+    ]
+    for row in summary["engineering"]["optimizer_audits"]["GS"]["optimizer_groups"]:
+        lines.append(f"| {row['index']} | {row['lr']} | {row['weight_decay']} | {row['momentum']} | {row['parameter_tensors']} |")
+    lines += [
+        "",
+        "GS and RCS optimizer-group records match exactly; every parameter is grouped once. "
+        "The released actual momentum=0.0005 is intentionally retained.",
         "",
         "## 4. Overall metrics and CAM hierarchy",
         "",
@@ -713,6 +739,15 @@ def render_report(summary):
         "",
         "## 10. Frozen Phase-0 Top20 / Bottom80",
         "",
+        "The first evaluation pass was retained for audit but superseded: recomputing "
+        "Phase-0 populations under the current benchmark/TF32 settings caused small "
+        "count drift. The final pass reads an immutable cache replayed in a fresh "
+        "process from original Phase-0 commit 586f402. Every image's four CH-group "
+        "counts and Top20 count exactly match the archived Phase-0 CSV. No candidate "
+        "q is used to redefine these groups.",
+        "",
+        f"Frozen population verification: `{summary['frozen_population_audit']['counts']}`.",
+        "",
         "| Variant | Top20 repair/harm/net | Bottom80 repair/harm/net |",
         "|---|---:|---:|",
     ]
@@ -726,6 +761,11 @@ def render_report(summary):
     lines += [
         "",
         "## 11. Frozen C0 CH-transition groups",
+        "",
+        "Historical group names are retained. Their definition compares raw CAM28_1 "
+        "to post-HFRM CAM28_1 (CH plus semantic veto), not a CH-only intervention. "
+        "Repair/harm below compare candidate FINAL predictions against C0 FINAL "
+        "predictions within these fixed groups; they do not prove isolated CH causality.",
         "",
         "| Variant/group | Repair | Harm | Net change |",
         "|---|---:|---:|---:|",
@@ -759,6 +799,10 @@ def render_report(summary):
         "",
         "## 13. Paired image-level bootstrap",
         "",
+        "10,000 paired image resamples, seed42; sum each resample's confusion "
+        "matrices and recompute mIoU. This measures validation-image uncertainty "
+        "conditional on these checkpoints, not uncertainty over training seeds.",
+        "",
         "| Comparison | Observed delta mIoU | Bootstrap mean | 95% CI |",
         "|---|---:|---:|---:|",
     ]
@@ -787,6 +831,30 @@ def render_report(summary):
         "",
         summary["scientific_interpretation"],
         "",
+        "### 机制解释与边界",
+        "",
+        f"RCS 的 CAM28_1 相对 C0 改变 "
+        f"{100*(metric['RCS']['CAM28_1']['mIoU']-metric['C0']['CAM28_1']['mIoU']):+.4f} pp；"
+        f"interior accuracy 改变 {100*(zones['RCS']['interior_gt_7']['accuracy']-zones['C0']['interior_gt_7']['accuracy']):+.4f} pp；"
+        f"large-object mIoU 改变 {100*(objects['RCS']['large']['diagnostic_size_restricted_mIoU']-objects['C0']['large']['diagnostic_size_restricted_mIoU']):+.4f} pp。"
+        "三项门槛分别为 ≥0、≥−0.10、≥−0.20 pp；不能因为其他局部指标改善而放宽。",
+        "",
+        f"高风险 Top20 的净修复：RCS {100*fixed['RCS']['Top20']['net_repair']:+.4f} pp，"
+        f"GS {100*fixed['GS']['Top20']['net_repair']:+.4f} pp。"
+        "需结合 Harmed-by-CH 与 Corrected-by-CH 两类的收益/代价理解，不能只报告前者。",
+        "",
+        "空间选择性是否被实际执行，可以由 Q1→Q5 的 reliability 与 context RMS 比值判断；"
+        "存在明显的空间抑制不等于存在 segmentation utility。原始 F 路径完全保留，"
+        "也不保证经过完整训练后语义表现不会下降。",
+        "",
+        "GS 与 RCS 只有在相同 q 上才严格均值匹配。独立训练后 q 和 context 能量分布会变化，"
+        "因此须同时查看 mean(r)、RMS ratio 和 gamma，而不能把两组称为最终能量严格匹配。"
+        "EffectiveContextScale 是 abs(gamma_context)×mean(r) 的标量代理，不是实际残差 RMS。",
+        "",
+        "判定顺序保持预注册语义安全优先：若 C FAIL，即便 D PASS，也输出 "
+        "CONTEXT_SUPPRESSION_SEMANTIC_DAMAGE，不改判为可推进的局部成功。"
+        "本轮不会提出或运行事后 alpha、阈值、温度、kernel 或 stage 搜索。",
+        "",
         "## 16. Engineering and artifact record",
         "",
         f"- Main final-checkpoint evaluation: {summary['runtime']['seconds']/60:.2f} min; "
@@ -797,6 +865,7 @@ def render_report(summary):
         "- All required curves, q/context/gamma, fixed-strata, CH, quintile, per-class, "
         "bootstrap, optimizer, per-image, and summary artifacts were generated.",
         "- No BCSS test, LUAD, best-epoch selection, or post-hoc tuning was used.",
+        f"- Runtime environment: {summary['engineering']['environment']}",
         "",
         "## 17. Epoch0 initialization observation",
         "",
@@ -859,6 +928,7 @@ def main():
     parser.add_argument("--rcs-dir", required=True)
     parser.add_argument("--phase0-dir", required=True)
     parser.add_argument("--phase1-dir", required=True)
+    parser.add_argument("--frozen-phase0-cache", required=True)
     parser.add_argument("--val-root", required=True)
     parser.add_argument("--smoke-json", required=True)
     parser.add_argument("--pretrained", required=True)
@@ -877,6 +947,15 @@ def main():
     phase0 = json.loads(
         (Path(args.phase0_dir) / "rddr_phase0_summary.json").read_text()
     )
+    population_manifest = json.loads(
+        (Path(args.frozen_phase0_cache) / "manifest.json").read_text()
+    )
+    if not (population_manifest["status"] == "PASS"
+            and population_manifest["images"] == EXPECTED_VAL
+            and population_manifest["checkpoint_sha256"] == C0_SHA256
+            and population_manifest["per_image_all_four_ch_counts_and_top20_exact"]):
+        raise AssertionError("Exact frozen Phase-0 population replay is required")
+    population_files = {row["image_id"]: row["sha256"] for row in population_manifest["files"]}
     if phase0["decision"] != "RDDR_PHASE0_GO":
         raise AssertionError("Phase-0 GO artifact is required")
     if sha256_file(args.c0_checkpoint) != C0_SHA256:
@@ -890,7 +969,6 @@ def main():
     validate_run_artifacts(args.gs_dir)
     validate_run_artifacts(args.rcs_dir)
     set_seed(42)
-    phase0_threshold = float(phase0["thresholds"]["S_JS"]["0.2"]) / math.log(2.0)
     checkpoints = {
         "C0": Path(args.c0_checkpoint),
         "GS": checkpoint_for_epoch(args.gs_dir, 25),
@@ -956,6 +1034,17 @@ def main():
                 name: canonical_diagnostics(model, image, output_size)
                 for name, model in models.items()
             }
+            population_path = Path(args.frozen_phase0_cache) / f"{image_id}.npz"
+            if sha256_file(population_path) != population_files[image_id]:
+                raise AssertionError(f"Frozen population cache changed: {image_id}")
+            with np.load(population_path) as cached:
+                cached_top20 = cached["top20"].copy()
+                c0_values = canonical["C0"][0]
+                c0_values["q"] = torch.from_numpy(cached["q_feature"].copy())[None, None]
+                canonical["C0"] = (
+                    c0_values, cached["q_full"].copy(),
+                    cached["raw"].copy(), cached["rect"].copy(),
+                )
             for name in models:
                 stages[name].update(truth, predictions[name])
                 zones[name].update(truth, predictions[name]["Final"])
@@ -965,10 +1054,9 @@ def main():
             quintiles.update(truth, predictions, canonical)
 
             foreground = truth < BACKGROUND
-            c0_q = canonical["C0"][1]
             strata = {
-                "Top20": foreground & (c0_q >= phase0_threshold),
-                "Bottom80": foreground & (c0_q < phase0_threshold),
+                "Top20": foreground & cached_top20,
+                "Bottom80": foreground & ~cached_top20,
             }
             c0_final = predictions["C0"]["Final"]
             for name in ("GS", "RCS"):
@@ -990,6 +1078,9 @@ def main():
                         label, mask, truth, c0_final, predictions[name]["Final"]
                     )
             row = {"image_id": image_id}
+            row["frozen_top20_pixels"] = int(strata["Top20"].sum())
+            for group, mask in group_masks.items():
+                row[f"frozen_{group}_pixels"] = int(mask.sum())
             for name in models:
                 histogram = stages[name].per_image_final[-1]
                 for y in range(5):
@@ -1178,6 +1269,7 @@ def main():
         "object_size": object_results,
         "context_strength": context_results,
         "fixed_strata": fixed_summary,
+        "frozen_population_audit": {key: value for key, value in population_manifest.items() if key != "files"},
         "ch_transition": {
             name: accumulator.rows(name, "c0_ch_groups")
             for name, accumulator in ch.items()
@@ -1207,6 +1299,8 @@ def main():
             },
             "semantic_preservation": semantic_preservation,
             "official_inference_parity": inference_parity,
+            "environment": {"python": sys.version, "torch": torch.__version__,
+                            "numpy": np.__version__, "gpu": torch.cuda.get_device_name()},
             "optimizer_audits": optimizer_audits,
             "test_used": False,
             "luad_used": False,
