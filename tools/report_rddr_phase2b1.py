@@ -31,8 +31,9 @@ def table(items,columns):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__); p.add_argument("--report-dir",required=True)
+    p.add_argument("--output",help="Optional unique report path; never overwrite")
     args=p.parse_args(); root=Path(args.report_dir)
-    output=root/"rddr_phase2b1_dual_hypothesis_context_adjudication_report.md"
+    output=Path(args.output) if args.output else root/"rddr_phase2b1_dual_hypothesis_context_adjudication_report.md"
     if output.exists(): raise FileExistsError(output)
     s=json.loads((root/"rddr_phase2b1_summary.json").read_text(encoding="utf-8"))
     runtime=json.loads((root/"rddr_phase2b1_runtime.json").read_text(encoding="utf-8"))
@@ -158,7 +159,7 @@ def main():
         "## 20. Symmetric shallow-correct / shallow-wrong audit\n\n"+table(safety_rows("shallow_strata"),safetycols)
         +"\n安全改善不等于没有shallow bias；同时观察浅层正确与浅层错误的代价。\n",
         "## 21. Both-wrong / third-class recovery\n\n"+table([r for r in metrics if r["group"]=="Both_Wrong"],utility)
-        +table([r for r in rows(root,"echo") if r["group"]=="Both_Wrong"],
+        +"\n"+table([r for r in rows(root,"echo") if r["group"]=="Both_Wrong"],
                [("group","Group"),("targets","Targets"),("anchor_differs_both_count","Different from both"),("anchor_correct_third_class_count","Correct third class")])
         +"\n该纠正仅secondary signal，不改变任何门槛。\n",
         "## 22. Context consensus diagnostic\n\n"
@@ -175,7 +176,7 @@ def main():
                ("positive","Deep-Win n"),("negative","Shallow-Win n"),("image_balanced_auroc","Image AUC"),
                ("sign_balanced_accuracy","Sign BA"),("anchor_fixed_accuracy_delta","Accuracy delta"),("anchor_fixed_miou_delta","mIoU delta")]),
         "## 25. Boundary / interior\n\n"+table(rows(root,"boundary_interior"),general)
-        +table(rows(root,"boundary_interior"),[("group","Group"),("deep_wrong_targets","Deep-Wrong n"),("deep_wrong_anchor_fixed_accuracy_delta","Deep-Wrong delta")])
+        +"\n"+table(rows(root,"boundary_interior"),[("group","Group"),("deep_wrong_targets","Deep-Wrong n"),("deep_wrong_anchor_fixed_accuracy_delta","Deep-Wrong delta")])
         +"\n沿用fullres FG-FG 8-neighbor transition欧氏距离<=7px的边界，先224构造再nearest投影；未进入support计算。\n",
         "## 26. Per-class adjudication\n\n"+table(rows(root,"per_class"),[("group","Class"),("positive","Deep-Win n"),
                ("negative","Shallow-Win n"),("auroc","Pooled AUC"),("image_balanced_auroc","Image AUC"),
@@ -209,9 +210,16 @@ def main():
         "本轮应分清三个问题：Delta能否排序winner、固定零阈值能否给出可靠双向判断、支持比值融合能否提升语义指标。"
         f"本次AUC={a['observed']:.4f}，支持局部上下文包含winner排序信息；但Deep-Win recall={100*b['deep_win_recall']:.2f}%，"
         "固定sign明显偏向shallow。AUROC对单调平移不敏感，因此高AUC本身不保证零阈值决策有效；这里仅解释差异，不执行任何平移/调参。\n\n"
-        f"Anchor准确率提高{100*ca['observed']:.4f}pp而macro mIoU下降{100*cm['observed']:.4f}pp，不能宣称整体分割质量提升。"
+        f"Anchor准确率提高{100*ca['observed']:.4f}pp而macro mIoU变化{100*cm['observed']:+.4f}pp，不能宣称整体分割质量提升。"
         f"全局class3 IoU差为{100*(am['all','anchor']['class3_iou']-am['all','fixed_average']['class3_iou']):+.4f}pp，"
-        "类别分布与macro/pixel加权的不同解释了两种指标不能互相替代；不据此新增class规则。\n\n"
+        "类别分布与macro/pixel加权的不同解释了两种指标不能互相替代；不据此新增class规则。"
+        "Top20/Bottom80和q分位组分别重算的mIoU均可能提升，而合并后mIoU下降：各组mIoU不能按样本量平均还原整体mIoU，"
+        "每类union及其权重也随预测改变。完整confusion可逐项相加，分层/总体数字已经独立复核，不用最佳分组替代全体结果。\n\n"
+        f"排序信号并非跨类普适：class2/class3的image AUROC分别为{bygroup['class2']['image_balanced_auroc']:.4f}/"
+        f"{bygroup['class3']['image_balanced_auroc']:.4f}，均低于0.5；class3的Shallow-Win仅{int(bygroup['class3']['negative'])}个，"
+        "需保留不平衡背景，不能只引用整体AUC。Strength最大一组也未呈现更高sign正确率，abs(Delta)不等于已校准置信度。\n\n"
+        "还需区别hard sign和soft anchor：前者偏向shallow，后者仍可能更多echo deep，因为anchor融合完整概率分布而非按sign硬切换，"
+        "两者预测不必一致。这里观察两者局限，不进行阈值平移或重新校准。\n\n"
         f"Deep-Wrong安全明显改善（全体{100*dw['observed']:+.4f}pp，Top20 {100*tdw['observed']:+.4f}pp），但这只说明"
         "相对FixedAvg没有重现上轮的deep-following灾难，不能抵消B/C失败。所有class/Top20/Strength/consensus/oracle结果仅解释，"
         "不替换primary，不搜索阈值/温度/窗口/权重，不追加训练。\n\n"

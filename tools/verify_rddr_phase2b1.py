@@ -30,6 +30,7 @@ def metrics(cm):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument("--report",required=True); p.add_argument("--native",required=True)
+    p.add_argument("--output",help="Optional unique verification output path")
     args=p.parse_args(); root=Path(args.report)
     expected=("summary.json","per_image.csv","adjudication.csv","sign_decision.csv","anchor_metrics.csv",
               "conflict_strata.csv","deep_wrong_safety.csv","shallow_strata.csv","both_wrong.csv","hfrm_groups.csv",
@@ -92,6 +93,21 @@ def main():
         ref_brier=sum((probs[:,k].astype(np.float64)-(y==k))**2 for k in range(4))[fg].mean()
         assert abs(ref_nll-float(r["nll"]))<1e-6
         assert abs(ref_brier-float(r["brier"]))<1e-7
+    # mIoU is nonlinear: positive deltas in disjoint strata need not imply a
+    # positive delta after confusion matrices are merged. Verify the partitions.
+    top=data["top20"].astype(bool)&fg
+    qbin=np.searchsorted(summary["q_quintile_edges"],data["q_feature"],side="left")
+    subgroup_rows={r["group"]:r for r in read_rows(root/"rddr_phase2b1_all_groups.csv")}
+    for partition in (([("Top20",top),("Bottom80",fg&~top)]),[(f"Q{k+1}",fg&(qbin==k)) for k in range(5)]):
+        for name in ("fixed_average","anchor"):
+            reconstructed=np.zeros((4,4),np.int64)
+            pred=data[name].argmax(1)
+            for group,mask in partition:
+                mat=np.bincount(4*y[mask]+pred[mask],minlength=16).reshape(4,4)
+                reconstructed+=mat
+                _,iou=metrics(mat)
+                assert abs(iou-float(subgroup_rows[group][name+"_miou"]))<1e-12
+            assert np.array_equal(reconstructed,refs[name].sum(0))
     # Independent nested-neighborhood check on fixed real image/position triples.
     support_errors=[]
     def js(p,q):
@@ -162,8 +178,9 @@ def main():
                 independent_proper_scores_pass=True,
                 independent_real_support_points=9,max_support_error=max(support_errors),
                 independent_bootstrap_replicates=32,bootstrap_max_errors=errors,all_10000_CI_quantiles_exact=True,
-                all_15_safety_strata_verified=True,gates=gates,decision=decision,strong_signal=bool(strong))
-    target=root/"rddr_phase2b1_independent_verification.json"
+                all_15_safety_strata_verified=True,nonlinear_partition_miou_verified=True,
+                gates=gates,decision=decision,strong_signal=bool(strong))
+    target=Path(args.output) if args.output else root/"rddr_phase2b1_independent_verification.json"
     if target.exists(): raise FileExistsError(target)
     target.write_text(json.dumps(result,indent=2)+"\n",encoding="utf-8")
     print(json.dumps(result,indent=2))
