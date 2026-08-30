@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import shlex
 import subprocess
 import sys
 import time
@@ -123,7 +124,8 @@ def main():
                  "SRSC_mean_N_eff", "target_AUROC_purity", "target_AUROC_purity_gain", "target_AUROC_negative_wrong_mass"]
     boot_means = bootstrap_means(mean_columns)
     boot_rows = [dict(ci_row(k, nanmean(mean_columns[:, i]), boot_means[:, i]),
-                      eligible_images=int(np.isfinite(mean_columns[:, i]).sum()), aggregation="image_balanced")
+                      eligible_images=int(np.isfinite(mean_columns[:, i]).sum()), resampling_images=n,
+                      unit="effective_neighbor_count" if k == "SRSC_mean_N_eff" else "fraction", aggregation="image_balanced")
                  for i, k in enumerate(mean_keys)]
     boot_curves = {k: boot_means[:, i] for i, k in enumerate(mean_keys)}
     rng = np.random.default_rng(42)
@@ -147,7 +149,8 @@ def main():
         ("SRSC_minus_U_neighbor_mIoU", total_metrics["miou"][1]-total_metrics["miou"][0], iou_boot),
         ("Top20_SRSC_minus_U_NetRepair", total_net[3]-total_net[0], top_boot),
     ):
-        boot_rows.append(dict(ci_row(key, observed, values), eligible_images=n, aggregation="pooled_recomputed_per_image_resample"))
+        eligible_images = int((top[:, 0, 2] > 0).sum()) if key.startswith("Top20") else int((use_cm[:, 0].sum((1, 2)) > 0).sum())
+        boot_rows.append(dict(ci_row(key, observed, values), eligible_images=eligible_images, resampling_images=n, aggregation="pooled_recomputed_per_image_resample"))
         boot_curves[key] = np.asarray(values)
     ci = {r["metric"]: r for r in boot_rows}
     a = ci["SRSC_image_balanced_pair_AUROC"]
@@ -254,17 +257,23 @@ def main():
         exact_rows = list(csv.DictReader(f))
     max_auc_error = max(float(r["abs_auroc_error"]) for r in exact_rows if r["abs_auroc_error"] != "nan")
     max_ap_error = max(float(r["abs_auprc_error"]) for r in exact_rows if r["abs_auprc_error"] != "nan")
+    primary_auc_error = max(float(r["abs_auroc_error"]) for r in exact_rows if r["variant"] == "SRSC" and r["abs_auroc_error"] != "nan")
+    dw_u = next(r for r in deep_rows if r["group"] == "Deep_Wrong" and r["variant"] == "U")
+    dw_s = next(r for r in deep_rows if r["group"] == "Deep_Wrong" and r["variant"] == "SRSC")
+    q5 = next(r for r in group_rows if r["group"] == "Q5" and r["variant"] == "SRSC")
     sections = ["# RDDR Phase-2B0 Reliable Relation Feasibility Audit\n",
         f"**最终判定：`{decision}`。** 本轮是 C0 冻结权重、BCSS validation-only、零训练、零新增参数的关系审计。\n"
-        f"Gate A/B/C/D：{gates}。下文除明确注明 pp 外均用 0–1 比例；差值乘100才是百分点。\n",
+        f"Gate A/B/C/D：{gates}。AUROC、purity、accuracy、IoU、Dice 用0–1比例，相关差值乘100为pp；Mass/N_eff及人数是计数量，不是比例。\n\n"
+        f"Primary image AUROC={a['observed']:.4f}（门槛0.65）；purity增益={100*b['observed']:.4f}pp（门槛3pp）。"
+        f"无训练邻居估计的mIoU虽提高{100*di['observed']:.4f}pp，但不等于官方final-CAM收益，也不能补偿A/B失败。\n",
         "## 1. Provenance / frozen assets\n\n"
         f"- Pure A0: `{runtime['a0_commit']}`\n- Extraction commit: `{runtime['commit']}`\n"
         f"- Analysis commit: `{summary['analysis_commit']}`\n- Checkpoint: `{runtime['checkpoint']}`\n"
         f"- Checkpoint SHA256: `{runtime['checkpoint_sha256']}`\n"
         f"- Statistics SHA256: `{summary['sufficient_statistics_sha256']}`\n"
         "- 只新增 tools/tests/docs/audit；官方网络、预处理、训练和推理源文件保持 A0 原样。\n",
-        "## 2. Exact commands / environment\n\n```bash\n" + runtime["command"] + "\n"
-        + " ".join(sys.argv) + "\n```\n\n"
+        "## 2. Exact commands / environment\n\n```bash\ncd " + str(ROOT) + "\n" + sys.executable + " " + runtime["command"] + "\n"
+        + shlex.join([sys.executable, *sys.argv]) + "\n```\n\n"
         f"Python {runtime['python']}; torch {runtime['torch']}; NumPy {runtime['numpy']}; {runtime['gpu']}。"
         "batch1, BF16 forward, FP32 probability/relation；无TTA。"
         f"benchmark={runtime['benchmark']}, matmul={runtime['matmul_precision']}, conv={runtime['conv_precision']}。\n",
@@ -301,7 +310,8 @@ def main():
         "仅逐图pair临时张量、累计直方图和逐图充分统计量，无全数据集pair缓存、无新模型checkpoint。\n",
         "## 8. Pair AUROC / AUPRC\n\n" + table([r for r in pair_rows if r["group"] == "all"], pcols)
         + "\nAUPRC按非插值AP；同分数计tie。4096固定bin，16张等间隔确定性图像全部四配置对照exact排序："
-        f"最大AUROC误差={max_auc_error:.8f}，最大AP误差={max_ap_error:.8f}。详见 histogram_validation.csv。\n",
+        f"最大AUROC误差={max_auc_error:.8f}，最大AP误差={max_ap_error:.8f}。SRSC自己的最大AUROC误差={primary_auc_error:.8f}。"
+        "这是预选subset的误差实测，不是对未校验图像的数学误差上界；没有据此修改bin数或score。详见 histogram_validation.csv。\n",
         "## 9. Image-balanced AUROC + CI\n\n" + table([a], [("observed","AUROC"),("ci95_low","95% low"),("ci95_high","95% high"),("eligible_images","Eligible images")])
         + "\n缺少正/负pair的图像AUROC为NA，未人为赋0.5；bootstrap对图像采样后忽略该指标NA。\n",
         "## 10. Weighted neighbor purity\n\n" + table(all_group, gcols)
@@ -338,7 +348,10 @@ def main():
         + "\n基准raw=原生28-grid argmax(ps)，不是历史upsampled raw。repair/harm均除以全部eligible Top20。\n",
         "## 19. Deep-Correct / Deep-Wrong\n\n" + table([r for r in deep_rows if r["variant"] in ("U","SRSC")],
         [("group","Stratum"),("variant","Relation"),("purity_image_mean","Purity"),("purity_gain_image_mean","Gain"),("neighbor_accuracy","Neighbor acc"),("net_repair_vs_raw","Stratum NetRepair"),("top20_net_repair","Top20 NetRepair")])
-        + "\nDeep-anchored relation的安全性必须条件化解释：deep错误时兼容性可以偏向错误假设，不能称为普遍安全。\n",
+        + f"\nDeep-Wrong邻居准确率变化={100*(dw_s['neighbor_accuracy']-dw_u['neighbor_accuracy']):+.4f}pp；"
+        f"其Top20净修复由{100*dw_u['top20_net_repair']:+.4f}%变为{100*dw_s['top20_net_repair']:+.4f}%。"
+        "这不是只有潜在风险：本次实测在deep错误子集发生明显退化。"
+        "**deep-anchored relation is conditional, not universally safe**。\n",
         "## 20. Deep-hypothesis echo\n\n" + table([r for r in echo_rows if r["group"] in ("all","Top20","Deep_Correct","Deep_Wrong")],
         [("group","Group"),("echo_fraction","Echo fraction"),("non_echo_count","Non-echo n"),("srsc_correct_deep_wrong_count","SRSC right / deep wrong"),("srsc_wrong_deep_correct_count","SRSC wrong / deep right")])
         + "\n非echo总量还包括双方均错但预测类别不同的情况，所以末两列不一定加和为非echo总量。\n",
@@ -358,10 +371,19 @@ def main():
             "RELATION_SIGNAL_NOT_CH_OUTCOME_SPECIFIC": "一般同类关系信号成立，但不能按预注册标准解释Corrected/Harmed机制差异。",
             "RELATION_EXISTS_NO_PROPAGATION_UTILITY": "关系/机制信号成立，但直接one-step邻居聚合没有满足utility门槛；只能把消费方式作为另一个独立问题。",
             "RDDR_PHASE2B0_GO": "关系判别、纯度、CH-outcome关联及无训练聚合utility均过门槛；仅支持进入下一独立训练假设，不保证最终CAM会提升。"}[decision])
-        + "\n\nSR/SC超过primary、某子集改善、oracle headroom均不触发替换primary或posthoc调参。"
+        + f"\n\n观察与推断分开：整体邻居估计accuracy提高{100*da['observed']:.4f}pp、mIoU提高{100*di['observed']:.4f}pp，"
+        f"说明有聚合utility，但Q5的image purity增益仅{100*q5['purity_gain_image_mean']:.4f}pp。"
+        "SR单独的pair区分力很弱，SC与SRSC接近；这提示‘source shallow/deep一致’不足以保证source正确，属于机制解释而非新公式证据。"
+        "整体echo约87%而非接近100%，不能称为完全复制deep；同时Deep-Wrong显著损害说明其依赖deep hypothesis。"
+        "上述utility与风险均不能把预注册NOGO改写为GO。\n\n"
+        "SR/SC超过primary、某子集改善、oracle headroom均不触发替换primary或posthoc调参。"
         "与先前feature/context suppression失败形成的证据链限于：冲突存在≠必须少用context；本轮检验source selection，而非新模型有效性。"
         "本轮遵循研究实施交付流程，保留冻结合同、可运行命令、测试、逐图/汇总CSV、JSON、原始充分统计和独立PR；"
-        "未训练、未访问test/LUAD、未新增权重、未自动merge。此前各实验不删除不覆盖。\n",
+        "未训练、未访问test/LUAD、未新增权重、未自动merge。此前各实验不删除不覆盖。\n\n"
+        "复核命令：`python -m unittest discover -s tests -p test_rddr_phase2b0.py -v`；"
+        "`python tools/verify_rddr_phase2b0_delivery.py --report <report-directory>`。"
+        "独立核验不import关系实现，读取逐图CSV重新计算confusion、32个bootstrap replicate及全部10000次CI分位点，"
+        "输出 `rddr_phase2b0_independent_verification.json`；服务器测试日志随交付保留。\n",
         "## 25. Exact decision / stop\n\n完成报告后停止。即使GO，也不自动启动Phase-2B训练。\n\n"
         + "DECISION = " + decision,
     ]
