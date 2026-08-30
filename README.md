@@ -1,5 +1,7 @@
 # SSHR: Single-Stage Hierarchical Rectification for Weakly Supervised Histopathology Segmentation (MICCAI 2026)
 
+> This branch adds the standalone, zero-training [RDDR Phase-2B1.10 audit](docs/README_rddr_phase2b110.md) and [full report](docs/rddr_phase2b110_residual_correction_coverage_report.md). Original A0 model/training/inference sources are unchanged. No training is authorized by this audit.
+
 ## Abstract
   <details>
   <summary>Click to expand</summary>
