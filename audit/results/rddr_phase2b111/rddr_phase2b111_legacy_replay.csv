@@ -1,0 +1,4 @@
+group,old_alternative,old_rescue,old_wrong,strict_alternative,strict_rescue,rejected_zero_margin
+BothWrong,127706,108541,19165,127706,108541,0
+DeepWin,9966,0,9966,9966,0,0
+ShallowWin,8529,0,8529,8529,0,0

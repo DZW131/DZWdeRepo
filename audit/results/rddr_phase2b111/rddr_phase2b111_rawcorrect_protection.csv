@@ -1,0 +1,3 @@
+group,denominator,population_count,candidate,activation_rate,hard_harm_count,hard_harm_rate,third_intrusion_rate,rescue_count,rescue_rate,candidate_precision,unconditional_ctx_accuracy,count,beneficial,harmful,zero,benefit_rate,harm_rate,zero_rate,mean_dm,median_dm
+RawCorrect,full_residual_group,1346920,65006,0.04826270305586078,65006,0.04826270305586078,0.04826270305586078,0,0.0,0.0,0.9292675140320138,1346920,2084,62922,1281914,0.0015472336887120245,0.04671546936714875,0.9517372969441392,-0.030253299858170844,0.0
+RawCorrect,active_only,65006,65006,1.0,65006,1.0,1.0,0,0.0,0.0,0.0,65006,2084,62922,0,0.032058579208073104,0.9679414207919269,0.0,-0.626846362566032,-0.6115209132130361

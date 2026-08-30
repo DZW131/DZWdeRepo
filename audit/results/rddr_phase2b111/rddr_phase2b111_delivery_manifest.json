@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "files": {
+    "rddr_phase2b111_bootstrap.csv": {
+      "sha256": "8c3cf365307f07c3ab0ac7acea09898ea308c718dc28cc8893600d5a82502cea",
+      "bytes": 7603
+    },
+    "rddr_phase2b111_bootstrap_replicates.csv": {
+      "sha256": "235da7d5adaf125eacceb9fcc8207cdb0cee3eb7064cbd3a23224e55beda527e",
+      "bytes": 13922378
+    },
+    "rddr_phase2b111_bothwrong_detection.csv": {
+      "sha256": "0179de082bb3937b9394724b0ba9ab91c4fc90adee94e7836fcdde2ba54428c5",
+      "bytes": 1968
+    },
+    "rddr_phase2b111_bothwrong_rescue.csv": {
+      "sha256": "d73f44282666c9d89b4f370e52d9929b2fd04c2d02cd9bff626689dd219becac",
+      "bytes": 748
+    },
+    "rddr_phase2b111_boundary_interior.csv": {
+      "sha256": "74368ff499969e2e8b3f20c37428aa3f9a72dbc3fc86ab930feb300af7adc8b1",
+      "bytes": 933
+    },
+    "rddr_phase2b111_candidate_composition.csv": {
+      "sha256": "6ba746ed11320091a9235fd97d2f1a90de886e242d824a3ef79ad59ea9aa1abc",
+      "bytes": 273
+    },
+    "rddr_phase2b111_candidate_counts.csv": {
+      "sha256": "08d35d36b1fa671f7e5c4f2a726015e5267006c8815233b1c1d96c5e4a598c75",
+      "bytes": 437
+    },
+    "rddr_phase2b111_context_gradient.csv": {
+      "sha256": "6cdc0f6c5a5b54ab9847eeca69034d46da074d3e11a13fd2691d86e178e42440",
+      "bytes": 2510
+    },
+    "rddr_phase2b111_coverage_headroom.csv": {
+      "sha256": "25dcd68c4e06a78dbf8356affa75c6b51cb2ca0fc10be315d893a7703b4e3542",
+      "bytes": 298
+    },
+    "rddr_phase2b111_deepwin_protection.csv": {
+      "sha256": "64b8d7619fe8e474694e6494b8115885b923bbfe7614c55f506f5d778553ad33",
+      "bytes": 646
+    },
+    "rddr_phase2b111_gradient_ranking.csv": {
+      "sha256": "51b338ad09cf5b1ca279d6f03b43b75ba0f1a01c7ae145333b64b629c5d3d6f3",
+      "bytes": 1909
+    },
+    "rddr_phase2b111_hard_effect.csv": {
+      "sha256": "8960671dc43f8dbe7b6fe63b980d5c8bba33b56c14571e1b86191f9e4c402f70",
+      "bytes": 440
+    },
+    "rddr_phase2b111_identity_audit.json": {
+      "sha256": "9118cd02d7ea3a17429bff49e9a56e9908e0fb953d15c08243e7fdaffac232a9",
+      "bytes": 2808
+    },
+    "rddr_phase2b111_legacy_replay.csv": {
+      "sha256": "2a7ce1afbce05ec5bdbb94abfded57ea002d8aad38217b49f65f598e126ea9e0",
+      "bytes": 208
+    },
+    "rddr_phase2b111_per_class.csv": {
+      "sha256": "8ae7966d4c052439cca4c77dfde69d168e93138d688109312d271965dc510647",
+      "bytes": 1554
+    },
+    "rddr_phase2b111_q_strata.csv": {
+      "sha256": "92e59518d61e084cb4e12512f9facfd72885abaf77c2aa57f4a40e82679d0b15",
+      "bytes": 2499
+    },
+    "rddr_phase2b111_rawcorrect_protection.csv": {
+      "sha256": "4917dcabfec0bc7ad39c8ebc816a65cf473b96e22b8d34cf1c3e51600c490516",
+      "bytes": 692
+    },
+    "rddr_phase2b111_rescue_ranking.csv": {
+      "sha256": "ac73b9d8acd9fe8b618f74818ebaf067c3f6ad3a5edee7e80481f1cbee90474c",
+      "bytes": 1888
+    },
+    "rddr_phase2b111_runtime.json": {
+      "sha256": "51efcce514f06774063911bb97e572212da7c1e9ecbdf1287759784fc9acd981",
+      "bytes": 3999
+    },
+    "rddr_phase2b111_score_controls.csv": {
+      "sha256": "5c0174e1bbcb9e92a702e25551868673146e5eb9fa5c8c2e037c32d7ba964cea",
+      "bytes": 2458
+    },
+    "rddr_phase2b111_shallowwin_protection.csv": {
+      "sha256": "4c9ba6050b9325afd596209672351034e2d3d2ef98e7646261f23505955d5936",
+      "bytes": 683
+    },
+    "rddr_phase2b111_stablecorrect_intrusion.csv": {
+      "sha256": "593ca50381176df91435319024b1cd939f08bcc47616d42c8251027021b56546",
+      "bytes": 695
+    },
+    "rddr_phase2b111_summary.json": {
+      "sha256": "721cf9077b6fd9987fcca48495739448a000693be0988a5be22b9584fd7e26f0",
+      "bytes": 13983
+    },
+    "rddr_phase2b111_tests.txt": {
+      "sha256": "53d77b378576374c1a5a8d1961ae6add3ff483d94fda824a7243eb2f6ee72844",
+      "bytes": 4234
+    },
+    "rddr_phase2b111_verification.json": {
+      "sha256": "7c426dcecd150f92eead50bd9d5bf04db0a50546b2da2b1801f7122413e54544",
+      "bytes": 1921
+    },
+    "rddr_phase2b111_neither_hierarchy_third_evidence_report.md": {
+      "sha256": "670e06d7d4b10ec8c76fcbf6ba314f76a4f4755bb7f527903680c97328961d5c",
+      "bytes": 35968
+    }
+  }
+}

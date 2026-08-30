@@ -1,0 +1,5 @@
+population,total,universe,candidate,candidate_rate_in_universe,legacy_alternative,strict_zero_rejected,raw_argmax_tie,deep_argmax_tie,ctx_argmax_tie,rescue,failure
+all_native,2679712,1925950,227781,0.11826942547833537,227781,0,1662,1445,0,,
+foreground,2479143,1782105,202678,0.11372955016679713,202678,0,1521,1280,0,108541,94137
+background4,200569,143845,25103,0.1745142340713963,25103,0,141,165,0,,
+ignore255,0,0,0,nan,0,0,0,0,0,,
