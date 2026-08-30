@@ -48,11 +48,14 @@ def validate(root, phase0=None):
     per_image = read_csv(root / "rddr_phase2a_per_image.csv")
     assert len(per_image) == 3418 and len({row["image_id"] for row in per_image}) == 3418
     metrics = {}
+    per_image_histograms = {}
     for variant in ("C0", "GS", "RCS"):
-        hist = sum(np.array([
+        histograms = np.array([
             [int(row[f"{variant}_hist_{i}_{j}"]) for j in range(5)]
-            for i in range(5)
-        ], dtype=np.int64) for row in per_image)
+            for row in per_image for i in range(5)
+        ], dtype=np.int64).reshape(3418, 5, 5)
+        per_image_histograms[variant] = histograms
+        hist = histograms.sum(0)
         miou, dice = metric(hist)
         np.testing.assert_allclose(
             [miou, dice],
@@ -73,6 +76,13 @@ def validate(root, phase0=None):
         )
     for row in bootstrap:
         assert abs(float(row["RCS_minus_C0"]) - float(row["RCS_minus_GS"]) - float(row["GS_minus_C0"])) < 1e-14
+    rng = np.random.default_rng(42)
+    for row in bootstrap[:16]:
+        indices = rng.integers(0, 3418, size=3418)
+        resampled = {variant: metric(hist[indices].sum(0))[0]
+                     for variant, hist in per_image_histograms.items()}
+        for candidate, base in (("RCS", "C0"), ("RCS", "GS"), ("GS", "C0")):
+            assert abs(resampled[candidate] - resampled[base] - float(row[f"{candidate}_minus_{base}"])) < 1e-14
     frozen_counts = {}
     if phase0:
         previous = json.loads(Path(phase0).read_text())
@@ -123,6 +133,7 @@ def validate(root, phase0=None):
     assert report.rstrip().splitlines()[-1] == "DECISION = " + decision
     assert all(sha in report for sha in summary["checkpoint_sha256"].values())
     return {"status": "PASS", "images": 3418, "bootstrap_replicates": 10000,
+            "bootstrap_replicates_independently_recomputed": 16,
             "metrics_recomputed_from_per_image_confusion": metrics,
             "frozen_ch_group_counts": frozen_counts, "decision": decision}
 
@@ -131,5 +142,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("result_dir")
     parser.add_argument("--phase0-summary")
+    parser.add_argument("--output", help="Optional new validation JSON artifact")
     args = parser.parse_args()
-    print(json.dumps(validate(args.result_dir, args.phase0_summary), indent=2))
+    result = validate(args.result_dir, args.phase0_summary)
+    encoded = json.dumps(result, indent=2) + "\n"
+    if args.output:
+        target = Path(args.output)
+        if target.exists():
+            raise FileExistsError(target)
+        target.write_text(encoded, encoding="utf-8")
+    print(encoded)
