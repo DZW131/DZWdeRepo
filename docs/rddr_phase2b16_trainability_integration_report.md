@@ -370,6 +370,8 @@ teacher严格只有 `wS*p_s+wD*p_d`；没有ctx_sym、第三类恢复、Both-Wro
 
 独立NumPy复算 `PASS`：28项通过。完整复算不导入原loss/analyzer，使用FP64解析梯度、显式真值/预测mask构建confusion、非GT索引gather处理ties，并以gather-sum重做全部bootstrap。
 
+另有26项测试通过（7项数学/代码单元测试 + 19项真实GPU审计证据集成断言），无跳过项。集成断言读取本次真实运行产物，不将合成数据替代真实batch20。[rddr_phase2b16_test_results.txt](../audit/results/rddr_phase2b16/rddr_phase2b16_test_results.txt)
+
 | 独立校验 | 最大绝对差 |
 | --- | --- |
 | teacher_formula_max_abs | 0.000000 |

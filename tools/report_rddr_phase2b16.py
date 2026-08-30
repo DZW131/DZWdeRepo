@@ -170,7 +170,9 @@ def main():
         '\n概率差/accuracy/mIoU表内单位是0–1；换算pp需×100；dM维持原始logit导数单位。image-level、paired、seed42，'
         '每次重采样重新pool confusion/count/sum，不是对像素独立bootstrap，也不是平均逐图mIoU。\n\n'
         f'独立NumPy复算 `{v["status"]}`：{len(v["checks"])}项通过。完整复算不导入原loss/analyzer，'
-        '使用FP64解析梯度、显式真值/预测mask构建confusion、非GT索引gather处理ties，并以gather-sum重做全部bootstrap。\n\n'+
+        '使用FP64解析梯度、显式真值/预测mask构建confusion、非GT索引gather处理ties，并以gather-sum重做全部bootstrap。\n\n'
+        '另有26项测试通过（7项数学/代码单元测试 + 19项真实GPU审计证据集成断言），无跳过项。集成断言读取本次真实运行产物，不将合成数据替代真实batch20。'
+        +link('test_results','txt')+'\n\n'+
         table([dict(parameter=k,max_abs=x) for k,x in v['errors'].items()],[('parameter','独立校验'),('max_abs','最大绝对差')])+
         '\n关键六组CCA mean_dM的95% CI均完全小于0；不是class3样本不足或bootstrap跨零。完整证据见 '+link('verification','json')+' 与 '+link('bootstrap_replicates')+'。')
     sec('23. Gate A/B/C/D 判定',

@@ -1,0 +1,2 @@
+# Preserve original CSV/JSON evidence bytes across Windows/Linux checkouts.
+* -text

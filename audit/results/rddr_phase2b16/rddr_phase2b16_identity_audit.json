@@ -1,0 +1,25 @@
+{
+  "state_before": "c56943fe7749a4ca8a9b66d08e5dfd1e83b95af04ae5a58d5009343c7b7090e5",
+  "state_after": "c56943fe7749a4ca8a9b66d08e5dfd1e83b95af04ae5a58d5009343c7b7090e5",
+  "all_parameters_buffers_equal": true,
+  "checkpoint_sha_before": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "checkpoint_sha_after": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "checkpoint_written": false,
+  "official_before": {
+    "images": 160,
+    "pixels": 8028160,
+    "prediction_sha256": "23e333ad8e5168c464cda0cfdaae1bed085bc4d304172166e4ca54b95fca8b93"
+  },
+  "official_after": {
+    "images": 160,
+    "pixels": 8028160,
+    "prediction_sha256": "23e333ad8e5168c464cda0cfdaae1bed085bc4d304172166e4ca54b95fca8b93"
+  },
+  "official_predictions_exact": true,
+  "fixed160_forward_tensors_exact": true,
+  "model_eval_all_modules": true,
+  "optimizer_steps": 0,
+  "missing_keys": [],
+  "unexpected_keys": [],
+  "inference_scope": "original infer/forward_cam, fixed160, original TTA/presence/normalization/fusion/decoding, raw predictions before metric overwrite"
+}

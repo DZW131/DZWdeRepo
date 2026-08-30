@@ -1,0 +1,31 @@
+test_bootstrap_reproducible (test_rddr_phase2b16.LossTests) ... ok
+test_decision_precedence (test_rddr_phase2b16.LossTests) ... ok
+test_directional_tied_max (test_rddr_phase2b16.LossTests) ... ok
+test_loss_denominator_covers_all_pixels_and_batch (test_rddr_phase2b16.LossTests) ... ok
+test_no_optimizer_or_training_api (test_rddr_phase2b16.LossTests) ... ok
+test_positive_scalar_identity_and_analytic_gradient (test_rddr_phase2b16.LossTests) ... ok
+test_teacher_detach_q_detach_no_source_gradient (test_rddr_phase2b16.LossTests) ... ok
+test_batch20_bf16_backward (test_rddr_phase2b16_artifacts.IntegrationArtifacts) ... ok
+test_bootstrap_reproducible (test_rddr_phase2b16_artifacts.IntegrationArtifacts) ... ok
+test_checkpoint_unchanged (test_rddr_phase2b16_artifacts.IntegrationArtifacts) ... ok
+test_context_branch_gradient_nonzero (test_rddr_phase2b16_artifacts.IntegrationArtifacts) ... ok
+test_feature_gradient_nonzero (test_rddr_phase2b16_artifacts.IntegrationArtifacts) ... ok
+test_gradient_finite (test_rddr_phase2b16_artifacts.IntegrationArtifacts) ... ok
+test_ic1_gradient_nonzero (test_rddr_phase2b16_artifacts.IntegrationArtifacts) ... ok
+test_inference_off_exact_equivalence (test_rddr_phase2b16_artifacts.IntegrationArtifacts) ... ok
+test_logit_gradient_shape (test_rddr_phase2b16_artifacts.IntegrationArtifacts) ... ok
+test_loss_finite (test_rddr_phase2b16_artifacts.IntegrationArtifacts) ... ok
+test_no_optimizer_step (test_rddr_phase2b16_artifacts.IntegrationArtifacts) ... ok
+test_no_q_gradient (test_rddr_phase2b16_artifacts.IntegrationArtifacts) ... ok
+test_no_teacher_gradient (test_rddr_phase2b16_artifacts.IntegrationArtifacts) ... ok
+test_no_test_luad_access (test_rddr_phase2b16_artifacts.IntegrationArtifacts) ... ok
+test_phase2b15_teacher_exact_reproduction (test_rddr_phase2b16_artifacts.IntegrationArtifacts) ... ok
+test_q_detached (test_rddr_phase2b16_artifacts.IntegrationArtifacts) ... ok
+test_q_exact_reproduction (test_rddr_phase2b16_artifacts.IntegrationArtifacts) ... ok
+test_semantic_branch_gradient_nonzero (test_rddr_phase2b16_artifacts.IntegrationArtifacts) ... ok
+test_teacher_detached (test_rddr_phase2b16_artifacts.IntegrationArtifacts) ... ok
+
+----------------------------------------------------------------------
+Ran 26 tests in 0.160s
+
+OK

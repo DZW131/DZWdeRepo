@@ -1,0 +1,145 @@
+{
+  "images": 3418,
+  "foreground_targets": 2479143,
+  "run": "/home/duyanhong/experiments/RDDR_PHASE2B16/formal_r1",
+  "native_metric": "pooled native28 four foreground classes; absent union excluded; not official fullres TTA score",
+  "gate_A": "PASS",
+  "gate_B": "PASS",
+  "gate_C": "FAIL",
+  "gate_D": "PASS",
+  "decision": "TEACHER_SIGNAL_PRESENT_GRADIENT_UNSAFE",
+  "adjudication_teacher_preferred": true,
+  "positive_mean_dm_strata": 0,
+  "class_support": {
+    "class0": {
+      "targets": 965133,
+      "images": 2018,
+      "power": "SUFFICIENT"
+    },
+    "class1": {
+      "targets": 1044692,
+      "images": 2676,
+      "power": "SUFFICIENT"
+    },
+    "class2": {
+      "targets": 323515,
+      "images": 935,
+      "power": "SUFFICIENT"
+    },
+    "class3": {
+      "targets": 145803,
+      "images": 384,
+      "power": "SUFFICIENT"
+    }
+  },
+  "teacher_metrics": [
+    {
+      "estimator": "rect",
+      "targets": 2479143,
+      "accuracy": 0.8177882437600412,
+      "miou": 0.6378947428983854,
+      "dice": 0.7753121873355475,
+      "nll": 0.8406937072652404,
+      "brier": 0.30371638102639614,
+      "class0_iou": 0.7498909397899333,
+      "class1_iou": 0.6976348659269049,
+      "class2_iou": 0.5722529719253359,
+      "class3_iou": 0.5318001939513676,
+      "class0_dice": 0.8570716297096257,
+      "class1_dice": 0.8218903604409631,
+      "class2_dice": 0.7279400734406898,
+      "class3_dice": 0.6943466857509113
+    },
+    {
+      "estimator": "fixed",
+      "targets": 2479143,
+      "accuracy": 0.7740868517870894,
+      "miou": 0.573520035544036,
+      "dice": 0.7235312365126652,
+      "nll": 0.6812924483897358,
+      "brier": 0.34149795408607586,
+      "class0_iou": 0.6993988747249914,
+      "class1_iou": 0.6409637927061812,
+      "class2_iou": 0.5142909481460662,
+      "class3_iou": 0.4394265265989048,
+      "class0_dice": 0.8231132609619658,
+      "class1_dice": 0.781204065019791,
+      "class2_dice": 0.6792498479578292,
+      "class3_dice": 0.6105577721110745
+    },
+    {
+      "estimator": "teacher",
+      "targets": 2479143,
+      "accuracy": 0.7853834974424629,
+      "miou": 0.5931706913402506,
+      "dice": 0.7405183228140985,
+      "nll": 0.6596629256396159,
+      "brier": 0.3269900010684523,
+      "class0_iou": 0.7088930476832324,
+      "class1_iou": 0.654297157194087,
+      "class2_iou": 0.5220203726935673,
+      "class3_iou": 0.4874721877901157,
+      "class0_dice": 0.8296517428569185,
+      "class1_dice": 0.7910273608930865,
+      "class2_dice": 0.6859571423078016,
+      "class3_dice": 0.6554370451985871
+    }
+  ],
+  "loss_summary": {
+    "U": {
+      "mean": 0.8680449724197388,
+      "min": 0.26150941848754883,
+      "max": 2.883681297302246
+    },
+    "FA": {
+      "mean": 1.4358054399490356,
+      "min": 0.3095691502094269,
+      "max": 7.404501914978027
+    },
+    "CCA": {
+      "mean": 1.282221794128418,
+      "min": 0.3018277585506439,
+      "max": 6.034714221954346
+    }
+  },
+  "mathematical_identities": {
+    "q_positive_targets": 2479143,
+    "q_zero_targets": 0,
+    "cca_u_gradient_positive_scaling_max_abs": 3.725290298461914e-09,
+    "cca_u_dm_sign_mismatch": 0,
+    "mismatch_max_abs_u_dm": 0.0,
+    "mismatch_max_abs_cca_dm": 0.0,
+    "net_repair_accuracy_identity_max_abs": 1.0755285551056204e-16,
+    "tied_competitor_pixels": 2698,
+    "tie_counts": {
+      "all": 2698,
+      "Top20": 298,
+      "Bottom80": 2400,
+      "Q1": 849,
+      "Q2": 608,
+      "Q3": 514,
+      "Q4": 401,
+      "Q5": 326,
+      "boundary": 86,
+      "interior": 2612,
+      "class0": 677,
+      "class1": 1744,
+      "class2": 132,
+      "class3": 145,
+      "Deep-Wrong": 300,
+      "Shallow-Wrong": 335,
+      "Both-Wrong": 179,
+      "Rect_Correct": 2534,
+      "Rect_Wrong": 164
+    }
+  },
+  "bootstrap_rng_sha256": "98e6164a3524dde42fc993cac0b5665076f7ebac7f6a73b7420d20c81022d00b",
+  "bootstrap_resamples": 10000,
+  "report_analysis_seconds": 7.561861221009167,
+  "analysis_command": "/home/duyanhong/miniconda3/envs/sshr5090/bin/python tools/analyze_rddr_phase2b16.py --run /home/duyanhong/experiments/RDDR_PHASE2B16/formal_r1 --output /home/duyanhong/experiments/RDDR_PHASE2B16/report_r1",
+  "test_access": false,
+  "luad_access": false,
+  "optimizer_steps": 0,
+  "full25_started": false,
+  "lambda_selected": false
+}

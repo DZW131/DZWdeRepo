@@ -15,6 +15,7 @@
 - 32 deterministic +128 fixed-seed image stability/identity; batch20 real BF16 backward.
 - Parameters/buffers, checkpoint SHA and original inference predictions unchanged.
 - Independent NumPy verification: 28 checks PASS; full 10k paired bootstrap independently reproduced.
+- 26 tests PASS with no skips: 7 unit tests plus 19 integration assertions over the real GPU audit artifacts.
 - Scientific gates: A/B/C/D = PASS/PASS/FAIL/PASS. This is **not** a code/test failure.
 
 ## Remaining / deliberately deferred

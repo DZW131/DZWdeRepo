@@ -1,0 +1,31 @@
+{
+  "q_positive_targets": 2479143,
+  "q_zero_targets": 0,
+  "cca_u_gradient_positive_scaling_max_abs": 3.725290298461914e-09,
+  "cca_u_dm_sign_mismatch": 0,
+  "mismatch_max_abs_u_dm": 0.0,
+  "mismatch_max_abs_cca_dm": 0.0,
+  "net_repair_accuracy_identity_max_abs": 1.0755285551056204e-16,
+  "tied_competitor_pixels": 2698,
+  "tie_counts": {
+    "all": 2698,
+    "Top20": 298,
+    "Bottom80": 2400,
+    "Q1": 849,
+    "Q2": 608,
+    "Q3": 514,
+    "Q4": 401,
+    "Q5": 326,
+    "boundary": 86,
+    "interior": 2612,
+    "class0": 677,
+    "class1": 1744,
+    "class2": 132,
+    "class3": 145,
+    "Deep-Wrong": 300,
+    "Shallow-Wrong": 335,
+    "Both-Wrong": 179,
+    "Rect_Correct": 2534,
+    "Rect_Wrong": 164
+  }
+}
