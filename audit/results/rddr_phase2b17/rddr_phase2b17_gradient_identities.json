@@ -1,0 +1,14 @@
+{
+  "HA": {
+    "positive_scaling_max_abs": 1.1175870895385742e-08,
+    "accepted_dm_sign_mismatches": 0,
+    "rejected_nonzero_gradient_pixels": 0,
+    "all_rejected_images": 0
+  },
+  "SA": {
+    "positive_scaling_max_abs": 1.1920928955078125e-07,
+    "accepted_dm_sign_mismatches": 0,
+    "rejected_nonzero_gradient_pixels": 0,
+    "all_rejected_images": 0
+  }
+}

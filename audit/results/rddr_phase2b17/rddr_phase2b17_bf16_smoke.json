@@ -1,0 +1,41 @@
+{
+  "batch": 20,
+  "losses": {
+    "HA": {
+      "loss": 1.2015881538391113,
+      "parameter_nonzero": {
+        "hfrm_28_1.context_conv.weight": true,
+        "hfrm_28_1.veto_mlp.0.weight": true,
+        "hfrm_28_1.veto_mlp.2.weight": true,
+        "hfrm_28_1.gamma_context": true,
+        "hfrm_28_1.gamma_veto": true,
+        "ic1.weight": true,
+        "ic1.bias": true
+      }
+    },
+    "SA": {
+      "loss": 1.4492608308792114,
+      "parameter_nonzero": {
+        "hfrm_28_1.context_conv.weight": true,
+        "hfrm_28_1.veto_mlp.0.weight": true,
+        "hfrm_28_1.veto_mlp.2.weight": true,
+        "hfrm_28_1.gamma_context": true,
+        "hfrm_28_1.gamma_veto": true,
+        "ic1.weight": true,
+        "ic1.bias": true
+      }
+    }
+  },
+  "seconds": 0.11090573300316464,
+  "allocated_bytes": 1241032704,
+  "reserved_bytes": 1394606080,
+  "budget_bytes": 23622320128,
+  "all_finite": true,
+  "ps_grad_none": true,
+  "pr_acceptance_grad_none": true,
+  "teacher_detached": true,
+  "q_detached": true,
+  "delta_detached": true,
+  "scope": "selected HFRM28_1/ic1 backward, NOT full-unfrozen training memory",
+  "budget_pass": true
+}
