@@ -24,7 +24,7 @@ def metric(hist):
 
 def validate(root, phase0=None):
     root = Path(root)
-    summary = json.loads((root / "rddr_phase2a_summary.json").read_text())
+    summary = json.loads((root / "rddr_phase2a_summary.json").read_text(encoding="utf-8"))
     assert summary["images"] == 3418
     assert summary["engineering"]["test_used"] is False
     assert summary["engineering"]["luad_used"] is False
@@ -33,6 +33,8 @@ def validate(root, phase0=None):
     assert summary["engineering"]["semantic_preservation"]["max_abs_diff"] == 0
     for row in summary["engineering"]["official_inference_parity"].values():
         assert row["images"] == 8 and row["mismatched_prediction_pixels"] == 0
+    for row in summary["engineering"]["official_full_metric_parity"].values():
+        assert row["images"] == 3418 and row["max_metric_difference"] == 0
     curves = read_csv(root / "rddr_phase2a_training_curves.csv")
     for variant in ("GS", "RCS"):
         rows = [row for row in curves if row["variant"] == variant]
@@ -85,7 +87,7 @@ def validate(root, phase0=None):
             assert abs(resampled[candidate] - resampled[base] - float(row[f"{candidate}_minus_{base}"])) < 1e-14
     frozen_counts = {}
     if phase0:
-        previous = json.loads(Path(phase0).read_text())
+        previous = json.loads(Path(phase0).read_text(encoding="utf-8"))
         expected_top20 = next(row["flagged_pixels"] for row in previous["score_bins"]
                               if row["score"] == "S_JS" and row["top_fraction"] == .2)
         assert summary["fixed_strata"]["RCS"]["Top20"]["pixels"] == expected_top20
@@ -129,7 +131,7 @@ def validate(root, phase0=None):
         "RDDR_PHASE2A_NOGO"
     )
     assert decision == summary["decision"]
-    report = (root / "rddr_phase2a_dross_aware_context_suppression_report.md").read_text()
+    report = (root / "rddr_phase2a_dross_aware_context_suppression_report.md").read_text(encoding="utf-8")
     assert report.rstrip().splitlines()[-1] == "DECISION = " + decision
     assert all(sha in report for sha in summary["checkpoint_sha256"].values())
     return {"status": "PASS", "images": 3418, "bootstrap_replicates": 10000,

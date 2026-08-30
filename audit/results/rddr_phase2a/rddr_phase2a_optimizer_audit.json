@@ -1,0 +1,82 @@
+{
+  "GS": {
+    "additional_trainable_parameters": 0,
+    "all_parameters_grouped_exactly_once": true,
+    "mode": "global",
+    "optimizer_groups": [
+      {
+        "index": 0,
+        "lr": 0.01,
+        "momentum": 0.0005,
+        "parameter_tensors": 82,
+        "parameters": 105048576,
+        "weight_decay": 0.0005
+      },
+      {
+        "index": 1,
+        "lr": 0.02,
+        "momentum": 0.0005,
+        "parameter_tensors": 39,
+        "parameters": 25408,
+        "weight_decay": 0.0
+      },
+      {
+        "index": 2,
+        "lr": 0.1,
+        "momentum": 0.0005,
+        "parameter_tensors": 19,
+        "parameters": 7635718,
+        "weight_decay": 0.0005
+      },
+      {
+        "index": 3,
+        "lr": 0.2,
+        "momentum": 0.0005,
+        "parameter_tensors": 3,
+        "parameters": 12,
+        "weight_decay": 0.0
+      }
+    ],
+    "total_parameters": 112709714
+  },
+  "RCS": {
+    "additional_trainable_parameters": 0,
+    "all_parameters_grouped_exactly_once": true,
+    "mode": "receiver",
+    "optimizer_groups": [
+      {
+        "index": 0,
+        "lr": 0.01,
+        "momentum": 0.0005,
+        "parameter_tensors": 82,
+        "parameters": 105048576,
+        "weight_decay": 0.0005
+      },
+      {
+        "index": 1,
+        "lr": 0.02,
+        "momentum": 0.0005,
+        "parameter_tensors": 39,
+        "parameters": 25408,
+        "weight_decay": 0.0
+      },
+      {
+        "index": 2,
+        "lr": 0.1,
+        "momentum": 0.0005,
+        "parameter_tensors": 19,
+        "parameters": 7635718,
+        "weight_decay": 0.0005
+      },
+      {
+        "index": 3,
+        "lr": 0.2,
+        "momentum": 0.0005,
+        "parameter_tensors": 3,
+        "parameters": 12,
+        "weight_decay": 0.0
+      }
+    ],
+    "total_parameters": 112709714
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "images": 3418,
+  "bootstrap_replicates": 10000,
+  "bootstrap_replicates_independently_recomputed": 16,
+  "metrics_recomputed_from_per_image_confusion": {
+    "C0": {
+      "mIoU": 0.6733634176835867,
+      "mDice": 0.8027457407566831
+    },
+    "GS": {
+      "mIoU": 0.6709182796109426,
+      "mDice": 0.8008753927808225
+    },
+    "RCS": {
+      "mIoU": 0.670702799836945,
+      "mDice": 0.8007490713402556
+    }
+  },
+  "frozen_ch_group_counts": {
+    "Corrected_by_CH": {
+      "phase0": 19934592,
+      "phase2a": 19934592
+    },
+    "Still_Wrong": {
+      "phase0": 24262754,
+      "phase2a": 24262754
+    },
+    "Harmed_by_CH": {
+      "phase0": 4443224,
+      "phase2a": 4443224
+    },
+    "Stable_Correct": {
+      "phase0": 109998775,
+      "phase2a": 109998775
+    }
+  },
+  "decision": "CONTEXT_SUPPRESSION_SEMANTIC_DAMAGE"
+}
