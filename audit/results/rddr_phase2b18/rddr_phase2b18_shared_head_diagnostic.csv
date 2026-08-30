@@ -1,0 +1,3 @@
+mode,images,feature_squared_energy,feature_l2,ic1_squared_energy,ic1_l2,upstream_squared_energy,upstream_l2,head_parameter_energy_fraction,head_fraction_per_image_mean,head_fraction_per_image_median,denominator
+PRG_frozen,3418,3.464705920115209,1.861372053114371,0.0,0.0,337526.85852322215,580.9706176074847,0.0,0.0,0.0,ic1 + approved upstream PARAMETERS only; features excluded
+PRG_sharedhead,3418,3.4647059201152066,1.8613720531143705,3382.2265934748466,58.15691354838947,337526.85852322215,580.9706176074847,0.009921198176097514,0.010273168422559664,0.009654454605942147,ic1 + approved upstream PARAMETERS only; features excluded

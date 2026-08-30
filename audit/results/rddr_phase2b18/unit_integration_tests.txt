@@ -1,0 +1,42 @@
+test_bootstrap_reproducible (test_rddr_phase2b18.FormulaTests) ... ok
+test_collapse_cosine_finite (test_rddr_phase2b18.FormulaTests) ... ok
+test_faraw_formula (test_rddr_phase2b18.FormulaTests) ... ok
+test_gate_precedence (test_rddr_phase2b18.FormulaTests) ... ok
+test_gt_margin_direction (test_rddr_phase2b18.FormulaTests) ... ok
+test_no_gt_in_loss (test_rddr_phase2b18.FormulaTests) ... ok
+test_no_optimizer_or_step (test_rddr_phase2b18.FormulaTests) ... ok
+test_prg_formula (test_rddr_phase2b18.FormulaTests) ... ok
+test_primary_ic1_detached (test_rddr_phase2b18.FormulaTests) ... ok
+test_q_directional_derivative (test_rddr_phase2b18.FormulaTests) ... ok
+test_shared_head_same_feature_derivative (test_rddr_phase2b18.FormulaTests) ... ok
+test_teacher_q_fixed_detached (test_rddr_phase2b18.FormulaTests) ... ok
+test_uraw_formula (test_rddr_phase2b18.FormulaTests) ... ok
+test_batch20_bf16_backward (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_bootstrap_reproducible (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_brr_hhcr_labels_gt_only (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_checkpoint_identity (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_collapse_cosine_finite (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_deep_path_detached (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_faraw_formula (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_gt_margin_direction (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_hfrm28_1_no_gradient (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_inference_identity (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_no_gt_in_loss (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_no_optimizer (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_no_step (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_no_test_luad (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_phase2b15_teacher_exact_replay (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_prg_formula (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_primary_ic1_detached (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_q_detached (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_q_directional_derivative (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_q_exact_replay (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_raw_logits_exact_replay (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_teacher_detached (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_upstream_gradient_nonzero (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+test_uraw_formula (test_rddr_phase2b18_artifacts.RealArtifactTests) ... ok
+
+----------------------------------------------------------------------
+Ran 37 tests in 0.146s
+
+OK

@@ -1,0 +1,17 @@
+{
+  "batch": 20,
+  "loss": 0.2719772756099701,
+  "seconds": 0.08511907800857443,
+  "allocated_bytes": 2616530944,
+  "reserved_bytes": 2732589056,
+  "budget_bytes": 23622320128,
+  "all_finite": true,
+  "upstream_conv_energy": 10.565431266683639,
+  "head_energy": 0.0,
+  "teacher_detached": true,
+  "q_detached": true,
+  "source_ps_grad_none": true,
+  "deep_source_grad_none": true,
+  "scope": "temporary b4-stage/bn45 backward, NOT full-unfrozen training memory",
+  "pass": true
+}
