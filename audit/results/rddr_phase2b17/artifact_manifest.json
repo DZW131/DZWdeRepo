@@ -1,0 +1,167 @@
+{
+  "artifacts": [
+    {
+      "file": ".gitattributes",
+      "bytes": 35,
+      "sha256": "3e42af38b7ff4ec6da3fc88c2c98928889d91daeff9cc3ff83957a562986a6d6"
+    },
+    {
+      "file": "rddr_phase2b17_acceptance_population.csv",
+      "bytes": 1297,
+      "sha256": "588eaea4718ec978b0fc40f04a67b23a0bbef815fcae0fc28d75b3829f7c7200"
+    },
+    {
+      "file": "rddr_phase2b17_acceptance_winner.csv",
+      "bytes": 4809,
+      "sha256": "a83d707ea2b6525ae72652c6253748083a3857a741667641af06fdecf9ebc06f"
+    },
+    {
+      "file": "rddr_phase2b17_accepted_teacher_quality.csv",
+      "bytes": 5153,
+      "sha256": "53c64bf928082f6aa076d1932127f3559553ff537fca1dac3710eeb764f89600"
+    },
+    {
+      "file": "rddr_phase2b17_all_gradient_controls.csv",
+      "bytes": 22529,
+      "sha256": "7c82c546aded8d4b450da37081ada16b90cf4644919f01626faadd8d21d693b0"
+    },
+    {
+      "file": "rddr_phase2b17_bf16_smoke.json",
+      "bytes": 1144,
+      "sha256": "9c16a28c42120a6a97fac682ade9f52005acda6e31e2e1d88aa6eb9afa70961c"
+    },
+    {
+      "file": "rddr_phase2b17_bootstrap.csv",
+      "bytes": 3112,
+      "sha256": "0fbd9f96a18833ea54049ef26e4e1b3bccb99b920e4d41aa2d590727e807aea5"
+    },
+    {
+      "file": "rddr_phase2b17_bootstrap_replicates.csv",
+      "bytes": 6319504,
+      "sha256": "b6dcb6ccfcbbbeda1fcb5082fd741b41578cf2cbe659bca9bd78d43a4d983d7d"
+    },
+    {
+      "file": "rddr_phase2b17_boundary_interior.csv",
+      "bytes": 373,
+      "sha256": "28ad920513a1231284e9da999e16be621edb56a50375cc5ce96a6becb5d43a96"
+    },
+    {
+      "file": "rddr_phase2b17_confidence_controls.csv",
+      "bytes": 525,
+      "sha256": "483e94ec9a17d8bb7848a8ac447fecdc384b5d0d88af0db53eb28bccfdca3d7a"
+    },
+    {
+      "file": "rddr_phase2b17_correct_wrong_safety.csv",
+      "bytes": 8376,
+      "sha256": "17ca05521a1c2a061a8bf03ddcd1a80ec2afe6f395491fbd0847194952846d09"
+    },
+    {
+      "file": "rddr_phase2b17_detach_audit.json",
+      "bytes": 624,
+      "sha256": "069451464311899c93740c9d3beae8c9c6f90ab48166531d50bfd689ae866073"
+    },
+    {
+      "file": "rddr_phase2b17_gradient_coverage.csv",
+      "bytes": 5773,
+      "sha256": "fcb8efcd87fe216c20dcf033a8179d3e1bc7fbdf38831e5bc5dc254503a0bd47"
+    },
+    {
+      "file": "rddr_phase2b17_gradient_discrimination.csv",
+      "bytes": 2619,
+      "sha256": "0f6d0b55a153d182878d28572db041157baa471e2733e39d60ae243775f79598"
+    },
+    {
+      "file": "rddr_phase2b17_gradient_identities.json",
+      "bytes": 365,
+      "sha256": "57213f2c72c83c88d4799846f226d29ed7106f50ab2bcde90de4ab761e2b81b6"
+    },
+    {
+      "file": "rddr_phase2b17_ha_gradient.csv",
+      "bytes": 6082,
+      "sha256": "c852a91aafaac6d22a8496533118aa5135772be902b3153d0d17931fe6a79967"
+    },
+    {
+      "file": "rddr_phase2b17_hfrm_groups.csv",
+      "bytes": 730,
+      "sha256": "47b526378e8a179c398ae15f49bbac774f744af521d36d8ce73d7ae9f3c326db"
+    },
+    {
+      "file": "rddr_phase2b17_identity_audit.json",
+      "bytes": 984,
+      "sha256": "0b77b9ea24e77394a313206c83f50e407fc8a22bcf6063201929542faf6b761c"
+    },
+    {
+      "file": "rddr_phase2b17_parameter_gradients.csv",
+      "bytes": 7324628,
+      "sha256": "fbeef77d85dad124a49d5fc8cd69492e837f3b16646d6b811914124e0381b182"
+    },
+    {
+      "file": "rddr_phase2b17_per_class.csv",
+      "bytes": 862,
+      "sha256": "3760aa4bce28f358285d34c88d1be87631fc30ed6c054c9963b336bee9c2d0d5"
+    },
+    {
+      "file": "rddr_phase2b17_q_acceptance_grid.csv",
+      "bytes": 1134,
+      "sha256": "aea914586bd55ee6191101104cf0023066b71c232cec2910484ba998953a17b9"
+    },
+    {
+      "file": "rddr_phase2b17_q_vs_acceptance.csv",
+      "bytes": 349,
+      "sha256": "a59f43cdead70bc168c67734638ea083d799f9faf1b92aa2c5bbcc482fb93c04"
+    },
+    {
+      "file": "rddr_phase2b17_runtime.json",
+      "bytes": 2554,
+      "sha256": "54cf088227b4bc91135d2d0cf6a5b3d8845655ca4b45cc4ef0f118a0e37a6fa8"
+    },
+    {
+      "file": "rddr_phase2b17_sa_gradient.csv",
+      "bytes": 6079,
+      "sha256": "53bcec9996f86b25b10f2f870385b5ed17a46c4ba6f359d4393086199bc17433"
+    },
+    {
+      "file": "rddr_phase2b17_selection.json",
+      "bytes": 11272,
+      "sha256": "7ed54a07a251b9a756670e87ca34defd3d5946fda7ece73cb1ec3083069f0a7a"
+    },
+    {
+      "file": "rddr_phase2b17_selective_correction.csv",
+      "bytes": 1956,
+      "sha256": "4b41a17f7e5c5c775ebc956b47938242b294a366d8e6e576d7fafde4fceb2468"
+    },
+    {
+      "file": "rddr_phase2b17_summary.json",
+      "bytes": 7432,
+      "sha256": "cbd9c4c05b0e9b49319dc9684bacfe2ca36b3abe8cf2e8bd77e2d698c1c0fc3f"
+    },
+    {
+      "file": "rddr_phase2b17_support_rect_teacher.csv",
+      "bytes": 17883,
+      "sha256": "45a21f7877b21620d7075bae029f372470bcb14b0b98dcb1efcd92b68139e311"
+    },
+    {
+      "file": "rddr_phase2b17_verification.json",
+      "bytes": 2548,
+      "sha256": "2a0e48eca2dc5aa036eaeabe87fecc72b1f6fe75d252e415f23c39f703541a1e"
+    },
+    {
+      "file": "unit_integration_tests.txt",
+      "bytes": 2420,
+      "sha256": "03e6547085ba71ce1f558e677ca6b74ba94a3dad3005dbf80c502837d98a184e"
+    }
+  ],
+  "report": {
+    "file": "rddr_phase2b17_contextual_correction_acceptance_report.md",
+    "bytes": 39682,
+    "sha256": "c28aae46a168ba53eff341bf4f1cb559b201c92525462c831167270ac5628bf6"
+  },
+  "source_sha256": {
+    "native": "767aa0f97ce2d53db2cc70e4fece0e181a44919f693184c2541490077e07325a",
+    "derived": "237268197426464ff4be2bb4761afddd1f1644eaaf66906e47439119d3c5d514",
+    "previous": "5ab5a048e932f27726cea7507685354f984432fb66b542b87b805cea24a72bd5",
+    "checkpoint": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579"
+  },
+  "observation_sha256": "08f4b4480667b8a85689ba069525b7e8f16e309b79d052edc73afa8d1c46aeac",
+  "note": "Manifest excludes itself. Large observation NPZ is server-only. Files preserved byte-for-byte."
+}

@@ -1,0 +1,22 @@
+{
+  "teacher_detached": true,
+  "q_detached": true,
+  "delta_detached": true,
+  "m_detached": true,
+  "a_detached": true,
+  "ps_source_gradient_none": true,
+  "rect_acceptance_branch_gradient_none": true,
+  "allowed_parameters": [
+    "hfrm_28_1.context_conv.weight",
+    "hfrm_28_1.veto_mlp.0.weight",
+    "hfrm_28_1.veto_mlp.2.weight",
+    "hfrm_28_1.gamma_context",
+    "hfrm_28_1.gamma_veto",
+    "ic1.weight",
+    "ic1.bias"
+  ],
+  "all_other_parameter_gradients_none": true,
+  "optimizer_created": false,
+  "steps": 0,
+  "note": "shared ic1 has legitimate student gradients, not teacher/acceptance-branch gradients"
+}
