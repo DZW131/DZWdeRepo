@@ -117,8 +117,8 @@ def main():
     capture={}
     def hook(module,inputs,result): capture.update(raw=inputs[0],deep=inputs[1])
     handle=model.hfrm_28_1.register_forward_hook(hook)
-    prob={k:np.empty((n,4,784),np.float32) for k in ("ps","pd","ctx")}
-    scalar={k:np.empty((n,784),np.float32) for k in ("ss","sd","q_feature")}
+    prob={k:np.empty((n,4,784),np.float32) for k in ("ps","pd","ctx","anchor","fixed_average")}
+    scalar={k:np.empty((n,784),np.float32) for k in ("ss","sd","delta","wd","q_feature")}
     labels={k:np.empty((n,784),np.uint8) for k in ("truth","hfrm","top20","boundary")}
     names=[]
     max_q_diff=max_rounding=max_prob_sum_error=0.
@@ -164,8 +164,12 @@ def main():
             prob["ps"][i]=ps[0].flatten(1).cpu().numpy()
             prob["pd"][i]=pd[0].flatten(1).cpu().numpy()
             prob["ctx"][i]=result["ctx"][0].cpu().numpy()
+            prob["anchor"][i]=result["anchor"][0].cpu().numpy()
+            prob["fixed_average"][i]=(.5*ps[0]+.5*pd[0]).flatten(1).cpu().numpy()
             scalar["ss"][i]=result["ss"][0].cpu().numpy()
             scalar["sd"][i]=result["sd"][0].cpu().numpy()
+            scalar["delta"][i]=result["delta"][0].cpu().numpy()
+            scalar["wd"][i]=result["wd"][0].cpu().numpy()
             scalar["q_feature"][i]=native_q.ravel()
             if (i+1)%200==0 or i+1==n: print(f"EXTRACT {i+1}/{n} elapsed={time.perf_counter()-tick:.1f}s q_exact=True",flush=True)
     handle.remove()
