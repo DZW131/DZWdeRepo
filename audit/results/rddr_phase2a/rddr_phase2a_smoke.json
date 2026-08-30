@@ -1,0 +1,297 @@
+{
+  "initial_equivalence": {
+    "max_abs_diff_at_zero_gamma": {
+      "global": 0.0,
+      "receiver": 0.0
+    },
+    "pass": true,
+    "pretrained": {
+      "missing_keys": [
+        "bn45.weight",
+        "bn45.bias",
+        "bn45.running_mean",
+        "bn45.running_var",
+        "bn52.weight",
+        "bn52.bias",
+        "bn52.running_mean",
+        "bn52.running_var",
+        "hfrm_56.gamma_veto",
+        "hfrm_56.gamma_context",
+        "hfrm_56.veto_mlp.0.weight",
+        "hfrm_56.veto_mlp.2.weight",
+        "hfrm_56.context_conv.weight",
+        "hfrm_28_1.gamma_veto",
+        "hfrm_28_1.gamma_context",
+        "hfrm_28_1.veto_mlp.0.weight",
+        "hfrm_28_1.veto_mlp.2.weight",
+        "hfrm_28_1.context_conv.weight",
+        "hfrm_28_2.gamma_veto",
+        "hfrm_28_2.gamma_context",
+        "hfrm_28_2.veto_mlp.0.weight",
+        "hfrm_28_2.veto_mlp.2.weight",
+        "hfrm_28_2.context_conv.weight",
+        "ic_56.weight",
+        "ic_56.bias",
+        "ic1.weight",
+        "ic1.bias",
+        "ic2.weight",
+        "ic2.bias",
+        "fc8.weight"
+      ],
+      "unexpected_keys": []
+    }
+  },
+  "pass": true,
+  "pretrained": "/home/duyanhong/sshr-reproduction/SSHR/init_weights/ilsvrc-cls_rna-a1_cls1000_ep-0001.params",
+  "pretrained_sha256": "f668a2add80e33dfa8f1a0695df91f6d8cfad5ffbb26d1dc7bcd35903a1f6e16",
+  "variants": {
+    "global": {
+      "batch_size": 20,
+      "finite": true,
+      "mode": "global",
+      "optimizer_groups": [
+        {
+          "index": 0,
+          "lr": 0.009999692569927526,
+          "momentum": 0.0005,
+          "parameter_tensors": 35,
+          "parameters": 104202240,
+          "weight_decay": 0.0005
+        },
+        {
+          "index": 1,
+          "lr": 0.019999385139855053,
+          "momentum": 0.0005,
+          "parameter_tensors": 0,
+          "parameters": 0,
+          "weight_decay": 0.0
+        },
+        {
+          "index": 2,
+          "lr": 0.09999692569927526,
+          "momentum": 0.0005,
+          "parameter_tensors": 19,
+          "parameters": 7635718,
+          "weight_decay": 0.0005
+        },
+        {
+          "index": 3,
+          "lr": 0.19999385139855053,
+          "momentum": 0.0005,
+          "parameter_tensors": 3,
+          "parameters": 12,
+          "weight_decay": 0.0
+        }
+      ],
+      "parameters": {
+        "additional": 0,
+        "total": 112709714,
+        "trainable": 111837970
+      },
+      "peak_cuda_memory_bytes": 3959703552,
+      "precision": "BF16 autocast",
+      "pretrained": {
+        "missing_keys": [
+          "bn45.weight",
+          "bn45.bias",
+          "bn45.running_mean",
+          "bn45.running_var",
+          "bn52.weight",
+          "bn52.bias",
+          "bn52.running_mean",
+          "bn52.running_var",
+          "hfrm_56.gamma_veto",
+          "hfrm_56.gamma_context",
+          "hfrm_56.veto_mlp.0.weight",
+          "hfrm_56.veto_mlp.2.weight",
+          "hfrm_56.context_conv.weight",
+          "hfrm_28_1.gamma_veto",
+          "hfrm_28_1.gamma_context",
+          "hfrm_28_1.veto_mlp.0.weight",
+          "hfrm_28_1.veto_mlp.2.weight",
+          "hfrm_28_1.context_conv.weight",
+          "hfrm_28_2.gamma_veto",
+          "hfrm_28_2.gamma_context",
+          "hfrm_28_2.veto_mlp.0.weight",
+          "hfrm_28_2.veto_mlp.2.weight",
+          "hfrm_28_2.context_conv.weight",
+          "ic_56.weight",
+          "ic_56.bias",
+          "ic1.weight",
+          "ic1.bias",
+          "ic2.weight",
+          "ic2.bias",
+          "fc8.weight"
+        ],
+        "unexpected_keys": []
+      },
+      "records": [
+        {
+          "context_rms_ratio": 0.6717923879623413,
+          "finite": true,
+          "gamma_context": -8.482570592605043e-06,
+          "gamma_context_grad": 8.482570410706103e-05,
+          "loss": 0.8109322786331177,
+          "q_max": 0.5272623300552368,
+          "q_mean": 0.32846754789352417,
+          "q_min": 0.18028852343559265,
+          "q_requires_grad": false,
+          "reliability_mean": 0.6715324521064758,
+          "reliability_shape": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "step": 1
+        },
+        {
+          "context_rms_ratio": 0.9141010642051697,
+          "finite": true,
+          "gamma_context": -7.623942565260222e-06,
+          "gamma_context_grad": -8.624716429039836e-06,
+          "loss": 0.8714811205863953,
+          "q_max": 0.3322398364543915,
+          "q_mean": 0.08686545491218567,
+          "q_min": 0.0032460337970405817,
+          "q_requires_grad": false,
+          "reliability_mean": 0.9131345152854919,
+          "reliability_shape": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "step": 2
+        }
+      ],
+      "runtime_seconds": 0.3357418069999767,
+      "seconds_per_step": 0.16787090349998834,
+      "steps": 2
+    },
+    "receiver": {
+      "batch_size": 20,
+      "finite": true,
+      "mode": "receiver",
+      "optimizer_groups": [
+        {
+          "index": 0,
+          "lr": 0.009999692569927526,
+          "momentum": 0.0005,
+          "parameter_tensors": 35,
+          "parameters": 104202240,
+          "weight_decay": 0.0005
+        },
+        {
+          "index": 1,
+          "lr": 0.019999385139855053,
+          "momentum": 0.0005,
+          "parameter_tensors": 0,
+          "parameters": 0,
+          "weight_decay": 0.0
+        },
+        {
+          "index": 2,
+          "lr": 0.09999692569927526,
+          "momentum": 0.0005,
+          "parameter_tensors": 19,
+          "parameters": 7635718,
+          "weight_decay": 0.0005
+        },
+        {
+          "index": 3,
+          "lr": 0.19999385139855053,
+          "momentum": 0.0005,
+          "parameter_tensors": 3,
+          "parameters": 12,
+          "weight_decay": 0.0
+        }
+      ],
+      "parameters": {
+        "additional": 0,
+        "total": 112709714,
+        "trainable": 111837970
+      },
+      "peak_cuda_memory_bytes": 3950924800,
+      "precision": "BF16 autocast",
+      "pretrained": {
+        "missing_keys": [
+          "bn45.weight",
+          "bn45.bias",
+          "bn45.running_mean",
+          "bn45.running_var",
+          "bn52.weight",
+          "bn52.bias",
+          "bn52.running_mean",
+          "bn52.running_var",
+          "hfrm_56.gamma_veto",
+          "hfrm_56.gamma_context",
+          "hfrm_56.veto_mlp.0.weight",
+          "hfrm_56.veto_mlp.2.weight",
+          "hfrm_56.context_conv.weight",
+          "hfrm_28_1.gamma_veto",
+          "hfrm_28_1.gamma_context",
+          "hfrm_28_1.veto_mlp.0.weight",
+          "hfrm_28_1.veto_mlp.2.weight",
+          "hfrm_28_1.context_conv.weight",
+          "hfrm_28_2.gamma_veto",
+          "hfrm_28_2.gamma_context",
+          "hfrm_28_2.veto_mlp.0.weight",
+          "hfrm_28_2.veto_mlp.2.weight",
+          "hfrm_28_2.context_conv.weight",
+          "ic_56.weight",
+          "ic_56.bias",
+          "ic1.weight",
+          "ic1.bias",
+          "ic2.weight",
+          "ic2.bias",
+          "fc8.weight"
+        ],
+        "unexpected_keys": []
+      },
+      "records": [
+        {
+          "context_rms_ratio": 0.6711132526397705,
+          "finite": true,
+          "gamma_context": -8.649216397316195e-06,
+          "gamma_context_grad": 8.649216033518314e-05,
+          "loss": 0.8109322786331177,
+          "q_max": 0.5272623300552368,
+          "q_mean": 0.32846754789352417,
+          "q_min": 0.18028852343559265,
+          "q_requires_grad": false,
+          "reliability_mean": 0.6715324521064758,
+          "reliability_shape": [
+            1,
+            1,
+            28,
+            28
+          ],
+          "step": 1
+        },
+        {
+          "context_rms_ratio": 0.906796395778656,
+          "finite": true,
+          "gamma_context": -7.798885235388298e-06,
+          "gamma_context_grad": -8.542498107999563e-06,
+          "loss": 0.8714811205863953,
+          "q_max": 0.3322398364543915,
+          "q_mean": 0.08686545491218567,
+          "q_min": 0.0032460337970405817,
+          "q_requires_grad": false,
+          "reliability_mean": 0.9131345152854919,
+          "reliability_shape": [
+            1,
+            1,
+            28,
+            28
+          ],
+          "step": 2
+        }
+      ],
+      "runtime_seconds": 0.193821957000182,
+      "seconds_per_step": 0.096910978500091,
+      "steps": 2
+    }
+  }
+}

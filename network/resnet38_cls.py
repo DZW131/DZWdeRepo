@@ -2,6 +2,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import network.resnet38d
+from network.rddr_context import (
+    CONTEXT_MODES,
+    compute_rddr_dross_score,
+    context_reliability,
+)
 
 
 class HFRM(nn.Module):
@@ -33,7 +38,7 @@ class HFRM(nn.Module):
         self.gamma_veto = nn.Parameter(torch.zeros(1))
         self.gamma_context = nn.Parameter(torch.zeros(1))
 
-    def forward(self, feat_nong, feat_deep):
+    def forward(self, feat_nong, feat_deep, context_scale=None, diagnostics=False):
         B, C, H, W = feat_nong.size()
         
 
@@ -46,20 +51,35 @@ class HFRM(nn.Module):
         # 2. Contextual Homogenization Processing
 
         feat_smoothed = self.context_conv(feat_nong)
+        feat_context = (
+            feat_smoothed
+            if context_scale is None
+            else context_scale.to(dtype=feat_smoothed.dtype) * feat_smoothed
+        )
         
         # 3. (Residual sum)
         feat_rectified = feat_nong + \
                          self.gamma_veto * feat_vetoed + \
-                         self.gamma_context * feat_smoothed
-                         
+                         self.gamma_context * feat_context
+
+        if diagnostics:
+            return feat_rectified, {
+                "semantic_residual": feat_vetoed,
+                "context_before": feat_smoothed,
+                "context_after": feat_context,
+            }
         return feat_rectified
 
 # =========================================================================
 # 2.  (Main Training Network)
 # =========================================================================
 class Net(network.resnet38d.Net):
-    def __init__(self, n_class):
+    def __init__(self, n_class, rddr_context_mode="none"):
         super().__init__()
+
+        if rddr_context_mode not in CONTEXT_MODES:
+            raise ValueError(f"Unknown RDDR Phase-2A context mode: {rddr_context_mode}")
+        self.rddr_context_mode = rddr_context_mode
 
         self.dropout7 = torch.nn.Dropout2d(0.5)     
 
@@ -88,8 +108,7 @@ class Net(network.resnet38d.Net):
                                     self.hfrm_56, self.hfrm_28_1, self.hfrm_28_2]
         self.pool = nn.MaxPool2d(2, 2)
 
-    def forward(self, x):
- 
+    def _extract_hierarchy(self, x):
         x = self.conv1a(x)
         x = self.b2(x); x = self.b2_1(x); x = self.b2_2(x)
         
@@ -105,9 +124,26 @@ class Net(network.resnet38d.Net):
         x, _ = self.b6(x, get_x_bn_relu=True); x = self.b7(x)
         feat_deep = F.relu(self.bn7(x)) 
 
+        return feat_56, feat_28_1, feat_28_2, feat_deep
+
+    def _context_gate(self, feat_28_1, feat_deep):
+        if self.rddr_context_mode == "none":
+            return None, None
+        q = compute_rddr_dross_score(
+            self.ic1(feat_28_1), self.fc8(feat_deep)
+        )
+        reliability = context_reliability(q, self.rddr_context_mode)
+        return q, reliability
+
+    def forward(self, x):
+        feat_56, feat_28_1, feat_28_2, feat_deep = self._extract_hierarchy(x)
+        _, reliability = self._context_gate(feat_28_1, feat_deep)
+
 
         feat_56_rectified = self.hfrm_56(feat_56, feat_deep)
-        feat_28_1_rectified = self.hfrm_28_1(feat_28_1, feat_deep)
+        feat_28_1_rectified = self.hfrm_28_1(
+            feat_28_1, feat_deep, context_scale=reliability
+        )
         feat_28_2_rectified = self.hfrm_28_2(feat_28_2, feat_deep)
 
 
@@ -126,6 +162,37 @@ class Net(network.resnet38d.Net):
         y_deep = torch.sigmoid(out_deep)
 
         return out_56, out_28_1, out_28_2, out_deep, y_deep, cam_56, cam_28_1, cam_28_2, cam_deep, feat_56_rectified
+
+    def forward_rddr_context_diagnostics(self, x):
+        """Expose Phase-2A tensors without changing the public forward tuple."""
+
+        feat_56, feat_28_1, feat_28_2, feat_deep = self._extract_hierarchy(x)
+        q = compute_rddr_dross_score(
+            self.ic1(feat_28_1), self.fc8(feat_deep)
+        )
+        reliability = context_reliability(q, self.rddr_context_mode)
+        scale = None if self.rddr_context_mode == "none" else reliability
+        feat_56_rect = self.hfrm_56(feat_56, feat_deep)
+        feat_28_1_rect, hfrm = self.hfrm_28_1(
+            feat_28_1, feat_deep, context_scale=scale, diagnostics=True
+        )
+        feat_28_2_rect = self.hfrm_28_2(feat_28_2, feat_deep)
+        return {
+            "F28_raw": feat_28_1,
+            "Ddeep": feat_deep,
+            "q": q,
+            "reliability": reliability,
+            "context_before": hfrm["context_before"],
+            "context_after": hfrm["context_after"],
+            "F28_rect": feat_28_1_rect,
+            "cam_56": F.relu(self.ic_56(feat_56_rect)),
+            "cam_28_1": F.relu(self.ic1(feat_28_1_rect)),
+            "cam_28_2": F.relu(self.ic2(feat_28_2_rect)),
+            "cam_deep": F.relu(self.fc8(feat_deep)),
+            "deep_probability": torch.sigmoid(
+                F.adaptive_avg_pool2d(self.fc8(feat_deep), 1).flatten(1)
+            ),
+        }
 
     def get_parameter_groups(self):
         groups = ([], [], [], [])
@@ -163,32 +230,22 @@ class Net(network.resnet38d.Net):
                 nn.init.constant_(m.bias, 0)
 
 class Net_CAM(Net):
-    def __init__(self, n_class):
-        super().__init__(n_class)
+    def __init__(self, n_class, rddr_context_mode="none"):
+        super().__init__(n_class, rddr_context_mode=rddr_context_mode)
 
     def forward(self, x):
         out_56, out_28_1, out_28_2, out_deep, y_deep, _, _, _, _, _ = super().forward(x)
         return y_deep
 
     def forward_cam(self, x):
-        x = self.conv1a(x)
-        x = self.b2(x); x = self.b2_1(x); x = self.b2_2(x)
-        
-        x = self.b3(x); x = self.b3_1(x); x = self.b3_2(x)
-        feat_56 = x  
-
-        x = self.b4(x); x = self.b4_1(x); x = self.b4_2(x); x = self.b4_3(x); x = self.b4_4(x); x = self.b4_5(x)
-        feat_28_1 = F.relu(self.bn45(x)) 
-        
-        x, _ = self.b5(x, get_x_bn_relu=True); x = self.b5_1(x); x = self.b5_2(x)
-        feat_28_2 = F.relu(self.bn52(x)) 
-        
-        x, _ = self.b6(x, get_x_bn_relu=True); x = self.b7(x)
-        feat_deep = F.relu(self.bn7(x))  
+        feat_56, feat_28_1, feat_28_2, feat_deep = self._extract_hierarchy(x)
+        _, reliability = self._context_gate(feat_28_1, feat_deep)
 
 
         feat_56_rectified = self.hfrm_56(feat_56, feat_deep)
-        feat_28_1_rectified = self.hfrm_28_1(feat_28_1, feat_deep)
+        feat_28_1_rectified = self.hfrm_28_1(
+            feat_28_1, feat_deep, context_scale=reliability
+        )
         feat_28_2_rectified = self.hfrm_28_2(feat_28_2, feat_deep)
 
 
@@ -197,7 +254,7 @@ class Net_CAM(Net):
         cam_28_2 = F.relu(self.ic2(feat_28_2_rectified))
         cam_deep = F.relu(self.fc8(feat_deep)) 
         
-        out_deep = F.avg_pool2d(self.fc8(feat_deep), kernel_size=(feat_deep.size(2), feat_deep.size(3)), padding=0).view(x.size(0), -1)
+        out_deep = F.avg_pool2d(self.fc8(feat_deep), kernel_size=(feat_deep.size(2), feat_deep.size(3)), padding=0).view(feat_deep.size(0), -1)
         y_deep = torch.sigmoid(out_deep)
 
         return cam_56, cam_28_1, cam_28_2, cam_deep, y_deep

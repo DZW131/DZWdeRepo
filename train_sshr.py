@@ -2,6 +2,7 @@ import os
 import math
 import numpy as np
 import argparse
+import csv
 import importlib
 import json
 import torch
@@ -83,6 +84,86 @@ def get_cam_weights(args):
 def get_loss_weights(args):
     return (args.loss_w_56, args.loss_w_28_1, args.loss_w_28_2, args.loss_w_deep)
 
+def parse_epoch_milestones(value):
+    if not value:
+        return set()
+    milestones = {int(item.strip()) for item in value.split(',') if item.strip()}
+    if any(epoch <= 0 for epoch in milestones):
+        raise ValueError("Checkpoint milestones must be positive epochs")
+    return milestones
+
+def write_epoch_curve(path, records):
+    if not path:
+        return
+    os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
+    with open(path, 'w', newline='', encoding='utf-8') as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(records[0].keys()))
+        writer.writeheader()
+        writer.writerows(records)
+
+def write_rddr_context_optimizer_audit(path, model, optimizer, mode):
+    if not path:
+        return
+    named = dict(model.named_parameters())
+    grouped = [
+        parameter
+        for group in optimizer.param_groups
+        for parameter in group['params']
+    ]
+    membership = {
+        name: sum(candidate is parameter for candidate in grouped)
+        for name, parameter in named.items()
+    }
+    if any(count != 1 for count in membership.values()):
+        duplicates = {
+            name: count for name, count in membership.items() if count != 1
+        }
+        raise AssertionError(f"Optimizer membership is not exactly once: {duplicates}")
+    context_names = [
+        name for name in named
+        if name.startswith('rddr_context') or name.startswith('context_gate')
+    ]
+    if context_names:
+        raise AssertionError(
+            f"RDDR Phase-2A forbids new trainable context parameters: {context_names}"
+        )
+    payload = {
+        'mode': mode,
+        'additional_trainable_parameters': 0,
+        'total_parameters': int(sum(parameter.numel() for parameter in named.values())),
+        'all_parameters_grouped_exactly_once': True,
+        'optimizer_groups': [
+            {
+                'index': index,
+                'lr': float(group['lr']),
+                'weight_decay': float(group['weight_decay']),
+                'momentum': float(group['momentum']),
+                'parameter_tensors': len(group['params']),
+                'parameters': int(sum(parameter.numel() for parameter in group['params'])),
+            }
+            for index, group in enumerate(optimizer.param_groups)
+        ],
+    }
+    os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
+    with open(path, 'w', encoding='utf-8') as handle:
+        json.dump(payload, handle, indent=2, sort_keys=True)
+        handle.write('\n')
+
+def validate_rddr_phase2a_training_contract(args):
+    mode = getattr(args, 'rddr_context_mode', 'none')
+    if mode == 'none':
+        return
+    if mode not in {'global', 'receiver'}:
+        raise AssertionError(f'Unknown RDDR Phase-2A mode: {mode}')
+    if args.dataset != 'bcss':
+        raise AssertionError('RDDR Phase-2A is frozen to BCSS')
+    if args.eval_every != 0:
+        raise AssertionError(
+            'RDDR Phase-2A forbids train-time validation/test access; use --eval_every 0'
+        )
+    if args.seed != 42 or args.max_epoches != 25:
+        raise AssertionError('RDDR Phase-2A requires seed42 epoch0-to-25')
+
 def apply_palette(mask_np, dataset='luad'):
     mask_img = Image.fromarray(mask_np.astype(np.uint8))
     if dataset == 'bcss':
@@ -163,7 +244,12 @@ def train_phase(args):
     global time_test
 
     set_seed(args.seed)
-    model = getattr(importlib.import_module(args.network), 'Net')(n_class=args.n_class).cuda()
+    validate_rddr_phase2a_training_contract(args)
+    rddr_context_mode = getattr(args, 'rddr_context_mode', 'none')
+    model = getattr(importlib.import_module(args.network), 'Net')(
+        n_class=args.n_class,
+        rddr_context_mode=rddr_context_mode,
+    ).cuda()
 
     loss_weights = None
     amp_dtype = get_amp_dtype(args)
@@ -200,6 +286,12 @@ def train_phase(args):
     ]
 
     optimizer = torchutils.PolyOptimizer(optim_params, lr=args.lr, weight_decay=args.wt_dec, max_step=max_step)
+    write_rddr_context_optimizer_audit(
+        getattr(args, 'optimizer_audit_path', None),
+        model,
+        optimizer,
+        rddr_context_mode,
+    )
     
     if args.weights[-7:] == '.params':
         weights_dict = importlib.import_module('network.resnet38d').convert_mxnet_to_torch(args.weights)
@@ -211,11 +303,17 @@ def train_phase(args):
     timer = pyutils.Timer("Session started: ")
     best_val_miou = None
     eval_history = []
+    training_curve = []
+    milestone_epochs = parse_epoch_milestones(
+        getattr(args, 'save_epoch_milestones', '')
+    )
     os.makedirs(args.save_folder, exist_ok=True)
 
     for ep in range(args.max_epoches):
         model.train()
         ep_count = ep_EM = ep_acc = 0
+        epoch_loss_sum = 0.0
+        epoch_batches = 0
         
 
         
@@ -247,6 +345,8 @@ def train_phase(args):
                 ep_acc += compute_acc(pass_cls, true_cls)
             
             avg_meter.add({'loss_cls': loss_cls.item(), 'loss_adapt': loss_adapt_val.item()})
+            epoch_loss_sum += float(loss_cls.item())
+            epoch_batches += 1
             
             optimizer.zero_grad()
             if scaler.is_enabled():
@@ -272,6 +372,11 @@ def train_phase(args):
         checkpoint_path = get_checkpoint_path(args)
         if args.save_checkpoints:
             torch.save(model.state_dict(), checkpoint_path)
+        if (ep + 1) in milestone_epochs:
+            epoch_checkpoint_path = os.path.join(
+                args.save_folder, f"stage1_epoch_{ep + 1:04d}.pth"
+            )
+            torch.save(model.state_dict(), epoch_checkpoint_path)
         if args.save_last_k_checkpoints > 0 and (ep + 1) > args.max_epoches - args.save_last_k_checkpoints:
             epoch_checkpoint_path = os.path.join(args.save_folder, f"stage1_epoch_{ep + 1:04d}.pth")
             torch.save(model.state_dict(), epoch_checkpoint_path)
@@ -294,11 +399,38 @@ def train_phase(args):
             if val_miou is not None and (best_val_miou is None or val_miou > best_val_miou):
                 best_val_miou = val_miou
 
+        epoch_record = {
+            'epoch': ep + 1,
+            'loss_cls': epoch_loss_sum / max(epoch_batches, 1),
+            'train_exact_match': ep_EM / max(ep_count, 1),
+            'train_accuracy': ep_acc / max(ep_count, 1),
+            'lr_backbone_weight': float(optimizer.param_groups[0]['lr']),
+            'lr_scratch_weight': float(optimizer.param_groups[2]['lr']),
+            'optimizer_momentum': float(optimizer.param_groups[0]['momentum']),
+            'optimizer_global_step': int(optimizer.global_step),
+            'gamma_veto_56': float(model.hfrm_56.gamma_veto.detach().item()),
+            'gamma_context_56': float(model.hfrm_56.gamma_context.detach().item()),
+            'gamma_veto_28_1': float(model.hfrm_28_1.gamma_veto.detach().item()),
+            'gamma_context_28_1': float(model.hfrm_28_1.gamma_context.detach().item()),
+            'gamma_veto_28_2': float(model.hfrm_28_2.gamma_veto.detach().item()),
+            'gamma_context_28_2': float(model.hfrm_28_2.gamma_context.detach().item()),
+            'val_mean_iou': val_score.get('Mean IoU') if do_eval and val_score is not None else None,
+            'val_mean_dice': val_score.get('Mean Dice') if do_eval and val_score is not None else None,
+        }
+        training_curve.append(epoch_record)
+        write_epoch_curve(
+            getattr(args, 'training_curve_path', None), training_curve
+        )
+        print('[EpochSummary]', json.dumps(epoch_record, sort_keys=True), flush=True)
+
     return {'best_val_miou': best_val_miou, 'eval_history': eval_history}
 
 
 def test_phase(args, dataroot=None, split_name='test', checkpoint_path=None, state_dict=None):
-    model = getattr(importlib.import_module(args.network), 'Net_CAM')(n_class=args.n_class)
+    model = getattr(importlib.import_module(args.network), 'Net_CAM')(
+        n_class=args.n_class,
+        rddr_context_mode=getattr(args, 'rddr_context_mode', 'none'),
+    )
     model = model.cuda()
     if dataroot is None:
         dataroot = args.testroot
@@ -349,6 +481,24 @@ if __name__ == '__main__':
     parser.add_argument("--save_checkpoints", "--save-checkpoints", dest="save_checkpoints", action="store_true", default=True)
     parser.add_argument("--no-save_checkpoints", "--no-save-checkpoints", dest="save_checkpoints", action="store_false")
     parser.add_argument("--save_last_k_checkpoints", "--save-last-k-checkpoints", default=5, type=int)
+    parser.add_argument(
+        "--rddr_context_mode",
+        "--rddr-context-mode",
+        default="none",
+        choices=["none", "global", "receiver"],
+    )
+    parser.add_argument(
+        "--save_epoch_milestones",
+        "--save-epoch-milestones",
+        default="",
+        type=str,
+    )
+    parser.add_argument(
+        "--training_curve_path", "--training-curve-path", default=None, type=str
+    )
+    parser.add_argument(
+        "--optimizer_audit_path", "--optimizer-audit-path", default=None, type=str
+    )
     args = parser.parse_args()
     if args.evaluate_only:
         set_seed(args.seed)
