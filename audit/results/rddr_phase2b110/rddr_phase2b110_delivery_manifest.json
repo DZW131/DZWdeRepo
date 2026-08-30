@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "files": {
+    "rddr_phase2b110_beneficial_composition.csv": {
+      "sha256": "f1391619ed6b8ea48ce330b5c9e939beba5e7ffc238415b0aa1b38971a41b3a5",
+      "bytes": 357
+    },
+    "rddr_phase2b110_bootstrap.csv": {
+      "sha256": "095e41cfb69fa2db83774b95061cd8d76018e126ef0dfb38056cad770ad3bef7",
+      "bytes": 4287
+    },
+    "rddr_phase2b110_bootstrap_replicates.csv": {
+      "sha256": "0b044dc3330005e91957b502c499e7d50ff536709c5e21c7dc561cd8ebb147a0",
+      "bytes": 7080367
+    },
+    "rddr_phase2b110_boundary_interior.csv": {
+      "sha256": "22f15ee57bfe67007d3053719b30afe0bd17af4296674905ae6e72cabc0d5ee8",
+      "bytes": 886
+    },
+    "rddr_phase2b110_coverage_headroom.csv": {
+      "sha256": "1b72dc101b34c9d64441a735fc43153c96b4f7504634e533d587bc17da6c371d",
+      "bytes": 472
+    },
+    "rddr_phase2b110_deep_support_quintiles.csv": {
+      "sha256": "7f8570781544fddc55d58c9f9b017a853906f4e030d94232bc6bf8ac55ce34eb",
+      "bytes": 1160
+    },
+    "rddr_phase2b110_delta_quintiles.csv": {
+      "sha256": "e377bb850c83844b1a9f5b5f300f6142b30be373ea8d6a138449e56c813347f9",
+      "bytes": 1189
+    },
+    "rddr_phase2b110_harmful_composition.csv": {
+      "sha256": "8bcb380ad365932a4bba84d8f52f401ce1fbccefc0f6171497cd2a5b350cc0be",
+      "bytes": 257
+    },
+    "rddr_phase2b110_identity_audit.json": {
+      "sha256": "9a5e40333ed7431da9838b2b903bb2e69affb8c16b98dbd5b579504fd4c2f071",
+      "bytes": 1866
+    },
+    "rddr_phase2b110_per_class.csv": {
+      "sha256": "0b6eca66aa38476dc794d7396fcd9e0f2125ae6bba9035b022b8ca8e8a0810ef",
+      "bytes": 1438
+    },
+    "rddr_phase2b110_rejected_winner_ranking.csv": {
+      "sha256": "9f004a32bc611d3b4c10814c8fcb8568952a87d2f760426bfaa1d51c8abc7314",
+      "bytes": 1383
+    },
+    "rddr_phase2b110_residual_counts.csv": {
+      "sha256": "5229dd8474d244df91be16527ed8a9869fcbcbd5ea163f0e9778220ea069d56b",
+      "bytes": 294
+    },
+    "rddr_phase2b110_residual_utility_ranking.csv": {
+      "sha256": "97119f3442e60b1e25a273c66fadeca2612db6f1f5a030aa8979871df22932e0",
+      "bytes": 1412
+    },
+    "rddr_phase2b110_runtime.json": {
+      "sha256": "fbd9ccd0741e0e25dff010af2bd7f2a95636cbea002395322c6d86e05f840bdf",
+      "bytes": 3410
+    },
+    "rddr_phase2b110_score_controls.csv": {
+      "sha256": "e845cd46c3ccb61459bf164d79fc5dddf539dc285ea79acb8a0e3fadaa4fff9a",
+      "bytes": 13230
+    },
+    "rddr_phase2b110_summary.json": {
+      "sha256": "a2137dc73dabf57dc8b1e0457138108127be8bbbe167d04bc8dc213753307850",
+      "bytes": 8705
+    },
+    "rddr_phase2b110_tests.txt": {
+      "sha256": "0653db8cf4cde18b9675f8c616f4cec00496cc11f5235dcab029b6b1516a8cea",
+      "bytes": 3455
+    },
+    "rddr_phase2b110_third_evidence_bothwrong.csv": {
+      "sha256": "caf493d1bf970234cabd92153c0636ca1824a76570171d6ca304245a8fbff812",
+      "bytes": 514
+    },
+    "rddr_phase2b110_third_evidence_harm_control.csv": {
+      "sha256": "60f7d3213f80f0d42997e626e0fa3e795b8771b025a6a35197cca94f91ac99cc",
+      "bytes": 734
+    },
+    "rddr_phase2b110_top20_bottom80.csv": {
+      "sha256": "c33a993ce4b11ce20d7a5f20ac87d343c6670c1f1140084537f3947aa2bd4d3f",
+      "bytes": 881
+    },
+    "rddr_phase2b110_verification.json": {
+      "sha256": "a8d908bc450940ba295a3800be59065619910a43b369c2499a76bbee7d0dddf9",
+      "bytes": 1735
+    },
+    "rddr_phase2b110_zero_composition.csv": {
+      "sha256": "7f268bf87bf1cfb215133829c4ccbed88e90efc5898e73f09538cc9b9ada0cdd",
+      "bytes": 231
+    },
+    "rddr_phase2b110_residual_correction_coverage_report.md": {
+      "sha256": "54b7dc74b23b18f3b2a87fcc08f31b50d657f888885267b5bba2d3b64747ece0",
+      "bytes": 28805
+    }
+  },
+  "note": "Hashes of immutable scientific evidence and generated report; manifest excludes itself."
+}

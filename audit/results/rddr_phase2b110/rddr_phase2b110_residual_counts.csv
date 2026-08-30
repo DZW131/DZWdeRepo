@@ -1,0 +1,11 @@
+population,count,images
+foreground,2479143,3416
+Raw_Wrong,708407,3407
+Residual,1782105,3416
+R_RW,435185,3194
+Rejected_Deep_Win,113204,2562
+Rejected_Both_Wrong,321981,3187
+Rejected_Shallow_Win,144662,3150
+Residual_Beneficial,177865,2923
+Residual_Harmful,257316,3139
+Residual_Zero,4,4

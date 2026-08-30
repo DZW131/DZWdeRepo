@@ -1,0 +1,3 @@
+utility,source,count,fraction_of_utility,mean_q,mean_S_D,mean_Delta,mean_deep_confidence
+harmful,Rejected_Deep_Win,0,0.0,nan,nan,nan,nan
+harmful,Rejected_Both_Wrong,257316,1.0,0.1404981166124344,0.6038923263549805,-0.12286022305488586,0.9543859958648682

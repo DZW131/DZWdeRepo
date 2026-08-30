@@ -1,0 +1,49 @@
+test_binary_tied_scores (test_rddr_phase2b110.FormulaTests) ... ok
+test_bootstrap_reproducible (test_rddr_phase2b110.FormulaTests) ... ok
+test_control_score_directions_frozen (test_rddr_phase2b110.FormulaTests) ... ok
+test_cross_stratum_underpowered (test_rddr_phase2b110.FormulaTests) ... ok
+test_decision_all_cases (test_rddr_phase2b110.FormulaTests) ... ok
+test_margin_tie_direction (test_rddr_phase2b110.FormulaTests) ... ok
+test_no_gate_construction (test_rddr_phase2b110.FormulaTests) ... ok
+test_no_gt_in_scores (test_rddr_phase2b110.FormulaTests) ... ok
+test_no_threshold_search (test_rddr_phase2b110.FormulaTests) ... ok
+test_primary_score_is_sD (test_rddr_phase2b110.FormulaTests) ... ok
+test_quintile_ties_not_split (test_rddr_phase2b110.FormulaTests) ... ok
+test_rejected_bothwrong_formula (test_rddr_phase2b110.FormulaTests) ... ok
+test_required_gap_exact_formula (test_rddr_phase2b110.FormulaTests) ... ok
+test_residual_beneficial_label (test_rddr_phase2b110.FormulaTests) ... ok
+test_residual_harmful_label (test_rddr_phase2b110.FormulaTests) ... ok
+test_residual_population_formula (test_rddr_phase2b110.FormulaTests) ... ok
+test_third_class_rescue_formula (test_rddr_phase2b110.FormulaTests) ... ok
+test_all_gates_decision (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_all_ranking_metrics (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_bootstrap_reproducible (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_class_power (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_ctx_sym_exact_replay (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_delta_exact_replay (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_headroom_denominator (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_identity_unchanged (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_no_checkpoint (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_no_gate_construction (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_no_optimizer (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_no_step (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_no_test_luad (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_no_threshold_search (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_phase2b19_gate_exact_replay (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_phase2b19_rawwrong_count (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_phase2b19_rejected_counts (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_primary_score_is_sD (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_q_exact_replay (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_rejected_bothwrong_formula (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_required_gap_exact_formula (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_residual_beneficial_label (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_residual_harmful_label (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_residual_population_formula (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_sD_exact_replay (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_secondary_flags (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+test_third_class_rescue_formula (test_rddr_phase2b110_artifacts.ArtifactTests) ... ok
+
+----------------------------------------------------------------------
+Ran 44 tests in 0.015s
+
+OK
