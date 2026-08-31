@@ -15,8 +15,9 @@ import os
 from pathlib import Path
 import random
 import sys
+from types import SimpleNamespace
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import numpy as np
 import torch
@@ -560,6 +561,87 @@ class ProtocolTests(unittest.TestCase):
         conditionals = [ast.unparse(node.test) for node in self.training_loop.body if isinstance(node, ast.If)]
         self.assertIn('step in SNAPSHOTS', conditionals)
         self.assertIn('step in (250, 500)', conditionals)
+
+    def evaluation_callback(self, corrupt=None):
+        """Execute the actual nested callback, mocking only GPU/I/O boundaries.
+
+        Unlike source-string checks, this crosses the evaluator -> runner return
+        contract that failed in formal_4090_r1. The production callback AST is
+        unchanged; a tiny enclosing function binds its two nonlocal counters.
+        """
+        node = next(node for node in self.run_node.body
+                    if isinstance(node, ast.FunctionDef) and node.name == 'evaluate')
+        wrapper = ast.parse('def build():\n    peak_allocated = 0\n    peak_reserved = 0\n').body[0]
+        wrapper.body.extend([copy.deepcopy(node), ast.Return(value=ast.Name(id='evaluate', ctx=ast.Load()))])
+        captured = []
+        def snapshot(model, val_root, native, output, arm, step):
+            result = dict(arm=arm, step=step, images=3418, official_miou=.67,
+                          official_mdice=.80, state_unchanged=True,
+                          representation_rows=[dict(arm=arm, step=step, name='fixture')])
+            if corrupt:
+                result.update(corrupt)
+            captured.append(copy.deepcopy(result))
+            return result
+        space = dict(arms={arm: (object(), object()) for arm in ('B', 'A', 'R')},
+                     evaluate_snapshot=Mock(side_effect=snapshot), move_arm=Mock(),
+                     rng_state=Mock(return_value='saved-rng'), restore_rng=Mock(),
+                     phase=['training'], representation=[], evaluation=[],
+                     DATA_ROOT=Path('/fixture/bcss'), NATIVE=Path('/fixture/native.npz'),
+                     out=Path('/fixture/output'), P=common.P, json=json, print=Mock(),
+                     write_csv=Mock(), write_json=Mock(),
+                     torch=SimpleNamespace(cuda=SimpleNamespace(
+                         max_memory_allocated=Mock(return_value=10),
+                         max_memory_reserved=Mock(return_value=20), empty_cache=Mock())))
+        tree = ast.fix_missing_locations(ast.Module(body=[wrapper], type_ignores=[]))
+        exec(compile(tree, '<actual-runner-evaluate-callback>', 'exec'), space)
+        return space['build'](), space, captured
+
+    def test_evaluation_callback_keeps_snapshot_metadata(self):
+        callback, space, captured = self.evaluation_callback()
+        for step in common.SNAPSHOTS:
+            callback(step)
+        expected = [{k: v for k, v in row.items() if k != 'representation_rows'} for row in captured]
+        self.assertEqual(space['evaluation'], expected)
+        self.assertEqual([(r['arm'], r['step']) for r in space['evaluation']],
+                         [(arm, step) for step in common.SNAPSHOTS for arm in ('B', 'A', 'R')])
+        self.assertEqual(len(space['representation']), 15)
+        self.assertEqual(space['write_json'].call_count, 5)
+        self.assertEqual(space['write_csv'].call_count, 5)
+        self.assertEqual(space['restore_rng'].call_count, 5)
+        self.assertEqual(space['move_arm'].call_count, 30)
+        for call, expected_record in zip(space['print'].call_args_list, expected):
+            printed = json.loads(call.args[0])
+            self.assertEqual(printed.pop('phase'), 'validation_complete')
+            self.assertEqual(printed, expected_record)
+
+    def test_evaluation_callback_rejects_wrong_arm_without_recording(self):
+        callback, space, _ = self.evaluation_callback({'arm': 'A'})
+        with self.assertRaises(AssertionError):
+            callback(0)  # first requested arm is B
+        self.assertEqual(space['evaluation'], [])
+        self.assertEqual(space['representation'], [])
+
+    def test_evaluation_callback_replays_failed_step0_payload(self):
+        payload = json.loads((ROOT / 'audit/results/rddr_phase2b112_record_fix/'
+                              'r1_snapshot_0000_B.json').read_text(encoding='utf-8'))
+        self.assertEqual((payload['arm'], payload['step'], payload['images']), ('B', 0, 3418))
+        callback, space, _ = self.evaluation_callback()
+        space['arms'] = {'B': space['arms']['B']}
+        space['evaluate_snapshot'].side_effect = None
+        space['evaluate_snapshot'].return_value = copy.deepcopy(payload)
+        callback(0)
+        expected = {k: v for k, v in payload.items() if k != 'representation_rows'}
+        self.assertEqual(space['evaluation'], [expected])
+        self.assertEqual(space['representation'], payload['representation_rows'])
+        self.assertEqual(json.loads(space['print'].call_args.args[0]),
+                         dict(phase='validation_complete', **expected))
+
+    def test_evaluation_callback_rejects_wrong_step_without_recording(self):
+        callback, space, _ = self.evaluation_callback({'step': 50})
+        with self.assertRaises(AssertionError):
+            callback(0)
+        self.assertEqual(space['evaluation'], [])
+        self.assertEqual(space['representation'], [])
 
     def test_no_other_seed(self):
         seeds = []

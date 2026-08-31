@@ -1,0 +1,107 @@
+test_adt_formula (test_rddr_phase2b112.FormulaTests) ... ok
+test_aux_deep_detached (test_rddr_phase2b112.FormulaTests) ... ok
+test_aux_delta_detached (test_rddr_phase2b112.FormulaTests) ... ok
+test_aux_gate_detached (test_rddr_phase2b112.FormulaTests) ... ok
+test_aux_q_detached (test_rddr_phase2b112.FormulaTests) ... ok
+test_frozen_support_manual_oracle_at_corners_and_center (test_rddr_phase2b112.FormulaTests) ... ok
+test_q_is_normalized_js_not_direction (test_rddr_phase2b112.FormulaTests) ... ok
+test_swap_symmetry_and_ties_excluded (test_rddr_phase2b112.FormulaTests) ... ok
+test_unselected_pixels_have_no_auxiliary_gradient (test_rddr_phase2b112.FormulaTests) ... ok
+test_zero_gate_has_finite_zero_loss_and_zero_gradient (test_rddr_phase2b112.FormulaTests) ... ok
+test_aux_extra_gradient_scope_and_no_optimizer_step (test_rddr_phase2b112.GradientScopeTests) ... ok
+test_aux_feat56_detached (test_rddr_phase2b112.GradientScopeTests) ... ok
+test_aux_forward_matches_original_local_subgraph (test_rddr_phase2b112.GradientScopeTests) ... ok
+test_aux_ic1_detached (test_rddr_phase2b112.GradientScopeTests) ... ok
+test_aux_only_b4_bn45_extra_grad (test_rddr_phase2b112.GradientScopeTests) ... ok
+test_main_bn_frozen_aux_bn_affine_allowed (test_rddr_phase2b112.GradientScopeTests) ... ok
+test_main_loss_gradient_path_unchanged (test_rddr_phase2b112.GradientScopeTests) ... ok
+test_original_resblock_bypasses_block_hook_but_bn_hook_runs (test_rddr_phase2b112.GradientScopeTests) ... ok
+test_random_arm_uses_supplied_A_counts_not_own_adjudication (test_rddr_phase2b112.GradientScopeTests) ... ok
+test_same_main_network_rng_across_arms (test_rddr_phase2b112.GradientScopeTests) ... ok
+test_three_arms_bitwise_equal_step0 (test_rddr_phase2b112.GradientScopeTests) ... ok
+test_last_used_lr_reconstructed_from_official_scheduler (test_rddr_phase2b112.OptimizerTests) ... ok
+test_optimizer_provenance_exact (test_rddr_phase2b112.OptimizerTests) ... ok
+test_tail_updates_match_manual_sgd_weight_decay_and_momentum (test_rddr_phase2b112.OptimizerTests) ... ok
+test_three_arms_fresh_identical_optimizer_state (test_rddr_phase2b112.OptimizerTests) ... ok
+test_gradient_helpers_never_step_optimizer (test_rddr_phase2b112.ProtocolTests) ... ok
+test_immutable_provenance_and_schedules (test_rddr_phase2b112.ProtocolTests) ... ok
+test_lambda_calibration_32_batches (test_rddr_phase2b112.ProtocolTests) ... ok
+test_lambda_frozen_after_step0 (test_rddr_phase2b112.ProtocolTests) ... ok
+test_lambda_no_validation_use_and_no_test_luad (test_rddr_phase2b112.ProtocolTests) ... ok
+test_loader_frozen_seed_batch_and_sampling (test_rddr_phase2b112.ProtocolTests) ... ok
+test_no_other_seed (test_rddr_phase2b112.ProtocolTests) ... ok
+test_no_third_evidence (test_rddr_phase2b112.ProtocolTests) ... ok
+test_no_threshold_search_or_lambda_sweep (test_rddr_phase2b112.ProtocolTests) ... ok
+test_rng_round_trip_restores_python_numpy_torch (test_rddr_phase2b112.ProtocolTests) ... ok
+test_same_augmentation_seed_without_rng_consumption (test_rddr_phase2b112.ProtocolTests) ... ok
+test_same_batch_manifest_and_rng_reused_in_arm_loop (test_rddr_phase2b112.ProtocolTests) ... ok
+test_snapshot_schedule_exact_and_no_early_stop (test_rddr_phase2b112.ProtocolTests) ... ok
+test_random_gate_rate_match (test_rddr_phase2b112.RandomGateTests) ... ok
+test_random_gate_rejects_invalid_count (test_rddr_phase2b112.RandomGateTests) ... ok
+test_random_gate_rng_is_independent (test_rddr_phase2b112.RandomGateTests) ... ok
+test_random_gate_seed42 (test_rddr_phase2b112.RandomGateTests) ... ok
+test_bootstrap_reproducible_pooled_confusion_oracle (test_rddr_phase2b112.StatisticsTests) ... ok
+test_decision_priority_and_missing_evidence_never_go (test_rddr_phase2b112.StatisticsTests) ... ok
+test_frozen_quintile_threshold_ties_go_left (test_rddr_phase2b112.StatisticsTests) ... ok
+test_gate_E_fixed_step0_margin_tolerance_and_strict_ci (test_rddr_phase2b112.StatisticsTests) ... ok
+test_gate_G_checks_all_four_classes (test_rddr_phase2b112.StatisticsTests) ... ok
+test_gate_H_ratio_summary_uses_all500_not_snapshots (test_rddr_phase2b112.StatisticsTests) ... ok
+test_official_absent_class_and_background_semantics (test_rddr_phase2b112.StatisticsTests) ... ok
+test_official_evaluator_same_call_and_unmodified_output (test_rddr_phase2b112.StatisticsTests) ... ok
+test_original_official_scores_match_observed_confusions (test_rddr_phase2b112.StatisticsTests) ... ok
+test_representation_selection_fixed_160_seed42 (test_rddr_phase2b112.StatisticsTests) ... ok
+test_step500_primary_and_bootstrap_constants (test_rddr_phase2b112.StatisticsTests) ... ok
+
+----------------------------------------------------------------------
+Ran 53 tests in 5.452s
+
+OK
+{"phase": "optimizer_provenance_pass", "state_policy": "fresh_optimizer_state", "lr": [9.55328615544644e-07, 1.910657231089288e-06, 9.55328615544644e-06, 1.910657231089288e-05], "momentum": 0.0005, "model_hash": "c56943fe7749a4ca8a9b66d08e5dfd1e83b95af04ae5a58d5009343c7b7090e5"}
+{"phase": "calibration", "batch": 1, "main_norm": 3.9352542408959104, "aux_norm": 7.805536064626945, "ratio": 0.5041619439423308}
+{"phase": "calibration", "batch": 2, "main_norm": 3.2344984587961805, "aux_norm": 9.412620757651629, "ratio": 0.34363420546084117}
+{"phase": "calibration", "batch": 3, "main_norm": 2.912494788689131, "aux_norm": 19.96660404596711, "ratio": 0.1458683099301866}
+{"phase": "calibration", "batch": 4, "main_norm": 3.0700546081335545, "aux_norm": 13.318993264282001, "ratio": 0.23050200153352465}
+{"phase": "calibration", "batch": 5, "main_norm": 2.736846850145686, "aux_norm": 10.170627403045597, "ratio": 0.2690932170649772}
+{"phase": "calibration", "batch": 6, "main_norm": 2.865643830173781, "aux_norm": 9.989540256103599, "ratio": 0.2868644355834325}
+{"phase": "calibration", "batch": 7, "main_norm": 2.4581032128077074, "aux_norm": 8.918801543111796, "ratio": 0.2756091385338726}
+{"phase": "calibration", "batch": 8, "main_norm": 2.289492483474514, "aux_norm": 9.087887764699424, "ratio": 0.25192790010550464}
+{"phase": "calibration", "batch": 9, "main_norm": 2.6272409794765683, "aux_norm": 15.498012399201828, "ratio": 0.16952115601073228}
+{"phase": "calibration", "batch": 10, "main_norm": 3.7745816492261004, "aux_norm": 13.853857531079163, "ratio": 0.2724570855470248}
+{"phase": "calibration", "batch": 11, "main_norm": 2.2299933795654527, "aux_norm": 12.518188117694129, "ratio": 0.1781402673308618}
+{"phase": "calibration", "batch": 12, "main_norm": 4.407567302042801, "aux_norm": 11.012917258668146, "ratio": 0.4002179617368389}
+{"phase": "calibration", "batch": 13, "main_norm": 4.242141536624198, "aux_norm": 12.299870028969684, "ratio": 0.34489319994307405}
+{"phase": "calibration", "batch": 14, "main_norm": 2.7775644639140116, "aux_norm": 9.09491936263383, "ratio": 0.3053973707861081}
+{"phase": "calibration", "batch": 15, "main_norm": 2.1718537203843886, "aux_norm": 7.654365776475626, "ratio": 0.28374051893650043}
+{"phase": "calibration", "batch": 16, "main_norm": 2.680694825731405, "aux_norm": 9.27062163621331, "ratio": 0.2891602017677385}
+{"phase": "calibration", "batch": 17, "main_norm": 3.1958554228360057, "aux_norm": 10.516981812001129, "ratio": 0.3038757199475611}
+{"phase": "calibration", "batch": 18, "main_norm": 1.9546459466590629, "aux_norm": 12.288395720881972, "ratio": 0.15906437174275248}
+{"phase": "calibration", "batch": 19, "main_norm": 3.0993454770154396, "aux_norm": 13.65295247040577, "ratio": 0.2270091748626174}
+{"phase": "calibration", "batch": 20, "main_norm": 1.9835231555094481, "aux_norm": 9.010474250736536, "ratio": 0.22013526681416995}
+{"phase": "calibration", "batch": 21, "main_norm": 2.860644329663965, "aux_norm": 10.555388607480138, "ratio": 0.27101269629491664}
+{"phase": "calibration", "batch": 22, "main_norm": 3.5683623283341195, "aux_norm": 8.5494869543324, "ratio": 0.41737736348636684}
+{"phase": "calibration", "batch": 23, "main_norm": 1.6167186288641953, "aux_norm": 10.314620792739777, "ratio": 0.15674048128213894}
+{"phase": "calibration", "batch": 24, "main_norm": 2.24057467500599, "aux_norm": 9.671130987061575, "ratio": 0.2316765924985148}
+{"phase": "calibration", "batch": 25, "main_norm": 2.47054788377996, "aux_norm": 9.134194910485958, "ratio": 0.2704724286361651}
+{"phase": "calibration", "batch": 26, "main_norm": 3.2747904249561133, "aux_norm": 12.395119899072066, "ratio": 0.2641999794257152}
+{"phase": "calibration", "batch": 27, "main_norm": 1.7558548339306905, "aux_norm": 13.190003178590596, "ratio": 0.13312012202161647}
+{"phase": "calibration", "batch": 28, "main_norm": 3.224976235711125, "aux_norm": 8.235779378655321, "ratio": 0.3915811829726143}
+{"phase": "calibration", "batch": 29, "main_norm": 1.7139950341907544, "aux_norm": 11.519360211107943, "ratio": 0.14879255455958826}
+{"phase": "calibration", "batch": 30, "main_norm": 3.4569596813592263, "aux_norm": 11.62140267915925, "ratio": 0.2974649251749936}
+{"phase": "calibration", "batch": 31, "main_norm": 2.2722202173645685, "aux_norm": 15.78134309632911, "ratio": 0.14398142173674014}
+{"phase": "calibration", "batch": 32, "main_norm": 2.7082744188772, "aux_norm": 8.112315428504221, "ratio": 0.33384727694668653}
+snapshot step=0 arm=B: 500/3418 images
+snapshot step=0 arm=B: 1000/3418 images
+snapshot step=0 arm=B: 1500/3418 images
+snapshot step=0 arm=B: 2000/3418 images
+snapshot step=0 arm=B: 2500/3418 images
+snapshot step=0 arm=B: 3000/3418 images
+Traceback (most recent call last):
+  File "/home/duyanhong/DZWdeRepo-rddr-phase2b112/tools/run_rddr_phase2b112.py", line 312, in <module>
+    if __name__=='__main__': main()
+  File "/home/duyanhong/DZWdeRepo-rddr-phase2b112/tools/run_rddr_phase2b112.py", line 304, in main
+    run(out,arms,provenance)
+  File "/home/duyanhong/DZWdeRepo-rddr-phase2b112/tools/run_rddr_phase2b112.py", line 209, in run
+    evaluate(0)
+  File "/home/duyanhong/DZWdeRepo-rddr-phase2b112/tools/run_rddr_phase2b112.py", line 189, in evaluate
+    evaluation.append(dict(arm=arm, step=step, **result))
+TypeError: dict() got multiple values for keyword argument 'arm'
