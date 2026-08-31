@@ -1,0 +1,17 @@
+{
+  "status": "MIGRATION_VERIFIED_TRAINING_PAUSED",
+  "rsync_checksum_itemized_changes": 0,
+  "rsync_checksum_log_sha256": "910276ddd9a5c9210c1f2d5eb5fbb413bec4c995790355247d9ce5e9de82f0c3",
+  "ordinary_files_transferred": 78484,
+  "source_files_deleted": 0,
+  "formal_training_started": false,
+  "formal_optimizer_steps": 0,
+  "lambda_calibrated": false,
+  "validation_evaluated": false,
+  "test_transferred": false,
+  "test_evaluated": false,
+  "native_validation_names_match": 3418,
+  "smoke_has_no_optimizer_step_call": true,
+  "source_code_commit": "8a850a19e9cfb24e9230a2df083de20439f1e0f8",
+  "smoke_code_commit": "a302de2"
+}

@@ -1,0 +1,1 @@
+{"phase": "optimizer_provenance_pass", "state_policy": "fresh_optimizer_state", "lr": [9.55328615544644e-07, 1.910657231089288e-06, 9.55328615544644e-06, 1.910657231089288e-05], "momentum": 0.0005, "model_hash": "c56943fe7749a4ca8a9b66d08e5dfd1e83b95af04ae5a58d5009343c7b7090e5"}
