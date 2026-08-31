@@ -1,0 +1,7 @@
+{
+  "free_bytes": 289210368,
+  "total_bytes": 25131679744,
+  "minimum_free_bytes": 19327352832,
+  "admitted": false,
+  "policy": "No other processes stopped; no smaller batch or accumulation fallback"
+}

@@ -21,9 +21,9 @@ User approved 2026-08-31. This file records interpretation BEFORE outcomes.
 
 | Owner | Scope | Output | Status |
 |---|---|---|---|
-| Lead | immutable provenance, implementation, paired training and evaluation | runner/common, server evidence | in progress |
-| Statistics worker | snapshot-only analysis and report renderer | analysis/report module | pending |
-| Independent verifier | tests and adversarial code/artifact checks | verification findings | pending |
+| Lead | immutable provenance, implementation, paired training and evaluation | runner/common, server evidence | implementation and CPU provenance complete; GPU resource blocked before calibration |
+| Statistics worker | snapshot-only analysis and report renderer | analysis/report module | implemented; synthetic CPU validation complete, real results pending |
+| Independent verifier | tests and adversarial code/artifact checks | verification findings | 53 CPU tests pass; real CUDA/runtime verification pending |
 
 Final report: `docs/rddr_phase2b112_short_horizon_optimization_report.md`.
 Original specification: `D:/work/RDDR_Phase2B1_12_Short_Horizon_ADT_Optimization_Dynamics_Audit_v1.0.md` (user-supplied; not an instruction to alter the approved contract).
