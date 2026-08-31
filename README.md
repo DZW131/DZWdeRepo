@@ -205,4 +205,15 @@ The migration-only tool is `tools/verify_rddr_phase2b112_migration.py`; it never
 calls optimizer.step or evaluates validation/test metrics. This engineering
 PASS does not mean the500-step experiment has run or passed its scientific gates.
 
+## Step0 record fix and authorized restart
+
+The first4090 launch stopped after step0 B validation due to duplicate `arm`
+keyword arguments while recording the result; all three optimizer step counts
+were zero. The [minimal fix and restart note](docs/rddr_phase2b112_evaluation_record_fix.md)
+documents57 passing tests, including a replay of the actual failed payload.
+The old `formal_4090_r1` directory is preserved. The user-authorized restart uses
+`/home/duyanhong/experiments/RDDR_PHASE2B112/formal_4090_r2` and the same frozen
+launcher/protocol. Only the result-recording callback changed, not model,
+optimization, inference or metrics. Actual progress is in `formal_4090_r2.log`.
+
 ---
