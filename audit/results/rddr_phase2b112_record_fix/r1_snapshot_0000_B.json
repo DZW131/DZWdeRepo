@@ -1,0 +1,1509 @@
+{
+  "arm": "B",
+  "step": 0,
+  "images": 3418,
+  "snapshot_path": "/home/duyanhong/experiments/RDDR_PHASE2B112/formal_4090_r1/snapshot_0000_B.npz",
+  "snapshot_sha256": "9f8bd321660cbe4cf460a723bca5684f7726b2fd222dd1f2aec1021105b17736",
+  "official_miou": 0.6732737318929265,
+  "official_mdice": 0.802675834781311,
+  "official_miou_pp": 67.32737318929264,
+  "official_mdice_pp": 80.2675834781311,
+  "official_per_class_iou": [
+    0.7644759445418335,
+    0.7057128286432431,
+    0.5782609199951805,
+    0.6446452343914492
+  ],
+  "official_per_class_dice": [
+    0.8665189762508646,
+    0.8274696851574724,
+    0.7327824096372434,
+    0.7839322680796633
+  ],
+  "official_result": {
+    "Pixel Accuracy": 0.8290307678716147,
+    "Mean Accuracy": 0.7820365170768506,
+    "Frequency Weighted IoU": 0.7083792576606593,
+    "Mean IoU": 0.6732737318929265,
+    "Class IoU": {
+      "0": 0.7644759445418335,
+      "1": 0.7057128286432431,
+      "2": 0.5782609199951805,
+      "3": 0.6446452343914492
+    },
+    "Dice Coefficients": {
+      "0": 0.8665189762508646,
+      "1": 0.8274696851574724,
+      "2": 0.7327824096372434,
+      "3": 0.7839322680796633
+    },
+    "Mean Dice": 0.802675834781311
+  },
+  "metric_units": "fraction (explicit *_pp aliases are percent)",
+  "official_cm_parity": true,
+  "official_cm_background_retained": true,
+  "native_sha256": "767aa0f97ce2d53db2cc70e4fece0e181a44919f693184c2541490077e07325a",
+  "state_before": "c56943fe7749a4ca8a9b66d08e5dfd1e83b95af04ae5a58d5009343c7b7090e5",
+  "state_after": "c56943fe7749a4ca8a9b66d08e5dfd1e83b95af04ae5a58d5009343c7b7090e5",
+  "state_unchanged": true,
+  "training_and_requires_grad_flags_restored": true,
+  "native_probe_tta": "first/unflipped only",
+  "forward_cam_calls": 10254,
+  "threshold_policy": "canonical default [.8,.9,.8,.6]; no explicit thr",
+  "cam_weights_policy": "canonical default [.6,.2,.2]",
+  "official_tta_count": 3,
+  "official_output_resolution": "original image",
+  "network_precision": "BF16 autocast",
+  "native_array_precision": "FP32",
+  "representation_statistics_precision": "FP64",
+  "representation_reference_path": "/home/duyanhong/experiments/RDDR_PHASE2B112/formal_4090_r1/representation_reference_step0.npz",
+  "representation_reference_sha256": "6f82c5fdc7cc42763ac29ddb9425b096fdf6ec0a9fd0da49cb313843776cd645",
+  "representation_rows": [
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+0",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+31",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-EW-A1PH-DX1_xmin3455_ymin52049_MPP-0.2500+13",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-EW-A1PH-DX1_xmin3455_ymin52049_MPP-0.2500+229",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+120",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999998,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+220",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+32",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+419",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999998
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+518",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DD-DX1_xmin47260_ymin22408_MPP-0.2500+125",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DD-DX1_xmin47260_ymin22408_MPP-0.2500+224",
+      "feature_cosine": 0.9999999999999998,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DD-DX1_xmin47260_ymin22408_MPP-0.2500+323",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999998
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DD-DX1_xmin47260_ymin22408_MPP-0.2500+422",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DF-DX1_xmin50637_ymin43774_MPP-0.2500+13",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999998,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DF-DX1_xmin50637_ymin43774_MPP-0.2500+6",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DH-DX1_xmin50963_ymin56303_MPP-0.2500+39",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A3XL-DX1_xmin29910_ymin15820_MPP-0.2500+112",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A3XL-DX1_xmin29910_ymin15820_MPP-0.2500+211",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999998,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A3XL-DX1_xmin29910_ymin15820_MPP-0.2500+98",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A441-DX1_xmin82006_ymin43121_MPP-0.2500+63",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A5YO-DX1_xmin36631_ymin44396_MPP-0.2500+86",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A740-DX1_xmin39436_ymin24080_MPP-0.2500+36",
+      "feature_cosine": 0.9999999999999998,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 0.9999999999999998
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D6-DX1_xmin115108_ymin40554_MPP-0.2500+45",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+153",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+252",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A66I-DX1_xmin38433_ymin22957_MPP-0.2500+21",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A66P-DX1_xmin30143_ymin20310_MPP-0.2500+153",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999998
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A66P-DX1_xmin30143_ymin20310_MPP-0.2500+5",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A97C-DX1_xmin68058_ymin32495_MPP-0.2500+0",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 0.9999999999999998
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A97C-DX1_xmin68058_ymin32495_MPP-0.2500+39",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-S3-AA10-DX1_xmin43039_ymin23986_MPP-0.2500+48",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-S3-AA15-DX1_xmin55486_ymin28926_MPP-0.2500+9",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DF-DX1_xmin50637_ymin43774_MPP-0.2500+75",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DD-DX1_xmin47260_ymin22408_MPP-0.2500+339",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DH-DX1_xmin50963_ymin56303_MPP-0.2500+111",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+153",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999998,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A5YO-DX1_xmin36631_ymin44396_MPP-0.2500+43",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A740-DX1_xmin39436_ymin24080_MPP-0.2500+54",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A66P-DX1_xmin30143_ymin20310_MPP-0.2500+105",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+335",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999998,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A3XL-DX1_xmin29910_ymin15820_MPP-0.2500+171",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999998,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A66P-DX1_xmin30143_ymin20310_MPP-0.2500+101",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+411",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A5YO-DX1_xmin36631_ymin44396_MPP-0.2500+14",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A73Y-DX1_xmin68117_ymin49445_MPP-0.2500+5",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-EW-A1PH-DX1_xmin3455_ymin52049_MPP-0.2500+227",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A66I-DX1_xmin38433_ymin22957_MPP-0.2500+41",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A5YO-DX1_xmin36631_ymin44396_MPP-0.2500+40",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DD-DX1_xmin47260_ymin22408_MPP-0.2500+182",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A97C-DX1_xmin68058_ymin32495_MPP-0.2500+101",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+323",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-EW-A1PH-DX1_xmin3455_ymin52049_MPP-0.2500+77",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+99",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DI-DX1_xmin22802_ymin51060_MPP-0.2500+24",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+105",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-EW-A1PH-DX1_xmin3455_ymin52049_MPP-0.2500+196",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DD-DX1_xmin47260_ymin22408_MPP-0.2500+338",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DD-DX1_xmin47260_ymin22408_MPP-0.2500+216",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999998,
+      "deep_logits_cosine": 0.9999999999999998
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DH-DX1_xmin50963_ymin56303_MPP-0.2500+110",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DD-DX1_xmin47260_ymin22408_MPP-0.2500+296",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DD-DX1_xmin47260_ymin22408_MPP-0.2500+327",
+      "feature_cosine": 0.9999999999999998,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DI-DX1_xmin22802_ymin51060_MPP-0.2500+1",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999998
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A740-DX1_xmin39436_ymin24080_MPP-0.2500+80",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A3XL-DX1_xmin29910_ymin15820_MPP-0.2500+228",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+110",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+47",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+209",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DF-DX1_xmin50637_ymin43774_MPP-0.2500+123",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A3XL-DX1_xmin29910_ymin15820_MPP-0.2500+184",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DD-DX1_xmin47260_ymin22408_MPP-0.2500+352",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A441-DX1_xmin82006_ymin43121_MPP-0.2500+71",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D6-DX1_xmin115108_ymin40554_MPP-0.2500+2",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999998
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A66P-DX1_xmin30143_ymin20310_MPP-0.2500+201",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5RW-DX1_xmin5772_ymin6839_MPP-0.2500+1",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A73Y-DX1_xmin68117_ymin49445_MPP-0.2500+46",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A66P-DX1_xmin30143_ymin20310_MPP-0.2500+26",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-EW-A1PH-DX1_xmin3455_ymin52049_MPP-0.2500+207",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A73Y-DX1_xmin68117_ymin49445_MPP-0.2500+9",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+224",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A3XL-DX1_xmin29910_ymin15820_MPP-0.2500+237",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A66P-DX1_xmin30143_ymin20310_MPP-0.2500+53",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+81",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999998
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+133",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A6VO-DX1_xmin88416_ymin188485_MPP-0.2500+43",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-EW-A1PH-DX1_xmin3455_ymin52049_MPP-0.2500+176",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A73Y-DX1_xmin68117_ymin49445_MPP-0.2500+25",
+      "feature_cosine": 0.9999999999999998,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A740-DX1_xmin39436_ymin24080_MPP-0.2500+33",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999998
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+117",
+      "feature_cosine": 0.9999999999999998,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DH-DX1_xmin50963_ymin56303_MPP-0.2500+5",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DF-DX1_xmin50637_ymin43774_MPP-0.2500+182",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+28",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A66P-DX1_xmin30143_ymin20310_MPP-0.2500+115",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A66P-DX1_xmin30143_ymin20310_MPP-0.2500+12",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+211",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+269",
+      "feature_cosine": 0.9999999999999998,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A740-DX1_xmin39436_ymin24080_MPP-0.2500+113",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+22",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A97C-DX1_xmin68058_ymin32495_MPP-0.2500+76",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DH-DX1_xmin50963_ymin56303_MPP-0.2500+41",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DH-DX1_xmin50963_ymin56303_MPP-0.2500+78",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DD-DX1_xmin47260_ymin22408_MPP-0.2500+433",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+48",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A3XL-DX1_xmin29910_ymin15820_MPP-0.2500+54",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-EW-A1PH-DX1_xmin3455_ymin52049_MPP-0.2500+122",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+156",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DF-DX1_xmin50637_ymin43774_MPP-0.2500+2",
+      "feature_cosine": 0.9999999999999998,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 0.9999999999999998
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DH-DX1_xmin50963_ymin56303_MPP-0.2500+117",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A3XL-DX1_xmin29910_ymin15820_MPP-0.2500+49",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+91",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+49",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+151",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DF-DX1_xmin50637_ymin43774_MPP-0.2500+168",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999998,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A66P-DX1_xmin30143_ymin20310_MPP-0.2500+136",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+19",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999998
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A740-DX1_xmin39436_ymin24080_MPP-0.2500+12",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999998
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DD-DX1_xmin47260_ymin22408_MPP-0.2500+82",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A740-DX1_xmin39436_ymin24080_MPP-0.2500+21",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-EW-A1PH-DX1_xmin3455_ymin52049_MPP-0.2500+210",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+164",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+77",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A740-DX1_xmin39436_ymin24080_MPP-0.2500+87",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A3XL-DX1_xmin29910_ymin15820_MPP-0.2500+154",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A740-DX1_xmin39436_ymin24080_MPP-0.2500+31",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DD-DX1_xmin47260_ymin22408_MPP-0.2500+411",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A66I-DX1_xmin38433_ymin22957_MPP-0.2500+19",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+62",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A97C-DX1_xmin68058_ymin32495_MPP-0.2500+82",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+120",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DD-DX1_xmin47260_ymin22408_MPP-0.2500+233",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+21",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+65",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D6-DX1_xmin115108_ymin40554_MPP-0.2500+5",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A6VO-DX1_xmin88416_ymin188485_MPP-0.2500+15",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-EW-A1PH-DX1_xmin3455_ymin52049_MPP-0.2500+136",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DF-DX1_xmin50637_ymin43774_MPP-0.2500+187",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DD-DX1_xmin47260_ymin22408_MPP-0.2500+110",
+      "feature_cosine": 0.9999999999999998,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DF-DX1_xmin50637_ymin43774_MPP-0.2500+165",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-S3-AA15-DX1_xmin55486_ymin28926_MPP-0.2500+30",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 0.9999999999999999
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-EW-A1PH-DX1_xmin3455_ymin52049_MPP-0.2500+187",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999998,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+205",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 0.9999999999999998
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-LL-A5YO-DX1_xmin36631_ymin44396_MPP-0.2500+22",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+478",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 0.9999999999999998
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A6VO-DX1_xmin88416_ymin188485_MPP-0.2500+16",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+33",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DF-DX1_xmin50637_ymin43774_MPP-0.2500+179",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+403",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+201",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DF-DX1_xmin50637_ymin43774_MPP-0.2500+77",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+31",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A5D7-DX1_xmin114443_ymin22490_MPP-0.2500+143",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DF-DX1_xmin50637_ymin43774_MPP-0.2500+141",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DF-DX1_xmin50637_ymin43774_MPP-0.2500+72",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A66P-DX1_xmin30143_ymin20310_MPP-0.2500+143",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+455",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999999,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-EW-A1PH-DX1_xmin3455_ymin52049_MPP-0.2500+162",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A97C-DX1_xmin68058_ymin32495_MPP-0.2500+60",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999998,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DF-DX1_xmin50637_ymin43774_MPP-0.2500+90",
+      "feature_cosine": 0.9999999999999999,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+298",
+      "feature_cosine": 0.9999999999999998,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 0.9999999999999998,
+      "deep_logits_cosine": 1.0
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-OL-A97C-DX1_xmin68058_ymin32495_MPP-0.2500+172",
+      "feature_cosine": 1.0,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0000000000000002
+    },
+    {
+      "arm": "B",
+      "step": 0,
+      "name": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+117",
+      "feature_cosine": 1.0000000000000002,
+      "feature_norm_ratio": 1.0,
+      "raw_logits_cosine": 1.0000000000000002,
+      "deep_logits_cosine": 1.0
+    }
+  ],
+  "canonical_infer_source_sha256": "0d84fa70507199faaf10eaf55e838a7a4bc2a85ae44d6183436dc9d1e64cd520",
+  "canonical_scores_source_sha256": "7614fd9b75f13c65cfe6121efe1e44fa2b3a0d9a0d441f6985e8c307dc460490",
+  "known_c0_official_miou_pp": 67.3102,
+  "step0_minus_known_c0_miou_pp": 0.01717318929264877,
+  "known_c0_comparison_policy": "report only; never adjust predictions or metrics",
+  "elapsed_seconds": 82.81992420001188
+}

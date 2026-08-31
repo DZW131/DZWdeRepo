@@ -185,8 +185,9 @@ def run(out, arms, provenance):
         for arm, (m, opt) in arms.items():
             move_arm(m, opt, 'cuda')
             result = evaluate_snapshot(m, DATA_ROOT/'val', NATIVE, out, arm, step)
+            assert result['arm'] == arm and result['step'] == step, 'Evaluation record identity mismatch'
             representation.extend(result.pop('representation_rows'))
-            evaluation.append(dict(arm=arm, step=step, **result))
+            evaluation.append(dict(result))  # Snapshot already includes arm and step.
             print(json.dumps(dict(phase='validation_complete',**result)),flush=True)
             peak_allocated=max(peak_allocated,torch.cuda.max_memory_allocated())
             peak_reserved=max(peak_reserved,torch.cuda.max_memory_reserved())

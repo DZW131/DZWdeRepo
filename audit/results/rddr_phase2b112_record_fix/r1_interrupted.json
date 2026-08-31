@@ -1,0 +1,11 @@
+{
+  "completed": false,
+  "error_type": "TypeError",
+  "error": "dict() got multiple values for keyword argument 'arm'",
+  "steps_per_arm": {
+    "B": 0,
+    "A": 0,
+    "R": 0
+  },
+  "policy": "No automatic retry, LR change, batch reduction or experiment reset"
+}
