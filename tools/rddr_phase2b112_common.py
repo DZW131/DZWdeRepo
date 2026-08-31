@@ -231,12 +231,20 @@ def restore_rng(state):
 
 
 def move_arm(model, optimizer, device):
-    identities = [id(p) for p in model.parameters()]
+    old_names = {id(p): name for name, p in model.named_parameters()}
+    group_names = [[old_names[id(p)] for p in g['params']] for g in optimizer.param_groups]
+    states = {old_names[id(p)]: state for p, state in optimizer.state.items()}
     model.to(device)
-    assert identities == [id(p) for p in model.parameters()], 'Parameter identity changed during offload'
-    for state in optimizer.state.values():
+    current = dict(model.named_parameters())
+    # .to may replace Parameter objects on some torch versions/devices; preserve
+    # optimizer ownership by exact names instead of relying on object identity.
+    for group, names in zip(optimizer.param_groups, group_names):
+        group['params'] = [current[name] for name in names]
+    optimizer.state.clear()
+    for name, state in states.items():
         for key, value in state.items():
             if torch.is_tensor(value): state[key] = value.to(device)
+        optimizer.state[current[name]] = state
 
 
 def bn_digest(model):

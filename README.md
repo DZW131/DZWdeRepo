@@ -133,3 +133,61 @@ python train_sshr.py \
 
 We thank the authors of [ESFAN](https://github.com/OceanPetal/ESFAN), whose codebase provided a valuable foundation for this repository.
 
+# Phase2B1.12 short-horizon ADT audit
+
+This branch starts from immutable official A0 `4e9a288`. Original network,
+preprocessing, training entrypoint, inference and metric sources are unchanged.
+See [approved execution contract](docs/rddr_phase2b112_execution_contract.md)
+and [full specification](docs/rddr_phase2b112_specification.md).
+
+The independent entrypoint runs B/A/R from the same C0 model-only checkpoint,
+with fresh matched official SGD states at the exactly reconstructed final-step
+learning rates. It performs a single32-batch training-only calibration followed
+by exactly500 steps, with final step500 as the only primary endpoint. BN affine
+in the approved39-tensor auxiliary scope may receive ADT/RG gradients, while the
+main-loss BN freeze and all BN running statistics remain unchanged. No test,
+LUAD, seed sweep, parameter search or Full25 run is exposed by this entrypoint.
+
+## Server environment and data
+
+- Python: `/home/duyanhong/miniconda3/envs/sshr5090/bin/python` (existing5090 environment).
+- Checkout: `/home/duyanhong/DZWdeRepo-rddr-phase2b112`.
+- BCSS train/val: `/home/duyanhong/reseg-data/raw/BCSS-WSSS/{training,val}`.
+- C0: `/home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth`.
+- Immutable native reference: `/home/duyanhong/experiments/RDDR_PHASE2B1/formal_r1/rddr_phase2b1_native_observations.npz`.
+- New outputs only: `/home/duyanhong/experiments/RDDR_PHASE2B112/<new-run-id>`.
+
+No package upgrades are required. This branch uses existing torch/numpy/Pillow/
+torchvision dependencies. CPU fixture tests are not CUDA/full-model readiness.
+
+## Commands
+
+```bash
+cd /home/duyanhong/DZWdeRepo-rddr-phase2b112
+/home/duyanhong/miniconda3/envs/sshr5090/bin/python -m unittest discover -s tests -p test_rddr_phase2b112.py -v
+# CPU provenance only; requires a new output directory:
+/home/duyanhong/miniconda3/envs/sshr5090/bin/python tools/run_rddr_phase2b112.py --preflight-only --output /home/duyanhong/experiments/RDDR_PHASE2B112/preflight_new
+# Complete finite job: tests, provenance, calibration,500 steps,validation,verification,report:
+bash tools/execute_rddr_phase2b112.sh /home/duyanhong/experiments/RDDR_PHASE2B112/formal_new
+```
+
+Resource admission requires18GiB free for one active arm; other arms and optimizer
+buffers are offloaded between turns. Exit75 is RESOURCE_BLOCKED, **not a
+scientific NOGO**. The launcher does not poll, stop other jobs, change batch20,
+retry failed runs, or overwrite output directories. A new directory must be used
+for a later manually authorized launch; partial artifacts are retained.
+
+## Files and result interpretation
+
+`tools/rddr_phase2b112_common.py` contains the detached local auxiliary graph;
+`run_rddr_phase2b112.py` implements matched batches/RNG and training;
+`rddr_phase2b112_evaluation.py` instruments the unmodified canonical evaluator;
+`verify_rddr_phase2b112.py` checks real artifacts;
+`analyze_rddr_phase2b112.py` writes the requiredCSV/JSON and29-section report.
+
+The final report is `docs/rddr_phase2b112_short_horizon_optimization_report.md`.
+It must not be represented as complete until the real run and independent
+verification finish. Tables in Markdown and the machine-readableCSV files are
+the audit visualization; there is no separate dashboard or tracking service.
+
+---

@@ -61,12 +61,16 @@ def preflight(out):
     assert environment['repo_commit'] == A0
     launcher = files[3].read_text(); log = files[2].read_text(); status = files[1].read_text()
     assert '--max_epoches 25' in launcher and '--amp-dtype bf16' in launcher
+    assert '--num_workers 4' in launcher and '--seed "$seed"' in launcher
     assert '--lr ' not in launcher and '--wt_dec ' not in launcher and '--batch_size ' not in launcher
     assert 'Iter:29200/29275' in log and 'Total Training Time:' in log
     assert f'checkpoint_sha256\t{CKPT_SHA}' in status and 'status\tcomplete' in status
+    assert 'seed\t42' in status and 'dataset\tbcss' in status
     assert sha256(CHECKPOINT) == CKPT_SHA and sha256(NATIVE) == NATIVE_SHA
     state = torch.load(CHECKPOINT, map_location='cpu', weights_only=True)
     assert len(state) == 260 and all(torch.is_tensor(v) for v in state.values())
+    parsed_dataset = Stage1_TrainDataset(str(DATA_ROOT/'training'), dataset='bcss', img_size=224)
+    assert len(parsed_dataset) == 23422
     source_paths = files + [ROOT/'train_sshr.py', ROOT/'tool/torchutils.py', ROOT/'network/resnet38d.py',
                            ROOT/'network/resnet38_cls.py', ROOT/'tool/GenDataset.py', ROOT/'tool/infer_fun.py', ROOT/'tool/iouutils.py']
     arms = {}
@@ -88,6 +92,7 @@ def preflight(out):
                       last_applied_step=MAX_STEP-1, lr_power=.9, groups=groups,
                       scheduler_rule='Original PolyOptimizer: after max_step retain last applied LR; no restart',
                       optimizer_buffers_recovered=False, initial_optimizer_states_empty=True,
+                      training_samples=len(parsed_dataset),batch_size=20,num_workers=4,seed=42,
                       specification_sha256=sha256(ROOT/'docs/rddr_phase2b112_specification.md'),
                       contract_sha256=sha256(ROOT/'docs/rddr_phase2b112_execution_contract.md'))
     write_json(out/(P+'optimizer_provenance.json'), provenance)
@@ -227,6 +232,8 @@ def run(out, arms, provenance):
             assert opt.global_step==MAX_STEP+step
             assert tuple(g['lr'] for g in opt.param_groups)==FINAL_LRS
             assert all(bool(torch.isfinite(p).all()) for p in m.parameters())
+            assert all(bool(torch.isfinite(v).all()) for s in opt.state.values()
+                       for v in s.values() if torch.is_tensor(v))
             assert bn_digest(m)==baseline_bn[arm]
             r.update(arm=arm,step=step,lambda_value=lam,seconds=time.perf_counter()-tick,
                      **{f'lr{i}':g['lr'] for i,g in enumerate(opt.param_groups)})
@@ -292,7 +299,7 @@ def main():
         write_json(out/(P+'runtime.json'),dict(completed=False,training_started=False,optimizer_steps=0,
             status='RESOURCE_BLOCKED',resource=admission,decision=None))
         print(json.dumps(dict(phase='resource_blocked',**admission)),flush=True)
-        return
+        raise SystemExit(75)
     try:
         run(out,arms,provenance)
     except Exception as error:
