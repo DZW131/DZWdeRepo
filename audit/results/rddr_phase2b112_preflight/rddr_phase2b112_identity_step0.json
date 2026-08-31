@@ -1,0 +1,14 @@
+{
+  "three_arms_bitwise_equal": true,
+  "strict_load": true,
+  "initial_state_sha256": "c56943fe7749a4ca8a9b66d08e5dfd1e83b95af04ae5a58d5009343c7b7090e5",
+  "state_hashes": {
+    "B": "c56943fe7749a4ca8a9b66d08e5dfd1e83b95af04ae5a58d5009343c7b7090e5",
+    "A": "c56943fe7749a4ca8a9b66d08e5dfd1e83b95af04ae5a58d5009343c7b7090e5",
+    "R": "c56943fe7749a4ca8a9b66d08e5dfd1e83b95af04ae5a58d5009343c7b7090e5"
+  },
+  "original_sources_unchanged": true,
+  "initial_prediction_sha256": null,
+  "main_forward_parity": null,
+  "status": "weights_verified_forward_pending"
+}
