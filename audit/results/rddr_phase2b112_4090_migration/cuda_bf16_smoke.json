@@ -1,0 +1,826 @@
+{
+  "status": "MIGRATION_CUDA_BF16_BATCH20_PASS",
+  "training_started": false,
+  "optimizer_steps": 0,
+  "calibration_run": false,
+  "validation_evaluated": false,
+  "test_accessed": false,
+  "command": [
+    "/home/duyanhong/miniconda3/envs/sshr5090/bin/python",
+    "tools/verify_rddr_phase2b112_migration.py",
+    "--output",
+    "/home/duyanhong/experiments/MIGRATION_4090_20260831/cuda_bf16_smoke.json"
+  ],
+  "python": "3.10.20",
+  "torch": "2.11.0+cu128",
+  "cuda_runtime": "12.8",
+  "numpy": "1.23.5",
+  "cudnn": 91900,
+  "gpu_query": "NVIDIA GeForce RTX 4090 D, 550.120, 24564 MiB, 24197 MiB",
+  "packages": [
+    [
+      "ImageIO",
+      "2.37.4"
+    ],
+    [
+      "Jinja2",
+      "3.1.6"
+    ],
+    [
+      "MarkupSafe",
+      "3.0.3"
+    ],
+    [
+      "MedCLIP",
+      "0.0.3"
+    ],
+    [
+      "PySocks",
+      "1.7.1"
+    ],
+    [
+      "PyYAML",
+      "6.0.1"
+    ],
+    [
+      "Pygments",
+      "2.20.0"
+    ],
+    [
+      "albumentations",
+      "1.4.2"
+    ],
+    [
+      "antlr4-python3-runtime",
+      "4.9.3"
+    ],
+    [
+      "anyio",
+      "4.14.2"
+    ],
+    [
+      "asttokens",
+      "3.0.2"
+    ],
+    [
+      "asyncio",
+      "4.0.0"
+    ],
+    [
+      "beautifulsoup4",
+      "4.15.0"
+    ],
+    [
+      "certifi",
+      "2026.7.22"
+    ],
+    [
+      "charset-normalizer",
+      "3.4.9"
+    ],
+    [
+      "click",
+      "8.4.2"
+    ],
+    [
+      "colorama",
+      "0.4.6"
+    ],
+    [
+      "contourpy",
+      "1.3.2"
+    ],
+    [
+      "cuda-bindings",
+      "12.9.4"
+    ],
+    [
+      "cuda-pathfinder",
+      "1.6.0"
+    ],
+    [
+      "cuda-toolkit",
+      "12.8.1"
+    ],
+    [
+      "cycler",
+      "0.12.1"
+    ],
+    [
+      "defusedxml",
+      "0.7.1"
+    ],
+    [
+      "exceptiongroup",
+      "1.3.1"
+    ],
+    [
+      "executing",
+      "2.2.1"
+    ],
+    [
+      "filelock",
+      "3.32.2"
+    ],
+    [
+      "fonttools",
+      "4.63.0"
+    ],
+    [
+      "fsspec",
+      "2026.7.0"
+    ],
+    [
+      "gdown",
+      "6.1.0"
+    ],
+    [
+      "gensim",
+      "4.4.0"
+    ],
+    [
+      "googletrans",
+      "4.0.2"
+    ],
+    [
+      "graphviz",
+      "0.8.4"
+    ],
+    [
+      "h11",
+      "0.16.0"
+    ],
+    [
+      "h2",
+      "4.4.1"
+    ],
+    [
+      "hpack",
+      "4.2.0"
+    ],
+    [
+      "httpcore",
+      "1.0.9"
+    ],
+    [
+      "httpx",
+      "0.28.1"
+    ],
+    [
+      "huggingface-hub",
+      "0.26.1"
+    ],
+    [
+      "hyperframe",
+      "6.1.0"
+    ],
+    [
+      "icecream",
+      "2.2.0"
+    ],
+    [
+      "idna",
+      "3.18"
+    ],
+    [
+      "iniconfig",
+      "2.3.0"
+    ],
+    [
+      "joblib",
+      "1.5.3"
+    ],
+    [
+      "kiwisolver",
+      "1.5.0"
+    ],
+    [
+      "lazy-loader",
+      "0.5"
+    ],
+    [
+      "matplotlib",
+      "3.8.4"
+    ],
+    [
+      "mpmath",
+      "1.3.0"
+    ],
+    [
+      "mxnet",
+      "1.9.1"
+    ],
+    [
+      "nest-asyncio",
+      "1.6.0"
+    ],
+    [
+      "networkx",
+      "3.4.2"
+    ],
+    [
+      "nltk",
+      "3.10.2"
+    ],
+    [
+      "numpy",
+      "1.23.5"
+    ],
+    [
+      "nvidia-cublas-cu12",
+      "12.8.4.1"
+    ],
+    [
+      "nvidia-cuda-cupti-cu12",
+      "12.8.90"
+    ],
+    [
+      "nvidia-cuda-nvrtc-cu12",
+      "12.8.93"
+    ],
+    [
+      "nvidia-cuda-runtime-cu12",
+      "12.8.90"
+    ],
+    [
+      "nvidia-cudnn-cu12",
+      "9.19.0.56"
+    ],
+    [
+      "nvidia-cufft-cu12",
+      "11.3.3.83"
+    ],
+    [
+      "nvidia-cufile-cu12",
+      "1.13.1.3"
+    ],
+    [
+      "nvidia-curand-cu12",
+      "10.3.9.90"
+    ],
+    [
+      "nvidia-cusolver-cu12",
+      "11.7.3.90"
+    ],
+    [
+      "nvidia-cusparse-cu12",
+      "12.5.8.93"
+    ],
+    [
+      "nvidia-cusparselt-cu12",
+      "0.7.1"
+    ],
+    [
+      "nvidia-nccl-cu12",
+      "2.28.9"
+    ],
+    [
+      "nvidia-nvjitlink-cu12",
+      "12.8.93"
+    ],
+    [
+      "nvidia-nvshmem-cu12",
+      "3.4.5"
+    ],
+    [
+      "nvidia-nvtx-cu12",
+      "12.8.90"
+    ],
+    [
+      "omegaconf",
+      "2.3.0"
+    ],
+    [
+      "opencv-python-headless",
+      "4.9.0.80"
+    ],
+    [
+      "packaging",
+      "26.1"
+    ],
+    [
+      "pandas",
+      "2.2.1"
+    ],
+    [
+      "pillow",
+      "10.2.0"
+    ],
+    [
+      "pip",
+      "26.1.2"
+    ],
+    [
+      "pluggy",
+      "1.6.0"
+    ],
+    [
+      "protobuf",
+      "7.35.1"
+    ],
+    [
+      "pyparsing",
+      "3.3.2"
+    ],
+    [
+      "pytest",
+      "8.3.5"
+    ],
+    [
+      "python-dateutil",
+      "2.9.0.post0"
+    ],
+    [
+      "pytz",
+      "2026.3.post1"
+    ],
+    [
+      "regex",
+      "2026.7.19"
+    ],
+    [
+      "requests",
+      "2.34.2"
+    ],
+    [
+      "reseg-net",
+      "0.1.0"
+    ],
+    [
+      "safetensors",
+      "0.8.0"
+    ],
+    [
+      "scikit-image",
+      "0.22.0"
+    ],
+    [
+      "scikit-learn",
+      "1.4.1.post1"
+    ],
+    [
+      "scipy",
+      "1.12.0"
+    ],
+    [
+      "setuptools",
+      "81.0.0"
+    ],
+    [
+      "six",
+      "1.17.0"
+    ],
+    [
+      "smart_open",
+      "8.0.1"
+    ],
+    [
+      "soupsieve",
+      "2.9.2"
+    ],
+    [
+      "sympy",
+      "1.14.0"
+    ],
+    [
+      "tensorboardX",
+      "2.6.2.2"
+    ],
+    [
+      "textaugment",
+      "3.0.0"
+    ],
+    [
+      "threadpoolctl",
+      "3.6.0"
+    ],
+    [
+      "tifffile",
+      "2025.5.10"
+    ],
+    [
+      "timm",
+      "0.9.16"
+    ],
+    [
+      "tokenizers",
+      "0.13.3"
+    ],
+    [
+      "tomli",
+      "2.4.1"
+    ],
+    [
+      "torch",
+      "2.11.0+cu128"
+    ],
+    [
+      "torchaudio",
+      "2.11.0+cu128"
+    ],
+    [
+      "torchvision",
+      "0.26.0+cu128"
+    ],
+    [
+      "tqdm",
+      "4.66.5"
+    ],
+    [
+      "transformers",
+      "4.24.0"
+    ],
+    [
+      "triton",
+      "3.6.0"
+    ],
+    [
+      "ttach",
+      "0.0.3"
+    ],
+    [
+      "typing_extensions",
+      "4.16.0"
+    ],
+    [
+      "tzdata",
+      "2026.3"
+    ],
+    [
+      "urllib3",
+      "2.7.0"
+    ],
+    [
+      "wget",
+      "3.2"
+    ],
+    [
+      "wheel",
+      "0.47.0"
+    ],
+    [
+      "wrapt",
+      "2.3.0"
+    ]
+  ],
+  "cuda_available": true,
+  "bf16_supported": true,
+  "gpu_admission": {
+    "free_bytes": 25005260800,
+    "total_bytes": 25386352640,
+    "minimum_free_bytes": 19327352832,
+    "admitted": true,
+    "policy": "No other processes stopped; no smaller batch or accumulation fallback"
+  },
+  "bf16_matmul_backward_finite": true,
+  "checkpoint_sha256": "509c264ec2df3b7dd6628b227d088db48300a2bc101ef3496d34ea6525911579",
+  "native_sha256": "767aa0f97ce2d53db2cc70e4fece0e181a44919f693184c2541490077e07325a",
+  "parsed_training_count": 23422,
+  "validation_image_count": 3418,
+  "validation_mask_count": 3418,
+  "validation_names_paired": true,
+  "batch_names": [
+    "TCGA-AO-A1KR-DX1_xmin19591_ymin37667_MPP-0.2500+70[1110]",
+    "TCGA-AO-A0J2-DX1_xmin33561_ymin14515_MPP-0.2500+97[1000]",
+    "TCGA-AQ-A54N-DX1_xmin32440_ymin26558_MPP-0.2500+110[1000]",
+    "TCGA-C8-A12V-DX1_xmin11056_ymin54401_MPP-0.2500+412[0110]",
+    "TCGA-BH-A0WA-DX1_xmin56581_ymin24774_MPP-0.2500+148[0001]",
+    "TCGA-BH-A18G-DX1_xmin16831_ymin497_MPP-0.2500+41[1110]",
+    "TCGA-E2-A1L7-DX1_xmin51554_ymin15424_MPP-0.2500+124[0100]",
+    "TCGA-A7-A0CE-DX1_xmin58461_ymin18750_MPP-0.2500+353[1100]",
+    "TCGA-E2-A1LI-DX1_xmin44715_ymin18434_MPP-0.2500+249[1000]",
+    "TCGA-C8-A1HJ-DX1_xmin46412_ymin17174_MPP-0.2500+80[1101]",
+    "TCGA-AO-A1KR-DX1_xmin19591_ymin37667_MPP-0.2500+242[1100]",
+    "TCGA-AO-A129-DX1_xmin37502_ymin12501_MPP-0.2500+96[1101]",
+    "TCGA-D8-A1JL-DX1_xmin39765_ymin24835_MPP-0.2500+382[0100]",
+    "TCGA-A2-A3XX-DX1_xmin69942_ymin41560_MPP-0.2500+95[1101]",
+    "TCGA-A8-A07C-DX1_xmin23538_ymin17397_MPP-0.2500+128[1110]",
+    "TCGA-BH-A1FC-DX1_xmin52216_ymin33355_MPP-0.2500+190[0100]",
+    "TCGA-A7-A6VV-DX1_xmin48674_ymin37475_MPP-0.2500+206[0100]",
+    "TCGA-A2-A3XX-DX1_xmin69942_ymin41560_MPP-0.2500+69[1100]",
+    "TCGA-AR-A0TS-DX1_xmin118843_ymin22812_MPP-0.2500+25[0100]",
+    "TCGA-C8-A26X-DX1_xmin8990_ymin27544_MPP-0.2500+100[1000]"
+  ],
+  "batch_tensor_sha256": "5dd1cb6725a54a5bf173526feaf8bbfd0d40d32b9eefaea4a5f12fa39ad4f62a",
+  "batch_shape": [
+    20,
+    3,
+    224,
+    224
+  ],
+  "missing_keys": [],
+  "unexpected_keys": [],
+  "forward_cam": [
+    {
+      "shape": [
+        20,
+        4,
+        56,
+        56
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    },
+    {
+      "shape": [
+        20,
+        4,
+        28,
+        28
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    },
+    {
+      "shape": [
+        20,
+        4,
+        28,
+        28
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    },
+    {
+      "shape": [
+        20,
+        4,
+        28,
+        28
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    },
+    {
+      "shape": [
+        20,
+        4
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    }
+  ],
+  "optimizer_groups": [
+    {
+      "index": 0,
+      "lr": 9.55328615544644e-07,
+      "momentum": 0.0005,
+      "weight_decay": 0.0005,
+      "dampening": 0,
+      "nesterov": false,
+      "names": [
+        "conv1a.weight",
+        "b2.bn_branch2a.weight",
+        "b2.conv_branch2a.weight",
+        "b2.bn_branch2b1.weight",
+        "b2.conv_branch2b1.weight",
+        "b2.conv_branch1.weight",
+        "b2_1.bn_branch2a.weight",
+        "b2_1.conv_branch2a.weight",
+        "b2_1.bn_branch2b1.weight",
+        "b2_1.conv_branch2b1.weight",
+        "b2_2.bn_branch2a.weight",
+        "b2_2.conv_branch2a.weight",
+        "b2_2.bn_branch2b1.weight",
+        "b2_2.conv_branch2b1.weight",
+        "b3.bn_branch2a.weight",
+        "b3.conv_branch2a.weight",
+        "b3.bn_branch2b1.weight",
+        "b3.conv_branch2b1.weight",
+        "b3.conv_branch1.weight",
+        "b3_1.bn_branch2a.weight",
+        "b3_1.conv_branch2a.weight",
+        "b3_1.bn_branch2b1.weight",
+        "b3_1.conv_branch2b1.weight",
+        "b3_2.bn_branch2a.weight",
+        "b3_2.conv_branch2a.weight",
+        "b3_2.bn_branch2b1.weight",
+        "b3_2.conv_branch2b1.weight",
+        "b4.bn_branch2a.weight",
+        "b4.conv_branch2a.weight",
+        "b4.bn_branch2b1.weight",
+        "b4.conv_branch2b1.weight",
+        "b4.conv_branch1.weight",
+        "b4_1.bn_branch2a.weight",
+        "b4_1.conv_branch2a.weight",
+        "b4_1.bn_branch2b1.weight",
+        "b4_1.conv_branch2b1.weight",
+        "b4_2.bn_branch2a.weight",
+        "b4_2.conv_branch2a.weight",
+        "b4_2.bn_branch2b1.weight",
+        "b4_2.conv_branch2b1.weight",
+        "b4_3.bn_branch2a.weight",
+        "b4_3.conv_branch2a.weight",
+        "b4_3.bn_branch2b1.weight",
+        "b4_3.conv_branch2b1.weight",
+        "b4_4.bn_branch2a.weight",
+        "b4_4.conv_branch2a.weight",
+        "b4_4.bn_branch2b1.weight",
+        "b4_4.conv_branch2b1.weight",
+        "b4_5.bn_branch2a.weight",
+        "b4_5.conv_branch2a.weight",
+        "b4_5.bn_branch2b1.weight",
+        "b4_5.conv_branch2b1.weight",
+        "bn45.weight",
+        "b5.bn_branch2a.weight",
+        "b5.conv_branch2a.weight",
+        "b5.bn_branch2b1.weight",
+        "b5.conv_branch2b1.weight",
+        "b5.conv_branch1.weight",
+        "b5_1.bn_branch2a.weight",
+        "b5_1.conv_branch2a.weight",
+        "b5_1.bn_branch2b1.weight",
+        "b5_1.conv_branch2b1.weight",
+        "b5_2.bn_branch2a.weight",
+        "b5_2.conv_branch2a.weight",
+        "b5_2.bn_branch2b1.weight",
+        "b5_2.conv_branch2b1.weight",
+        "bn52.weight",
+        "b6.bn_branch2a.weight",
+        "b6.conv_branch2a.weight",
+        "b6.bn_branch2b1.weight",
+        "b6.conv_branch2b1.weight",
+        "b6.bn_branch2b2.weight",
+        "b6.conv_branch2b2.weight",
+        "b6.conv_branch1.weight",
+        "b7.bn_branch2a.weight",
+        "b7.conv_branch2a.weight",
+        "b7.bn_branch2b1.weight",
+        "b7.conv_branch2b1.weight",
+        "b7.bn_branch2b2.weight",
+        "b7.conv_branch2b2.weight",
+        "b7.conv_branch1.weight",
+        "bn7.weight"
+      ],
+      "numel": 105048576
+    },
+    {
+      "index": 1,
+      "lr": 1.910657231089288e-06,
+      "momentum": 0.0005,
+      "weight_decay": 0.0,
+      "dampening": 0,
+      "nesterov": false,
+      "names": [
+        "b2.bn_branch2a.bias",
+        "b2.bn_branch2b1.bias",
+        "b2_1.bn_branch2a.bias",
+        "b2_1.bn_branch2b1.bias",
+        "b2_2.bn_branch2a.bias",
+        "b2_2.bn_branch2b1.bias",
+        "b3.bn_branch2a.bias",
+        "b3.bn_branch2b1.bias",
+        "b3_1.bn_branch2a.bias",
+        "b3_1.bn_branch2b1.bias",
+        "b3_2.bn_branch2a.bias",
+        "b3_2.bn_branch2b1.bias",
+        "b4.bn_branch2a.bias",
+        "b4.bn_branch2b1.bias",
+        "b4_1.bn_branch2a.bias",
+        "b4_1.bn_branch2b1.bias",
+        "b4_2.bn_branch2a.bias",
+        "b4_2.bn_branch2b1.bias",
+        "b4_3.bn_branch2a.bias",
+        "b4_3.bn_branch2b1.bias",
+        "b4_4.bn_branch2a.bias",
+        "b4_4.bn_branch2b1.bias",
+        "b4_5.bn_branch2a.bias",
+        "b4_5.bn_branch2b1.bias",
+        "bn45.bias",
+        "b5.bn_branch2a.bias",
+        "b5.bn_branch2b1.bias",
+        "b5_1.bn_branch2a.bias",
+        "b5_1.bn_branch2b1.bias",
+        "b5_2.bn_branch2a.bias",
+        "b5_2.bn_branch2b1.bias",
+        "bn52.bias",
+        "b6.bn_branch2a.bias",
+        "b6.bn_branch2b1.bias",
+        "b6.bn_branch2b2.bias",
+        "b7.bn_branch2a.bias",
+        "b7.bn_branch2b1.bias",
+        "b7.bn_branch2b2.bias",
+        "bn7.bias"
+      ],
+      "numel": 25408
+    },
+    {
+      "index": 2,
+      "lr": 9.55328615544644e-06,
+      "momentum": 0.0005,
+      "weight_decay": 0.0005,
+      "dampening": 0,
+      "nesterov": false,
+      "names": [
+        "hfrm_56.gamma_veto",
+        "hfrm_56.gamma_context",
+        "hfrm_56.veto_mlp.0.weight",
+        "hfrm_56.veto_mlp.2.weight",
+        "hfrm_56.context_conv.weight",
+        "hfrm_28_1.gamma_veto",
+        "hfrm_28_1.gamma_context",
+        "hfrm_28_1.veto_mlp.0.weight",
+        "hfrm_28_1.veto_mlp.2.weight",
+        "hfrm_28_1.context_conv.weight",
+        "hfrm_28_2.gamma_veto",
+        "hfrm_28_2.gamma_context",
+        "hfrm_28_2.veto_mlp.0.weight",
+        "hfrm_28_2.veto_mlp.2.weight",
+        "hfrm_28_2.context_conv.weight",
+        "ic_56.weight",
+        "ic1.weight",
+        "ic2.weight",
+        "fc8.weight"
+      ],
+      "numel": 7635718
+    },
+    {
+      "index": 3,
+      "lr": 1.910657231089288e-05,
+      "momentum": 0.0005,
+      "weight_decay": 0.0,
+      "dampening": 0,
+      "nesterov": false,
+      "names": [
+        "ic_56.bias",
+        "ic1.bias",
+        "ic2.bias"
+      ],
+      "numel": 12
+    }
+  ],
+  "backward_smokes": [
+    {
+      "main_loss": 0.2256799042224884,
+      "aux_loss": 0.0,
+      "weighted_aux_loss": 0.0,
+      "total_loss": 0.2256799042224884,
+      "main_grad_norm": 3.7842168801443106,
+      "aux_grad_norm": 0.0,
+      "weighted_gradient_ratio": 0.0,
+      "gradient_cosine": 0.0,
+      "total_grad_norm": 6.102033864462518,
+      "active_fraction": 0.3153698979591837,
+      "finite": true,
+      "adjudicated_active_fraction": 0.3153698979591837,
+      "main_bn_gradients_none": true,
+      "aux_parameter_count": 0,
+      "arm": "B",
+      "elapsed_s": 2.9733554560225457,
+      "optimizer_steps": 0,
+      "smoke_lambda": 0.0,
+      "lambda_calibrated": false
+    },
+    {
+      "main_loss": 0.2256799042224884,
+      "aux_loss": 1.2245320081710815,
+      "weighted_aux_loss": 0.0,
+      "total_loss": 0.2256799042224884,
+      "main_grad_norm": 3.7842168801443106,
+      "aux_grad_norm": 7.350315821419838,
+      "weighted_gradient_ratio": 0.0,
+      "gradient_cosine": 0.03980742450389016,
+      "total_grad_norm": 6.102033864462518,
+      "active_fraction": 0.3153698979591837,
+      "finite": true,
+      "adjudicated_active_fraction": 0.3153698979591837,
+      "main_bn_gradients_none": true,
+      "aux_parameter_count": 39,
+      "arm": "A",
+      "elapsed_s": 0.18357365595875308,
+      "optimizer_steps": 0,
+      "smoke_lambda": 0.0,
+      "lambda_calibrated": false
+    },
+    {
+      "main_loss": 0.2256799042224884,
+      "aux_loss": 1.0397270917892456,
+      "weighted_aux_loss": 0.0,
+      "total_loss": 0.2256799042224884,
+      "main_grad_norm": 3.7842168801443106,
+      "aux_grad_norm": 6.463199353250949,
+      "weighted_gradient_ratio": 0.0,
+      "gradient_cosine": 0.065002235710065,
+      "total_grad_norm": 6.102033864462518,
+      "active_fraction": 0.3153698979591837,
+      "finite": true,
+      "adjudicated_active_fraction": 0.3153698979591837,
+      "main_bn_gradients_none": true,
+      "aux_parameter_count": 39,
+      "arm": "R",
+      "elapsed_s": 0.17898155900184065,
+      "optimizer_steps": 0,
+      "smoke_lambda": 0.0,
+      "lambda_calibrated": false
+    }
+  ],
+  "peak_allocated_bytes": 3494405120,
+  "peak_reserved_bytes": 3934257152,
+  "model_state_before": "c56943fe7749a4ca8a9b66d08e5dfd1e83b95af04ae5a58d5009343c7b7090e5",
+  "model_state_after": "c56943fe7749a4ca8a9b66d08e5dfd1e83b95af04ae5a58d5009343c7b7090e5",
+  "model_unchanged": true,
+  "bn_statistics_unchanged": true,
+  "optimizer_buffers_empty": true,
+  "checkpoint_file_unchanged": true,
+  "total_elapsed_s": 11.088085411000066
+}

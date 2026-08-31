@@ -1,0 +1,20 @@
+{
+  "phase": "direct_copy",
+  "exit_code": 0,
+  "elapsed_s": 296.87,
+  "data_route": "5090 -> 4090; local controller carries no dataset/model/environment payload",
+  "source": "10.15.20.77",
+  "destination": "10.15.20.149:54268",
+  "paths": [
+    "DZWdeRepo-rddr-phase2b112",
+    "miniconda3/envs/sshr5090",
+    "reseg-data/raw/BCSS-WSSS/training",
+    "reseg-data/raw/BCSS-WSSS/val",
+    "sshr-official-25ep-final-retry2-20260815/environment.tsv",
+    "sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/status.tsv",
+    "sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/train.log",
+    "sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth",
+    "run_official_25ep_retry2.sh",
+    "experiments/RDDR_PHASE2B1/formal_r1/rddr_phase2b1_native_observations.npz"
+  ]
+}

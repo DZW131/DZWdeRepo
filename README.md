@@ -190,4 +190,19 @@ It must not be represented as complete until the real run and independent
 verification finish. Tables in Markdown and the machine-readableCSV files are
 the audit visualization; there is no separate dashboard or tracking service.
 
+## 4090 migration (2026-08-31; training remains paused)
+
+The current audit assets have been copied directly from the5090 server to
+`duyanhong@10.15.20.149:54268`. Absolute paths and the `sshr5090` environment
+prefix are unchanged; this is a copied Python environment, not a Conda base
+installation. Invoke its Python executable directly. No package, driver,
+architecture, objective, inference or training-protocol changes were made.
+
+See the [migration report](docs/rddr_phase2b112_4090_migration_report.md) for
+checksum verification,53 CPU tests, real batch20 BF16 zero-step smoke, package
+inventory, filesystem ordering caveat, exact paths and future launch command.
+The migration-only tool is `tools/verify_rddr_phase2b112_migration.py`; it never
+calls optimizer.step or evaluates validation/test metrics. This engineering
+PASS does not mean the500-step experiment has run or passed its scientific gates.
+
 ---
