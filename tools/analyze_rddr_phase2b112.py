@@ -814,7 +814,11 @@ def render_report(summary: dict[str, Any], evidence: dict[str, dict[str, Any]], 
         + _table([row for row in summary["per_class"] if row["step"] == 500],
                  ["arm", "class_id", "iou", "dice", "gt_pixels", "iou_delta_vs_B_pp", "iou_delta_vs_R_pp"])
         + "\n" + artifact("per_class"))
-    add("Gate dynamics", "The transfer gate is always Delta>0. Active fraction includes an all-grid denominator (used by Gate H) "
+    add("Gate dynamics", "These are contextual diagnostic gates Delta>0 for each checkpoint. "
+        "A uses this gate for training; R instead trains with random per-image counts matched to A. "
+        "R's Delta>0 here is a counterfactual diagnostic, not its actual random training gate. "
+        "Actual R training activation is recorded in training_curve.csv. "
+        "Active fraction includes an all-grid denominator (used by Gate H for A) "
         "and a foreground-only diagnostic. DeepCapture/ShallowProtection/SelectionPrecision use frozen exactly-one-correct labels; "
         "current populations are separately recorded as drift diagnostics. All q quantiles, Delta summaries, current counts and "
         "fractions are in the linked CSV.\n\n"

@@ -71,5 +71,6 @@ bash tools/execute_rddr_phase2b112.sh /home/duyanhong/experiments/RDDR_PHASE2B11
 - 独立审查：`docs/rddr_phase2b112_review.md`
 - 本次真实启动日志：`audit/results/rddr_phase2b112_preflight/execution_log.txt`
 - 来源、初始权重一致性、资源准入、未运行状态：同目录4份JSON。
+- 代码审查PR：[DZWdeRepo #50](https://github.com/DZW131/DZWdeRepo/pull/50)，目标为纯A0分支 `baseline/official-a0`，未合并。
 
 **当前科学判定：PENDING，未产生GO/NO-GO结果。**
