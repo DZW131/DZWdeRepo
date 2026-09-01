@@ -137,17 +137,18 @@ def _forward_graph(model, images, labels, names, training):
     try:
         with torch.autocast("cuda", dtype=torch.bfloat16):
             outputs = Net.forward(model, images)
-            main_loss = _classification_loss(outputs, labels)
+            main_loss = None if labels is None else _classification_loss(outputs, labels)
             auxiliary_logits, leaves = auxiliary_forward(model, capture["feat56"])
             observed_raw = F.conv2d(capture["raw"], model.ic1.weight.detach(), model.ic1.bias.detach())
         require(torch.equal(auxiliary_logits.detach(), observed_raw.detach()),
                 "Auxiliary raw-shallow probe parity failed")
         deep_probability = outputs[8].detach().float().softmax(1)
         raw_probability = auxiliary_logits.detach().float().softmax(1)
-        main_gradients = _main_gradients(model, main_loss, names)
+        main_gradients = ({name: None for name in names} if main_loss is None
+                          else _main_gradients(model, main_loss, names))
         return {
             "main_gradients": main_gradients,
-            "main_loss": float(main_loss.detach()),
+            "main_loss": None if main_loss is None else float(main_loss.detach()),
             "auxiliary_logits": auxiliary_logits,
             "leaves": leaves,
             "raw_probability": raw_probability,
@@ -309,15 +310,6 @@ def run_track_t(model, names, parameters, specs, manifest, output):
     return aggregate, rows, block_rows
 
 
-def _parse_image_labels(names):
-    labels = []
-    for name in names:
-        encoded = name.split("[", 1)[1].split("]", 1)[0]
-        require(len(encoded) >= 4 and set(encoded[:4]) <= {"0", "1"}, f"Invalid BCSS image label: {name}")
-        labels.append([int(value) for value in encoded[:4]])
-    return torch.tensor(labels, dtype=torch.float32)
-
-
 def _frozen_populations(snapshot):
     truth = snapshot["truth"]
     valid = truth < 4
@@ -391,8 +383,9 @@ def run_track_v(model, names, parameters, specs, output):
         batch_names = list(batch_names)
         end = start + len(batch_names)
         require(batch_names == actual_names[start:end], "Validation batch order changed")
-        labels = _parse_image_labels(batch_names)
-        bundle = _forward_graph(model, images.cuda(non_blocking=True), labels.cuda(non_blocking=True), names,
+        # Validation filenames do not carry training weak labels. GT is allowed
+        # only for the oracle below and is never converted into a main target.
+        bundle = _forward_graph(model, images.cuda(non_blocking=True), None, names,
                                 training=False)
         try:
             shape = (len(batch_names), 4, 28, 28)
@@ -470,7 +463,7 @@ def run_track_v(model, names, parameters, specs, output):
         finally:
             _close_graph(bundle)
         start = end
-        del images, labels
+        del images
         torch.cuda.empty_cache()
     require(start == 3418, f"Validation coverage incomplete: {start}")
     require(max_group_error <= 2e-6, f"Population gradient identity failed: {max_group_error}")
@@ -516,6 +509,8 @@ def run_track_v(model, names, parameters, specs, output):
         "frozen_step0_probe_gate": True,
         "gate_gt_blind": True,
         "oracle_gt_only": True,
+        "virtual_update_scope": "lambda_auxiliary_plus_weight_decay_only",
+        "validation_main_gradient": "not_constructed_no_weak_image_labels",
         "oracle_foreground_pixels": oracle_pixel_total,
         "background_and_ignore_excluded_from_oracle": True,
         "population_counts": counts,

@@ -202,6 +202,8 @@ class PopulationAndBootstrapTests(unittest.TestCase):
         source = inspect.getsource(runner.run_track_v)
         self.assertIn("truth < 4", source)
         self.assertIn("oracle_numerator", source)
+        self.assertIn("None, names", source)
+        self.assertNotIn("_parse_image_labels", source)
 
     def test_gate_is_gt_blind(self):
         source = inspect.getsource(runner.run_track_v)

@@ -280,6 +280,9 @@ def build_report(summary, evidence):
         f"Mean Adv_oracle = `{summary['gate_details']['mean_Adv_oracle']:.10g}` with paired-minibatch "
         f"95% CI `[{summary['gate_details']['Adv_oracle_bootstrap']['ci_low']:.10g}, "
         f"{summary['gate_details']['Adv_oracle_bootstrap']['ci_high']:.10g}]`.",
+        "Validation filenames contain no weak image-level labels, so this endpoint uses "
+        "`lambda * auxiliary gradient + weight decay` only. GT is not converted into a "
+        "main-loss target; real main-loss interaction is measured exclusively in Track T.",
         "",
         "First ten validation minibatches (the complete CSV contains all batches):",
         "",

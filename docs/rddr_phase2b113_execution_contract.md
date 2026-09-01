@@ -26,6 +26,8 @@ The virtual optimizer transform reproduces the exact effective FP32 displacement
 
 Track V uses the immutable Phase-2B1.12 step0 `q`, `Delta>0` gate, deep probability, populations, and native28 truth. The gate and random control are GT-blind. GT classes 0–3 are used only for the raw-shallow oracle cross-entropy and post-hoc population attribution; background 4 and ignore 255 are excluded from the oracle.
 
+BCSS validation filenames do not contain the training split's weak image-level labels. Track V therefore does not fabricate a main classification target from segmentation GT. Its `u_A/u_R` endpoint is the exact fresh-SGD transform of `lambda * g_ctx/g_rnd` plus the frozen per-group weight-decay behavior. Track T remains the primary endpoint for interaction with the real official main loss.
+
 Population decomposition uses the unnormalized auxiliary numerator on the exhaustive foreground partition `Deep-Win_0`, `Shallow-Win_0`, `Both-Wrong_0`, and `Stable-Correct_0`. Direct foreground-numerator gradients independently verify the group-sum identity.
 
 ## Command
@@ -55,4 +57,3 @@ Raw CSV/JSON artifacts are written beneath the supplied output directory. The fi
 `docs/rddr_phase2b113_parameter_gradient_attribution_report.md`
 
 The final report must end with exactly one preregistered `DIAGNOSIS = ...` line.
-
