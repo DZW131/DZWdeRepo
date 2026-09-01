@@ -16,9 +16,8 @@ if [[ -e "$report_path" ]]; then
   exit 64
 fi
 
-"$python_bin" -m unittest tests.test_rddr_phase2b113 -v
+"$python_bin" -m unittest discover -s tests -p test_rddr_phase2b113.py -v
 "$python_bin" tools/run_rddr_phase2b113.py --output "$output_dir"
 "$python_bin" tools/verify_rddr_phase2b113.py --input "$output_dir"
 "$python_bin" tools/analyze_rddr_phase2b113.py --input "$output_dir" --report "$report_path"
 "$python_bin" tools/verify_rddr_phase2b113.py --input "$output_dir" --report "$report_path" --post-analysis
-
