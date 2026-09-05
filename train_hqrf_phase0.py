@@ -112,7 +112,7 @@ def save_visualizations(directory, snapshot, names, images, labels, output):
     target=Path(directory)/"visualizations"/snapshot; target.mkdir(parents=True,exist_ok=True)
     mean=images.new_tensor([.485,.456,.406])[None,:,None,None]; std=images.new_tensor([.229,.224,.225])[None,:,None,None]
     rgb=(images*std+mean).clamp(0,1).permute(0,2,3,1).float().cpu().numpy()
-    joint=output["confidence"]["joint"].float(); top=joint.max(-1).values.argsort(1,descending=True,stable=True)[:,:5]
+    joint=output["confidence"]["joint"].float(); top=joint.max(-1).values.argsort(dim=1,descending=True,stable=True)[:,:5]
     probability=output["mask_logits"].float().sigmoid(); assigned=output["confidence"]["p_class"].argmax(-1)
     for image in range(min(8,len(names))):
         cls=int(torch.where(labels[image].bool())[0][0]); tri=output["targets"][image,cls].float().cpu().numpy()
