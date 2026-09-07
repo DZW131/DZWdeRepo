@@ -19,6 +19,11 @@ def render_report(output, result):
     pca = _row(summary, "pca_health", 3); sem = summary.get("semantic_selectivity", {})
     pmec = summary.get("pmec_health", {}); deep = summary.get("deep_gate_health", {}); gate = result.get("gate", {})
     runtime = result
+    temporal = []
+    for value in result.get("summary_history", []):
+        row = _row(value, "stagewise_query_redundancy", 3)
+        if row and str(row.get("snapshot", "")).startswith("epoch"):
+            temporal.append(f"{row['snapshot']}: median={_f(row,'pair_iou_median')}, >.90={_f(row,'pair_iou_fraction_gt_090')}")
     sections = [
         ("Executive Decision", f"Preregistered train-only decision: `{decision}`. No validation/test image, segmentation GT, mIoU, or mDice was used."),
         ("Scientific Question", "Whether class-conditioned competition allocates spatial responsibility across patch queries without semantic or mask-health collapse."),
@@ -42,17 +47,17 @@ def render_report(output, result):
         ("Numerical Health", f"All finite: {summary.get('all_finite','n/a')}; runtime gate: {runtime.get('all_finite','n/a')}."),
         ("Stagewise Redundancy", "See `cqrf_stagewise_query_redundancy.csv` for all stages and snapshots."),
         ("Stage3 Endpoint Redundancy", f"Median IoU {_f(red,'pair_iou_median')}; IoU>.90 fraction {_f(red,'pair_iou_fraction_gt_090')}; IoU>.75 fraction {_f(red,'pair_iou_fraction_gt_075')}."),
-        ("Temporal Rebound", f"No-rebound gate: {gate.get('checks',{}).get('B_no_rebound','n/a')}."),
-        ("Embedding Diversity", "See `cqrf_stagewise_embedding_diversity.csv`; this is diagnostic only and has no auxiliary loss."),
+        ("Temporal Rebound", f"No-rebound gate: {gate.get('checks',{}).get('B_no_rebound','n/a')}. " + "; ".join(temporal)),
+        ("Embedding Diversity", f"Stage3 endpoint p90 cosine {_f(_row(summary,'stagewise_embedding_diversity',3),'cosine_p90')}; the near-one value confirms that output embeddings remained highly aligned. This is diagnostic only and has no auxiliary loss."),
         ("Responsibility Utilization", f"Stage3 median dominant share {_f(util,'dominant_share_median')}; median effective queries {_f(util,'effective_queries_median')}; normalized entropy {_f(util,'normalized_entropy_median')}."),
         ("Responsibility Complementarity", f"Top-responsible support IoU {_f(comp,'responsibility_iou_median')}; centroid distance {_f(comp,'centroid_distance_mean')}; distinct peaks {_f(comp,'distinct_peak_fraction')}."),
         ("Mask Area", f"Stage3 local median {_f(area,'local_median')}; >.90 fraction {_f(area,'local_fraction_gt_090')}; <.05 fraction {_f(area,'local_fraction_lt_005')}."),
-        ("Over-fragmentation", "Connected-component diagnostics are in `cqrf_over_fragmentation.csv`."),
+        ("Over-fragmentation", f"Stage3 endpoint mean components {_f(_row(summary,'over_fragmentation',3),'component_mean')}, p90 {_f(_row(summary,'over_fragmentation',3),'component_p90')}, and fraction above five {_f(_row(summary,'over_fragmentation',3),'fraction_gt_5')}."),
         ("Semantic Selectivity", f"Rival leakage {_f(sem,'rival_leakage')}; background leakage {_f(sem,'background_leakage')}; positive-negative logit gap {_f(sem,'positive_negative_gap')}."),
         ("Deep Gate Health", f"Present/absent means {_f(deep,'present_mean')} / {_f(deep,'absent_mean')}; gap {_f(deep,'present_absent_gap')}."),
         ("PCA Health", f"Stage3 present-class coverage {_f(pca,'present_class_query_coverage')}; absent dominance {_f(pca,'absent_class_dominance')}."),
         ("PMEC Health", f"Candidate coverage {_f(pmec,'candidate_coverage')}; differs from top1 {_f(pmec,'differs_from_top1')}; groups/pair {_f(pmec,'groups_per_pair')}."),
-        ("CHPF Health", "F5/F4 residual and raw-context cosine traces are in `cqrf_chpf_health.csv`."),
+        ("CHPF Health", f"Endpoint gamma5/gamma4 {_f(summary.get('chpf_health',{}),'gamma5')} / {_f(summary.get('chpf_health',{}),'gamma4')}; F4 residual norm {_f(summary.get('chpf_health',{}),'F4_context_residual_norm')}."),
         ("Gradient Health", "Per-module mean/p50/p90 gradient RMS, zero fraction, and nonfinite fraction are in `cqrf_gradient_health.csv`."),
         ("Epoch-2 Catastrophic Screen", str(result.get("epoch2_screen", "not reached or unavailable"))),
         ("Final Gate Checks", "\n".join(f"- {k}: {v}" for k,v in gate.get("checks",{}).items()) or "Unavailable."),
@@ -61,8 +66,8 @@ def render_report(output, result):
         ("Data-access Audit", f"Validation accessed: {runtime.get('validation_accessed',False)}; test accessed: {runtime.get('test_accessed',False)}; LUAD accessed: {runtime.get('luad_accessed',False)}."),
         ("Reproducibility", f"Source commit `{result.get('source_commit','unknown')}`; endpoint SHA256 `{runtime.get('checkpoint_sha256','unavailable')}`."),
         ("Visual Evidence", "Eight fixed train images are rendered at step500, step1000, and epoch2–epoch5 under `visualizations/`."),
-        ("Interpretation", "The decision follows the preregistered all-gates rule; individual favorable metrics cannot override a failed required criterion."),
-        ("Next Action", "GO permits a fresh-initialization Full25 run; NOGO archives the current query-allocation family without rescue tuning."),
+        ("Interpretation", "CCRA itself was numerically correct and non-monopolistic, and Stage3 responsibility supports were spatially different (low responsibility IoU and many distinct peaks). Those differences did not survive the mask projection: endpoint mask IoU and embedding cosine returned near collapse. The likely structural bottleneck is that every query responsibility is spatially renormalized before pooling, so low-total-ownership queries still receive a full-scale update, while the unchanged mask loss does not penalize duplicate masks. This is a mechanism diagnosis, not a post-hoc gate exception."),
+        ("Next Action", "The NOGO result blocks Full25. Per the frozen plan, archive this CCRA query-allocation family without rescue tuning; a new experiment should change the responsibility-to-mask coupling rather than merely adjust thresholds."),
     ]
     assert len(sections) == 43
     lines = ["# CQRF-Net Phase-0 — CCRA Responsibility Allocation Report", ""]
