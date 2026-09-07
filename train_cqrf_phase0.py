@@ -133,6 +133,7 @@ def monitor(model,loader,step,snapshot,histories,summary_history,output_dir,visu
         batches.append(batch_health(result,labels)); pmec_rows.extend(result["pmec_rows"])
         if first is None: first=(names,images.detach(),labels.detach(),result)
     summary=summarize(snapshot,batches,pmec_rows,model); summary_history.append(summary)
+    write_json(Path(output_dir)/"cqrf_phase0_summary_history.json",summary_history)
     mapping={"stagewise_mask_area":"cqrf_stagewise_mask_area.csv","stagewise_query_redundancy":"cqrf_stagewise_query_redundancy.csv","stagewise_embedding_diversity":"cqrf_stagewise_embedding_diversity.csv","responsibility_integrity":"cqrf_responsibility_integrity.csv","responsibility_utilization":"cqrf_responsibility_utilization.csv","responsibility_complementarity":"cqrf_responsibility_complementarity.csv","query_update_health":"cqrf_query_update_health.csv","over_fragmentation":"cqrf_over_fragmentation.csv","semantic_selectivity":"cqrf_semantic_selectivity.csv","pca_health":"cqrf_pca_health.csv","pmec_health":"cqrf_pmec_health.csv","chpf_health":"cqrf_chpf_health.csv","deep_gate_health":"cqrf_deep_gate_health.csv"}
     for key,filename in mapping.items():
         rows=summary[key] if isinstance(summary[key],list) else [summary[key]]; histories[key].extend(rows); write_csv(Path(output_dir)/filename,histories[key])

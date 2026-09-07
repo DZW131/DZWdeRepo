@@ -50,3 +50,11 @@ def test_report_has_43_sections_and_exact_last_line(tmp_path):
     result={"decision":"CQRF_PHASE0_GO","final_summary":_summary(),"gate":{"checks":{}},"all_finite":True}
     path=render_report(tmp_path,result); text=path.read_text(encoding="utf-8")
     assert text.count("\n## ")==43 and text.splitlines()[-1]=="DECISION = CQRF_PHASE0_GO"
+
+
+def test_history_snapshot_is_inferred_from_nested_rows():
+    values=_history()
+    for value in values:
+        value["stagewise_query_redundancy"][0]["snapshot"]=value["snapshot"]
+        value.pop("snapshot")
+    assert apply_final_gate(values)["decision"]=="CQRF_PHASE0_STRONG_GO"

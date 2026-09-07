@@ -166,7 +166,17 @@ def apply_epoch2_screen(summary):
 
 def apply_final_gate(history):
     summary=history[-1]; red=_row(summary,"stagewise_query_redundancy",3); area=_row(summary,"stagewise_mask_area",3); sem=summary["semantic_selectivity"]; util=_row(summary,"responsibility_utilization",3); pca=_row(summary,"pca_health",3); pmec=summary["pmec_health"]
-    by={s["snapshot"]:s for s in history}; epochs=[by.get(f"epoch{i}") for i in (3,4,5)]
+    def snapshot_name(value):
+        if "snapshot" in value:
+            return value["snapshot"]
+        for key in ("semantic_selectivity", "pmec_health", "deep_gate_health"):
+            if isinstance(value.get(key), dict) and "snapshot" in value[key]:
+                return value[key]["snapshot"]
+        for key in ("stagewise_query_redundancy", "stagewise_mask_area"):
+            if value.get(key):
+                return value[key][0].get("snapshot")
+        return None
+    by={snapshot_name(s):s for s in history}; epochs=[by.get(f"epoch{i}") for i in (3,4,5)]
     stable=len(history)>=3 and all(epochs) and _row(epochs[1],"stagewise_query_redundancy",3)["pair_iou_median"]<=_row(epochs[0],"stagewise_query_redundancy",3)["pair_iou_median"]+.05 and red["pair_iou_median"]<=_row(epochs[1],"stagewise_query_redundancy",3)["pair_iou_median"]+.05 and red["pair_iou_fraction_gt_090"]<=_row(epochs[0],"stagewise_query_redundancy",3)["pair_iou_fraction_gt_090"]+.05
     checks={"A_median_iou":red["pair_iou_median"]<.75,"A_high_iou":red["pair_iou_fraction_gt_090"]<.30,"B_no_rebound":stable,"C_rival":sem["rival_leakage"]<.30,"C_background":sem["background_leakage"]<.10,"C_gap":sem["positive_negative_gap"]>5,"D_median_area":.15<=area["local_median"]<=.75,"D_high_area":area["local_fraction_gt_090"]<.40,"D_tiny_area":area["local_fraction_lt_005"]<.40,"E_dominant_share":util["dominant_share_median"]<.75,"E_effective_queries":util["effective_queries_median"]>1.5,"F_pca_coverage":pca["present_class_query_coverage"]>=.93,"F_absent_dominance":pca["absent_class_dominance"]<=.20,"F_finite":bool(pca["all_finite"] and summary["all_finite"]),"G_pmec_candidates":pmec["candidate_coverage"]>=.85,"G_pmec_difference":pmec["differs_from_top1"]>=.70}
     go=all(checks.values())
