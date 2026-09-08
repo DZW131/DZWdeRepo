@@ -151,7 +151,9 @@ def main():
             for _,images,labels in loader:
                 images=images.cuda(non_blocking=True); labels=labels.cuda(non_blocking=True); optimizer.zero_grad(set_to_none=True)
                 with torch.autocast("cuda",dtype=torch.bfloat16): result=model(images,labels,step=optimizer.global_step,run_pmec=False)
-                next_step=optimizer.global_step+1; audit=next_step in SNAPSHOTS; result["stages"][2]["base_mask_logits"].retain_grad() if audit else None
+                next_step=optimizer.global_step+1
+                audit=next_step in SNAPSHOTS or bool(args.smoke_steps and next_step==args.smoke_steps)
+                result["stages"][2]["base_mask_logits"].retain_grad() if audit else None
                 loss=result["losses"]["loss"]
                 if not bool(torch.isfinite(loss)): raise FloatingPointError("Nonfinite loss")
                 loss.backward()
