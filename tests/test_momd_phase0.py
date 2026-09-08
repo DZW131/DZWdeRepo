@@ -6,6 +6,7 @@ from network.cqrf_net import CQRFNet, STAGE_WEIGHTS
 from network.hqrf_targets import IGNORE, circular_locality
 from network.momd import mixture_class_bce, mixture_decode, resize_responsibility, route_one_class
 from network.momd_net import MOMDNet
+from tools.momd_diagnostics import _exact_top_fraction_support
 
 
 def _inputs(batch=2, queries=196, classes=4, memory_hw=(7, 7), output_hw=(56, 56)):
@@ -90,3 +91,9 @@ def test_momd_implementation_has_no_rpmc_or_comd_path():
     assert "p_class" not in source
     assert "relative" not in source
     assert "gate" not in source
+
+
+def test_contribution_support_is_exact_top20_under_zero_ties():
+    value=torch.zeros(3,56,56); value[:,0,0]=1
+    support=_exact_top_fraction_support(value,.20)
+    assert torch.equal(support.flatten(1).sum(1),torch.full((3,),628))

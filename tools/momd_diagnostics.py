@@ -28,6 +28,14 @@ def _pair_soft_iou(value):
     return (inter / union)[_upper(value.shape[0], value.device)]
 
 
+def _exact_top_fraction_support(value, fraction=.20):
+    """Select exactly ceil(fraction*HW) pixels per map with stable tie handling."""
+    flat=value.flatten(1); count=math.ceil(fraction*flat.shape[1])
+    indices=torch.argsort(flat,dim=1,descending=True,stable=True)[:,:count]
+    support=torch.zeros_like(flat,dtype=torch.bool); support.scatter_(1,indices,True)
+    return support.reshape_as(value)
+
+
 def _rank_corr(a, b):
     ar = torch.argsort(torch.argsort(a.flatten())).float(); br = torch.argsort(torch.argsort(b.flatten())).float()
     ar -= ar.mean(); br -= br.mean()
@@ -55,8 +63,7 @@ def batch_health(output, labels):
                 indices = torch.argsort(scores, descending=True, stable=True)[:20]
                 qmaps = posterior[image, indices, cls]; amaps = route[image, indices, cls]
                 bmaps = base[image, indices]
-                qcut = torch.quantile(qmaps.flatten(1), .8, dim=1, keepdim=True)
-                qsupport = (qmaps.flatten(1) >= qcut).reshape_as(qmaps)
+                qsupport = _exact_top_fraction_support(qmaps, .20)
                 values[f"{prefix}_q_iou"].extend(_pair_iou(qsupport).cpu().tolist())
                 values[f"{prefix}_q_gt075"].extend((_pair_iou(qsupport) > .75).float().cpu().tolist())
                 values[f"{prefix}_q_gt090"].extend((_pair_iou(qsupport) > .90).float().cpu().tolist())
