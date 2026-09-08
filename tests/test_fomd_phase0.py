@@ -88,6 +88,11 @@ def test_counterfactuals_not_in_loss():
     assert "materialize" not in source[source.index("loss=result"):source.index("loss.backward")]
 
 
+def test_smoke_materializes_counterfactual_audit():
+    source=(ROOT/"train_fomd_phase0.py").read_text()
+    assert 'snapshot=SNAPSHOTS.get(step,"smoke_step2")' in source
+
+
 def test_zero_parameter_delta():
     assert not (ROOT/"network/fomd_net.py").exists()
 

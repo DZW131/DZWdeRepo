@@ -131,7 +131,9 @@ def main():
                 row={"epoch":epoch,"step":step,**{k:float(v.detach()) for k,v in result["losses"].items()},"lr":optimizer.param_groups[0]["lr"]}; rows.append(row)
                 if step%100==0 or step in SNAPSHOTS:
                     losses.append(row); write_csv(output/"fomd_losses.csv",losses); print("FOMD_STEP "+json.dumps({**row,"peak_memory":torch.cuda.max_memory_allocated(),"elapsed_seconds":time.perf_counter()-started}),flush=True)
-                if step in SNAPSHOTS: final=monitor(model,monitor_loader,step,SNAPSHOTS[step],histories,summaries,output,permutations,step in VISUAL)
+                if step in SNAPSHOTS or (a.smoke_steps and step==a.smoke_steps):
+                    snapshot=SNAPSHOTS.get(step,"smoke_step2")
+                    final=monitor(model,monitor_loader,step,snapshot,histories,summaries,output,permutations,step in VISUAL)
                 if a.smoke_steps and step>=a.smoke_steps: break
             completed=epoch; print("FOMD_EPOCH "+json.dumps({"epoch":epoch,"step":optimizer.global_step,"loss":float(np.mean([x["loss"] for x in rows]))}),flush=True)
             if a.smoke_steps: break
