@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 from network.momd_net import MOMDNet
 from tools.fomd_counterfactuals import materialize, permutation_payload
 from tools.fomd_diagnostics import batch_health, summarize
-from tools.hqrf_phase0_io import check_train_path, install_train_access_guard, write_json
+from tools.hqrf_phase0_io import install_train_access_guard, write_json
 from train_cqrf_phase0 import MonitorDataset
 
 
@@ -24,7 +24,8 @@ def main():
     p=argparse.ArgumentParser(); p.add_argument("--endpoint",required=True); p.add_argument("--cohort-json",required=True); p.add_argument("--output",required=True); a=p.parse_args()
     if not torch.cuda.is_available(): raise RuntimeError("CUDA required for archived endpoint audit")
     install_train_access_guard(); payload,cohort=load_cohort(a.cohort_json)
-    for path,_ in cohort: check_train_path(path)
+    if any("/bcss-wsss/training/" not in Path(path).as_posix().lower() for path,_ in cohort):
+        raise ValueError("Historical cohort must contain only BCSS training images")
     bank=permutation_payload(196); permutations=bank["permutations"]
     model=MOMDNet().cuda(); state=torch.load(a.endpoint,map_location="cuda",weights_only=True); model.load_state_dict(state,strict=True); model.eval()
     count_before=sum(p.numel() for p in model.parameters()); batches=[]; pmec=[]; exact=[]; detached=[]; finite=[]
