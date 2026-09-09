@@ -36,7 +36,7 @@ def test_gcqm_F_equals_sum_wB():
 
 
 def test_gcqm_C_sum_F():
-    _,g=_decoded(); assert torch.allclose(g["contribution"].sum(1),g["mixture"])
+    _,g=_decoded(); assert torch.equal(g["contribution"].sum(1),g["mixture"])
 
 
 def test_gcqm_F_range():

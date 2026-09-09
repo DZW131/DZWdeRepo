@@ -90,7 +90,9 @@ def _row(s,k,stage=3): return next(x for x in s[k] if x["stage"]==stage)
 def apply_epoch2_screen(s):
     con=_row(s,"weight_conservation"); sem=_row(s,"primary_semantic_health"); rc=_row(s,"responsibility_complementarity"); u=_row(s,"weight_utilization"); det=_row(s,"counterfactual_detach_audit")
     checks={"engineering":not con["all_finite"] or con["max_weight_sum_error"]>1e-5 or con["max_contribution_sum_error"]>1e-6 or not det["all_references_detached"],"semantic":sem["CPR"]<.40 or sem["positive_recall"]<.50 or sem["positive_F_median"]<.40 or sem["empty_fraction"]>.40,"specificity":sem["rival_leakage"]>.70 or sem["background_leakage"]>.50 or sem["probability_gap"]<=0,"ccra":rc["responsibility_iou_median"]>.75 and rc["distinct_peak_fraction"]<.40,"monopoly":u["dominant_share"]>.90 and u["effective_queries"]<2}
-    failed=[k for k,v in checks.items() if v]; return {"decision":"GCQM_PHASE0_NOGO" if failed else "CONTINUE_TO_E5_UNCHANGED","checks":checks,"failed_criteria":failed}
+    failed=[k for k,v in checks.items() if v]
+    decision="GCQM_ENGINEERING_BLOCKED" if checks["engineering"] else "GCQM_PHASE0_NOGO" if failed else "CONTINUE_TO_E5_UNCHANGED"
+    return {"decision":decision,"checks":checks,"failed_criteria":failed}
 
 
 def apply_final_gate(history):

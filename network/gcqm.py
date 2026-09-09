@@ -17,7 +17,8 @@ def gcqm_decode(base_logits: torch.Tensor, responsibility_class: torch.Tensor,
         routing=torch.stack([x["routing"] for x in routes],dim=2)
         weights=routing.mean((-2,-1))
         weights=(weights/weights.sum(1,keepdim=True).clamp_min(EPS)).detach()
-        final=torch.einsum("bqc,bqhw->bchw",weights,base).clamp(0,1)
+        contribution=weights[...,None,None]*base[:,:,None]
+        final=contribution.sum(1).clamp(0,1)
         w_error=(weights.sum(1)-1).abs()
         payload={"base_probability":base,"weights":weights,"mixture":final,"primary_output":final,
                  "weight_sum_error_max":float(w_error.max()),"weight_sum_error_mean":float(w_error.mean()),
@@ -26,7 +27,6 @@ def gcqm_decode(base_logits: torch.Tensor, responsibility_class: torch.Tensor,
                  "fallback_fraction":float(torch.stack([x["fallback"] for x in routes],1).float().mean()),
                  "weight_sidepath_detached":True}
         if materialize:
-            contribution=weights[...,None,None]*base[:,:,None]
             error=(contribution.sum(1)-final).abs()
             pixel=(routing*base[:,:,None]).sum(1).detach()
             payload.update({"routing":routing.detach(),"contribution":contribution,

@@ -115,10 +115,19 @@ def main():
             if a.smoke_steps: break
             if epoch==2:
                 epoch2=apply_epoch2_screen(final); write_json(output/"gcqm_epoch2_screen.json",epoch2)
-                if epoch2["decision"]=="GCQM_PHASE0_NOGO": break
+                if epoch2["decision"]!="CONTINUE_TO_E5_UNCHANGED": break
         elapsed=time.perf_counter()-started
         if a.smoke_steps: write_json(output/"gcqm_runtime.json",{"smoke":True,"steps":optimizer.global_step,"all_finite":True,"seconds":elapsed,"parameter_delta":0,"validation_accessed":False}); print("GCQM_SMOKE_PASS",flush=True); return
-        endpoint,digest=checkpoint(model,output); gate=epoch2 if epoch2 and epoch2["decision"]=="GCQM_PHASE0_NOGO" else apply_final_gate(summaries); decision=gate["decision"]; runtime={"smoke":False,"steps":optimizer.global_step,"epochs":completed,"train_seconds":elapsed,"peak_cuda_memory_gib":torch.cuda.max_memory_allocated()/1024**3,"all_finite":bool(final["all_finite"]),"validation_accessed":False,"test_accessed":False,"luad_accessed":False,"decision":decision,"checkpoint":str(endpoint),"checkpoint_sha256":digest,"gcqm_delta_parameters":0}; write_json(output/"gcqm_runtime.json",runtime); payload={**runtime,"source_commit":source,"final_summary":final,"summary_history":summaries,"epoch2_screen":epoch2,"gate":gate,"fomd_compatibility":audit}; write_json(output/"gcqm_gate_result.json",payload); report=render_report(output,payload); print("GCQM_FINAL "+json.dumps({"decision":decision,"report":str(report),"gate":gate}),flush=True); print(f"DECISION = {decision}",flush=True)
+        endpoint,digest=checkpoint(model,output)
+        gate=epoch2 if epoch2 and epoch2["decision"]!="CONTINUE_TO_E5_UNCHANGED" else apply_final_gate(summaries)
+        decision=gate["decision"]
+        runtime={"smoke":False,"steps":optimizer.global_step,"epochs":completed,"train_seconds":elapsed,"peak_cuda_memory_gib":torch.cuda.max_memory_allocated()/1024**3,"all_finite":bool(final["all_finite"]),"validation_accessed":False,"test_accessed":False,"luad_accessed":False,"decision":decision,"checkpoint":str(endpoint),"checkpoint_sha256":digest,"gcqm_delta_parameters":0}
+        write_json(output/"gcqm_runtime.json",runtime)
+        payload={**runtime,"source_commit":source,"final_summary":final,"summary_history":summaries,"epoch2_screen":epoch2,"gate":gate,"fomd_compatibility":audit}
+        write_json(output/"gcqm_gate_result.json",payload)
+        report=render_report(output,payload)
+        print("GCQM_FINAL "+json.dumps({"decision":decision,"report":str(report),"gate":gate}),flush=True)
+        print(f"DECISION = {decision}",flush=True)
     except Exception as e:
         failure={"decision":"GCQM_ENGINEERING_BLOCKED","error":repr(e),"source_commit":source,"steps":optimizer.global_step,"epochs":completed,"final_summary":final or {},"summary_history":summaries,"epoch2_screen":epoch2,"gate":{},"fomd_compatibility":audit}; write_json(output/"gcqm_engineering_failure.json",failure); render_report(output,failure); print("DECISION = GCQM_ENGINEERING_BLOCKED",flush=True); raise
 
