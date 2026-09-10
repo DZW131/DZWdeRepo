@@ -1,0 +1,15 @@
+{
+  "all_finite": true,
+  "checkpoint": "/home/duyanhong/experiments/GCQM_Phase0_Global_Class_Conditioned_Query_Mixture_BCSS_Seed42/gcqm_phase0_endpoint.pth",
+  "checkpoint_sha256": "55af9fcc2c63fae27e1c39b8cb0aacf74cfd50d5975294ffb398420fb4e69fa3",
+  "decision": "GCQM_PHASE0_STRONG_GO",
+  "epochs": 5,
+  "gcqm_delta_parameters": 0,
+  "luad_accessed": false,
+  "peak_cuda_memory_gib": 5.783310413360596,
+  "smoke": false,
+  "steps": 5855,
+  "test_accessed": false,
+  "train_seconds": 1017.1869759091642,
+  "validation_accessed": false
+}

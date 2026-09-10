@@ -1,0 +1,293 @@
+{
+  "images": [
+    {
+      "label": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A2-A0ST-DX1_xmin109446_ymin18274_MPP-0.2500+274[1000].png"
+    },
+    {
+      "label": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A7-A0DA-DX1_xmin43731_ymin18175_MPP-0.2500+574[1000].png"
+    },
+    {
+      "label": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-AO-A129-DX1_xmin37502_ymin12501_MPP-0.2500+221[0010].png"
+    },
+    {
+      "label": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A2-A04P-DX1_xmin104246_ymin48517_MPP-0.2500+36[1000].png"
+    },
+    {
+      "label": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-D8-A142-DX1_xmin62151_ymin41337_MPP-0.2500+243[1000].png"
+    },
+    {
+      "label": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A2-A3XY-DX1_xmin76297_ymin35510_MPP-0.2500+147[0100].png"
+    },
+    {
+      "label": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-D8-A13Z-DX1_xmin30985_ymin49337_MPP-0.2500+390[0001].png"
+    },
+    {
+      "label": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A2-A0CM-DX1_xmin18562_ymin56852_MPP-0.2500+163[1000].png"
+    },
+    {
+      "label": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-AC-A2QH-DX1_xmin42173_ymin16859_MPP-0.2500+124[1100].png"
+    },
+    {
+      "label": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A7-A0DA-DX1_xmin43731_ymin18175_MPP-0.2500+226[0110].png"
+    },
+    {
+      "label": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A2-A04T-DX1_xmin72145_ymin39078_MPP-0.2500+322[1100].png"
+    },
+    {
+      "label": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-AR-A0TU-DX1_xmin88352_ymin23098_MPP-0.2500+47[1100].png"
+    },
+    {
+      "label": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A2-A0YM-DX1_xmin44520_ymin66915_MPP-0.2500+379[1001].png"
+    },
+    {
+      "label": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A2-A0D0-DX1_xmin68482_ymin39071_MPP-0.2500+487[0110].png"
+    },
+    {
+      "label": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-E2-A1L7-DX1_xmin51554_ymin15424_MPP-0.2500+74[1100].png"
+    },
+    {
+      "label": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A2-A1G6-DX1_xmin57706_ymin69514_MPP-0.2500+98[1100].png"
+    },
+    {
+      "label": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-AO-A0J6-DX1_xmin40548_ymin11135_MPP-0.2500+99[1100].png"
+    },
+    {
+      "label": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-D8-A147-DX1_xmin66394_ymin19298_MPP-0.2500+19[1110].png"
+    },
+    {
+      "label": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A2-A0YM-DX1_xmin44520_ymin66915_MPP-0.2500+226[1110].png"
+    },
+    {
+      "label": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A2-A3XY-DX1_xmin76297_ymin35510_MPP-0.2500+118[0110].png"
+    },
+    {
+      "label": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A2-A3XX-DX1_xmin69942_ymin41560_MPP-0.2500+107[1110].png"
+    },
+    {
+      "label": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A2-A0YE-DX1_xmin59206_ymin33505_MPP-0.2500+103[0110].png"
+    },
+    {
+      "label": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-BH-A0BW-DX1_xmin42346_ymin30843_MPP-0.2500+162[0110].png"
+    },
+    {
+      "label": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-D8-A142-DX1_xmin62151_ymin41337_MPP-0.2500+528[1100].png"
+    },
+    {
+      "label": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-D8-A13Z-DX1_xmin30985_ymin49337_MPP-0.2500+25[0100].png"
+    },
+    {
+      "label": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A2-A0D0-DX1_xmin68482_ymin39071_MPP-0.2500+442[0100].png"
+    },
+    {
+      "label": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A2-A0T0-DX1_xmin72865_ymin59458_MPP-0.2500+12[0110].png"
+    },
+    {
+      "label": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A2-A0D2-DX1_xmin96887_ymin22299_MPP-0.2500+56[1100].png"
+    },
+    {
+      "label": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A8-A09X-DX1_xmin55379_ymin38394_MPP-0.2500+100[1100].png"
+    },
+    {
+      "label": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-D8-A1JG-DX1_xmin15677_ymin69205_MPP-0.2500+162[1100].png"
+    },
+    {
+      "label": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A7-A26F-DX1_xmin72969_ymin11489_MPP-0.2500+338[1000].png"
+    },
+    {
+      "label": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "path": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training/TCGA-A2-A0D0-DX1_xmin68482_ymin39071_MPP-0.2500+118[0110].png"
+    }
+  ],
+  "seed": 42
+}

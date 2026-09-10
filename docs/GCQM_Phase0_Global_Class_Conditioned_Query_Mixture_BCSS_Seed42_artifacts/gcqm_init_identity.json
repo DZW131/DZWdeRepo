@@ -1,0 +1,36 @@
+{
+  "feature_taps": {
+    "F3": {
+      "channels": 256,
+      "source": "b3_2 output",
+      "stride": 4
+    },
+    "F4": {
+      "channels": 512,
+      "source": "relu(bn45(b4_5 output))",
+      "stride": 8
+    },
+    "F5": {
+      "channels": 1024,
+      "source": "relu(bn52(b5_2 output))",
+      "stride": 8
+    },
+    "FD": {
+      "channels": 4096,
+      "source": "relu(bn7(b7 output))",
+      "stride": 8
+    }
+  },
+  "missing_parameters": [
+    "bn45.weight",
+    "bn45.bias",
+    "bn45.running_mean",
+    "bn45.running_var",
+    "bn52.weight",
+    "bn52.bias",
+    "bn52.running_mean",
+    "bn52.running_var"
+  ],
+  "source": "/home/duyanhong/sshr-resnet38-init.params",
+  "source_sha256": "f668a2add80e33dfa8f1a0695df91f6d8cfad5ffbb26d1dc7bcd35903a1f6e16"
+}

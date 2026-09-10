@@ -1,0 +1,17 @@
+snapshot,stage,all_references_detached,w_detached
+step0250,2,True,True
+step0250,3,True,True
+step0500,2,True,True
+step0500,3,True,True
+step1000,2,True,True
+step1000,3,True,True
+epoch1,2,True,True
+epoch1,3,True,True
+epoch2,2,True,True
+epoch2,3,True,True
+epoch3,2,True,True
+epoch3,3,True,True
+epoch4,2,True,True
+epoch4,3,True,True
+epoch5,2,True,True
+epoch5,3,True,True

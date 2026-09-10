@@ -1,0 +1,11 @@
+{
+  "checks": {
+    "ccra": false,
+    "engineering": false,
+    "monopoly": false,
+    "semantic": false,
+    "specificity": false
+  },
+  "decision": "CONTINUE_TO_E5_UNCHANGED",
+  "failed_criteria": []
+}

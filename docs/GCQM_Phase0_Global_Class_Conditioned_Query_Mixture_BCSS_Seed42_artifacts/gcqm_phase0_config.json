@@ -1,0 +1,23 @@
+{
+  "amp": "bf16",
+  "batch": 20,
+  "counterfactuals": "8 fixed perm/PCA/pixel/uniform detached",
+  "dataset": "BCSS training only",
+  "epochs_max": 5,
+  "experiment": "GCQM Phase-0 Global Class-Conditioned Query Mixture",
+  "full25_schedule_denominator": 29275,
+  "gpu": "RTX4090D",
+  "new_aux_loss": 0,
+  "new_parameters": 0,
+  "parent": "c479ac4d1f3dca5231fb73435e59269b3407d85f",
+  "primary": "F_gcqm=sum_i w_ic B_i(x)",
+  "query_count": 196,
+  "seed": 42,
+  "smoke_steps": 0,
+  "source_commit": "f327b91bba88bdf45391d991a13b214e9ab101ff",
+  "steps_per_epoch": 1171,
+  "total_steps": 5855,
+  "trainroot": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training",
+  "validation_access": false,
+  "w": "detach(query_renorm(spatial_mean(A)))"
+}
