@@ -111,7 +111,9 @@ def _predict_gcqm(model, image: torch.Tensor, original: np.ndarray, diagnostics:
 
 
 def _infer(model, valroot: Path, workers: int, kind: str) -> dict:
-    model = model.cuda().eval(); loader = DataLoader(Stage1_InferDataset(str(valroot / "img"), img_size=224), batch_size=1, shuffle=False, num_workers=workers, pin_memory=True)
+    model = model.cuda()
+    model.eval()
+    loader = DataLoader(Stage1_InferDataset(str(valroot / "img"), img_size=224), batch_size=1, shuffle=False, num_workers=workers, pin_memory=True)
     confusions, ids = [], []; torch.cuda.reset_peak_memory_stats(); started = time.perf_counter()
     with torch.no_grad():
         for names, image in loader:
