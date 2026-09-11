@@ -223,7 +223,9 @@ def main():
     gcqm_path, sshr_path, sshr_exp = Path(args.gcqm_checkpoint).resolve(), Path(args.sshr_checkpoint).resolve(), Path(args.sshr_experiment).resolve()
     if "bcss-wsss/val" not in valroot.as_posix().lower() or "test" in valroot.as_posix().lower() or len(list((valroot / "img").glob("*.png"))) != 3418 or len(list((valroot / "mask").glob("*.png"))) != 3418:
         raise AssertionError("Evaluation requires exactly 3418 BCSS validation pairs")
-    if any((experiment / "evaluation").iterdir()) or any((experiment / "report").iterdir()): raise FileExistsError("Final evaluation already exists")
+    existing_evaluation = {path.name for path in (experiment / "evaluation").iterdir()}
+    if existing_evaluation - {"eval_launch.log"} or any((experiment / "report").iterdir()):
+        raise FileExistsError("Final evaluation already exists")
     runtime = json.loads((experiment / "provenance/gcqm_full25_runtime.json").read_text()); seal = json.loads((experiment / "checkpoints/gcqm_full25_epoch25_final.json").read_text()); config = json.loads((experiment / "provenance/gcqm_full25_config.json").read_text())
     gcqm_hash, sshr_hash = sha256(gcqm_path), sha256(sshr_path); baseline_log = sshr_exp / "train.log"
     checks = {"same_hardware": "4090" in torch.cuda.get_device_name(0), "same_dataset_split": True, "same_seed": config["seed"] == 42, "same_epochs": config["epochs"] == 25, "same_training_steps": config["total_steps"] == 29275, "same_image_size": config["image_size"] == 224, "same_effective_batch": config["effective_batch_size"] == 20, "same_official_init": INIT_SHA256 in baseline_log.read_text(), "gcqm_e25_sealed": seal["sealed_before_segmentation_evaluation"] and seal["sha256"] == gcqm_hash, "baseline_checkpoint_frozen": sshr_hash == BASELINE_SHA256, "baseline_log_frozen": sha256(baseline_log) == BASELINE_LOG_SHA256, "no_training_validation": not runtime["validation_accessed"], "fixed_inference_thresholds": THRESHOLDS.tolist() == [0.8, 0.9, 0.8, 0.6], "same_evaluator_execution": True}

@@ -34,6 +34,7 @@ def test_evaluation_is_e25_only_and_bootstrap_is_frozen():
     assert "gcqm_full25_epoch25_final.json" in source
     assert "baseline_metric_reproduction" in source and "baseline_per_image_reproduction" in source
     assert '"params": complexity["gcqm_parameters"]' in source
+    assert 'existing_evaluation - {"eval_launch.log"}' in source
 
 
 def test_gcqm_inference_does_not_use_segmentation_gt_as_model_input():
