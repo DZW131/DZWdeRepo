@@ -1,0 +1,6 @@
+{
+  "failure_anatomy_sha256": "b53dfc859a387a72195d056efa231395faa12417660710c3a44219b66f9f5f11",
+  "official_init_sha256": "f668a2add80e33dfa8f1a0695df91f6d8cfad5ffbb26d1dc7bcd35903a1f6e16",
+  "old_gcqm_checkpoint": "/home/duyanhong/experiments/GCQM_Final_Full25_BCSS_Seed42/checkpoints/gcqm_full25_epoch25_final.pth",
+  "old_gcqm_checkpoint_sha256": "6e1b909fc86a870e652213831521e8ff552371a083f85faad7dac3a21d969d0f"
+}

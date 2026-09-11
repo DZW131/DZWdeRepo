@@ -1,0 +1,2 @@
+protocol_valid,interior_loss,boundary_loss,contact_excess_loss,fn_recovery,interior_recovery,morphology_recovery,boundary_oversmoothing_risk,new_contact_leakage,overcompletion,interior_worse,strong_coherence
+True,0.022302675068334152,0.011235313556857203,-0.010055435407392687,False,False,False,False,False,False,False,False

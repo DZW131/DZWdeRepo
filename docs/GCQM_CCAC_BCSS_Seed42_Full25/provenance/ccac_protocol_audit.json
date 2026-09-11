@@ -1,0 +1,19 @@
+{
+  "ccac_iterations": 2,
+  "effective_batch": 20,
+  "epochs": 25,
+  "failure_anatomy_gate": true,
+  "fresh_official_init": true,
+  "no_validation_during_training": true,
+  "protected_sources": {
+    "network/resnet38_cls.py": "570c9cffdeb0beb22eadd05a748c3917e48a26d48fdf1b6b4563b529d774b0ec",
+    "network/resnet38d.py": "77b699d2db5321393320de5a59382ac07e87ecb999797a914dda1f38eebb73fa",
+    "tool/GenDataset.py": "8066300d876d78ce6e6e9714b4152ab5006415092ffe1ddcb7779202ecfc5038",
+    "tool/torchutils.py": "cce24c7096d6b02688dc3b3e0c60edbca65ad9cc8bc643e8624e784fbc67ac1b",
+    "train_sshr.py": "178bf0fcb6185aa0ee07708ad79a1568226d3b116d597437aea871d272e5b03a"
+  },
+  "seed": 42,
+  "steps": 29275,
+  "zero_auxiliary_loss": true,
+  "zero_parameter_delta": true
+}

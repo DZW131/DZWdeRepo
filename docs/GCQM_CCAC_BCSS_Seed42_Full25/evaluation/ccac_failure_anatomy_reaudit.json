@@ -1,0 +1,43 @@
+{
+  "boundary_loss": 0.011235313556857203,
+  "boundary_oversmoothing_risk": false,
+  "contact_excess_loss": -0.010055435407392687,
+  "fn_recovery": false,
+  "interior_loss": 0.022302675068334152,
+  "interior_recovery": false,
+  "interior_worse": false,
+  "morphology_gaps": {
+    "compactness": 0.4034550591974779,
+    "components": 0.24959029826286483,
+    "fragmentation_index": 42.19250476891058,
+    "hole_count": 0.21730580137659786
+  },
+  "morphology_recovery": false,
+  "morphology_reduction_checks": {
+    "compactness": false,
+    "components": false,
+    "hole_count": false
+  },
+  "new_contact_leakage": false,
+  "normalized_delta_fn": {
+    "ci95": [
+      0.016248436886544048,
+      0.025853296624571184
+    ],
+    "mean": 0.021050234924386412,
+    "median": 0.0,
+    "n": 6102
+  },
+  "normalized_delta_fp": {
+    "ci95": [
+      -7.884612586458075,
+      0.2475804282217594
+    ],
+    "mean": -2.9130483222126093,
+    "median": 0.0,
+    "n": 6102
+  },
+  "overcompletion": false,
+  "protocol_valid": true,
+  "strong_coherence": false
+}

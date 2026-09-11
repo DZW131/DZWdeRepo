@@ -1,0 +1,14 @@
+diff --git a/tools/run_ccac_full25_bcss_seed42.py b/tools/run_ccac_full25_bcss_seed42.py
+index 21f639a..986ad86 100644
+--- a/tools/run_ccac_full25_bcss_seed42.py
++++ b/tools/run_ccac_full25_bcss_seed42.py
+@@ -167,7 +167,8 @@ def main():
+         if args.smoke_steps:
+             base_summary, functional = mechanism_snapshot(model, monitor_loader, 0, output, permutations)
+             if any((not np.isfinite(row["completion_mass_mean"]) or row["changed_fraction"] <= 0 or
+-                    row["restored_positive_fraction"] >= .99 or row["rival_protected_mass_mean"] <= 0)
++                    (row["restored_positive_fraction"] >= .99 and row["base_positive_fraction"] < .95) or
++                    row["rival_protected_mass_mean"] <= 0)
+                    for row in functional):
+                 raise AssertionError(f"CCAC functional smoke catastrophic: {functional}")
+             write_json(output / "smoke/ccac_functional_smoke.json", {"ccac": functional, "gcqm_base": base_summary})

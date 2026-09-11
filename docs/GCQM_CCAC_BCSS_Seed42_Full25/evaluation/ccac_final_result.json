@@ -1,0 +1,391 @@
+{
+  "bootstrap_vs_gcqm": {
+    "ci": 0.95,
+    "mdice_ci95_pp": [
+      0.1550950473993784,
+      0.23488346385807268
+    ],
+    "mdice_delta_pp_mean": 0.194349567652165,
+    "mdice_delta_pp_median": 0.19426682822513697,
+    "miou_ci95_pp": [
+      0.21072825517136767,
+      0.3146249202349424
+    ],
+    "miou_delta_pp_mean": 0.2619626897409313,
+    "miou_delta_pp_median": 0.2620171610942412,
+    "resamples": 10000,
+    "seed": 20260911
+  },
+  "bootstrap_vs_sshr": {
+    "ci": 0.95,
+    "mdice_ci95_pp": [
+      -2.0375502136943764,
+      -1.0317390543183398
+    ],
+    "mdice_delta_pp_mean": -1.5227219447715081,
+    "mdice_delta_pp_median": -1.5181362500082285,
+    "miou_ci95_pp": [
+      -2.7477324720832295,
+      -1.424305734082533
+    ],
+    "miou_delta_pp_mean": -2.0724588478186727,
+    "miou_delta_pp_median": -2.0677114636374947,
+    "resamples": 10000,
+    "seed": 20260911
+  },
+  "ccra_survival": "E25 train-only CCRA monitor retained 10 rows; exact table is preserved in mechanism/ccra_health.csv.",
+  "coherence": {
+    "boundary_loss": 0.011235313556857203,
+    "boundary_oversmoothing_risk": false,
+    "contact_excess_loss": -0.010055435407392687,
+    "fn_recovery": false,
+    "interior_loss": 0.022302675068334152,
+    "interior_recovery": false,
+    "interior_worse": false,
+    "morphology_gaps": {
+      "compactness": 0.4034550591974779,
+      "components": 0.24959029826286483,
+      "fragmentation_index": 42.19250476891058,
+      "hole_count": 0.21730580137659786
+    },
+    "morphology_recovery": false,
+    "morphology_reduction_checks": {
+      "compactness": false,
+      "components": false,
+      "hole_count": false
+    },
+    "new_contact_leakage": false,
+    "normalized_delta_fn": {
+      "ci95": [
+        0.016248436886544048,
+        0.025853296624571184
+      ],
+      "mean": 0.021050234924386412,
+      "median": 0.0,
+      "n": 6102
+    },
+    "normalized_delta_fp": {
+      "ci95": [
+        -7.884612586458075,
+        0.2475804282217594
+      ],
+      "mean": -2.9130483222126093,
+      "median": 0.0,
+      "n": 6102
+    },
+    "overcompletion": false,
+    "protocol_valid": true,
+    "strong_coherence": false
+  },
+  "completion_statistics": "E25 Stage2/3 completion rows: [{'snapshot': 'epoch25', 'stage': 2, 'iterations': 2, 'completion_mass_mean': 0.0067371247569099, 'changed_fraction': 0.6617556214332581, 'rival_protected_mass_mean': 0.0007367146317847, 'max_negative_change': 0.0, 'affinity_entropy_mean': 2.1680914759635925, 'positive_neighbor_affinity_fraction': 1.0, 'use_rival': 1.0, 'base_mean': 0.1686650663614273, 'restored_mean': 0.17540218308568, 'base_positive_fraction': 0.1386818382889032, 'restored_positive_fraction': 0.1391576621681451}, {'snapshot': 'epoch25', 'stage': 3, 'iterations': 2, 'completion_mass_mean': 0.0066367975668981, 'changed_fraction': 0.6690399497747421, 'rival_protected_mass_mean': 0.0007356957212323, 'max_negative_change': 0.0, 'affinity_entropy_mean': 2.1680914759635925, 'positive_neighbor_affinity_fraction': 1.0, 'use_rival': 1.0, 'base_mean': 0.1670910269021988, 'restored_mean': 0.1737278252840042, 'base_positive_fraction': 0.1367062907665968, 'restored_positive_fraction': 0.1371895894408226}]",
+  "complexity": {
+    "ccac_seconds_per_image": 0.11132928669044498,
+    "evaluation_peak_gib": 1.675285816192627,
+    "parameter_delta": 0,
+    "parameters": 111279322
+  },
+  "decision": "CCAC_FULL25_NOGO",
+  "deltas_pp": {
+    "class_vs_sshr": {
+      "0": -1.4634825432023435,
+      "1": -2.665009567613763,
+      "2": -1.6236091159665955,
+      "3": -2.567173003520684
+    },
+    "vs_gcqm_miou": 0.26258665082272703,
+    "vs_sshr_miou": -2.079818557575852
+  },
+  "interpretation": "CCAC is judged jointly by sealed E25 segmentation gain and whether the pre-registered FN/interior/morphology failure was repaired without boundary, contact, or FP failure.",
+  "metrics": {
+    "ccac_off": {
+      "class_dice": {
+        "0": 0.8537832342526135,
+        "1": 0.8015225479289212,
+        "2": 0.7127342244494486,
+        "3": 0.7499558566917793
+      },
+      "class_iou": {
+        "0": 0.7448706560280569,
+        "1": 0.6687840030230162,
+        "2": 0.553680706802462,
+        "3": 0.5999434985608059
+      },
+      "confusion": [
+        [
+          53997577,
+          6088527,
+          667608,
+          1028130
+        ],
+        [
+          8476455,
+          52628130,
+          4518561,
+          1222475
+        ],
+        [
+          907353,
+          5196484,
+          14604962,
+          2
+        ],
+        [
+          1326905,
+          561636,
+          482980,
+          6931560
+        ]
+      ],
+      "mDice": 0.7794989658306907,
+      "mIoU": 0.6418197161035852,
+      "pixel_accuracy": 0.8078842546910415
+    },
+    "full_ccac": {
+      "class_dice": {
+        "0": 0.8564546592701813,
+        "1": 0.805916564736626,
+        "2": 0.7154581050236204,
+        "3": 0.7529838994152345
+      },
+      "class_iou": {
+        "0": 0.7489468311974283,
+        "1": 0.6749248343428099,
+        "2": 0.5569752982146031,
+        "3": 0.6038285304112244
+      },
+      "confusion": [
+        [
+          54155893,
+          6017862,
+          659606,
+          948481
+        ],
+        [
+          8280604,
+          53118944,
+          4254394,
+          1191679
+        ],
+        [
+          907215,
+          5264205,
+          14537380,
+          1
+        ],
+        [
+          1339735,
+          575808,
+          477782,
+          6909756
+        ]
+      ],
+      "mDice": 0.7827033071114156,
+      "mIoU": 0.6461688735415164,
+      "pixel_accuracy": 0.8114126605855565
+    },
+    "no_rival": {
+      "class_dice": {
+        "0": 0.8564925576331186,
+        "1": 0.805956011668967,
+        "2": 0.7154891219414112,
+        "3": 0.7530469639996543
+      },
+      "class_iou": {
+        "0": 0.7490047951592803,
+        "1": 0.6749801678541899,
+        "2": 0.5570128942954553,
+        "3": 0.6039096439550635
+      },
+      "confusion": [
+        [
+          54156012,
+          6018919,
+          659515,
+          947396
+        ],
+        [
+          8276962,
+          53126389,
+          4250990,
+          1191280
+        ],
+        [
+          905057,
+          5267612,
+          14536131,
+          1
+        ],
+        [
+          1340098,
+          575922,
+          477273,
+          6909788
+        ]
+      ],
+      "mDice": 0.7827461638107878,
+      "mIoU": 0.6462268753159972,
+      "pixel_accuracy": 0.81145266957576
+    },
+    "old_gcqm": {
+      "class_dice": {
+        "0": 0.8551571465945648,
+        "1": 0.803193875796969,
+        "2": 0.7136991344803327,
+        "3": 0.7509732573711289
+      },
+      "class_iou": {
+        "0": 0.7469646546255889,
+        "1": 0.6711144433120497,
+        "2": 0.5548461900412369,
+        "3": 0.601246740154281
+      },
+      "confusion": [
+        [
+          54182059,
+          5956934,
+          655314,
+          987535
+        ],
+        [
+          8494579,
+          52750514,
+          4392518,
+          1208010
+        ],
+        [
+          917046,
+          5233612,
+          14558142,
+          1
+        ],
+        [
+          1342842,
+          565202,
+          481525,
+          6913512
+        ]
+      ],
+      "mDice": 0.7807558535607488,
+      "mIoU": 0.6435430070332891,
+      "pixel_accuracy": 0.8094097148472216
+    },
+    "sshr": {
+      "class_dice": {
+        "0": 0.8659442036710737,
+        "1": 0.8246183199362667,
+        "2": 0.7287150261507562,
+        "3": 0.7726298371673389
+      },
+      "class_iou": {
+        "0": 0.7635816566294518,
+        "1": 0.7015749300189476,
+        "2": 0.5732113893742691,
+        "3": 0.6295002604464313
+      },
+      "confusion": [
+        [
+          54443492,
+          6532485,
+          395815,
+          410050
+        ],
+        [
+          7125233,
+          56235177,
+          2681784,
+          803427
+        ],
+        [
+          806432,
+          6054049,
+          13848320,
+          0
+        ],
+        [
+          1586650,
+          723470,
+          372785,
+          6620176
+        ]
+      ],
+      "mDice": 0.7979768467313589,
+      "mIoU": 0.6669670591172749,
+      "pixel_accuracy": 0.826700116544228
+    },
+    "uniform_local": {
+      "class_dice": {
+        "0": 0.8564821545333284,
+        "1": 0.8059460681559725,
+        "2": 0.7154799909042853,
+        "3": 0.7530408515277989
+      },
+      "class_iou": {
+        "0": 0.7489888836704569,
+        "1": 0.6749662194163343,
+        "2": 0.5570018262370035,
+        "3": 0.6039017817467712
+      },
+      "confusion": [
+        [
+          54159333,
+          6016052,
+          659469,
+          946988
+        ],
+        [
+          8280896,
+          53121701,
+          4251962,
+          1191062
+        ],
+        [
+          907089,
+          5265118,
+          14536593,
+          1
+        ],
+        [
+          1340102,
+          575964,
+          477695,
+          6909320
+        ]
+      ],
+      "mDice": 0.7827372662803462,
+      "mIoU": 0.6462146777676415,
+      "pixel_accuracy": 0.81144401472409
+    }
+  },
+  "next_step": "GO/STRONG_GO: freeze and run seeds 11/17/42; RECOVERY_GO: confirm the causal target before one minimal refinement; otherwise diagnose repair-vs-performance-vs-FP trade-off without tuning CCAC.",
+  "provenance": {
+    "ccac_sha256": "848631927607bc2832c07cbbafdf0ba71ed3482ff1cec8a056abb2bbca7c80a6",
+    "gcqm_sha256": "6e1b909fc86a870e652213831521e8ff552371a083f85faad7dac3a21d969d0f",
+    "protocol": {
+      "checks": {
+        "ccac_e25_sealed": true,
+        "no_validation_during_training": true,
+        "old_gcqm_frozen": true,
+        "same_dataset_evaluator": true,
+        "same_hardware": true,
+        "same_seed_epoch_batch": true,
+        "sshr_frozen": true
+      },
+      "decision": "COMPARABLE"
+    },
+    "source_commit": "0ea63526e644ffdeaad6d9f5f0e0baa733cad47d",
+    "sshr_sha256": "b71e2c10c597b295e38775f44adf5c2674f2f956d6a74e9bee190ee45c27fa70"
+  },
+  "training": {
+    "all_finite": true,
+    "checkpoint": "/home/duyanhong/experiments/GCQM_CCAC_Full25_BCSS_Seed42/checkpoints/ccac_full25_epoch25_final.pth",
+    "checkpoint_sha256": "848631927607bc2832c07cbbafdf0ba71ed3482ff1cec8a056abb2bbca7c80a6",
+    "epochs": 25,
+    "peak_cuda_memory_gib": 6.252010822296143,
+    "status": "CCAC_FULL25_TRAINING_COMPLETE",
+    "steps": 29275,
+    "test_accessed": false,
+    "train_seconds": 5194.038441519951,
+    "training_paths_accessed": 0,
+    "validation_accessed": false
+  }
+}

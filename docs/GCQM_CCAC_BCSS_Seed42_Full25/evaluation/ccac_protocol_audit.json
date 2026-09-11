@@ -1,0 +1,12 @@
+{
+  "checks": {
+    "ccac_e25_sealed": true,
+    "no_validation_during_training": true,
+    "old_gcqm_frozen": true,
+    "same_dataset_evaluator": true,
+    "same_hardware": true,
+    "same_seed_epoch_batch": true,
+    "sshr_frozen": true
+  },
+  "decision": "COMPARABLE"
+}

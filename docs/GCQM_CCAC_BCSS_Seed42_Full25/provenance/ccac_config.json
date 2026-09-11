@@ -1,0 +1,40 @@
+{
+  "base_lr": 0.01,
+  "batch_size": 20,
+  "ccac_affinity": "relu cosine; self=1; row normalized",
+  "ccac_iterations": 2,
+  "ccac_neighborhood": "3x3 including self",
+  "ccac_stages": [
+    2,
+    3
+  ],
+  "ccac_update": "fill-only rival-gated",
+  "checkpoint_selection": "fixed Epoch25 FINAL only",
+  "cohort_json": "/home/duyanhong/experiments/CQRFNet_Phase0_CCRA_Responsibility_BCSS_Seed42/cqrf_phase0_monitor_cohort.json",
+  "dataset": "BCSS training only",
+  "effective_batch_size": 20,
+  "epochs": 25,
+  "experiment": "GCQM CCAC BCSS Seed42 Full25",
+  "image_size": 224,
+  "locality_denominator": 29275,
+  "loss": "0.50*deep+0.25*PCA+0.25*mask",
+  "new_auxiliary_loss": 0,
+  "new_parameters": 0,
+  "poly_power": 0.9,
+  "precision": "bf16",
+  "primary": "Stage3 CCAC^2(GCQM, detached pixel feature)",
+  "seed": 42,
+  "smoke_steps": 0,
+  "source_commit": "0ea63526e644ffdeaad6d9f5f0e0baa733cad47d",
+  "stage_mask_weights": [
+    0.2,
+    0.3,
+    0.5
+  ],
+  "steps_per_epoch": 1171,
+  "total_steps": 29275,
+  "trainroot": "/home/duyanhong/reseg-data/raw/BCSS-WSSS/training",
+  "validation_during_training": false,
+  "weight_decay": 0.0005,
+  "weights": "/home/duyanhong/sshr-resnet38-init.params"
+}

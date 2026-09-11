@@ -1,0 +1,13 @@
+{
+  "all_finite": true,
+  "checkpoint": "/home/duyanhong/experiments/GCQM_CCAC_Full25_BCSS_Seed42/checkpoints/ccac_full25_epoch25_final.pth",
+  "checkpoint_sha256": "848631927607bc2832c07cbbafdf0ba71ed3482ff1cec8a056abb2bbca7c80a6",
+  "epochs": 25,
+  "peak_cuda_memory_gib": 6.252010822296143,
+  "status": "CCAC_FULL25_TRAINING_COMPLETE",
+  "steps": 29275,
+  "test_accessed": false,
+  "train_seconds": 5194.038441519951,
+  "training_paths_accessed": 0,
+  "validation_accessed": false
+}

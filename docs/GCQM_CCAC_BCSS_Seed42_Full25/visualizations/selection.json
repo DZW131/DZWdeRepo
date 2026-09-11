@@ -1,0 +1,98 @@
+{
+  "improvements": [
+    {
+      "ccac_mIoU": 1.0,
+      "delta_mIoU": 0.5000419815281276,
+      "gcqm_mIoU": 0.4999580184718724,
+      "image_id": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+476"
+    },
+    {
+      "ccac_mIoU": 1.0,
+      "delta_mIoU": 0.5000170514613103,
+      "gcqm_mIoU": 0.49998294853868974,
+      "image_id": "TCGA-GM-A2DF-DX1_xmin50637_ymin43774_MPP-0.2500+5"
+    },
+    {
+      "ccac_mIoU": 1.0,
+      "delta_mIoU": 0.5000122570048783,
+      "gcqm_mIoU": 0.4999877429951217,
+      "image_id": "TCGA-OL-A97C-DX1_xmin68058_ymin32495_MPP-0.2500+83"
+    },
+    {
+      "ccac_mIoU": 1.0,
+      "delta_mIoU": 0.5000112283853582,
+      "gcqm_mIoU": 0.49998877161464184,
+      "image_id": "TCGA-GM-A2DD-DX1_xmin47260_ymin22408_MPP-0.2500+260"
+    },
+    {
+      "ccac_mIoU": 0.5041400115561607,
+      "delta_mIoU": 0.27286742439629674,
+      "gcqm_mIoU": 0.23127258715986396,
+      "image_id": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+264"
+    }
+  ],
+  "regressions": [
+    {
+      "ccac_mIoU": 0.49997859405771045,
+      "delta_mIoU": -0.5000214059422896,
+      "gcqm_mIoU": 1.0,
+      "image_id": "TCGA-OL-A66P-DX1_xmin30143_ymin20310_MPP-0.2500+36"
+    },
+    {
+      "ccac_mIoU": 0.4999830473994711,
+      "delta_mIoU": -0.5000169526005289,
+      "gcqm_mIoU": 1.0,
+      "image_id": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+455"
+    },
+    {
+      "ccac_mIoU": 0.4999857724155593,
+      "delta_mIoU": -0.5000142275844407,
+      "gcqm_mIoU": 1.0,
+      "image_id": "TCGA-OL-A66P-DX1_xmin30143_ymin20310_MPP-0.2500+206"
+    },
+    {
+      "ccac_mIoU": 0.49998700792516565,
+      "delta_mIoU": -0.5000129920748344,
+      "gcqm_mIoU": 1.0,
+      "image_id": "TCGA-GM-A2DD-DX1_xmin47260_ymin22408_MPP-0.2500+275"
+    },
+    {
+      "ccac_mIoU": 0.4999881533431266,
+      "delta_mIoU": -0.5000118466568735,
+      "gcqm_mIoU": 1.0,
+      "image_id": "TCGA-GM-A2DD-DX1_xmin47260_ymin22408_MPP-0.2500+276"
+    }
+  ],
+  "similar": [
+    {
+      "ccac_mIoU": 0.49875855079807446,
+      "delta_mIoU": 0.0,
+      "gcqm_mIoU": 0.49875855079807446,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+0"
+    },
+    {
+      "ccac_mIoU": 0.47985211033565967,
+      "delta_mIoU": 0.0,
+      "gcqm_mIoU": 0.47985211033565967,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+1"
+    },
+    {
+      "ccac_mIoU": 0.19168908819133035,
+      "delta_mIoU": 0.0,
+      "gcqm_mIoU": 0.19168908819133035,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+103"
+    },
+    {
+      "ccac_mIoU": 0.1652217239661186,
+      "delta_mIoU": 0.0,
+      "gcqm_mIoU": 0.1652217239661186,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+104"
+    },
+    {
+      "ccac_mIoU": 0.3059497236394558,
+      "delta_mIoU": 0.0,
+      "gcqm_mIoU": 0.3059497236394558,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+105"
+    }
+  ]
+}

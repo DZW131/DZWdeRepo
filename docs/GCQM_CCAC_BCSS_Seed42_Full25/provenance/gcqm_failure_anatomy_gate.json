@@ -1,0 +1,409 @@
+{
+  "because_sentence": "Because Full25 failure is dominated by interior coherence loss, FN-biased missing tissue, and consistently elevated components/holes/compactness, the next decoder should restore region homogeneity while preserving CCRA.",
+  "confidence": "HIGH",
+  "decision": "MISSING_SPATIAL_COHERENCE",
+  "decision_factors": [
+    "MISSING_SPATIAL_COHERENCE"
+  ],
+  "finalization_audit": {
+    "model_inference_rerun": false,
+    "morphology_consistency": {
+      "compactness": 4,
+      "components": 4,
+      "hole_count": 4
+    },
+    "original_result_sha256": "7ff139daf8fdc2d09afceb0b7467797a18e2e99e2c07015e42bd5dddc7eb656d",
+    "pooled_morphology_delta": {
+      "compactness": 0.47882250874378607,
+      "components": 0.29121599475581794,
+      "fragmentation_index": 42.68623454417607,
+      "hole_area_fraction": 0.0022340307123853535,
+      "hole_count": 0.24483775811209438
+    },
+    "raw_tables_changed": false,
+    "reason": "Correct signed per-class FP/FN labels and bind HIGH confidence to three morphology analyses consistent across 4/4 classes."
+  },
+  "hypotheses": {
+    "H1 FP/FN bias": {
+      "confidence": "High",
+      "evidence": "mean normalized delta FP=-2.8940, CI=[-7.811661122058156, 0.24882769187139683]; delta FN=+0.0227, CI=[0.01787270903331121, 0.027661577361096625]",
+      "result": "FN_DOMINANT"
+    },
+    "H2 Interior/Boundary": {
+      "confidence": "Med",
+      "evidence": "r=3 interior loss=+0.0241; boundary loss=+0.0114; direction is class-dependent (loss for classes 0/1, gain for 2/3)",
+      "result": "INTERIOR_DOMINANT"
+    },
+    "H3 Contact failure": {
+      "confidence": "High",
+      "evidence": "5 powered d=3 pairs; maximum excess contact loss=-0.0042 (<0.03)",
+      "result": "FALSE"
+    },
+    "H4 Basis purity": {
+      "confidence": "High",
+      "evidence": "weighted purity=0.6455, rival=0.2955, BG=0.0590, top-tail=+0.2733, oracle-k5 purity=0.7387",
+      "result": "MIXED"
+    },
+    "H5 Weight diffuseness": {
+      "confidence": "High",
+      "evidence": "mean Neff=132.78",
+      "result": "VERY_DIFFUSE"
+    },
+    "H6 Diffuseness-performance link": {
+      "confidence": "High",
+      "evidence": "rho(Neff,deltaIoU)=-0.2497; rho(top5,deltaIoU)=+0.2207; k=10/20/50 deltas=-0.1063/-0.0828/-0.0600 pp, so truncation does not rescue it",
+      "result": "STRONG"
+    },
+    "H7 Lost spatial property": {
+      "confidence": "High",
+      "evidence": "component delta=+0.2912, hole-count delta=+0.2448, compactness delta=+0.4788; all three worsen in 4/4 classes",
+      "result": "INTERIOR_COHERENCE_LOSS"
+    }
+  },
+  "metrics": {
+    "delta_miou_pp": -2.342405208398579,
+    "gcqm": {
+      "class_dice": {
+        "0": 0.8551571465945648,
+        "1": 0.803193875796969,
+        "2": 0.7136991344803327,
+        "3": 0.7509732573711289
+      },
+      "class_iou": {
+        "0": 0.7469646546255889,
+        "1": 0.6711144433120497,
+        "2": 0.5548461900412369,
+        "3": 0.601246740154281
+      },
+      "confusion": [
+        [
+          54182059,
+          5956934,
+          655314,
+          987535
+        ],
+        [
+          8494579,
+          52750514,
+          4392518,
+          1208010
+        ],
+        [
+          917046,
+          5233612,
+          14558142,
+          1
+        ],
+        [
+          1342842,
+          565202,
+          481525,
+          6913512
+        ]
+      ],
+      "mDice": 0.7807558535607488,
+      "mIoU": 0.6435430070332891,
+      "pixel_accuracy": 0.8094097148472216
+    },
+    "pixel": {
+      "class_dice": {
+        "0": 0.8563383693429295,
+        "1": 0.8048799399576283,
+        "2": 0.7138842678030871,
+        "3": 0.7505699679176615
+      },
+      "class_iou": {
+        "0": 0.7487689945940876,
+        "1": 0.6734720358798866,
+        "2": 0.5550700064788467,
+        "3": 0.6007298917465098
+      },
+      "confusion": [
+        [
+          54165991,
+          5968585,
+          654860,
+          992406
+        ],
+        [
+          8307342,
+          52950536,
+          4373578,
+          1214165
+        ],
+        [
+          911904,
+          5242564,
+          14554333,
+          0
+        ],
+        [
+          1338968,
+          566444,
+          483477,
+          6914192
+        ]
+      ],
+      "mDice": 0.7814181362553266,
+      "mIoU": 0.6445102321748326,
+      "pixel_accuracy": 0.8105495644854056
+    },
+    "sshr": {
+      "class_dice": {
+        "0": 0.8659442036710737,
+        "1": 0.8246183199362667,
+        "2": 0.7287150261507562,
+        "3": 0.7726298371673389
+      },
+      "class_iou": {
+        "0": 0.7635816566294518,
+        "1": 0.7015749300189476,
+        "2": 0.5732113893742691,
+        "3": 0.6295002604464313
+      },
+      "confusion": [
+        [
+          54443492,
+          6532485,
+          395815,
+          410050
+        ],
+        [
+          7125233,
+          56235177,
+          2681784,
+          803427
+        ],
+        [
+          806432,
+          6054049,
+          13848320,
+          0
+        ],
+        [
+          1586650,
+          723470,
+          372785,
+          6620176
+        ]
+      ],
+      "mDice": 0.7979768467313589,
+      "mIoU": 0.6669670591172749,
+      "pixel_accuracy": 0.826700116544228
+    }
+  },
+  "next_target": "Restore region homogeneity/coherence while preserving CCRA.",
+  "per_class_failure_matrix": [
+    {
+      "area_ratio_delta": -5.646843110475695,
+      "boundary_loss": 0.011704389468778852,
+      "class": 0,
+      "compactness_delta": 0.3465890044781461,
+      "component_count_delta": 0.3431085043988269,
+      "contact_loss": 0.013943315027640608,
+      "delta_iou_pp": -1.6617002003862846,
+      "entropy": 0.9283967370127538,
+      "fp_fn": "FN",
+      "fragmentation_delta": 127.33065116088851,
+      "hole_count_delta": 0.13685239491691104,
+      "interior_loss": 0.016570612959459115,
+      "neff": 143.08913458412758,
+      "weighted_purity": 0.7479969182416156
+    },
+    {
+      "area_ratio_delta": -1.1048015082541056,
+      "boundary_loss": 0.03250711130183774,
+      "class": 1,
+      "compactness_delta": 0.5081817644245303,
+      "component_count_delta": 0.3350534463693329,
+      "contact_loss": 0.011810197872894104,
+      "delta_iou_pp": -3.0460486706897827,
+      "entropy": 0.8995382630166382,
+      "fp_fn": "FN",
+      "fragmentation_delta": 0.007009695777807232,
+      "hole_count_delta": 0.2421673424253594,
+      "interior_loss": 0.05456496366629307,
+      "neff": 128.64723455005284,
+      "weighted_purity": 0.606181348499861
+    },
+    {
+      "area_ratio_delta": -3.330268650852691,
+      "boundary_loss": -0.03292260375815668,
+      "class": 2,
+      "compactness_delta": 0.7462765114797769,
+      "component_count_delta": 0.13760504201680668,
+      "contact_loss": 0.0019908217806665126,
+      "delta_iou_pp": -1.8365199333032156,
+      "entropy": 0.8962257110338016,
+      "fp_fn": "MIXED",
+      "fragmentation_delta": -0.06772604441230116,
+      "hole_count_delta": 0.35714285714285715,
+      "interior_loss": -0.025705296658033994,
+      "neff": 122.18888353882276,
+      "weighted_purity": 0.5774760297575496
+    },
+    {
+      "area_ratio_delta": -0.19560465751235245,
+      "boundary_loss": -0.029194233633863975,
+      "class": 3,
+      "compactness_delta": 0.31586056107364446,
+      "component_count_delta": 0.08951406649616378,
+      "contact_loss": -0.010563807620954829,
+      "delta_iou_pp": -2.8253520292150225,
+      "entropy": 0.9162063177956974,
+      "fp_fn": "MIXED",
+      "fragmentation_delta": -0.004223010179617473,
+      "hole_count_delta": 0.5549872122762148,
+      "interior_loss": -0.02651335194494516,
+      "neff": 133.47348248818477,
+      "weighted_purity": 0.5490456130143117
+    }
+  ],
+  "proxy_statement": "PHASE0_PROXY_MISMATCH is UNDETERMINED because only aggregate train-cohort proxy snapshots exist; no invalid train-to-validation image pairing was fabricated.",
+  "reproduction_gate": {
+    "archived_gcqm_mIoU": 0.6435430070332891,
+    "archived_sshr_mIoU": 0.6669670591172749,
+    "computed_metrics": {
+      "delta_miou_pp": -2.342405208398579,
+      "gcqm": {
+        "class_dice": {
+          "0": 0.8551571465945648,
+          "1": 0.803193875796969,
+          "2": 0.7136991344803327,
+          "3": 0.7509732573711289
+        },
+        "class_iou": {
+          "0": 0.7469646546255889,
+          "1": 0.6711144433120497,
+          "2": 0.5548461900412369,
+          "3": 0.601246740154281
+        },
+        "confusion": [
+          [
+            54182059,
+            5956934,
+            655314,
+            987535
+          ],
+          [
+            8494579,
+            52750514,
+            4392518,
+            1208010
+          ],
+          [
+            917046,
+            5233612,
+            14558142,
+            1
+          ],
+          [
+            1342842,
+            565202,
+            481525,
+            6913512
+          ]
+        ],
+        "mDice": 0.7807558535607488,
+        "mIoU": 0.6435430070332891,
+        "pixel_accuracy": 0.8094097148472216
+      },
+      "pixel": {
+        "class_dice": {
+          "0": 0.8563383693429295,
+          "1": 0.8048799399576283,
+          "2": 0.7138842678030871,
+          "3": 0.7505699679176615
+        },
+        "class_iou": {
+          "0": 0.7487689945940876,
+          "1": 0.6734720358798866,
+          "2": 0.5550700064788467,
+          "3": 0.6007298917465098
+        },
+        "confusion": [
+          [
+            54165991,
+            5968585,
+            654860,
+            992406
+          ],
+          [
+            8307342,
+            52950536,
+            4373578,
+            1214165
+          ],
+          [
+            911904,
+            5242564,
+            14554333,
+            0
+          ],
+          [
+            1338968,
+            566444,
+            483477,
+            6914192
+          ]
+        ],
+        "mDice": 0.7814181362553266,
+        "mIoU": 0.6445102321748326,
+        "pixel_accuracy": 0.8105495644854056
+      },
+      "sshr": {
+        "class_dice": {
+          "0": 0.8659442036710737,
+          "1": 0.8246183199362667,
+          "2": 0.7287150261507562,
+          "3": 0.7726298371673389
+        },
+        "class_iou": {
+          "0": 0.7635816566294518,
+          "1": 0.7015749300189476,
+          "2": 0.5732113893742691,
+          "3": 0.6295002604464313
+        },
+        "confusion": [
+          [
+            54443492,
+            6532485,
+            395815,
+            410050
+          ],
+          [
+            7125233,
+            56235177,
+            2681784,
+            803427
+          ],
+          [
+            806432,
+            6054049,
+            13848320,
+            0
+          ],
+          [
+            1586650,
+            723470,
+            372785,
+            6620176
+          ]
+        ],
+        "mDice": 0.7979768467313589,
+        "mIoU": 0.6669670591172749,
+        "pixel_accuracy": 0.826700116544228
+      }
+    },
+    "decision": "REPRODUCTION_GATE_PASS",
+    "gcqm_sha256": "6e1b909fc86a870e652213831521e8ff552371a083f85faad7dac3a21d969d0f",
+    "paired_images": 3418,
+    "protocol_audit": "COMPARABLE",
+    "sshr_sha256": "b71e2c10c597b295e38775f44adf5c2674f2f956d6a74e9bee190ee45c27fa70"
+  },
+  "spatial_labels": [
+    "INTERIOR_COHERENCE_LOSS",
+    "UNDERSEGMENTATION",
+    "FRAGMENTATION"
+  ]
+}

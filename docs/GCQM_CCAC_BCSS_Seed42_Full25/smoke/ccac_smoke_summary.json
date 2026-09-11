@@ -1,0 +1,42 @@
+{
+  "checkpoint_written": false,
+  "finite": true,
+  "functional_smoke": [
+    {
+      "affinity_entropy_mean": 2.165013611316681,
+      "base_mean": 0.37009447067976,
+      "base_positive_fraction": 0.023362762993201613,
+      "changed_fraction": 0.5639274567365646,
+      "completion_mass_mean": 0.009829446440562606,
+      "iterations": 2,
+      "max_negative_change": 0.0,
+      "positive_neighbor_affinity_fraction": 1.0,
+      "restored_mean": 0.3799239546060562,
+      "restored_positive_fraction": 0.023469885112717748,
+      "rival_protected_mass_mean": 0.00236543919891119,
+      "snapshot": "epoch0",
+      "stage": 2,
+      "use_rival": 1.0
+    },
+    {
+      "affinity_entropy_mean": 2.165013611316681,
+      "base_mean": 0.8639431744813919,
+      "base_positive_fraction": 1.0,
+      "changed_fraction": 0.4693678170442581,
+      "completion_mass_mean": 0.0005907197773922235,
+      "iterations": 2,
+      "max_negative_change": 0.0,
+      "positive_neighbor_affinity_fraction": 1.0,
+      "restored_mean": 0.8645338714122772,
+      "restored_positive_fraction": 1.0,
+      "rival_protected_mass_mean": 0.001118423999287188,
+      "snapshot": "epoch0",
+      "stage": 3,
+      "use_rival": 1.0
+    }
+  ],
+  "gradient_finite": true,
+  "parameter_delta": 0,
+  "steps": 2,
+  "validation_accessed": false
+}
