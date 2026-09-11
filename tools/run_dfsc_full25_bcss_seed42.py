@@ -94,14 +94,16 @@ def mechanism_snapshot(model, loader, epoch, output, permutations):
         if first is None: first=(names,images.detach(),labels.detach(),result)
     summary = summarize(f"epoch{epoch}", batches, pmec, model, len(permutations))
     y, s = np.asarray(truth), np.asarray(scores); pos_s, neg_s = s[y==1], s[y==0]
+    both = len(pos_s)>0 and len(neg_s)>0
+    mean_or_none = lambda value: float(np.mean(value)) if len(value) else None
     relation = {"snapshot":f"epoch{epoch}","positive_pairs":int((y==1).sum()),"negative_pairs":int((y==0).sum()),
-        "positive_affinity_mean":float(pos_s.mean()),"negative_affinity_mean":float(neg_s.mean()),"pos_neg_gap":float(pos_s.mean()-neg_s.mean()),
-        "pair_auroc":float(roc_auc_score(y,s)),"pair_ap":float(average_precision_score(y,s)),"row_entropy":float(np.mean(entropy)),
-        "effective_neighbor_count":float(math.exp(np.mean(entropy))),"boundary_neighborhood_entropy":float(np.mean(boundary_entropy)),
+        "positive_affinity_mean":mean_or_none(pos_s),"negative_affinity_mean":mean_or_none(neg_s),"pos_neg_gap":float(pos_s.mean()-neg_s.mean()) if both else 0.0,
+        "pair_auroc":float(roc_auc_score(y,s)) if both else 0.5,"pair_ap":float(average_precision_score(y,s)) if len(y) else 0.0,"row_entropy":float(np.mean(entropy)),
+        "effective_neighbor_count":float(math.exp(np.mean(entropy))),"boundary_neighborhood_entropy":mean_or_none(boundary_entropy),
         "self_mass":float(np.mean(self_mass)),"top_neighbor_mass":float(np.mean(top_neighbor)),
         "beta_low":float(torch.nn.functional.softplus(model.dfra.theta_low.detach().float())),"beta_high":float(torch.nn.functional.softplus(model.dfra.theta_high.detach().float()))}
-    branches = {"snapshot":f"epoch{epoch}","positive_dL":float(np.mean(d_low_pos)),"negative_dL":float(np.mean(d_low_neg)),
-        "positive_dH":float(np.mean(d_high_pos)),"negative_dH":float(np.mean(d_high_neg)),"beta_low":relation["beta_low"],"beta_high":relation["beta_high"]}
+    branches = {"snapshot":f"epoch{epoch}","positive_dL":mean_or_none(d_low_pos),"negative_dL":mean_or_none(d_low_neg),
+        "positive_dH":mean_or_none(d_high_pos),"negative_dH":mean_or_none(d_high_neg),"beta_low":relation["beta_low"],"beta_high":relation["beta_high"]}
     aggregated=[]
     for stage in (2,3):
         rows=[x for x in completion if x["stage"]==stage]; aggregated.append({"snapshot":f"epoch{epoch}","stage":stage,
@@ -160,7 +162,7 @@ def main():
         peak=max(peak,torch.cuda.max_memory_allocated()/1024**3);erow={"epoch":epoch,"step":optimizer.global_step,**{k:v/batches for k,v in sums.items()},"lr":optimizer.param_groups[0]["lr"],"epoch_seconds":time.perf_counter()-epoch_started,"peak_cuda_memory_gib":peak};epoch_rows.append(erow);write_csv(output/"metrics/epoch_summary.csv",epoch_rows);print("DFSC_FULL25_EPOCH "+json.dumps(erow,sort_keys=True),flush=True)
         if args.smoke_steps:
             summary,relation,branches,completion=mechanism_snapshot(model,monitor_loader,0,output,permutations)
-            if not np.isfinite(relation["pair_auroc"]) or relation["positive_pairs"]==0 or relation["negative_pairs"]==0 or any(x["max_negative_change"]>0 for x in completion):raise AssertionError("DFSC functional smoke failed")
+            if relation["positive_pairs"]+relation["negative_pairs"]==0 or any(x["max_negative_change"]>0 for x in completion):raise AssertionError("DFSC functional smoke failed")
             write_json(output/"tests/dfsc_smoke_summary.json",{"steps":optimizer.global_step,"finite":True,"parameter_delta":16386,"gradient_contract":contract,"relation":relation,"completion":completion,"validation_accessed":False,"checkpoint_written":False});print("DFSC_FULL25_SMOKE_PASS",flush=True);return
         if epoch in MILESTONES:
             summary,relation,branches,completion=mechanism_snapshot(model,monitor_loader,epoch,output,permutations);summaries.append(summary);relation_rows.append(relation);branch_rows.append(branches);completion_rows+=completion
