@@ -1,0 +1,46 @@
+{
+  "dominant_class": 1,
+  "image_id": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+165",
+  "top5": [
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 6.561676979064941,
+      "purity": 0.9999999999863685,
+      "query": 144,
+      "rival_mass": 0.0,
+      "w": 0.008944602683186531
+    },
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 6.506103992462158,
+      "purity": 0.9999999999862903,
+      "query": 134,
+      "rival_mass": 0.0,
+      "w": 0.008919697254896164
+    },
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 6.392289638519287,
+      "purity": 0.9999999999861259,
+      "query": 129,
+      "rival_mass": 0.0,
+      "w": 0.008868749253451824
+    },
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 6.132596015930176,
+      "purity": 0.9999999999855843,
+      "query": 149,
+      "rival_mass": 0.0,
+      "w": 0.008840545080602169
+    },
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 6.167465686798096,
+      "purity": 0.9999999999857725,
+      "query": 121,
+      "rival_mass": 0.0,
+      "w": 0.008774754591286182
+    }
+  ]
+}

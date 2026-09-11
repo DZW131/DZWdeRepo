@@ -1,0 +1,46 @@
+{
+  "dominant_class": 1,
+  "image_id": "TCGA-OL-A97C-DX1_xmin68058_ymin32495_MPP-0.2500+153",
+  "top5": [
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 6.754280090332031,
+      "purity": 0.9999999999871251,
+      "query": 130,
+      "rival_mass": 0.0,
+      "w": 0.008696053177118301
+    },
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 7.220409870147705,
+      "purity": 0.9999999999881879,
+      "query": 131,
+      "rival_mass": 0.0,
+      "w": 0.008528823964297771
+    },
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 6.766421794891357,
+      "purity": 0.9999999999879818,
+      "query": 74,
+      "rival_mass": 0.0,
+      "w": 0.0081320246681571
+    },
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 6.761075019836426,
+      "purity": 0.9999999999880143,
+      "query": 135,
+      "rival_mass": 0.0,
+      "w": 0.008103668689727783
+    },
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 6.624639511108398,
+      "purity": 0.9999999999878673,
+      "query": 132,
+      "rival_mass": 0.0,
+      "w": 0.00803749542683363
+    }
+  ]
+}

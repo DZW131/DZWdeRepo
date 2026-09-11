@@ -1,0 +1,46 @@
+{
+  "dominant_class": 0,
+  "image_id": "TCGA-EW-A1PH-DX1_xmin3455_ymin52049_MPP-0.2500+200",
+  "top5": [
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 6.691758155822754,
+      "purity": 0.9999999999883201,
+      "query": 130,
+      "rival_mass": 0.0,
+      "w": 0.007815917953848839
+    },
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 6.271308898925781,
+      "purity": 0.9999999999878496,
+      "query": 149,
+      "rival_mass": 0.0,
+      "w": 0.00761985732242465
+    },
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 6.433416366577148,
+      "purity": 0.99999999998823,
+      "query": 65,
+      "rival_mass": 0.0,
+      "w": 0.007572109345346689
+    },
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 6.728174686431885,
+      "purity": 0.9999999999887481,
+      "query": 129,
+      "rival_mass": 0.0,
+      "w": 0.007570440880954266
+    },
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 5.475134372711182,
+      "purity": 0.9999999999863494,
+      "query": 144,
+      "rival_mass": 0.0,
+      "w": 0.007473920937627554
+    }
+  ]
+}

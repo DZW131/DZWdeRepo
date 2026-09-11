@@ -1,0 +1,46 @@
+{
+  "dominant_class": 1,
+  "image_id": "TCGA-LL-A740-DX1_xmin39436_ymin24080_MPP-0.2500+94",
+  "top5": [
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 3.8813560009002686,
+      "purity": 0.9999999999607927,
+      "query": 135,
+      "rival_mass": 0.0,
+      "w": 0.015217751264572144
+    },
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 4.090913772583008,
+      "purity": 0.9999999999642887,
+      "query": 59,
+      "rival_mass": 0.0,
+      "w": 0.01460918691009283
+    },
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 3.6844141483306885,
+      "purity": 0.9999999999620408,
+      "query": 88,
+      "rival_mass": 0.0,
+      "w": 0.01398573536425829
+    },
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 3.820664882659912,
+      "purity": 0.9999999999637531,
+      "query": 173,
+      "rival_mass": 0.0,
+      "w": 0.013848718255758286
+    },
+    {
+      "bg_mass": 0.0,
+      "contribution_mass": 3.517512559890747,
+      "purity": 0.9999999999615985,
+      "query": 45,
+      "rival_mass": 0.0,
+      "w": 0.013507760129868984
+    }
+  ]
+}

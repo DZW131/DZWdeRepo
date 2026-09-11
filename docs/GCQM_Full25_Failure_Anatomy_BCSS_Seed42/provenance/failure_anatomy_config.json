@@ -1,0 +1,31 @@
+{
+  "bands": [
+    1,
+    3,
+    5
+  ],
+  "bootstrap_resamples": 10000,
+  "bootstrap_seed": 20260911,
+  "gcqm_checkpoint": "/home/duyanhong/experiments/GCQM_Final_Full25_BCSS_Seed42/checkpoints/gcqm_full25_epoch25_final.pth",
+  "seed": 42,
+  "source_commit": "cf8eac6773424e20b3e4ebf164f03fcffcde9995",
+  "sshr_checkpoint": "/home/duyanhong/experiments/SSHR_B0_RTX4090D_BCSS_SEED42_FULL25_A0/checkpoints/stage1_last.pth",
+  "thresholds": [
+    0.800000011920929,
+    0.8999999761581421,
+    0.800000011920929,
+    0.6000000238418579
+  ],
+  "topk": [
+    1,
+    3,
+    5,
+    10,
+    20,
+    50,
+    100,
+    196
+  ],
+  "tta": 3,
+  "zero_training": true
+}

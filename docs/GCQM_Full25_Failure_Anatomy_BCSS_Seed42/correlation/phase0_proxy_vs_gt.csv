@@ -1,0 +1,7 @@
+proxy,status,reason
+weak_probability_gap,UNAVAILABLE_PER_VALIDATION_IMAGE,Phase-0 and Full25 proxy artifacts are aggregate train-cohort snapshots and cannot be paired to BCSS validation image IDs.
+CPR,UNAVAILABLE_PER_VALIDATION_IMAGE,Phase-0 and Full25 proxy artifacts are aggregate train-cohort snapshots and cannot be paired to BCSS validation image IDs.
+positive_recall,UNAVAILABLE_PER_VALIDATION_IMAGE,Phase-0 and Full25 proxy artifacts are aggregate train-cohort snapshots and cannot be paired to BCSS validation image IDs.
+D_perm,UNAVAILABLE_PER_VALIDATION_IMAGE,Phase-0 and Full25 proxy artifacts are aggregate train-cohort snapshots and cannot be paired to BCSS validation image IDs.
+JS,UNAVAILABLE_PER_VALIDATION_IMAGE,Phase-0 and Full25 proxy artifacts are aggregate train-cohort snapshots and cannot be paired to BCSS validation image IDs.
+Neff,UNAVAILABLE_PER_VALIDATION_IMAGE,Phase-0 and Full25 proxy artifacts are aggregate train-cohort snapshots and cannot be paired to BCSS validation image IDs.

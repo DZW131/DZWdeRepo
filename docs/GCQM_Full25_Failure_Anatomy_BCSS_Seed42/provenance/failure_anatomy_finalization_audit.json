@@ -1,0 +1,18 @@
+{
+  "model_inference_rerun": false,
+  "morphology_consistency": {
+    "compactness": 4,
+    "components": 4,
+    "hole_count": 4
+  },
+  "original_result_sha256": "7ff139daf8fdc2d09afceb0b7467797a18e2e99e2c07015e42bd5dddc7eb656d",
+  "pooled_morphology_delta": {
+    "compactness": 0.47882250874378607,
+    "components": 0.29121599475581794,
+    "fragmentation_index": 42.68623454417607,
+    "hole_area_fraction": 0.0022340307123853535,
+    "hole_count": 0.24483775811209438
+  },
+  "raw_tables_changed": false,
+  "reason": "Correct signed per-class FP/FN labels and bind HIGH confidence to three morphology analyses consistent across 4/4 classes."
+}
