@@ -1,0 +1,204 @@
+{
+  "bootstrap": {
+    "ci": 0.95,
+    "images": 3418,
+    "improved_fraction": 0.16910473961380926,
+    "mdice_ci95_pp": [
+      -2.2313270088953048,
+      -1.2107602219723064
+    ],
+    "mdice_delta_pp_mean": -1.721033928569594,
+    "mdice_delta_pp_median": -1.7234940269312327,
+    "mean_delta": -0.104574797024666,
+    "median_delta": -9.96492346938549e-06,
+    "miou_ci95_pp": [
+      -3.0121372341137436,
+      -1.6729903564523863
+    ],
+    "miou_delta_pp_mean": -2.340510030980713,
+    "miou_delta_pp_median": -2.341302735226569,
+    "resamples": 10000,
+    "seed": 20260910,
+    "tied_fraction": 0.30895260386190754,
+    "worsened_fraction": 0.5219426565242832
+  },
+  "complexity": {
+    "flops_reported": false,
+    "gcqm_parameters": 111279322,
+    "gcqm_peak_inference_gib": 0.7867293357849121,
+    "gcqm_peak_train_vram_gib": 5.785215854644775,
+    "gcqm_seconds_per_image": 0.032787806475714866,
+    "gcqm_training_seconds": 4958.8957667411305,
+    "sshr_parameters": 112709714,
+    "sshr_peak_inference_gib": 0.6840105056762695,
+    "sshr_seconds_per_image": 0.014957892204195614,
+    "sshr_training_seconds": 4178.94
+  },
+  "decision": "GCQM_FULL25_NOGO",
+  "delta": {
+    "class_dice_pp": {
+      "0": -1.0787057076508955,
+      "1": -2.142444413929767,
+      "2": -1.5015891670423498,
+      "3": -2.165657979621005
+    },
+    "class_iou_pp": {
+      "0": -1.6617002003862846,
+      "1": -3.0460486706897827,
+      "2": -1.8365199333032156,
+      "3": -2.8253520292150225
+    },
+    "mDice_pp": -1.72209931706101,
+    "mIoU_pp": -2.342405208398579
+  },
+  "gcqm": {
+    "class_dice": {
+      "0": 0.8551571465945648,
+      "1": 0.803193875796969,
+      "2": 0.7136991344803327,
+      "3": 0.7509732573711289
+    },
+    "class_iou": {
+      "0": 0.7469646546255889,
+      "1": 0.6711144433120497,
+      "2": 0.5548461900412369,
+      "3": 0.601246740154281
+    },
+    "confusion": [
+      [
+        54182059,
+        5956934,
+        655314,
+        987535
+      ],
+      [
+        8494579,
+        52750514,
+        4392518,
+        1208010
+      ],
+      [
+        917046,
+        5233612,
+        14558142,
+        1
+      ],
+      [
+        1342842,
+        565202,
+        481525,
+        6913512
+      ]
+    ],
+    "mDice": 0.7807558535607488,
+    "mIoU": 0.6435430070332891,
+    "pixel_accuracy": 0.8094097148472216
+  },
+  "mechanism_interpretation": "E25 Stage3 JS=0.3637\uff0ctop1 difference=1.0000\uff0cD_perm=0.1026\u3002",
+  "paired": {
+    "images": 3418,
+    "improved_fraction": 0.16910473961380926,
+    "mean_delta": -0.104574797024666,
+    "median_delta": -9.96492346938549e-06,
+    "tied_fraction": 0.30895260386190754,
+    "worsened_fraction": 0.5219426565242832
+  },
+  "protocol_audit": {
+    "checks": {
+      "baseline_checkpoint_frozen": true,
+      "baseline_log_frozen": true,
+      "baseline_metric_reproduction": true,
+      "baseline_per_image_reproduction": true,
+      "fixed_inference_thresholds": true,
+      "gcqm_e25_sealed": true,
+      "no_training_validation": true,
+      "same_dataset_split": true,
+      "same_effective_batch": true,
+      "same_epochs": true,
+      "same_evaluator_execution": true,
+      "same_hardware": true,
+      "same_image_size": true,
+      "same_official_init": true,
+      "same_seed": true,
+      "same_training_steps": true
+    },
+    "decision": "COMPARABLE",
+    "gcqm_checkpoint_sha256": "6e1b909fc86a870e652213831521e8ff552371a083f85faad7dac3a21d969d0f",
+    "sshr_checkpoint_sha256": "b71e2c10c597b295e38775f44adf5c2674f2f956d6a74e9bee190ee45c27fa70",
+    "thresholds": [
+      0.800000011920929,
+      0.8999999761581421,
+      0.800000011920929,
+      0.6000000238418579
+    ],
+    "tta": 3,
+    "validation_images": 3418
+  },
+  "provenance": {
+    "architecture_commit": "f327b91bba88bdf45391d991a13b214e9ab101ff",
+    "evaluation_source_commit": "591545ed571fa745660f45798115051cd61cff22",
+    "gcqm_sha256": "6e1b909fc86a870e652213831521e8ff552371a083f85faad7dac3a21d969d0f",
+    "sshr_sha256": "b71e2c10c597b295e38775f44adf5c2674f2f956d6a74e9bee190ee45c27fa70",
+    "training_source_commit": "adf285dbd540906456f712a502512e0fd3952e75",
+    "validation_paths_accessed": 6836
+  },
+  "recommendation": "GO/STRONG_GO\uff1a\u51bb\u7ed3\u5e76\u8fdb\u5165\u540c\u534f\u8bae multi-seed\uff0811/17/42\uff09\uff1b\u5176\u4f59\u7ed3\u8bba\u6309\u9884\u6ce8\u518c\u89c4\u5219\u6267\u884c\uff0c\u4e0d\u6062\u590d\u65e7\u673a\u5236\u3002",
+  "scientific_interpretation": "GCQM \u662f\u5426\u628a Phase-0 \u673a\u5236\u5065\u5eb7\u8f6c\u5316\u4e3a\u771f\u5b9e\u5206\u5272\u589e\u76ca\uff0c\u4ee5\u9884\u6ce8\u518c E25 paired comparison \u4e3a\u552f\u4e00\u6027\u80fd\u7ed3\u8bba\u3002",
+  "sshr": {
+    "class_dice": {
+      "0": 0.8659442036710737,
+      "1": 0.8246183199362667,
+      "2": 0.7287150261507562,
+      "3": 0.7726298371673389
+    },
+    "class_iou": {
+      "0": 0.7635816566294518,
+      "1": 0.7015749300189476,
+      "2": 0.5732113893742691,
+      "3": 0.6295002604464313
+    },
+    "confusion": [
+      [
+        54443492,
+        6532485,
+        395815,
+        410050
+      ],
+      [
+        7125233,
+        56235177,
+        2681784,
+        803427
+      ],
+      [
+        806432,
+        6054049,
+        13848320,
+        0
+      ],
+      [
+        1586650,
+        723470,
+        372785,
+        6620176
+      ]
+    ],
+    "mDice": 0.7979768467313589,
+    "mIoU": 0.6669670591172749,
+    "pixel_accuracy": 0.826700116544228
+  },
+  "training": {
+    "all_finite": true,
+    "checkpoint": "/home/duyanhong/experiments/GCQM_Final_Full25_BCSS_Seed42/checkpoints/gcqm_full25_epoch25_final.pth",
+    "checkpoint_sha256": "6e1b909fc86a870e652213831521e8ff552371a083f85faad7dac3a21d969d0f",
+    "epochs": 25,
+    "luad_accessed": false,
+    "peak_cuda_memory_gib": 5.785215854644775,
+    "status": "GCQM_FULL25_TRAINING_COMPLETE",
+    "steps": 29275,
+    "test_accessed": false,
+    "train_seconds": 4958.8957667411305,
+    "training_paths_accessed": 0,
+    "validation_accessed": false
+  }
+}

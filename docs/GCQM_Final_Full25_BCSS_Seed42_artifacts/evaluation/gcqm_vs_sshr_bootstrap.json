@@ -1,0 +1,23 @@
+{
+  "ci": 0.95,
+  "images": 3418,
+  "improved_fraction": 0.16910473961380926,
+  "mdice_ci95_pp": [
+    -2.2313270088953048,
+    -1.2107602219723064
+  ],
+  "mdice_delta_pp_mean": -1.721033928569594,
+  "mdice_delta_pp_median": -1.7234940269312327,
+  "mean_delta": -0.104574797024666,
+  "median_delta": -9.96492346938549e-06,
+  "miou_ci95_pp": [
+    -3.0121372341137436,
+    -1.6729903564523863
+  ],
+  "miou_delta_pp_mean": -2.340510030980713,
+  "miou_delta_pp_median": -2.341302735226569,
+  "resamples": 10000,
+  "seed": 20260910,
+  "tied_fraction": 0.30895260386190754,
+  "worsened_fraction": 0.5219426565242832
+}

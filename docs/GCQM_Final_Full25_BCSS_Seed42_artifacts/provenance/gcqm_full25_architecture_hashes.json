@@ -1,0 +1,9 @@
+{
+  "network/cqrf_net.py": "e4f71428f2b85d27a7a2a77e23310250c09cd216084517e2568c9cc6c8eb983a",
+  "network/cqrf_query.py": "274c190d8aced894d22405d2d3218c1ee333dad36a6dc2e5b870acc23b16f5e9",
+  "network/gcqm.py": "b420f90ca2e6440e43b918c46bf767caa6cbbc5bfbf996db3c8da59c65258e29",
+  "network/gcqm_net.py": "c14bbe952fe3fc88693caba9dc1477739a3454ed41641ccc2dab8f134400ca7d",
+  "network/hqrf_backbone.py": "1c2b0555f2e14d8f467b6e9c1ac7e7e7f1ef4e4aad6405da8a3983d9ee3327fb",
+  "network/hqrf_targets.py": "2165372141b60842c0ee22560eef34f650ab4b17b7d5ba831ff9f6051173c449",
+  "network/momd.py": "7b6f2e4b78b9be7bbd03f0d077481ab00c4a8f8e6ed3cd859e21beb377b13f69"
+}

@@ -1,0 +1,12 @@
+{
+  "flops_reported": false,
+  "gcqm_parameters": 111279322,
+  "gcqm_peak_inference_gib": 0.7867293357849121,
+  "gcqm_peak_train_vram_gib": 5.785215854644775,
+  "gcqm_seconds_per_image": 0.032787806475714866,
+  "gcqm_training_seconds": 4958.8957667411305,
+  "sshr_parameters": 112709714,
+  "sshr_peak_inference_gib": 0.6840105056762695,
+  "sshr_seconds_per_image": 0.014957892204195614,
+  "sshr_training_seconds": 4178.94
+}

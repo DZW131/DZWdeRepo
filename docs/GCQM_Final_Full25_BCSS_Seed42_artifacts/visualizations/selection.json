@@ -1,0 +1,143 @@
+{
+  "failures": [
+    {
+      "delta_mDice": -0.12676458220700426,
+      "delta_mIoU": -0.8364556760204082,
+      "gcqm_mDice": 0.12323541779299574,
+      "gcqm_mIoU": 0.16354432397959184,
+      "image_id": "TCGA-LL-A740-DX1_xmin39436_ymin24080_MPP-0.2500+94",
+      "sshr_mDice": 0.25,
+      "sshr_mIoU": 1.0
+    },
+    {
+      "delta_mDice": -0.09472429476345548,
+      "delta_mIoU": -0.7747827646683674,
+      "gcqm_mDice": 0.15527570523654452,
+      "gcqm_mIoU": 0.22521723533163265,
+      "image_id": "TCGA-OL-A97C-DX1_xmin68058_ymin32495_MPP-0.2500+153",
+      "sshr_mDice": 0.25,
+      "sshr_mIoU": 1.0
+    },
+    {
+      "delta_mDice": -0.0925824776054184,
+      "delta_mIoU": -0.770248724489796,
+      "gcqm_mDice": 0.1574175223945816,
+      "gcqm_mIoU": 0.22975127551020408,
+      "image_id": "TCGA-OL-A97C-DX1_xmin68058_ymin32495_MPP-0.2500+34",
+      "sshr_mDice": 0.25,
+      "sshr_mIoU": 1.0
+    },
+    {
+      "delta_mDice": -0.08653936442781066,
+      "delta_mIoU": -0.7571448501275511,
+      "gcqm_mDice": 0.16346063557218934,
+      "gcqm_mIoU": 0.24285514987244897,
+      "image_id": "TCGA-GM-A2DB-DX1_xmin50586_ymin43110_MPP-0.2500+165",
+      "sshr_mDice": 0.25,
+      "sshr_mIoU": 1.0
+    },
+    {
+      "delta_mDice": -0.07784914339479634,
+      "delta_mIoU": -0.7374541613520409,
+      "gcqm_mDice": 0.17215085660520366,
+      "gcqm_mIoU": 0.26254583864795916,
+      "image_id": "TCGA-OL-A97C-DX1_xmin68058_ymin32495_MPP-0.2500+10",
+      "sshr_mDice": 0.25,
+      "sshr_mIoU": 1.0
+    }
+  ],
+  "similar": [
+    {
+      "delta_mDice": 0.0,
+      "delta_mIoU": 0.0,
+      "gcqm_mDice": 0.24968925192156466,
+      "gcqm_mIoU": 0.49875855079807446,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+0",
+      "sshr_mDice": 0.24968925192156466,
+      "sshr_mIoU": 0.49875855079807446
+    },
+    {
+      "delta_mDice": 0.0,
+      "delta_mIoU": 0.0,
+      "gcqm_mDice": 0.24485945648026455,
+      "gcqm_mIoU": 0.47985211033565967,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+1",
+      "sshr_mDice": 0.24485945648026455,
+      "sshr_mIoU": 0.47985211033565967
+    },
+    {
+      "delta_mDice": 0.0,
+      "delta_mIoU": 0.0,
+      "gcqm_mDice": 0.23991022092287914,
+      "gcqm_mIoU": 0.46120655293367346,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+108",
+      "sshr_mDice": 0.23991022092287914,
+      "sshr_mIoU": 0.46120655293367346
+    },
+    {
+      "delta_mDice": 0.0,
+      "delta_mIoU": 0.0,
+      "gcqm_mDice": 0.10144881489483383,
+      "gcqm_mIoU": 0.08484800170068028,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+122",
+      "sshr_mDice": 0.10144881489483383,
+      "sshr_mIoU": 0.08484800170068028
+    },
+    {
+      "delta_mDice": 0.0,
+      "delta_mIoU": 0.0,
+      "gcqm_mDice": 0.22010425630089667,
+      "gcqm_mIoU": 0.393189716628052,
+      "image_id": "TCGA-EW-A1PB-DX1_xmin57214_ymin25940_MPP-0.2500+125",
+      "sshr_mDice": 0.22010425630089667,
+      "sshr_mIoU": 0.393189716628052
+    }
+  ],
+  "wins": [
+    {
+      "delta_mDice": 0.05399379604497867,
+      "delta_mIoU": 0.6776147959183674,
+      "gcqm_mDice": 0.25,
+      "gcqm_mIoU": 1.0,
+      "image_id": "TCGA-EW-A1PH-DX1_xmin3455_ymin52049_MPP-0.2500+200",
+      "sshr_mDice": 0.19600620395502133,
+      "sshr_mIoU": 0.3223852040816326
+    },
+    {
+      "delta_mDice": 0.04659105151021431,
+      "delta_mIoU": 0.6570885273610818,
+      "gcqm_mDice": 0.25,
+      "gcqm_mIoU": 1.0,
+      "image_id": "TCGA-OL-A66P-DX1_xmin30143_ymin20310_MPP-0.2500+140",
+      "sshr_mDice": 0.2034089484897857,
+      "sshr_mIoU": 0.34291147263891825
+    },
+    {
+      "delta_mDice": 0.5176798016141864,
+      "delta_mIoU": 0.6562486839580036,
+      "gcqm_mDice": 0.6622350706629523,
+      "gcqm_mIoU": 0.7918115028355547,
+      "image_id": "TCGA-OL-A6VO-DX1_xmin88416_ymin188485_MPP-0.2500+19",
+      "sshr_mDice": 0.14455526904876598,
+      "sshr_mIoU": 0.13556281887755103
+    },
+    {
+      "delta_mDice": 0.03132814514953408,
+      "delta_mIoU": 0.6113580197704082,
+      "gcqm_mDice": 0.25,
+      "gcqm_mIoU": 1.0,
+      "image_id": "TCGA-OL-A66I-DX1_xmin38433_ymin22957_MPP-0.2500+42",
+      "sshr_mDice": 0.21867185485046592,
+      "sshr_mIoU": 0.38864198022959184
+    },
+    {
+      "delta_mDice": 0.026138377378842753,
+      "delta_mIoU": 0.5946568080357143,
+      "gcqm_mDice": 0.25,
+      "gcqm_mIoU": 1.0,
+      "image_id": "TCGA-EW-A1PH-DX1_xmin3455_ymin52049_MPP-0.2500+174",
+      "sshr_mDice": 0.22386162262115725,
+      "sshr_mIoU": 0.4053431919642857
+    }
+  ]
+}

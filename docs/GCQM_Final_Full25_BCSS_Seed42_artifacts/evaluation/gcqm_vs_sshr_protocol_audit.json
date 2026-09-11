@@ -1,0 +1,31 @@
+{
+  "checks": {
+    "baseline_checkpoint_frozen": true,
+    "baseline_log_frozen": true,
+    "baseline_metric_reproduction": true,
+    "baseline_per_image_reproduction": true,
+    "fixed_inference_thresholds": true,
+    "gcqm_e25_sealed": true,
+    "no_training_validation": true,
+    "same_dataset_split": true,
+    "same_effective_batch": true,
+    "same_epochs": true,
+    "same_evaluator_execution": true,
+    "same_hardware": true,
+    "same_image_size": true,
+    "same_official_init": true,
+    "same_seed": true,
+    "same_training_steps": true
+  },
+  "decision": "COMPARABLE",
+  "gcqm_checkpoint_sha256": "6e1b909fc86a870e652213831521e8ff552371a083f85faad7dac3a21d969d0f",
+  "sshr_checkpoint_sha256": "b71e2c10c597b295e38775f44adf5c2674f2f956d6a74e9bee190ee45c27fa70",
+  "thresholds": [
+    0.800000011920929,
+    0.8999999761581421,
+    0.800000011920929,
+    0.6000000238418579
+  ],
+  "tta": 3,
+  "validation_images": 3418
+}
