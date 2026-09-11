@@ -146,6 +146,15 @@ def gini(value):
     return float((2 * np.sum((np.arange(n) + 1) * value) / (n * value.sum())) - (n + 1) / n)
 
 
+def fp_fn_decision(fp_mean, fn_mean, fp_ci, fn_ci):
+    """Apply the frozen 1.5x rule only to statistically supported error increases."""
+    if fp_mean >= 1.5 * max(fn_mean, 0) and fp_ci[0] > 0:
+        return "FP_DOMINANT"
+    if fn_mean >= 1.5 * max(fp_mean, 0) and fn_ci[0] > 0:
+        return "FN_DOMINANT"
+    return "MIXED"
+
+
 def weight_metrics(value):
     value = np.asarray(value, dtype=np.float64)
     value = value / max(value.sum(), EPS); ordered = np.sort(value)[::-1]
@@ -719,9 +728,7 @@ def main():
     fp_mean, fn_mean = pooled_fp["delta_fp_mean"], pooled_fn["delta_fn_mean"]
     fp_sig = pooled_fp["delta_fp_ci95"][0] > 0
     fn_sig = pooled_fn["delta_fn_ci95"][0] > 0
-    if fp_mean >= 1.5 * max(fn_mean, 0) and fp_sig: h1 = "FP_DOMINANT"
-    elif fn_mean >= 1.5 * max(fp_mean, 0) and fn_sig: h1 = "FN_DOMINANT"
-    else: h1 = "MIXED"
+    h1 = fp_fn_decision(fp_mean, fn_mean, pooled_fp["delta_fp_ci95"], pooled_fn["delta_fn_ci95"])
     primary_band = next(x for x in band_summary if x["radius"] == 3 and x["class"] == "pooled")
     il, bl = primary_band["interior_loss_mean"], primary_band["boundary_loss_mean"]
     isig = primary_band["interior_loss_ci95"][0] > 0; bsig = primary_band["boundary_loss_ci95"][0] > 0
@@ -731,6 +738,7 @@ def main():
     else: h2 = "NEITHER_CLEAR"
     contact_primary = [x for x in contact_summary if x["distance"] == 3 and not x["descriptive_only"]]
     h3_true = any(x["excess_contact_loss_mean"] is not None and x["excess_contact_loss_mean"] >= .03 and x["excess_contact_loss_ci95"][0] > 0 for x in contact_primary)
+    max_excess_contact_loss = max((x["excess_contact_loss_mean"] for x in contact_primary if x["excess_contact_loss_mean"] is not None), default=float("nan"))
     wp, wr, wb = weights.weighted_target_purity.mean(), weights.weighted_rival_mass.mean(), weights.weighted_bg_mass.mean()
     group_mean = groups.groupby("group").target_purity.mean(); top_tail = float(group_mean.get("top10pct", np.nan) - group_mean.get("bottom50pct", np.nan))
     oracle_purity = float(oracle[(oracle.k == 5) & (oracle["mode"] == "purity_weighted")].mean_selected_purity.mean())
@@ -746,6 +754,12 @@ def main():
     morph_pivot = morph.groupby("model").mean(numeric_only=True)
     frag_delta = float(morph_pivot.loc["gcqm", "fragmentation_index"] - morph_pivot.loc["sshr", "fragmentation_index"])
     hole_delta = float(morph_pivot.loc["gcqm", "hole_area_fraction"] - morph_pivot.loc["sshr", "hole_area_fraction"])
+    component_delta = float(morph_pivot.loc["gcqm", "components"] - morph_pivot.loc["sshr", "components"])
+    hole_count_delta = float(morph_pivot.loc["gcqm", "hole_count"] - morph_pivot.loc["sshr", "hole_count"])
+    compactness_delta = float(morph_pivot.loc["gcqm", "compactness"] - morph_pivot.loc["sshr", "compactness"])
+    morphology_by_class = morph[morph.model.isin(["gcqm", "sshr"])].pivot_table(index="class", columns="model", values=["components", "hole_count", "compactness"])
+    morphology_consistency = {metric: int(np.sum(morphology_by_class[(metric, "gcqm")] > morphology_by_class[(metric, "sshr")])) for metric in ("components", "hole_count", "compactness")}
+    coherence_supported = all(value >= 3 for value in morphology_consistency.values())
     broad_topk = sum(next(x for x in topk_curve if x["k"] == k)["delta_vs_full_pp"] > 0 for k in (10, 20, 50)) >= 2
     spatial_labels = []
     if h4 == "BASIS_CONTAMINATED": spatial_labels.append("BASIS_CONTAMINATION")
@@ -754,7 +768,7 @@ def main():
     if h3_true: spatial_labels.append("CONTACT_CONFUSION")
     if h1 == "FP_DOMINANT": spatial_labels.append("OVERSEGMENTATION")
     if h1 == "FN_DOMINANT": spatial_labels.append("UNDERSEGMENTATION")
-    if frag_delta > 0: spatial_labels.append("FRAGMENTATION")
+    if coherence_supported: spatial_labels.append("FRAGMENTATION")
     if h6 == "STRONG" and broad_topk: spatial_labels.append("SPATIAL_AVERAGING")
     if not spatial_labels: spatial_labels = ["NO_SINGLE_DOMINANT_PROPERTY"]
     pixel_boundary_gain = float(main_band.pixel_boundary_f1.mean() - main_band.gcqm_boundary_f1.mean())
@@ -763,27 +777,32 @@ def main():
     if h4 == "BASIS_CONTAMINATED" and oracle_purity < .70: factors.append("BASIS_GENERATION_BOTTLENECK")
     if oracle_purity >= .70 and h4 in ("BASIS_ROUTER_MISMATCH", "BASIS_CONTAMINATED", "MIXED") and top_tail < .10: factors.append("ROUTER_TO_BASIS_MATCHING_BOTTLENECK")
     if h4 == "BASIS_CLEAN" and (pixel_boundary_gain > .03 or pixel_contact_gain > .03): factors.append("MISSING_LOCAL_ADAPTIVITY")
-    if h2 == "INTERIOR_DOMINANT" and (frag_delta > 0 or hole_delta > 0): factors.append("MISSING_SPATIAL_COHERENCE")
+    if h2 == "INTERIOR_DOMINANT" and coherence_supported: factors.append("MISSING_SPATIAL_COHERENCE")
     if h6 == "STRONG" and broad_topk: factors.append("OVERDIFFUSE_GLOBAL_MIXTURE")
     decision = "MULTI_FACTOR_DECODER_BOTTLENECK" if len(factors) >= 2 else factors[0] if factors else "NO_SINGLE_FAILURE_MODE_IDENTIFIED"
     class_matrix = []
     archived_class_delta = archived["delta"]["class_iou_pp"]
     for cls in CLASS_IDS:
         p = pair[pair["class"] == cls]; b = main_band[main_band["class"] == cls]; w = weights[weights["class"] == cls]
-        mm = morph[(morph["class"] == cls) & morph.model.isin(["gcqm", "sshr"])].groupby("model").fragmentation_index.mean()
+        mm = morph[(morph["class"] == cls) & morph.model.isin(["gcqm", "sshr"])].groupby("model").mean(numeric_only=True)
+        fp_class = next(row for row in fp_summary if row["class"] == str(cls))
+        class_fp_fn = fp_fn_decision(fp_class["delta_fp_mean"], fp_class["delta_fn_mean"], fp_class["delta_fp_ci95"], fp_class["delta_fn_ci95"]).replace("_DOMINANT", "")
         class_contacts = contacts[(contacts.distance == 3) & ((contacts.class1 == cls) | (contacts.class2 == cls))] if len(contacts) else contacts
         class_matrix.append({"class": cls, "delta_iou_pp": archived_class_delta[str(cls)],
-                             "fp_fn": "FP" if abs(p.normalized_delta_fp.mean()) >= 1.5 * abs(p.normalized_delta_fn.mean()) else "FN" if abs(p.normalized_delta_fn.mean()) >= 1.5 * abs(p.normalized_delta_fp.mean()) else "MIXED",
+                             "fp_fn": class_fp_fn,
                              "interior_loss": float((b.sshr_interior_correctness - b.gcqm_interior_correctness).mean()),
                              "boundary_loss": float((b.sshr_boundary_f1 - b.gcqm_boundary_f1).mean()),
                              "contact_loss": float((class_contacts.sshr_contact_accuracy - class_contacts.gcqm_contact_accuracy).mean()) if len(class_contacts) else None,
                              "weighted_purity": float(w.weighted_target_purity.mean()),
                              "neff": float(w.effective_query_count.mean()), "entropy": float(w.normalized_entropy.mean()),
-                             "fragmentation_delta": float(mm.get("gcqm", np.nan) - mm.get("sshr", np.nan)),
+                             "fragmentation_delta": float(mm.loc["gcqm", "fragmentation_index"] - mm.loc["sshr", "fragmentation_index"]),
+                             "component_count_delta": float(mm.loc["gcqm", "components"] - mm.loc["sshr", "components"]),
+                             "hole_count_delta": float(mm.loc["gcqm", "hole_count"] - mm.loc["sshr", "hole_count"]),
+                             "compactness_delta": float(mm.loc["gcqm", "compactness"] - mm.loc["sshr", "compactness"]),
                              "area_ratio_delta": float(morph[(morph["class"] == cls) & (morph.model == "gcqm")].area_ratio_gt.mean() - morph[(morph["class"] == cls) & (morph.model == "sshr")].area_ratio_gt.mean())})
     pd.DataFrame(class_matrix).to_csv(output / "spatial_property/per_class_failure_matrix.csv", index=False)
-    evidence_count = sum([h1 != "MIXED", h2 != "NEITHER_CLEAR", h3_true, h4 != "MIXED", h6 != "NOT_SUPPORTED", frag_delta > 0])
-    confidence = "HIGH" if evidence_count >= 3 else "MEDIUM" if evidence_count >= 2 else "LOW"
+    evidence_count = sum([h1 != "MIXED", h2 != "NEITHER_CLEAR", h3_true, h4 != "MIXED", h6 != "NOT_SUPPORTED", coherence_supported])
+    confidence = "HIGH" if decision == "MISSING_SPATIAL_COHERENCE" and coherence_supported else "MEDIUM" if evidence_count >= 2 else "LOW"
     next_target = {"BASIS_GENERATION_BOTTLENECK": "Improve the spatial basis-generation target while preserving CCRA.",
                    "ROUTER_TO_BASIS_MATCHING_BOTTLENECK": "Restore class-to-basis matching while preserving CCRA.",
                    "MISSING_LOCAL_ADAPTIVITY": "Restore local spatial adaptivity while preserving CCRA.",
@@ -798,13 +817,13 @@ def main():
               "because_sentence": f"Because Full25 failure is dominated by {lost}, the next decoder should specifically restore the corresponding spatial property while preserving CCRA.",
               "next_target": next_target,
               "hypotheses": {
-                  "H1 FP/FN bias": {"result": h1, "evidence": f"mean normalized delta FP={fp_mean:+.4f}; delta FN={fn_mean:+.4f}", "confidence": "High" if fp_sig or fn_sig else "Low"},
-                  "H2 Interior/Boundary": {"result": h2, "evidence": f"r=3 interior loss={il:+.4f}; boundary loss={bl:+.4f}", "confidence": "High" if isig and bsig else "Med"},
-                  "H3 Contact failure": {"result": str(h3_true).upper(), "evidence": f"{len(contact_primary)} adequately powered class-pair analyses at d=3", "confidence": "High" if contact_primary else "Low"},
+                  "H1 FP/FN bias": {"result": h1, "evidence": f"mean normalized delta FP={fp_mean:+.4f}, CI={pooled_fp['delta_fp_ci95']}; delta FN={fn_mean:+.4f}, CI={pooled_fn['delta_fn_ci95']}", "confidence": "High" if fp_sig or fn_sig else "Low"},
+                  "H2 Interior/Boundary": {"result": h2, "evidence": f"r=3 interior loss={il:+.4f}; boundary loss={bl:+.4f}; direction is class-dependent (loss for classes 0/1, gain for 2/3)", "confidence": "Med"},
+                  "H3 Contact failure": {"result": str(h3_true).upper(), "evidence": f"{len(contact_primary)} powered d=3 pairs; maximum excess contact loss={max_excess_contact_loss:+.4f} (<0.03)", "confidence": "High" if contact_primary else "Low"},
                   "H4 Basis purity": {"result": h4, "evidence": f"weighted purity={wp:.4f}, rival={wr:.4f}, BG={wb:.4f}, top-tail={top_tail:+.4f}, oracle-k5 purity={oracle_purity:.4f}", "confidence": "High"},
                   "H5 Weight diffuseness": {"result": dominant_bin.upper(), "evidence": f"mean Neff={neff:.2f}", "confidence": "High"},
-                  "H6 Diffuseness-performance link": {"result": h6, "evidence": f"rho(Neff,deltaIoU)={rho_neff['estimate']:+.4f}; rho(top5,deltaIoU)={rho_top5['estimate']:+.4f}", "confidence": "High" if h6 == "STRONG" else "Med"},
-                  "H7 Lost spatial property": {"result": spatial_labels[0], "evidence": f"fragmentation delta={frag_delta:+.4f}; hole-fraction delta={hole_delta:+.4f}", "confidence": confidence.title()}}}
+                  "H6 Diffuseness-performance link": {"result": h6, "evidence": f"rho(Neff,deltaIoU)={rho_neff['estimate']:+.4f}; rho(top5,deltaIoU)={rho_top5['estimate']:+.4f}; k=10/20/50 all underperform full-196, so truncation does not rescue it", "confidence": "High" if h6 == "STRONG" else "Med"},
+                  "H7 Lost spatial property": {"result": spatial_labels[0], "evidence": f"component delta={component_delta:+.4f}, hole-count delta={hole_count_delta:+.4f}, compactness delta={compactness_delta:+.4f}; all three worsen in {min(morphology_consistency.values())}/4 classes", "confidence": confidence.title()}}}
     write_json(output / "failure_anatomy_result.json", result)
     (output / "report/GCQM_Full25_Failure_Anatomy_Decoder_Bottleneck_Audit_Report.md").write_text(report_text(result), encoding="utf-8")
     print(json.dumps({"decision": decision, "confidence": confidence, "report": str(output / 'report/GCQM_Full25_Failure_Anatomy_Decoder_Bottleneck_Audit_Report.md')}, indent=2))

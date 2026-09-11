@@ -8,6 +8,7 @@ from tools.audit_gcqm_full25_failure_anatomy import (
     TOPK,
     binary_metrics,
     boundary_band,
+    fp_fn_decision,
     mask_morphology,
     weight_metrics,
 )
@@ -45,3 +46,8 @@ def test_audit_contains_no_training_path():
     source = (Path(__file__).resolve().parents[1] / "tools/audit_gcqm_full25_failure_anatomy.py").read_text(encoding="utf-8")
     assert ".backward(" not in source and "torch.optim" not in source
     assert "gcqm_full25_epoch25_final.pth" not in source
+
+
+def test_fp_reduction_is_not_mislabeled_as_fp_failure():
+    assert fp_fn_decision(-2.8, .02, [-7.8, .2], [.01, .03]) == "FN_DOMINANT"
+    assert fp_fn_decision(-.2, -.1, [-.4, .1], [-.2, -.01]) == "MIXED"
