@@ -102,8 +102,8 @@ report/        final Markdown report
 
 | Model | Seed | Epoch | fg mIoU | mDice | Decision |
 |---|---:|---:|---:|---:|---|
-| SSHR B0 | 42 | 25 | pending | pending | frozen baseline |
-| GCQM | 42 | 25 | pending | pending | pending E25 evaluation |
+| SSHR B0 | 42 | 25 | 66.6967 | 79.7977 | frozen baseline |
+| GCQM | 42 | 25 | 64.3543 | 78.0756 | GCQM_FULL25_NOGO |
 
 ## Visualization
 
