@@ -165,8 +165,15 @@ def main():
         epoch_rows.append(epoch_row); write_csv(output / "metrics/ccac_epoch_summary.csv", epoch_rows)
         print("CCAC_FULL25_EPOCH " + json.dumps(epoch_row, sort_keys=True), flush=True)
         if args.smoke_steps:
+            base_summary, functional = mechanism_snapshot(model, monitor_loader, 0, output, permutations)
+            if any((not np.isfinite(row["completion_mass_mean"]) or row["changed_fraction"] <= 0 or
+                    row["restored_positive_fraction"] >= .99 or row["rival_protected_mass_mean"] <= 0)
+                   for row in functional):
+                raise AssertionError(f"CCAC functional smoke catastrophic: {functional}")
+            write_json(output / "smoke/ccac_functional_smoke.json", {"ccac": functional, "gcqm_base": base_summary})
             write_json(output / "smoke/ccac_smoke_summary.json", {"steps": optimizer.global_step, "finite": True,
-                "gradient_finite": True, "parameter_delta": 0, "validation_accessed": False, "checkpoint_written": False})
+                "gradient_finite": True, "parameter_delta": 0, "validation_accessed": False, "checkpoint_written": False,
+                "functional_smoke": functional})
             print("CCAC_FULL25_SMOKE_PASS", flush=True); return
         if epoch in MILESTONES:
             summary, ccac = mechanism_snapshot(model, monitor_loader, epoch, output, permutations); summaries.append(summary); ccac_rows.extend(ccac)
