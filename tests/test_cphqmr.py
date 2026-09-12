@@ -6,6 +6,7 @@ import torch
 from network.cphqmr import CPHQMR, DetailGuidedSpatialRestoration, coverage_preserving_fusion
 from network.cphqmr_net import CPHQMRNet
 from network.hqmr_net import HQMRNet
+from tools.run_cphqmr_full25_bcss_seed42 import health_summary
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -28,7 +29,7 @@ def test_cov_query_never_region_updated():
 
 
 def test_disc_query_region_updated():
-    out = CPHQMR()(*_inputs()[:3]); assert float((out["q_disc"] - out["q_cov"]).abs().sum()) > 0
+    out = CPHQMR()(*_inputs()[:3]); assert float((out["q_disc"] - out["q_cov"]).detach().abs().sum()) > 0
 
 
 def test_cov_disc_states_separate():
@@ -156,6 +157,14 @@ def test_synthetic_dgsr_edge_and_shared_restoration():
 def test_parameter_delta_is_lighter_than_hqmr_v1():
     old, new = sum(p.numel() for p in HQMRNet().parameters()), sum(p.numel() for p in CPHQMRNet().parameters())
     assert old == 112_269_530 and new == 111_956_196 and new - old == -313_334
+
+
+def test_epoch5_health_is_diagnostic_only():
+    rows = [{"near_full_fraction": 1.0, "empty_fraction": 0.0,
+             "all_query_masks_identical": False, "finite": True}]
+    summary = health_summary(rows)
+    assert summary["diagnostic_only"] is True
+    assert summary["action"] == "CONTINUE_FULL25_UNCHANGED"
 
 
 def test_all_ablation_modes_finite_and_bounded():

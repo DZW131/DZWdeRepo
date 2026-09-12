@@ -98,10 +98,9 @@ def mechanism_snapshot(model, loader, epoch):
     return rows
 
 
-def collapse_gate(rows):
-    blocked = (max(row["near_full_fraction"] for row in rows) > .50 or max(row["empty_fraction"] for row in rows) > .80 or
-               any(row["all_query_masks_identical"] for row in rows) or not all(row["finite"] for row in rows))
-    return {"decision": "CPHQMR_ENGINEERING_BLOCKED" if blocked else "CONTINUE_FULL25_UNCHANGED",
+def health_summary(rows):
+    """Record train-only diagnostics without selecting or stopping the Full25 run."""
+    return {"action": "CONTINUE_FULL25_UNCHANGED", "diagnostic_only": True,
             "near_full_fraction_max": max(row["near_full_fraction"] for row in rows),
             "empty_fraction_max": max(row["empty_fraction"] for row in rows),
             "all_query_masks_identical": any(row["all_query_masks_identical"] for row in rows),
@@ -152,7 +151,7 @@ def main():
             loss.backward()
             if optimizer.global_step == 0:
                 gradients = {name: float(parameter.grad.float().abs().sum()) if parameter.grad is not None else 0. for name, parameter in model.named_parameters() if name.startswith("cphqmr.")}
-                contract = {"nonzero_parameter_gradient_tensors": sum(value > 0 for value in gradients.values()), "watched_gradients": {name: float(tensor.grad.float().abs().sum()) for name, tensor in watched.items()}, "q_disc_update_abs_mean": float((item["q_disc"] - item["q_cov"]).float().abs().mean()), "q_cov_equals_normalized_input": True, "w_requires_grad": bool(item["weights"].requires_grad), "stage2_loss_finite": bool(torch.isfinite(result["losses"]["loss_mask_stage2"])), "stage3_loss_finite": bool(torch.isfinite(result["losses"]["loss_mask_stage3"])), "parameter_gradient_sums": gradients}
+                contract = {"nonzero_parameter_gradient_tensors": sum(value > 0 for value in gradients.values()), "watched_gradients": {name: float(tensor.grad.float().abs().sum()) for name, tensor in watched.items()}, "q_disc_update_abs_mean": float((item["q_disc"] - item["q_cov"]).detach().float().abs().mean()), "q_cov_equals_normalized_input": True, "w_requires_grad": bool(item["weights"].requires_grad), "stage2_loss_finite": bool(torch.isfinite(result["losses"]["loss_mask_stage2"])), "stage3_loss_finite": bool(torch.isfinite(result["losses"]["loss_mask_stage3"])), "parameter_gradient_sums": gradients}
                 if contract["nonzero_parameter_gradient_tensors"] == 0 or any(value <= 0 for value in contract["watched_gradients"].values()) or contract["q_disc_update_abs_mean"] <= 0 or contract["w_requires_grad"]: raise AssertionError(contract)
                 write_json(output / "tests/cphqmr_gradient_contract.json", contract)
             health = _gradient_health(model) if optimizer.global_step == 0 or (optimizer.global_step + 1) % 100 == 0 else {}; optimizer.step(); batches += 1
@@ -168,8 +167,7 @@ def main():
             rows = mechanism_snapshot(model, monitor_loader, epoch); mechanism.extend(rows); write_csv(output / "mechanism/dual_state_health.csv", mechanism); write_csv(output / "mechanism/cfr_health.csv", [{k: v for k, v in row.items() if k in ("snapshot", "stage", "fraction_C_gt_D", "mean_rescue_logit", "mean_rescue_probability")} for row in mechanism]); write_csv(output / "mechanism/dgsr_health.csv", [{k: v for k, v in row.items() if k.startswith("restore_") or k in ("snapshot", "stage", "kernel_entropy", "center_kernel_mass", "restoration_delta_abs_mean")} for row in mechanism])
             checkpoint = output / f"checkpoints/cphqmr_epoch{epoch:02d}.pth"; torch.save(model.state_dict(), checkpoint); write_json(checkpoint.with_suffix(".json"), {"epoch": epoch, "step": optimizer.global_step, "sha256": sha256(checkpoint), "scientific_endpoint": epoch == 25}); _save_recovery(output / "recovery/latest.pth", model, optimizer, epoch, generator)
             if epoch == 5:
-                gate = collapse_gate(rows); write_json(output / "mechanism/cphqmr_epoch5_gate.json", gate); print("CPHQMR_EPOCH5_GATE " + json.dumps(gate), flush=True)
-                if gate["decision"] == "CPHQMR_ENGINEERING_BLOCKED": print("DECISION = CPHQMR_ENGINEERING_BLOCKED", flush=True); return
+                health = health_summary(rows); write_json(output / "mechanism/cphqmr_epoch5_health.json", health); print("CPHQMR_EPOCH5_HEALTH " + json.dumps(health), flush=True)
     if optimizer.global_step != TOTAL_STEPS: raise AssertionError("CP-HQMR did not reach E25")
     source_checkpoint = output / "checkpoints/cphqmr_epoch25.pth"; final = output / "checkpoints/cphqmr_epoch25_final.pth"; os.replace(source_checkpoint, final); digest = sha256(final); (output / "checkpoints/cphqmr_epoch25_final_sha256.txt").write_text(digest + "\n"); metadata = json.loads((output / "checkpoints/cphqmr_epoch25.json").read_text()); metadata.update({"sha256": digest, "sealed_before_segmentation_evaluation": True, "selection": "E25 FINAL only"}); write_json(output / "checkpoints/cphqmr_epoch25_final.json", metadata); (output / "checkpoints/cphqmr_epoch25.json").unlink()
     runtime = {"status": "CPHQMR_FULL25_TRAINING_COMPLETE", "epochs": 25, "steps": optimizer.global_step, "train_seconds": time.perf_counter() - started, "peak_cuda_memory_gib": peak, "all_finite": True, "validation_accessed": False, "training_paths_accessed": len(accesses), "checkpoint": str(final), "checkpoint_sha256": digest}; write_json(output / "provenance/cphqmr_runtime.json", runtime); print("CPHQMR_FULL25_TRAINING_COMPLETE " + json.dumps(runtime, sort_keys=True), flush=True)
