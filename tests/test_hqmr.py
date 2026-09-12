@@ -8,6 +8,7 @@ from network.gcqm import gcqm_decode, gcqm_weights
 from network.hqmr import HQMR, QueryRegionUpdate, class_mixture, direct_affinity, normalized_region_weights, residual_logits
 from network.hqmr_net import HQMRNet
 from tools.run_hqmr_full25_bcss_seed42 import CONFIG, EPOCHS, MILESTONES, TOTAL_STEPS, collapse_gate
+from tools.eval_hqmr_full25_bcss_seed42 import BOOTSTRAP_SEED, MODES, decide
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -188,3 +189,14 @@ def test_epoch5_collapse_gate_boundaries():
     assert collapse_gate(healthy)["decision"] == "CONTINUE_FULL25_UNCHANGED"
     assert collapse_gate([{**healthy[0], "near_full_fraction": .5001}])["decision"] == "HQMR_ENGINEERING_OR_COLLAPSE_BLOCKED"
     assert collapse_gate([{**healthy[0], "empty_fraction": .8001}])["decision"] == "HQMR_ENGINEERING_OR_COLLAPSE_BLOCKED"
+
+
+def test_e25_evaluation_modes_and_bootstrap_seed():
+    assert list(MODES) == ["A_full", "B_fine_only", "C_coarse_fine", "D_no_query_update", "E_coarse_only", "F_mid_final"]
+    assert BOOTSTRAP_SEED == 20260912
+
+
+def test_hqmr_decision_strong_go_boundary():
+    coverage = {"full": {"class_basis_uncovered": .40, "basis_max_coverage": .50}, "recovery": True}
+    ablation = {"core_hierarchy_pass": True}
+    assert decide(.50, .001, 2.0, {str(i): 0. for i in range(4)}, coverage, ablation) == "HQMR_FULL25_STRONG_GO"
