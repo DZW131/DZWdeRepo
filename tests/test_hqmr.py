@@ -151,7 +151,8 @@ def test_output_range():
 
 def test_finite_bf16():
     if not torch.cuda.is_available() or not torch.cuda.is_bf16_supported(): pytest.skip("CUDA BF16 required")
-    module = HQMR().cuda(); out = module(*_inputs("cuda", torch.bfloat16))
+    module = HQMR().cuda()
+    with torch.autocast("cuda", dtype=torch.bfloat16): out = module(*_inputs("cuda"))
     assert torch.isfinite(out["basis"]).all()
 
 
