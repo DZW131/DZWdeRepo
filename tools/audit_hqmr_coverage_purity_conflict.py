@@ -39,7 +39,8 @@ def main():
     if sha256(checkpoint) != HQMR_SHA256: raise AssertionError("HQMR-v1 checkpoint identity mismatch")
     if len(list((valroot / "img").glob("*.png"))) != 3418: raise AssertionError("Expected frozen BCSS validation split")
     output.mkdir(parents=True, exist_ok=True)
-    if any(output.iterdir()): raise FileExistsError(output)
+    existing = {path.name for path in output.iterdir()}
+    if existing - {"preaudit_launch.log"}: raise FileExistsError(output)
     model = HQMRNet().cuda(); model.load_state_dict(load_state(checkpoint), strict=True); model.eval()
     loader = DataLoader(Stage1_InferDataset(str(valroot / "img"), img_size=224), batch_size=1, shuffle=False, num_workers=args.num_workers, pin_memory=True)
     totals = {mode: defaultdict(float) for mode in ("A_full", "D_no_query_update")}; rows = []
