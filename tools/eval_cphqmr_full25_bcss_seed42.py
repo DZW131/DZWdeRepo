@@ -32,12 +32,15 @@ from tools.eval_gcqm_full25_bcss_seed42 import (
     scores_from_confusion,
 )
 from tools.hqrf_phase0_io import sha256, write_csv, write_json
+from tools.run_hqmr_full25_bcss_seed42 import _js_rows
+from train_cqrf_phase0 import MonitorDataset
+from train_gcqm_phase0 import load_cohort
 
 
 BOOTSTRAP_SEED, BOOTSTRAP_RESAMPLES = 20260912, 10_000
 HQMR_SHA256 = "84dab82140eb79176bef3f518b6508b6167b328b6d55126d24efffa7467e4abb"
 DFSC_SHA256 = "470f1056f2bbf5c64b5e6fff76861f9fa4e1663bf7ba0c74e2621528fb48af11"
-SSHR_MIOU, HQMR_MIOU, DFSC_MIOU = 0.6669670591172749, 0.655724, 0.6452820195735897
+SSHR_MIOU, HQMR_MIOU, DFSC_MIOU = 0.6669670591172749, 0.6557244403737567, 0.6452820195735897
 MODES = {
     "A_full": "full", "B_discriminative_only": "discriminative_only",
     "C_coverage_only": "coverage_only", "D_simple_average": "simple_average",
@@ -185,6 +188,23 @@ def render_selected_cases(loader, selected_ids, valroot, experiment, sshr, hqmr,
     write_csv(experiment / "visualizations/cphqmr_top5_query_metrics.csv", query_rows)
 
 
+@torch.no_grad()
+def posthoc_ccra_health(model, experiment):
+    """Reconstruct frozen train-cohort CCRA health from every milestone checkpoint."""
+    _, cohort = load_cohort(experiment / "provenance/cphqmr_monitor_cohort.json")
+    loader = DataLoader(MonitorDataset(cohort), batch_size=8, num_workers=4, pin_memory=True); rows = []
+    for epoch in (5, 10, 15, 20, 25):
+        checkpoint = experiment / ("checkpoints/cphqmr_epoch25_final.pth" if epoch == 25 else f"checkpoints/cphqmr_epoch{epoch:02d}.pth")
+        model.load_state_dict(load_state(checkpoint), strict=True); model.eval(); js_values = {2: [], 3: []}; neff = {2: [], 3: []}
+        for _, images, labels in loader:
+            images, labels = images.cuda(non_blocking=True), labels.cuda(non_blocking=True)
+            with torch.autocast("cuda", dtype=torch.bfloat16): output = model(images, labels, step=epoch * 1171)
+            for stage_index in (2, 3):
+                weights = output["stages"][stage_index - 1]["cphqmr"]["weights"].float(); js_values[stage_index].extend(_js_rows(weights)); entropy = -(weights.clamp_min(1e-8) * weights.clamp_min(1e-8).log()).sum(1); neff[stage_index].extend(entropy.exp().cpu().tolist())
+        for stage_index in (2, 3): rows.append({"snapshot": f"epoch{epoch}", "stage": stage_index, "ccra_js": float(np.mean(js_values[stage_index])), "Neff": float(np.mean(neff[stage_index])), "train_only": True})
+    write_csv(experiment / "mechanism/ccra_health.csv", rows)
+
+
 def report_text(result: dict) -> str:
     m, d, b, c, a = result["metrics"], result["deltas_pp"], result["bootstrap"], result["coverage_purity"], result["causal"]
     pre = result["preaudit"]; sections = [
@@ -242,6 +262,7 @@ def main():
     if protocol["decision"] != "COMPARABLE": raise AssertionError(protocol)
     loader = DataLoader(Stage1_InferDataset(str(valroot / "img"), img_size=224), batch_size=1, shuffle=False, num_workers=args.num_workers, pin_memory=True)
     sshr = SSHRCAM(4).cuda(); sshr.load_state_dict(load_state(spath), strict=True); sshr.eval(); hqmr = HQMRNet().cuda(); hqmr.load_state_dict(load_state(hpath), strict=True); hqmr.eval(); model = CPHQMRNet().cuda(); model.load_state_dict(load_state(cpath), strict=True); model.eval()
+    posthoc_ccra_health(model, experiment); model.load_state_dict(load_state(cpath), strict=True); model.eval()
     hist = {"sshr": [], "hqmr_v1": [], **{name: [] for name in MODES}}; totals = {name: defaultdict(float) for name in ("hqmr_v1", *MODES)}; rows, coverage_rows, candidates = [], [], []
     started = time.perf_counter(); torch.cuda.reset_peak_memory_stats()
     for index, (names, image) in enumerate(loader, 1):
