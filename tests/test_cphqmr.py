@@ -6,6 +6,7 @@ import torch
 from network.cphqmr import CPHQMR, DetailGuidedSpatialRestoration, coverage_preserving_fusion
 from network.cphqmr_net import CPHQMRNet
 from network.hqmr_net import HQMRNet
+from tools.eval_cphqmr_full25_bcss_seed42 import MODES, decide
 from tools.run_cphqmr_full25_bcss_seed42 import health_summary
 
 
@@ -165,6 +166,17 @@ def test_epoch5_health_is_diagnostic_only():
     summary = health_summary(rows)
     assert summary["diagnostic_only"] is True
     assert summary["action"] == "CONTINUE_FULL25_UNCHANGED"
+
+
+def test_final_ablation_set_is_frozen():
+    assert list(MODES.values()) == ["full", "discriminative_only", "coverage_only", "simple_average", "bilinear_only", "old_f3_semantic"]
+
+
+def test_decision_strong_go_contract():
+    decision = decide(.6, .1, 1.2, {"0": 0., "1": -.5, "2": .2, "3": .1},
+                      {"CoverageGain": .06, "UncoveredReduction": .01, "PurityDelta": -.01, "RivalDelta": .01, "improved": True},
+                      {"dual_state": True})
+    assert decision == "CPHQMR_FULL25_STRONG_GO"
 
 
 def test_all_ablation_modes_finite_and_bounded():
