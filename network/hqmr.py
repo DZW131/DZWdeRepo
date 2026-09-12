@@ -89,7 +89,7 @@ class HQMR(nn.Module):
 
         if mode == "fine_only":
             final_logits = direct_affinity(q0, k3 if k3 is not None else k4)
-            return {"basis_logits": final_logits, "basis": final_logits.float().sigmoid(),
+            return {"basis_logits": final_logits, "basis": final_logits.sigmoid(),
                     "logits5": None, "logits4": None, "logits3": final_logits if k3 is not None else None,
                     "direct4": None, "direct3": final_logits if k3 is not None else None,
                     "query0": q0, "query5": q0, "query4": q0, "value3": v3, "mode": mode}
@@ -99,7 +99,7 @@ class HQMR(nn.Module):
         if mode == "coarse_only":
             target = h3 if h3 is not None else h4
             final_logits = F.interpolate(logits5, size=target.shape[-2:], mode="bilinear", align_corners=False)
-            return {"basis_logits": final_logits, "basis": final_logits.float().sigmoid(),
+            return {"basis_logits": final_logits, "basis": final_logits.sigmoid(),
                     "logits5": logits5, "logits4": None, "logits3": None,
                     "direct4": None, "direct3": None,
                     "query0": q0, "query5": q5, "query4": q5, "value3": v3, "mode": mode}
@@ -107,7 +107,7 @@ class HQMR(nn.Module):
         if mode == "coarse_fine" and k3 is not None:
             direct3 = direct_affinity(q5, k3)
             logits3 = residual_logits(logits5, direct3)
-            return {"basis_logits": logits3, "basis": logits3.float().sigmoid(),
+            return {"basis_logits": logits3, "basis": logits3.sigmoid(),
                     "logits5": logits5, "logits4": None, "logits3": logits3,
                     "direct4": None, "direct3": direct3,
                     "query0": q0, "query5": q5, "query4": q5, "value3": v3, "mode": mode}
@@ -124,7 +124,7 @@ class HQMR(nn.Module):
             direct3 = direct_affinity(q4, k3)
             logits3 = residual_logits(logits4, direct3)
             final_logits = logits3
-        return {"basis_logits": final_logits, "basis": final_logits.float().sigmoid(),
+        return {"basis_logits": final_logits, "basis": final_logits.sigmoid(),
                 "logits5": logits5, "logits4": logits4, "logits3": logits3,
                 "direct4": direct4, "direct3": direct3 if h3 is not None and mode not in {"mid_final"} else None,
                 "query0": q0, "query5": q5, "query4": q4, "value3": v3, "mode": mode}

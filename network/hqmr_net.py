@@ -15,7 +15,7 @@ class HQMRNet(GCQMNet):
         self.hqmr = HQMR(256)
 
     def forward(self, image, labels, step=0, run_pmec=False, hqmr_mode="full"):
-        output = super().forward(image, labels, step=step, run_pmec=run_pmec)
+        output = super().forward(image, labels, step=step, run_pmec=run_pmec, gcqm_weights_only=True)
         h5 = output["query_detail"]["context_feature"]
         h4 = output["pixel_detail"]["F4_context"]
         h3 = output["features"]["F3"]

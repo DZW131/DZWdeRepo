@@ -6,6 +6,24 @@ import torch
 from network.momd import EPS, route_one_class
 
 
+def gcqm_weights(responsibility_class: torch.Tensor, memory_hw: tuple[int, int],
+                 output_hw: tuple[int, int], locality: torch.Tensor) -> dict:
+    """Compute the frozen detached global class weights without materializing mask bases."""
+    with torch.autocast(device_type=responsibility_class.device.type, enabled=False):
+        routes = [route_one_class(responsibility_class, memory_hw, output_hw, locality, cls)
+                  for cls in range(responsibility_class.shape[-1])]
+        routing = torch.stack([item["routing"] for item in routes], dim=2)
+        weights = routing.mean((-2, -1))
+        weights = (weights / weights.sum(1, keepdim=True).clamp_min(EPS)).detach()
+        error = (weights.sum(1) - 1).abs()
+        if not torch.isfinite(weights).all() or float(error.max()) > 1e-6:
+            raise FloatingPointError("GCQM weight conservation/finite invariant failed")
+    return {"weights": weights, "mixture": None, "base_probability": None,
+            "weight_sum_error_max": float(error.max()),
+            "weight_sum_error_mean": float(error.mean()), "weight_sidepath_detached": True,
+            "weights_only": True}
+
+
 def gcqm_decode(base_logits: torch.Tensor, responsibility_class: torch.Tensor,
                 memory_hw: tuple[int, int], locality: torch.Tensor,
                 materialize: bool = False) -> dict:
@@ -39,4 +57,4 @@ def gcqm_decode(base_logits: torch.Tensor, responsibility_class: torch.Tensor,
     return payload
 
 
-__all__=["gcqm_decode"]
+__all__=["gcqm_decode", "gcqm_weights"]

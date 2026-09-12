@@ -4,6 +4,7 @@ import pytest
 import torch
 
 from network.gcqm_net import GCQMNet
+from network.gcqm import gcqm_decode, gcqm_weights
 from network.hqmr import HQMR, QueryRegionUpdate, class_mixture, direct_affinity, normalized_region_weights, residual_logits
 from network.hqmr_net import HQMRNet
 from tools.run_hqmr_full25_bcss_seed42 import CONFIG, EPOCHS, MILESTONES, TOTAL_STEPS, collapse_gate
@@ -106,6 +107,13 @@ def test_w_detached():
     basis = torch.rand(1, 3, 2, 2, requires_grad=True); weights = torch.rand(1, 3, 4, requires_grad=True)
     class_mixture(basis, weights).sum().backward()
     assert basis.grad is not None and weights.grad is None
+
+
+def test_weights_only_path_matches_legacy_gcqm_weights():
+    responsibility = torch.rand(1, 3, 4, 4); locality = torch.ones(3, 4, 4, dtype=torch.bool)
+    legacy = gcqm_decode(torch.randn(1, 3, 4, 4), responsibility, (2, 2), locality)["weights"]
+    lightweight = gcqm_weights(responsibility, (2, 2), (4, 4), locality)["weights"]
+    assert torch.equal(legacy, lightweight)
 
 
 def test_stage1_unchanged():
