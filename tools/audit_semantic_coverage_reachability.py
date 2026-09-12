@@ -183,6 +183,28 @@ def decide_bottleneck(anchored: float, oracle10: float, unlimited: float,
                                   "weighting_evidence": weighting}
 
 
+def coverage_confidence(coverage_rows: list[dict], rescue_rows: list[dict]) -> tuple[str, dict]:
+    """Apply the pre-registered HIGH rule to independent, per-class coverage evidence."""
+    per_class = [r for r in coverage_rows if str(r["class"]) != "overall"]
+    rescue = [r for r in rescue_rows if str(r["class"]) != "overall"]
+    coverage_direction = sum(r["class_basis_uncovered"] >= .20 or r["oracle_top10_recall"] < .85
+                             for r in per_class)
+    rescue_direction = sum(r["type_C_fraction"] + r["type_E_fraction"] >= .50 for r in rescue)
+    overall = next(r for r in coverage_rows if str(r["class"]) == "overall")
+    rescue_overall = next(r for r in rescue_rows if str(r["class"]) == "overall")
+    independent = sum((overall["class_basis_uncovered"] >= .20,
+                       overall["oracle_top10_recall"] < .85,
+                       rescue_overall["type_C_fraction"] + rescue_overall["type_E_fraction"] >= .50))
+    oracle_rescue_agree = (overall["oracle_top10_recall"] < .85 and
+                           rescue_overall["type_C_fraction"] + rescue_overall["type_E_fraction"] >= .50)
+    high = independent >= 3 and coverage_direction >= 3 and rescue_direction >= 3 and oracle_rescue_agree
+    evidence = {"independent_coverage_analyses": int(independent),
+                "coverage_direction_classes": int(coverage_direction),
+                "rescue_direction_classes": int(rescue_direction),
+                "oracle_and_sshr_rescue_agree": bool(oracle_rescue_agree)}
+    return ("HIGH" if high else "MEDIUM" if independent >= 2 else "LOW"), evidence
+
+
 @torch.no_grad()
 def dfsc_bundle(model: DFSCNet, image: torch.Tensor, original_hw: tuple[int, int]) -> dict:
     base_views, final_views, basis_views, weights, full_views, gates = [], [], [], [], [], []
@@ -479,6 +501,9 @@ def main():
         for _,_,payload in sorted(heap,reverse=True): render_payload(payload,output/"visualizations/seed_distance",tag)
     anchor=next(r for r in summaries if str(r["class"])=="overall"); dist=next(r for r in distance_summary if r["class"]=="overall"); reach=next(r for r in unlimited if r["class"]=="overall"); graph_main=next(r for r in graph if r["class"]=="overall" and r["threshold"]==.5); rescue=next(r for r in rescue_summary if r["class"]=="overall")
     rescue_frac={t:rescue[f"type_{t}_fraction"] for t in "ABCDE"}; decision,confidence,evidence=decide_bottleneck(anchor["area_weighted_anchored_fraction"],overall["oracle_top10_recall"],reach["gt_recall_ceiling"],1-dist["fraction_within_2"],overall["class_basis_uncovered"],overall["base_seed_coverage"],rescue_frac)
+    if decision == "QUERY_MASK_COVERAGE_LIMIT":
+        confidence, confidence_evidence = coverage_confidence(coverage, rescue_summary)
+        evidence["confidence_rule"] = confidence_evidence
     target_arch={"LONG_RANGE_PROPAGATION_LIMIT":"region-level / graph-level long-range completion","QUERY_MASK_COVERAGE_LIMIT":"Q_i -> B_i query-to-mask basis generation with multi-scale/high-resolution decoding","QUERY_BASIS_WEIGHTING_LIMIT":"query-to-basis class weighting/coupling","MIXED_COVERAGE_AND_REACHABILITY":"query-mask basis generation first, followed by region-level reachability","NO_SINGLE_CAUSE_IDENTIFIED":"a new pre-registered diagnosis before architecture changes"}[decision]
     cause={"LONG_RANGE_PROPAGATION_LIMIT":"finite/local propagation reach","QUERY_MASK_COVERAGE_LIMIT":"query-mask semantic coverage","QUERY_BASIS_WEIGHTING_LIMIT":"class weighting of an adequate basis bank","MIXED_COVERAGE_AND_REACHABILITY":"both semantic coverage and long-range reachability","NO_SINGLE_CAUSE_IDENTIFIED":"no single demonstrated mechanism"}[decision]
     summary={"fn_within_2":dist["fraction_within_2"],"local_unreachable_fn":1-dist["fraction_within_2"],"anchored_area_fraction":anchor["area_weighted_anchored_fraction"],"unanchored_area_fraction":anchor["area_weighted_unanchored_fraction"],"unlimited_seed_recall":reach["gt_recall_ceiling"],"affinity_reachability_050":graph_main["reachable_gt_fraction"],"basis_max_coverage":overall["basis_max_coverage"],"class_basis_uncovered":overall["class_basis_uncovered"],"base_seed_coverage":overall["base_seed_coverage"],"oracle_top10_recall":overall["oracle_top10_recall"],"sshr_rescue_fraction":total_rescue/max(sum(total_fn.values()),1),"rescue_type_fractions":rescue_frac}

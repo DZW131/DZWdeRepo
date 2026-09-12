@@ -1,7 +1,7 @@
 import numpy as np
 
 from tools.audit_semantic_coverage_reachability import (
-    affinity_reachable, anchor_category, decide_bottleneck, distance_maps,
+    affinity_reachable, anchor_category, coverage_confidence, decide_bottleneck, distance_maps,
     geodesic_distance,
 )
 
@@ -61,3 +61,13 @@ def test_decision_weighting():
 def test_decision_mixed():
     decision,_,_=decide_bottleneck(.75,.95,.97,.7,.25,.8,{"C":.6})
     assert decision == "MIXED_COVERAGE_AND_REACHABILITY"
+
+
+def test_high_confidence_requires_three_analyses_and_three_classes():
+    coverage=[{"class":c,"class_basis_uncovered":.7,"oracle_top10_recall":.3} for c in range(4)]
+    coverage.append({"class":"overall","class_basis_uncovered":.78,"oracle_top10_recall":.23})
+    rescue=[{"class":c,"type_C_fraction":.05,"type_E_fraction":.85} for c in range(4)]
+    rescue.append({"class":"overall","type_C_fraction":.04,"type_E_fraction":.90})
+    confidence,evidence=coverage_confidence(coverage,rescue)
+    assert confidence == "HIGH"
+    assert evidence["independent_coverage_analyses"] == 3
