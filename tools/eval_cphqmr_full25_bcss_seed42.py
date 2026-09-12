@@ -246,11 +246,11 @@ def report_text(result: dict) -> str:
 def parse_args():
     p = argparse.ArgumentParser(description=__doc__); p.add_argument("--val-root", required=True); p.add_argument("--experiment", required=True)
     p.add_argument("--cphqmr-checkpoint", required=True); p.add_argument("--hqmr-checkpoint", required=True); p.add_argument("--sshr-checkpoint", required=True); p.add_argument("--dfsc-checkpoint", required=True)
-    p.add_argument("--report-copy", required=True); p.add_argument("--num-workers", type=int, default=8); return p.parse_args()
+    p.add_argument("--num-workers", type=int, default=8); return p.parse_args()
 
 
 def main():
-    args = parse_args(); valroot, experiment = Path(args.val_root).resolve(), Path(args.experiment).resolve(); report_copy = Path(args.report_copy).resolve()
+    args = parse_args(); valroot, experiment = Path(args.val_root).resolve(), Path(args.experiment).resolve()
     cpath, hpath, spath, dpath = map(lambda value: Path(value).resolve(), (args.cphqmr_checkpoint, args.hqmr_checkpoint, args.sshr_checkpoint, args.dfsc_checkpoint))
     if len(list((valroot / "img").glob("*.png"))) != 3418 or len(list((valroot / "mask").glob("*.png"))) != 3418: raise AssertionError("Expected 3418 BCSS validation pairs")
     runtime = json.loads((experiment / "provenance/cphqmr_runtime.json").read_text()); seal = json.loads((experiment / "checkpoints/cphqmr_epoch25_final.json").read_text()); config = json.loads((experiment / "provenance/cphqmr_config.json").read_text()); preaudit = json.loads((experiment / "preaudit/hqmr_v1_conflict_summary.json").read_text())
@@ -312,7 +312,7 @@ def main():
         "provenance": {"training_source_commit": config["source_commit"], "evaluation_source_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(), "cphqmr_sha256": sha256(cpath), "hqmr_sha256": sha256(hpath), "sshr_sha256": sha256(spath), "dfsc_sha256": sha256(dpath)},
         "interpretation": "性能只由固定 E25 paired comparison 判定；coverage–purity balance 与 A–F 仅作为预注册机制证据，不用于选模。",
         "next_step": "STRONG_GO/GO/BREAKTHROUGH_UNCERTAIN：冻结架构并进入 Seed11/17/42；IMPROVEMENT_GO：只做一次零训练 residual audit；NEUTRAL/NOGO：停止叠加 decoder 分支。"}
-    write_json(experiment / "evaluation/cphqmr_final_result.json", result); report = experiment / "report/CCRA_CPHQMR_BCSS_Seed42_Full25_Final_Validation_Report.md"; report.write_text(report_text(result), encoding="utf-8"); report_copy.parent.mkdir(parents=True, exist_ok=True); report_copy.write_text(report.read_text(encoding="utf-8"), encoding="utf-8")
+    write_json(experiment / "evaluation/cphqmr_final_result.json", result); report = experiment / "report/CCRA_CPHQMR_BCSS_Seed42_Full25_Final_Validation_Report.md"; report.write_text(report_text(result), encoding="utf-8")
     print(json.dumps({"decision": verdict, "delta_vs_sshr_pp": delta_sshr, "delta_vs_hqmr_v1_pp": delta_hqmr, "balance": balance, "causal": causal, "report": str(report)}, indent=2)); print(f"DECISION = {verdict}")
 
 
