@@ -48,6 +48,7 @@ MODES = {
 }
 
 
+@torch.no_grad()
 def _mode_bundle(model: CPHQMRNet, image: torch.Tensor, original_hw: tuple[int, int]) -> dict:
     full_views = {name: [] for name in MODES}; grid_views = {name: [] for name in MODES}
     basis_views = {name: [] for name in MODES}; weights, gates = [], []
@@ -90,6 +91,7 @@ def _mode_bundle(model: CPHQMRNet, image: torch.Tensor, original_hw: tuple[int, 
     return result
 
 
+@torch.no_grad()
 def _hqmr_bundle(model: HQMRNet, image: torch.Tensor, original_hw: tuple[int, int]) -> dict:
     full, grid, basis, weights, gates = [], [], [], [], []
     dummy = torch.ones((1, 4), device=image.device)
