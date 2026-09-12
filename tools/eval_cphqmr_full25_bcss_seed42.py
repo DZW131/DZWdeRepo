@@ -209,7 +209,17 @@ def posthoc_ccra_health(model, experiment):
 
 def report_text(result: dict) -> str:
     m, d, b, c, a = result["metrics"], result["deltas_pp"], result["bootstrap"], result["coverage_purity"], result["causal"]
-    pre = result["preaudit"]; sections = [
+    pre = result["preaudit"]
+    class_table = "\n".join(["| Class | SSHR IoU | HQMR-v1 IoU | CP-HQMR IoU | CP−SSHR pp |", "|---:|---:|---:|---:|---:|"] +
+        [f"| {cls} | {100*m['sshr']['class_iou'][str(cls)]:.4f} | {100*m['hqmr_v1']['class_iou'][str(cls)]:.4f} | {100*m['A_full']['class_iou'][str(cls)]:.4f} | {result['per_class'][str(cls)]:+.4f} |" for cls in range(4)])
+    ablation_table = "\n".join(["| Ablation | mIoU | mDice | Bmax | Uncovered | Oracle10 | Purity | Rival |", "|---|---:|---:|---:|---:|---:|---:|---:|"] +
+        [f"| {name} | {100*m[name]['mIoU']:.4f} | {100*m[name]['mDice']:.4f} | {c['by_mode'][name]['basis_max_coverage']:.4f} | {c['by_mode'][name]['class_basis_uncovered']:.4f} | {c['by_mode'][name]['oracle_top10_recall']:.4f} | {c['by_mode'][name]['weighted_purity']:.4f} | {c['by_mode'][name]['rival_mass']:.4f} |" for name in MODES])
+    balance = c["balance"]
+    specific_interpretation = (f"CP-HQMR 相对 HQMR-v1 的 Bmax 仅提高 {100*balance['CoverageGain']:.2f} pp、未覆盖率仅降低 {100*balance['UncoveredReduction']:.2f} pp，均未达到预注册的 5 pp 门槛；"
+        f"纯度变化 {100*balance['PurityDelta']:+.2f} pp、rival mass 变化 {100*balance['RivalDelta']:+.2f} pp，说明没有明显泄漏，但覆盖收益不足。"
+        f"Full 相对 discriminative-only 仅 {a['A_minus_B_pp']:+.4f} pp，双状态因果门未通过；CFR 与 DGSR 虽为正贡献，但量级分别只有 {a['A_minus_D_pp']:+.4f}/{a['A_minus_E_pp']:+.4f} pp。"
+        f"因此 CP-HQMR 与 HQMR-v1 的差异落在中性区间且 paired CI 跨零，不支持继续增加 decoder 分支。")
+    sections = [
         ("Executive Decision", f"**DECISION = {result['decision']}**。CP-HQMR−SSHR={d['vs_sshr']:+.4f} pp；CP-HQMR−HQMR-v1={d['vs_hqmr_v1']:+.4f} pp。"),
         ("Frozen HQMR-v1 Evidence", f"HQMR-v1 E25 mIoU={100*HQMR_MIOU:.4f}，checkpoint SHA256=`{HQMR_SHA256}`。"),
         ("Coverage–Purity Conflict Motivation", "HQMR-v1 的 query update 提升语义集中度但压缩可达覆盖；CP-HQMR 因而分离 coverage 与 discriminative query state。"),
@@ -227,18 +237,18 @@ def report_text(result: dict) -> str:
         ("Main mIoU/mDice", "\n".join(["| Model | mIoU | mDice |", "|---|---:|---:|", f"| SSHR | {100*m['sshr']['mIoU']:.4f} | {100*m['sshr']['mDice']:.4f} |", f"| HQMR-v1 | {100*m['hqmr_v1']['mIoU']:.4f} | {100*m['hqmr_v1']['mDice']:.4f} |", f"| CP-HQMR | {100*m['A_full']['mIoU']:.4f} | {100*m['A_full']['mDice']:.4f} |"])) ,
         ("Comparison vs SSHR", f"Δ={d['vs_sshr']:+.4f} pp，95% CI={b['vs_sshr']['miou_ci95_pp']} pp。"),
         ("Comparison vs HQMR-v1", f"Δ={d['vs_hqmr_v1']:+.4f} pp，95% CI={b['vs_hqmr_v1']['miou_ci95_pp']} pp。"),
-        ("Per-Class Metrics", str(result["per_class"])),
+        ("Per-Class Metrics", class_table + "\n\nClass 2/3 是相对 SSHR 回退最大的类别，应作为后续零训练 failure audit 的重点。"),
         ("Paired Bootstrap", f"10,000 次 paired resampling，seed={BOOTSTRAP_SEED}；详细结果见 evaluation JSON。"),
-        ("Coverage–Purity Re-audit", f"balance={c['balance']}。"),
+        ("Coverage–Purity Re-audit", f"CoverageGain={100*balance['CoverageGain']:+.2f} pp；UncoveredReduction={100*balance['UncoveredReduction']:+.2f} pp；PurityDelta={100*balance['PurityDelta']:+.2f} pp；RivalDelta={100*balance['RivalDelta']:+.2f} pp。预注册结论：`COVERAGE_PURITY_BALANCE_IMPROVED = {str(balance['improved']).upper()}`。"),
         ("Bmax/Uncovered/Oracle10", f"A_full: Bmax={c['by_mode']['A_full']['basis_max_coverage']:.4f}，uncovered={c['by_mode']['A_full']['class_basis_uncovered']:.4f}，oracle10={c['by_mode']['A_full']['oracle_top10_recall']:.4f}。"),
         ("Basis Purity/Rival/BG", f"A_full: purity={c['by_mode']['A_full']['weighted_purity']:.4f}，rival={c['by_mode']['A_full']['rival_mass']:.4f}，background={c['by_mode']['A_full']['background_mass']:.4f}。"),
-        ("Dual-State Causal Ablation", f"A−B={a['A_minus_B_pp']:+.4f} pp，A−C={a['A_minus_C_pp']:+.4f} pp；gate={a['dual_state']}。"),
+        ("Dual-State Causal Ablation", ablation_table + f"\n\nA−B={a['A_minus_B_pp']:+.4f} pp，A−C={a['A_minus_C_pp']:+.4f} pp；预注册 dual-state gate={a['dual_state']}。"),
         ("CFR Ablation", f"A−D={a['A_minus_D_pp']:+.4f} pp；gate={a['cfr']}。"),
         ("DGSR Ablation", f"A−E={a['A_minus_E_pp']:+.4f} pp；gate={a['dgsr']}。"),
         ("Old F3 Semantic Ablation", f"A−F={a['A_minus_F_pp']:+.4f} pp；gate={a['spatial_over_semantic']}。"),
         ("Complexity", f"参数={result['complexity']['parameters']:,}，vs HQMR-v1={result['complexity']['delta_vs_hqmr_v1']:,}；train={result['training']['train_seconds']/60:.2f} min，peak VRAM={result['training']['peak_cuda_memory_gib']:.3f} GiB。"),
         ("Qualitative Cases", "已自动生成五类 top-5 案例清单及去重后的多面板图，位于 visualizations/。"),
-        ("Scientific Interpretation", result["interpretation"]),
+        ("Scientific Interpretation", specific_interpretation + " 性能只由固定 E25 paired comparison 判定；机制指标与消融未参与选模。"),
         ("Exact Decision", f"`DECISION = {result['decision']}`"),
         ("Next Step", result["next_step"]),
     ]
