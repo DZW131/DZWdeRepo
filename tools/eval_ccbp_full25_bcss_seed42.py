@@ -287,7 +287,7 @@ def main():
     hist, matrices = {name: [] for name in names}, {name: [] for name in names}
     paired, hqmr_weighted, morphology, interior = [], [], [], []
     weighted_by_mode = {name: [] for name in MODES}; tails_by_mode = {name: [] for name in MODES}
-    scores23 = {name: [] for name in MODES}; labels23, gates = [], [], []
+    scores23 = {name: [] for name in MODES}; labels23, gates = [], []
     started = time.perf_counter(); torch.cuda.reset_peak_memory_stats()
     for index, (batch_names, image) in enumerate(loader, 1):
         image_id = batch_names[0]
