@@ -127,7 +127,8 @@ class HQMR(nn.Module):
         return {"basis_logits": final_logits, "basis": final_logits.sigmoid(),
                 "logits5": logits5, "logits4": logits4, "logits3": logits3,
                 "direct4": direct4, "direct3": direct3 if h3 is not None and mode not in {"mid_final"} else None,
-                "query0": q0, "query5": q5, "query4": q4, "value3": v3, "mode": mode}
+                "query0": q0, "query5": q5, "query4": q4, "key4": k4,
+                "value3": v3, "mode": mode}
 
 
 def class_mixture(basis: torch.Tensor, weights: torch.Tensor) -> torch.Tensor:
