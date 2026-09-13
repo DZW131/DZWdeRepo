@@ -1,7 +1,8 @@
 import numpy as np
 
 from tools.audit_hqmr_class23_residual import (
-    BOOTSTRAP_RESAMPLES, BOOTSTRAP_SEED, confusion5, js_divergence,
+    BOOTSTRAP_RESAMPLES, BOOTSTRAP_SEED, background_undercall_contribution,
+    confusion5, js_divergence,
     json_safe, normalized_matrix, ratio, safe_correlation_ci,
 )
 
@@ -43,6 +44,16 @@ def test_js_is_symmetric_and_positive():
 
 def test_ratio_zero_denominator_is_explicit_zero():
     assert ratio(3, 0) == 0.0
+
+
+def test_background_undercall_excludes_reverse_background_false_positives():
+    attribution = [
+        {"category": "2_to_3", "excess_pixels": 10},
+        {"category": "2_to_BG", "excess_pixels": 0},
+        {"category": "3_to_BG", "excess_pixels": 0},
+        {"category": "BG_to_23", "excess_pixels": 100},
+    ]
+    assert background_undercall_contribution(attribution) == 0.0
 
 
 def test_constant_correlation_is_explicitly_unavailable():

@@ -78,6 +78,12 @@ def json_safe(value):
     return value
 
 
+def background_undercall_contribution(attribution):
+    class23_errors = sum(max(0, row["excess_pixels"]) for row in attribution if row["category"].startswith(("2_", "3_")))
+    background_undercall = sum(max(0, row["excess_pixels"]) for row in attribution if row["category"] in {"2_to_BG", "3_to_BG"})
+    return ratio(background_undercall, class23_errors)
+
+
 @torch.no_grad()
 def infer_sshr(model, image, original_hw):
     views, probabilities = [[], [], []], []
@@ -339,7 +345,7 @@ def main():
     wm=weighted_df.groupby("class").mean(numeric_only=True); control=wm.loc[[0,1]].mean(); class23=wm.loc[[2,3]].mean(); purity_deficit=float(control.weighted_purity-class23.weighted_purity); rival_excess=float(class23.weighted_rival-control.weighted_rival)
     actual=topk_df[(topk_df.k==10)&(topk_df.ranking=="actual")].groupby("class").mean(numeric_only=True); oracle=topk_df[(topk_df.k==10)&(topk_df.ranking=="oracle")].groupby("class").mean(numeric_only=True); actual23=float(actual.loc[[2,3]].recall.mean()); oracle23=float(oracle.loc[[2,3]].recall.mean()); gap=oracle23-actual23
     delta_conf=float(combined.mutual_delta.mean()); h1="STRONG" if delta_conf>=.015 and target_boot["mutual_delta"]["ci95"][0]>0 else "MODERATE" if delta_conf>=.0075 else "WEAK"
-    excess_fn=sum(max(0,r["excess_pixels"]) for r in attr if r["category"].startswith(("2_","3_"))); bg_excess=sum(max(0,r["excess_pixels"]) for r in attr if "BG" in r["category"]); bg_contribution=ratio(bg_excess,excess_fn); h2="STRONG" if bg_contribution>=.5 and target_boot["background_delta"]["ci95"][0]>0 else "MODERATE" if bg_contribution>=.3 else "WEAK"
+    bg_contribution=background_undercall_contribution(attr); h2="STRONG" if bg_contribution>=.5 and target_boot["background_delta"]["ci95"][0]>0 else "MODERATE" if bg_contribution>=.3 else "WEAK"
     h3="STRONG" if purity_deficit>=.08 or rival_excess>=.08 else "MODERATE" if purity_deficit>=.04 or rival_excess>=.04 else "WEAK"; h4="STRONG" if (oracle23>=.70 and actual23<=.50) or gap>=.20 else "WEAK"
     morph_mean=morph_df.groupby(["class","model"]).mean(numeric_only=True); properties=("components","small_component_fraction","hole_count","hole_area_fraction","perimeter_area_ratio","compactness","fragmentation_index")
     worse=[p for p in properties if all(morph_mean.loc[(c,"hqmr"),p]>morph_mean.loc[(c,"sshr"),p] for c in (2,3))]; h5="STRONG" if len(worse)>=2 and h1!="STRONG" and h2!="STRONG" else "WEAK"
