@@ -3,7 +3,7 @@ import numpy as np
 from tools.audit_hqmr_class23_residual import (
     BOOTSTRAP_RESAMPLES, BOOTSTRAP_SEED, background_undercall_contribution,
     confusion5, js_divergence,
-    json_safe, normalized_matrix, ratio, safe_correlation_ci,
+    json_safe, normalized_matrix, rank_bottlenecks, ratio, safe_correlation_ci,
 )
 
 
@@ -44,6 +44,13 @@ def test_js_is_symmetric_and_positive():
 
 def test_ratio_zero_denominator_is_explicit_zero():
     assert ratio(3, 0) == 0.0
+
+
+def test_mixed_ranking_prefers_basis_root_cause_over_morphology_symptom():
+    hypotheses = {"H1": {"result": "WEAK"}, "H2": {"result": "WEAK"}, "H3": {"result": "STRONG"}, "H4": {"result": "WEAK"}, "H5": {"result": "STRONG"}}
+    effects = {"interclass confusion": .001, "background under-call": 0., "basis purity": .12, "query-class coupling": .04, "spatial morphology": 1.}
+    ranked = rank_bottlenecks(hypotheses, effects)
+    assert [row[0] for row in ranked[:3]] == ["basis purity", "spatial morphology", "query-class coupling"]
 
 
 def test_background_undercall_excludes_reverse_background_false_positives():

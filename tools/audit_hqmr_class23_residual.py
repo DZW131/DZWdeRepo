@@ -84,6 +84,15 @@ def background_undercall_contribution(attribution):
     return ratio(background_undercall, class23_errors)
 
 
+def rank_bottlenecks(hypotheses, effects):
+    names = {"interclass confusion": "H1", "background under-call": "H2", "basis purity": "H3", "query-class coupling": "H4", "spatial morphology": "H5"}
+    severity = {"WEAK": 0, "MODERATE": 1, "STRONG": 2}
+    # Causal tie-break: when oracle bases are also poor, basis quality precedes
+    # downstream morphology. A strong router gap would precede basis purity.
+    causal_order = ["query-class coupling", "basis purity", "interclass confusion", "background under-call", "spatial morphology"]
+    return sorted(effects.items(), key=lambda item: (severity[hypotheses[names[item[0]]]["result"]], -causal_order.index(item[0]), abs(item[1])), reverse=True)
+
+
 @torch.no_grad()
 def infer_sshr(model, image, original_hw):
     views, probabilities = [[], [], []], []
@@ -236,7 +245,7 @@ def report_text(result):
         ("Correlation Analysis", "Spearman estimates and 10,000-image bootstrap CIs (seed=20260913) are in correlation/。"),
         ("Representative Cases", "五类自动 top-5 cases 与 query-level panels 位于 visualizations/；未人工挑选。"),
         ("Decision Matrix", "\n".join(["| Hypothesis | Result | Confidence | Core evidence |", "|---|---|---|---|"] + [f"| {name} | {row['result']} | {row['confidence']} | {row['evidence']} |" for name, row in matrix.items()])),
-        ("Exact Residual Bottleneck", result["because_sentence"]),
+        ("Exact Residual Bottleneck", f"Primary bottleneck: **{result['primary_bottleneck']}**\n\nSecondary bottleneck: **{result['secondary_bottleneck']}**\n\nTertiary bottleneck: **{result['tertiary_bottleneck']}**\n\n{result['because_sentence']}"),
         ("What Is Preserved", "CCRA、HQMR-v1、H5→H4 hierarchy、region-conditioned query update、detached w 和 frozen weak supervision。"),
         ("What Is Archived", "CP-HQMR dual state/CFR/DGSR primary path、F3 semantic re-decoding、CCAC/DFSC/local propagation、top-k sparsification、pixel-wise FOMD restoration。"),
         ("Exact Next Architecture Target", result["next_target"]),
@@ -367,12 +376,12 @@ def main():
     strong=[k for k,v in hypotheses.items() if v["result"]=="STRONG"]
     mapping={"H1":"CLASS23_INTERCLASS_CONFUSION","H2":"CLASS23_BACKGROUND_UNDERCALL","H3":"CLASS23_BASIS_PURITY_LIMIT","H4":"CLASS23_QUERY_CLASS_COUPLING_LIMIT","H5":"CLASS23_SPATIAL_MORPHOLOGY_LIMIT"}
     decision=mapping[strong[0]] if len(strong)==1 else "MIXED_CLASS23_BOTTLENECK" if len(strong)>1 else "NO_SINGLE_RESIDUAL_BOTTLENECK"; confidence="HIGH" if (len(strong)>=1 and sum([h1!="WEAK",h2!="WEAK",h3!="WEAK",h4!="WEAK",h5!="WEAK"])>=3) else "MEDIUM" if strong else "LOW"
-    ranked=sorted((("interclass confusion",delta_conf),("background under-call",bg_contribution),("basis purity",max(purity_deficit,rival_excess)),("query-class coupling",gap),("spatial morphology",len(worse)/len(properties))),key=lambda x:x[1],reverse=True); primary=ranked[0][0]
+    effects={"interclass confusion":delta_conf,"background under-call":bg_contribution,"basis purity":max(purity_deficit,rival_excess),"query-class coupling":gap,"spatial morphology":len(worse)/len(properties)}; ranked=rank_bottlenecks(hypotheses,effects); primary,secondary,tertiary=ranked[0][0],ranked[1][0],ranked[2][0]
     target_map={"interclass confusion":"class-discriminative query-mask separation and cross-class evidence decoupling","background under-call":"class2/3 foreground-confidence recovery without rival leakage","basis purity":"HQMR basis semantic purity and class2/3 rival-mass suppression","query-class coupling":"the mapping from class-conditioned responsibility to the HQMR basis bank","spatial morphology":"a minimal morphology/coherence correction specific to the observed phenotype"}; next_target=target_map[primary]
     because=f"HQMR-v1's remaining gap to SSHR is dominated by {primary}; therefore the next model should modify {next_target} while preserving CCRA and the validated H5→H4 HQMR reconstruction path."
     matrix={"H1 Class2/3 inter-class confusion":{"result":h1,"confidence":"HIGH" if h1=="STRONG" else "MEDIUM" if h1=="MODERATE" else "LOW","evidence":f"DeltaConf23={delta_conf:+.4f}, CI={target_boot['mutual_delta']['ci95']}"},"H2 Background under-call":{"result":h2,"confidence":"HIGH" if h2=="STRONG" else "LOW","evidence":f"contribution={bg_contribution:.4f}; background output absent by frozen protocol"},"H3 Basis purity limit":{"result":h3,"confidence":"HIGH" if h3=="STRONG" else "MEDIUM" if h3=="MODERATE" else "LOW","evidence":f"purity deficit={purity_deficit:.4f}, rival excess={rival_excess:.4f}"},"H4 Query-class coupling limit":{"result":h4,"confidence":"HIGH" if h4=="STRONG" else "LOW","evidence":f"actual10={actual23:.4f}, oracle10={oracle23:.4f}, gap={gap:.4f}"},"H5 Spatial morphology limit":{"result":h5,"confidence":"HIGH" if h5=="STRONG" else "LOW","evidence":f"same-direction worse properties={worse}"}}
     candidates=pd.DataFrame(candidate_rows); selections={"losses":candidates.nsmallest(5,"delta_iou").image_id.tolist(),"wins":candidates.nlargest(5,"delta_iou").image_id.tolist(),"confusion_2to3":candidates.nlargest(5,"confusion_2to3").image_id.tolist(),"confusion_3to2":candidates.nlargest(5,"confusion_3to2").image_id.tolist(),"background_fn":candidates.nlargest(5,"background_fn").image_id.tolist()}; write_json(output/"visualizations/selection.json",selections); render_selected(loader,selections,valroot,output,sshr,hqmr)
-    result=json_safe({"decision":decision,"confidence":confidence,"reproduction_gate":reproduction,"per_class_gap_pp":{str(c):100*(metrics["hqmr"]["class_iou"][str(c)]-metrics["sshr"]["class_iou"][str(c)]) for c in range(4)},"hypotheses":hypotheses,"decision_matrix":matrix,"error_attribution":attr,"top_tail_summary":tail_summary,"actual_oracle_summary":actual_oracle,"weight_separability":weight_summary,"pixel_separability":separability,"interior_boundary_summary":ib,"contact_summary":contact_summary,"rescue23":{"pixels":int(rescue_df.pixels.sum()) if len(rescue_df) else 0,"images":int(rescue_df.image_id.nunique()) if len(rescue_df) else 0,"types":type_summary,"margin":pd.DataFrame(rescue_margin).mean(numeric_only=True).to_dict() if rescue_margin else {}},"ranked_bottlenecks":ranked,"because_sentence":because,"next_target":next_target,"cp_hqmr_archived":True,"zero_training":True})
+    result=json_safe({"decision":decision,"confidence":confidence,"reproduction_gate":reproduction,"per_class_gap_pp":{str(c):100*(metrics["hqmr"]["class_iou"][str(c)]-metrics["sshr"]["class_iou"][str(c)]) for c in range(4)},"hypotheses":hypotheses,"decision_matrix":matrix,"error_attribution":attr,"top_tail_summary":tail_summary,"actual_oracle_summary":actual_oracle,"weight_separability":weight_summary,"pixel_separability":separability,"interior_boundary_summary":ib,"contact_summary":contact_summary,"rescue23":{"pixels":int(rescue_df.pixels.sum()) if len(rescue_df) else 0,"images":int(rescue_df.image_id.nunique()) if len(rescue_df) else 0,"types":type_summary,"margin":pd.DataFrame(rescue_margin).mean(numeric_only=True).to_dict() if rescue_margin else {}},"ranked_bottlenecks":ranked,"primary_bottleneck":primary,"secondary_bottleneck":secondary,"tertiary_bottleneck":tertiary,"because_sentence":because,"next_target":next_target,"cp_hqmr_archived":True,"zero_training":True})
     write_json(output/"audit_result.json",result); report=output/"report/HQMR_v1_Class23_Residual_Failure_Audit_Report.md"; report.write_text(report_text(result),encoding="utf-8"); print(json.dumps({"decision":decision,"confidence":confidence,"report":str(report),"ranked":ranked},indent=2)); print(f"DECISION = {decision}"); print(f"CONFIDENCE = {confidence}")
 
 
