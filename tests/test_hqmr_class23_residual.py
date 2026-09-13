@@ -2,7 +2,7 @@ import numpy as np
 
 from tools.audit_hqmr_class23_residual import (
     BOOTSTRAP_RESAMPLES, BOOTSTRAP_SEED, confusion5, js_divergence,
-    normalized_matrix, ratio,
+    json_safe, normalized_matrix, ratio, safe_correlation_ci,
 )
 
 
@@ -43,3 +43,12 @@ def test_js_is_symmetric_and_positive():
 
 def test_ratio_zero_denominator_is_explicit_zero():
     assert ratio(3, 0) == 0.0
+
+
+def test_constant_correlation_is_explicitly_unavailable():
+    result = safe_correlation_ci(np.zeros(5), np.arange(5))
+    assert result["estimate"] is None and result["ci95"] == [None, None]
+
+
+def test_json_safe_replaces_nonfinite_values():
+    assert json_safe({"x": [float("nan"), float("inf"), 1.0]}) == {"x": [None, None, 1.0]}

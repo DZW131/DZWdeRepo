@@ -63,6 +63,21 @@ def js_divergence(left, right):
     return float(.5 * np.sum(left * np.log(np.clip(left / mean, EPS, None))) + .5 * np.sum(right * np.log(np.clip(right / mean, EPS, None))))
 
 
+def safe_correlation_ci(x, y):
+    x, y = np.asarray(x, dtype=np.float64), np.asarray(y, dtype=np.float64)
+    valid = np.isfinite(x) & np.isfinite(y); x, y = x[valid], y[valid]
+    if len(x) < 3 or np.ptp(x) == 0 or np.ptp(y) == 0:
+        return {"n": int(len(x)), "estimate": None, "ci95": [None, None], "reason": "constant_or_insufficient_feature"}
+    return correlation_ci(x, y, seed=BOOTSTRAP_SEED, resamples=BOOTSTRAP_RESAMPLES)
+
+
+def json_safe(value):
+    if isinstance(value, dict): return {key: json_safe(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)): return [json_safe(item) for item in value]
+    if isinstance(value, (float, np.floating)) and not math.isfinite(float(value)): return None
+    return value
+
+
 @torch.no_grad()
 def infer_sshr(model, image, original_hw):
     views, probabilities = [[], [], []], []
@@ -340,7 +355,7 @@ def main():
     correlation_features=pairs_df.copy(); correlation_features["mutual_confusion"]=(correlation_features.hqmr_2to3+correlation_features.hqmr_3to2)/(correlation_features.GT_area_c2+correlation_features.GT_area_c3).clip(lower=1); correlation_features["background_fn"]=0.; correlation_features["weighted_purity"]=(correlation_features.get("c2_purity",0)+correlation_features.get("c3_purity",0))/2; correlation_features["rival_mass"]=(correlation_features.get("c2_rival",0)+correlation_features.get("c3_rival",0))/2; correlation_features["router_gap"]=(correlation_features.get("c2_router_gap",0)+correlation_features.get("c3_router_gap",0))/2
     corr=[]; boot={}
     for key in ("mutual_confusion","background_fn","weighted_purity","rival_mass","router_gap"):
-        value=correlation_ci(correlation_features[key],correlation_features.DeltaIoU,seed=BOOTSTRAP_SEED,resamples=BOOTSTRAP_RESAMPLES); corr.append({"metric":key,**value}); boot[key]=value
+        value=safe_correlation_ci(correlation_features[key],correlation_features.DeltaIoU); corr.append({"metric":key,**value}); boot[key]=value
     write_csv(output/"correlation/residual_correlations.csv",corr); write_json(output/"correlation/residual_bootstrap.json",boot)
     hypotheses={"H1":{"result":h1,"delta":delta_conf,"ci95":target_boot["mutual_delta"]["ci95"]},"H2":{"result":h2,"contribution":bg_contribution},"H3":{"result":h3,"purity_deficit":purity_deficit,"rival_excess":rival_excess},"H4":{"result":h4,"gap_recall":gap,"actual10":actual23,"oracle10":oracle23},"H5":{"result":h5,"worse_properties":worse}}
     strong=[k for k,v in hypotheses.items() if v["result"]=="STRONG"]
@@ -351,7 +366,7 @@ def main():
     because=f"HQMR-v1's remaining gap to SSHR is dominated by {primary}; therefore the next model should modify {next_target} while preserving CCRA and the validated H5→H4 HQMR reconstruction path."
     matrix={"H1 Class2/3 inter-class confusion":{"result":h1,"confidence":"HIGH" if h1=="STRONG" else "MEDIUM" if h1=="MODERATE" else "LOW","evidence":f"DeltaConf23={delta_conf:+.4f}, CI={target_boot['mutual_delta']['ci95']}"},"H2 Background under-call":{"result":h2,"confidence":"HIGH" if h2=="STRONG" else "LOW","evidence":f"contribution={bg_contribution:.4f}; background output absent by frozen protocol"},"H3 Basis purity limit":{"result":h3,"confidence":"HIGH" if h3=="STRONG" else "MEDIUM" if h3=="MODERATE" else "LOW","evidence":f"purity deficit={purity_deficit:.4f}, rival excess={rival_excess:.4f}"},"H4 Query-class coupling limit":{"result":h4,"confidence":"HIGH" if h4=="STRONG" else "LOW","evidence":f"actual10={actual23:.4f}, oracle10={oracle23:.4f}, gap={gap:.4f}"},"H5 Spatial morphology limit":{"result":h5,"confidence":"HIGH" if h5=="STRONG" else "LOW","evidence":f"same-direction worse properties={worse}"}}
     candidates=pd.DataFrame(candidate_rows); selections={"losses":candidates.nsmallest(5,"delta_iou").image_id.tolist(),"wins":candidates.nlargest(5,"delta_iou").image_id.tolist(),"confusion_2to3":candidates.nlargest(5,"confusion_2to3").image_id.tolist(),"confusion_3to2":candidates.nlargest(5,"confusion_3to2").image_id.tolist(),"background_fn":candidates.nlargest(5,"background_fn").image_id.tolist()}; write_json(output/"visualizations/selection.json",selections); render_selected(loader,selections,valroot,output,sshr,hqmr)
-    result={"decision":decision,"confidence":confidence,"reproduction_gate":reproduction,"per_class_gap_pp":{str(c):100*(metrics["hqmr"]["class_iou"][str(c)]-metrics["sshr"]["class_iou"][str(c)]) for c in range(4)},"hypotheses":hypotheses,"decision_matrix":matrix,"error_attribution":attr,"top_tail_summary":tail_summary,"actual_oracle_summary":actual_oracle,"weight_separability":weight_summary,"pixel_separability":separability,"interior_boundary_summary":ib,"contact_summary":contact_summary,"rescue23":{"pixels":int(rescue_df.pixels.sum()) if len(rescue_df) else 0,"images":int(rescue_df.image_id.nunique()) if len(rescue_df) else 0,"types":type_summary,"margin":pd.DataFrame(rescue_margin).mean(numeric_only=True).to_dict() if rescue_margin else {}},"ranked_bottlenecks":ranked,"because_sentence":because,"next_target":next_target,"cp_hqmr_archived":True,"zero_training":True}
+    result=json_safe({"decision":decision,"confidence":confidence,"reproduction_gate":reproduction,"per_class_gap_pp":{str(c):100*(metrics["hqmr"]["class_iou"][str(c)]-metrics["sshr"]["class_iou"][str(c)]) for c in range(4)},"hypotheses":hypotheses,"decision_matrix":matrix,"error_attribution":attr,"top_tail_summary":tail_summary,"actual_oracle_summary":actual_oracle,"weight_separability":weight_summary,"pixel_separability":separability,"interior_boundary_summary":ib,"contact_summary":contact_summary,"rescue23":{"pixels":int(rescue_df.pixels.sum()) if len(rescue_df) else 0,"images":int(rescue_df.image_id.nunique()) if len(rescue_df) else 0,"types":type_summary,"margin":pd.DataFrame(rescue_margin).mean(numeric_only=True).to_dict() if rescue_margin else {}},"ranked_bottlenecks":ranked,"because_sentence":because,"next_target":next_target,"cp_hqmr_archived":True,"zero_training":True})
     write_json(output/"audit_result.json",result); report=output/"report/HQMR_v1_Class23_Residual_Failure_Audit_Report.md"; report.write_text(report_text(result),encoding="utf-8"); print(json.dumps({"decision":decision,"confidence":confidence,"report":str(report),"ranked":ranked},indent=2)); print(f"DECISION = {decision}"); print(f"CONFIDENCE = {confidence}")
 
 
