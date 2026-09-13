@@ -69,9 +69,12 @@ def infer_sshr(model, image, original_hw):
     for input_flip, cam_flip in TTA:
         value = torch.flip(image, dims=input_flip) if input_flip else image
         with torch.autocast("cuda", dtype=torch.bfloat16): _, c1, c2, deep, probability = model.forward_cam(value)
-        for index, cam in enumerate((c1, c2, deep)): views[index].append(resize_unflip(cam, original_hw, cam_flip).float().cpu())
-        probabilities.append(probability.float().cpu())
-    normalized = [normalize_cam(torch.stack(value).mean(0).numpy()) for value in views]; scores = sum(weight * cam for weight, cam in zip(FIXED_WEIGHTS, normalized)); label = presence(torch.stack(probabilities).mean(0).numpy()[0])
+        # Preserve the frozen evaluator's BF16 view-reduction order exactly: average
+        # all GPU views first, then cast once to FP32 on CPU. Per-view FP32 casts
+        # change a small number of argmax ties and fail exact SSHR reproduction.
+        for index, cam in enumerate((c1, c2, deep)): views[index].append(resize_unflip(cam, original_hw, cam_flip))
+        probabilities.append(probability)
+    normalized = [normalize_cam(torch.stack(value).mean(0).float().cpu().numpy()) for value in views]; scores = sum(weight * cam for weight, cam in zip(FIXED_WEIGHTS, normalized)); label = presence(torch.stack(probabilities).mean(0).float().cpu().numpy()[0])
     return {"scores": scores, "label": label, "prediction": prediction_from_cam(scores, label, np.empty(original_hw))}
 
 
