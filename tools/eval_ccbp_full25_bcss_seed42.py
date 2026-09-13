@@ -63,7 +63,7 @@ def infer_ccbp(model, image, original_hw):
             payload = decoded["ccbp"] if mode == "full" else model.ccbp(
                 decoded["basis"], decoded["weights"], decoded["query4"], decoded["key4"],
                 output["deep_gate"], dummy.bool(), mode=mode)
-            views[name].append(resize_unflip(payload["mixture"], original_hw, cam_flip))
+            views[name].append(resize_unflip(payload["mixture"], original_hw, cam_flip).float().cpu())
             pur = payload["purified_basis"][0]
             if cam_flip:
                 pur = torch.flip(pur, dims=tuple(dimension + 1 for dimension in cam_flip))
@@ -77,9 +77,9 @@ def infer_ccbp(model, image, original_hw):
         bases.append(base.float().cpu())
         weights.append(decoded["weights"][0].float().cpu())
         gates.append(gate.float().cpu()); logits.append(logit.float().cpu())
-        probabilities.append(output["deep_gate"])
-    label = presence(torch.stack(probabilities).mean(0).float().cpu().numpy()[0])
-    scores = {name: normalize_cam(torch.stack(items).mean(0).float().cpu().numpy()) for name, items in views.items()}
+        probabilities.append(output["deep_gate"].float().cpu())
+    label = presence(torch.stack(probabilities).mean(0).numpy()[0])
+    scores = {name: normalize_cam(torch.stack(items).mean(0).numpy()) for name, items in views.items()}
     predictions = {name: prediction_from_cam(score, label, np.empty(original_hw)) for name, score in scores.items()}
     return {"scores": scores, "predictions": predictions, "label": label,
             "basis": torch.stack(bases).mean(0).numpy(),
@@ -98,12 +98,13 @@ def infer_hqmr(model, image, original_hw):
         value = torch.flip(image, dims=input_flip) if input_flip else image
         with torch.autocast("cuda", dtype=torch.bfloat16):
             output = model(value, dummy, step=29275, hqmr_mode="full")
-        views.append(resize_unflip(output["primary_output"], original_hw, cam_flip)); gates.append(output["deep_gate"])
+        views.append(resize_unflip(output["primary_output"], original_hw, cam_flip).float().cpu())
+        gates.append(output["deep_gate"].float().cpu())
         decoded = output["stages"][2]["hqmr"]; basis = decoded["basis"][0]
         if cam_flip: basis = torch.flip(basis, dims=cam_flip)
         bases.append(basis.float().cpu()); weights.append(decoded["weights"][0].float().cpu())
-    score = normalize_cam(torch.stack(views).mean(0).float().cpu().numpy())
-    label = presence(torch.stack(gates).mean(0).float().cpu().numpy()[0])
+    score = normalize_cam(torch.stack(views).mean(0).numpy())
+    label = presence(torch.stack(gates).mean(0).numpy()[0])
     return {"scores": score, "prediction": prediction_from_cam(score, label, np.empty(original_hw)),
             "basis": torch.stack(bases).mean(0).numpy(), "weights": torch.stack(weights).mean(0).numpy()}
 
