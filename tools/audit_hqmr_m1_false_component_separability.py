@@ -121,7 +121,9 @@ def infer_hqmr_observables(model: HQMRNet, image: torch.Tensor, original_hw: tup
         with torch.autocast("cuda", dtype=torch.bfloat16):
             output = model(value, dummy, step=29275, hqmr_mode="full")
         item = output["stages"][2]["hqmr"]
-        full.append(resize_unflip(item["mixture"], original_hw, cam_flip))
+        # Match the sealed HQMR evaluator exactly: cast/copy every view to CPU
+        # before the view mean. Reducing on GPU changes a few argmax ties.
+        full.append(resize_unflip(item["mixture"], original_hw, cam_flip).float().cpu())
         basis = item["basis"][0]
         if cam_flip:
             basis = torch.flip(basis, dims=cam_flip)
@@ -130,7 +132,7 @@ def infer_hqmr_observables(model: HQMRNet, image: torch.Tensor, original_hw: tup
         gates.append(output["deep_gate"].float().cpu())
         anchors.append(_resize_nearest_unflip(output["target_detail"]["positive"].float(), original_hw, cam_flip).bool().cpu())
     # Preserve exact frozen BF16 view reduction for the formal prediction.
-    scores = normalize_cam(torch.stack(full).mean(0).float().cpu().numpy())
+    scores = normalize_cam(torch.stack(full).mean(0).numpy())
     label = presence(torch.stack(gates).mean(0).numpy()[0])
     anchor_map = (torch.stack(anchors).sum(0) >= 2).numpy()
     anchor_map &= label[:, None, None].astype(bool)
