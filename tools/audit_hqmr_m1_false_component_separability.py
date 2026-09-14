@@ -359,7 +359,11 @@ def run_extract(args, output: Path) -> None:
         hmatch = bool(np.array_equal(h["prediction"], frozen["hqmr"]))
         smatch = bool(np.array_equal(s["prediction"], frozen["sshr"]))
         if not hmatch or not smatch:
-            raise AssertionError(f"Frozen prediction-map mismatch at {image_id}")
+            raise AssertionError(
+                f"Frozen prediction-map mismatch at {image_id}: "
+                f"hqmr_match={hmatch} hqmr_pixels={int(np.sum(h['prediction'] != frozen['hqmr']))} "
+                f"sshr_match={smatch} sshr_pixels={int(np.sum(s['prediction'] != frozen['sshr']))}"
+            )
         hqmr_rows.extend(extract_component_features_no_gt(
             image_id, h["prediction"], h["scores"], h["anchors"], h["basis"], h["weights"], "hqmr"))
         sshr_rows.extend(extract_component_features_no_gt(
