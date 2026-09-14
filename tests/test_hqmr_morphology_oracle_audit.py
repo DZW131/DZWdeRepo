@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from tools.hqmr_morphology_oracle_audit import (
+    _json_ready,
     apply_operator,
     exact_shapley,
     m1_fp_island_removal,
@@ -109,3 +110,8 @@ def test_exact_shapley_recovers_additive_contributions():
     result = exact_shapley(values)
     assert list(result) == ["M1", "M2", "M3", "M4", "M5"]
     assert list(result.values()) == pytest.approx(contributions)
+
+
+def test_json_ready_converts_numpy_scalars_and_nonfinite_values():
+    value = {"integer": np.int64(7), "float": np.float32(1.5), "missing": float("nan")}
+    assert _json_ready(value) == {"integer": 7, "float": 1.5, "missing": None}

@@ -306,6 +306,25 @@ def _canonical_hash(value) -> str:
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
+def _json_ready(value):
+    """Recursively convert NumPy/Pandas scalars to strict JSON values."""
+    if isinstance(value, dict):
+        return {str(key): _json_ready(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_json_ready(item) for item in value]
+    if isinstance(value, np.generic):
+        return value.item()
+    if isinstance(value, float) and not math.isfinite(value):
+        return None
+    return value
+
+
+def _csv_records(path: Path) -> list[dict]:
+    frame = pd.read_csv(path)
+    frame = frame.astype(object).where(pd.notna(frame), None)
+    return _json_ready(frame.to_dict("records"))
+
+
 def setup_output(output: Path):
     for name in ("provenance", "baseline", "operators", "subsets", "shapley", "headroom", "per_class", "per_image",
                  "robustness", "diagnostics", "cache", "visualizations/baseline", "visualizations/operator_masks",
@@ -379,7 +398,7 @@ def _aggregate_prevalence(records, gt_area):
                 items = [r for r in records if r["model"]==model and r["operator"]==op and r["class"]==cls]
                 area, count = sum(r["area"] for r in items), sum(r["count"] for r in items)
                 rows.append({"model": model, "operator": op, "operator_name": OPERATOR_NAMES[op], "class": cls,
-                             "count": count, "area": area, "gt_area": gt_area[cls], "area_over_gt": area/max(gt_area[cls],1),
+                             "count": count, "area": area, "gt_area": int(gt_area[cls]), "area_over_gt": area/max(int(gt_area[cls]),1),
                              "per_image_prevalence": sum(r["area"]>0 for r in items)/max(len(items),1)})
     lookup = {(r["model"],r["operator"],r["class"]):r for r in rows}
     for op in OPERATORS:
@@ -599,12 +618,117 @@ def run_audit(args, output: Path):
     result={"decision":{"decision":decision,"confidence":confidence,"matrix":matrix,"dominant_operators":dominant,"architecture_target":target,"falsified":falsified,"next_step":next_step},"baseline":baseline,"reproduction_gate":gate,"headroom":headroom,"conservative":conservative,"full_oracle":full,"individual_gains_pp":individual,"operator_summary":{op:[r for r in prevalence_rows if r["operator"]==op] for op in OPERATORS},"bootstrap":bootstrap,"shapley":{"hqmr":shapley["hqmr"],"sshr":shapley["sshr"],"excess":excess_shapley},"interactions":interactions,"per_class":per_class,"class23":class23,"image_distribution":image_distribution,"heavy_tail":heavy_tail,"gt_free_sanity":sanity_rows,"source_commit":config["source_commit"],"oracle_is_model_performance":False,"training_performed":False}
     selected={"highest_hqmr_gain":per_image_df.nlargest(5,"hqmr_full_gain_pp").image_id.tolist(),"highest_excess_headroom":per_image_df.nlargest(5,"excess_full_gain_pp").image_id.tolist(),"highest_hole_contribution":per_image_df.nlargest(5,"hole_contribution_pp").image_id.tolist(),"highest_fragmentation_contribution":per_image_df.nlargest(5,"fragmentation_contribution_pp").image_id.tolist(),"highest_boundary_contribution":per_image_df.nlargest(5,"boundary_contribution_pp").image_id.tolist(),"zero_or_negative_gain":per_image_df.nsmallest(5,"hqmr_full_gain_pp").image_id.tolist()}
     write_json(output/"visualizations/selection.json",selected); _visualize(output,Path(args.val_root),manifest,selected)
-    write_json(output/"morphology_oracle_audit_result.json",result); report=output/"report/HQMR_v1_Morphology_Oracle_Recovery_Audit_Report.md"; report.write_text(report_text(result),encoding="utf-8")
+    write_json(output/"morphology_oracle_audit_result.json",_json_ready(result)); report=output/"report/HQMR_v1_Morphology_Oracle_Recovery_Audit_Report.md"; report.write_text(report_text(result),encoding="utf-8")
     print(json.dumps({"decision":decision,"confidence":confidence,"headroom":headroom,"conservative":conservative,"dominant":dominant,"report":str(report)},indent=2)); print(f"DECISION = {decision}"); print(f"CONFIDENCE = {confidence}")
 
 
+def finalize_from_artifacts(output: Path) -> None:
+    """Recover final packaging after a post-computation serialization failure."""
+    required = [
+        "provenance/reproduction_gate.json", "provenance/morph_audit_config.json",
+        "headroom/full_oracle_headroom.json", "headroom/conservative_oracle_headroom.json",
+        "headroom/excess_headroom_bootstrap.json", "per_image/per_image_oracle_gain.csv",
+        "per_image/heavy_tail_analysis.json", "per_class/per_class_oracle_recovery.csv",
+        "shapley/hqmr_shapley.csv", "shapley/sshr_shapley.csv", "shapley/excess_shapley.csv",
+        "shapley/pairwise_interactions.csv", "robustness/gt_free_morphology_sanity.csv",
+        "subsets/hqmr_all_32_subsets.csv", "subsets/sshr_all_32_subsets.csv",
+        "visualizations/selection.json",
+    ]
+    missing = [name for name in required if not (output / name).is_file()]
+    if missing:
+        raise FileNotFoundError(f"Cannot finalize; missing artifacts: {missing}")
+    gate = json.loads((output / "provenance/reproduction_gate.json").read_text())
+    if gate["decision"] != "PASS" or gate["paired_validation_images"] != 3418:
+        raise AssertionError("Frozen reproduction gate is not valid")
+    config = json.loads((output / "provenance/morph_audit_config.json").read_text())
+    full_bundle = json.loads((output / "headroom/full_oracle_headroom.json").read_text())
+    cons_bundle = json.loads((output / "headroom/conservative_oracle_headroom.json").read_text())
+    baseline, full, headroom = full_bundle["baseline"], full_bundle["full"], full_bundle["headroom"]
+    conservative, cons = cons_bundle["headroom"], cons_bundle["conservative"]
+    if abs(baseline["hqmr"]["mIoU"] - HQMR_MIOU) > 1e-12 or abs(baseline["sshr"]["mIoU"] - SSHR_MIOU) > 1e-12:
+        raise AssertionError("Persisted baseline drift")
+    subsets = {model: pd.read_csv(output / f"subsets/{model}_all_32_subsets.csv").set_index("subset")
+               for model in ("hqmr", "sshr")}
+    individual = {
+        model: {op: 100 * (float(subsets[model].loc[1 << index, "mIoU"]) - float(subsets[model].loc[0, "mIoU"]))
+                for index, op in enumerate(OPERATORS)}
+        for model in subsets
+    }
+    shapley = {}
+    for name in ("hqmr", "sshr", "excess"):
+        frame = pd.read_csv(output / f"shapley/{name}_shapley.csv")
+        shapley[name] = {row.operator: float(row.shapley_pp) for row in frame.itertuples()}
+    per_class = _csv_records(output / "per_class/per_class_oracle_recovery.csv")
+    class_excess = {str(int(row["class"])): float(row["excess_gain_pp"]) for row in per_class}
+    total_class_excess = sum(class_excess.values())
+    class23_fraction = ((class_excess["2"] + class_excess["3"]) / total_class_excess
+                        if abs(total_class_excess) > 1e-12 else None)
+    class23 = {"fraction_total_excess": class23_fraction,
+               "CLASS23_MORPHOLOGY_DOMINANT": class23_fraction is not None and class23_fraction > .6}
+    per_image = pd.read_csv(output / "per_image/per_image_oracle_gain.csv")
+    image_distribution = {key: distribution(per_image[key]) for key in
+                          ("hqmr_full_gain_pp", "sshr_full_gain_pp", "excess_full_gain_pp")}
+    bootstrap = json.loads((output / "headroom/excess_headroom_bootstrap.json").read_text())
+    heavy_tail = json.loads((output / "per_image/heavy_tail_analysis.json").read_text())
+    decision, confidence = _decision(
+        headroom["gap_recovery_ratio"], conservative["gap_recovery_ratio"],
+        bootstrap["excess_headroom"]["ci95_pp"], class_excess, shapley["excess"],
+        heavy_tail["MORPHOLOGY_GAIN_HEAVY_TAIL"],
+    )
+    dominant, target = _dominant_target(shapley["excess"])
+    matrix = {
+        "gap_recovery_full_ge_1": headroom["gap_recovery_ratio"] >= 1,
+        "excess_ci_lower_gt_0": bootstrap["excess_headroom"]["ci95_pp"][0] > 0,
+        "gap_recovery_cons_ge_0_5": conservative["gap_recovery_ratio"] >= .5,
+        "positive_excess_classes": sum(value > 0 for value in class_excess.values()),
+        "meaningful_positive_excess_shapley": sum(value >= CONFIG["meaningful_shapley_pp"] for value in shapley["excess"].values()),
+        "heavy_tail": heavy_tail["MORPHOLOGY_GAIN_HEAVY_TAIL"],
+    }
+    falsified = ("Generic morphology repair as the primary bottleneck is falsified."
+                 if decision == "MORPHOLOGY_NOT_PRIMARY"
+                 else "Pure semantic purification as a sufficient recovery mechanism remains falsified.")
+    next_step = (f"Do not design SARH; morphology explains only {100*headroom['gap_recovery_ratio']:.2f}% of the gap."
+                 if decision == "MORPHOLOGY_NOT_PRIMARY"
+                 else f"After review, a future class/query-aware, boundary-safe mechanism may target {target}; this audit does not authorize training it.")
+    operator_summary = {op: _csv_records(output / "operators" / {
+        "M1": "M1_island_summary.csv", "M2": "M2_hole_summary.csv",
+        "M3": "M3_fragment_bridge_summary.csv", "M4": "M4_protrusion_summary.csv",
+        "M5": "M5_indentation_summary.csv",
+    }[op]) for op in OPERATORS}
+    result = {
+        "decision": {"decision": decision, "confidence": confidence, "matrix": matrix,
+                     "dominant_operators": dominant, "architecture_target": target,
+                     "falsified": falsified, "next_step": next_step},
+        "baseline": baseline, "reproduction_gate": gate, "headroom": headroom,
+        "conservative": conservative, "full_oracle": full, "individual_gains_pp": individual,
+        "operator_summary": operator_summary, "bootstrap": bootstrap, "shapley": shapley,
+        "interactions": _csv_records(output / "shapley/pairwise_interactions.csv"),
+        "per_class": per_class, "class23": class23, "image_distribution": image_distribution,
+        "heavy_tail": heavy_tail,
+        "gt_free_sanity": _csv_records(output / "robustness/gt_free_morphology_sanity.csv"),
+        "source_commit": config["source_commit"], "finalize_commit": subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+        "packaging_recovery": "Final JSON/Markdown reconstructed from persisted complete audit artifacts after NumPy int64 serialization failure.",
+        "oracle_is_model_performance": False, "training_performed": False,
+    }
+    result = _json_ready(result)
+    result_path = output / "morphology_oracle_audit_result.json"
+    report_path = output / "report/HQMR_v1_Morphology_Oracle_Recovery_Audit_Report.md"
+    write_json(result_path, result)
+    report_path.write_text(report_text(result), encoding="utf-8")
+    write_json(output / "provenance/finalization.json", {
+        "status": "PASS", "audit_source_commit": config["source_commit"],
+        "finalize_commit": result["finalize_commit"], "result_sha256": sha256(result_path),
+        "report_sha256": sha256(report_path), "reused_complete_artifacts": True,
+    })
+    print(json.dumps({"decision": decision, "confidence": confidence, "headroom": headroom,
+                      "conservative": conservative, "dominant": dominant}, indent=2))
+    print(f"DECISION = {decision}")
+    print(f"CONFIDENCE = {confidence}")
+
+
 def parse_args():
-    parser=argparse.ArgumentParser(description=__doc__); parser.add_argument("--mode",choices=("infer","audit"),required=True)
+    parser=argparse.ArgumentParser(description=__doc__); parser.add_argument("--mode",choices=("infer","audit","finalize"),required=True)
     parser.add_argument("--val-root",required=True); parser.add_argument("--output-dir",required=True); parser.add_argument("--hqmr-checkpoint",required=True); parser.add_argument("--sshr-checkpoint",required=True); parser.add_argument("--ccbp-result",required=True); parser.add_argument("--num-workers",type=int,default=8)
     return parser.parse_args()
 
@@ -612,7 +736,8 @@ def parse_args():
 def main():
     args=parse_args(); output=Path(args.output_dir).resolve()
     if args.mode=="infer": run_infer(args,output)
-    else: run_audit(args,output)
+    elif args.mode=="audit": run_audit(args,output)
+    else: finalize_from_artifacts(output)
 
 
 if __name__=="__main__": main()
