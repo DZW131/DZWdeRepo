@@ -329,8 +329,14 @@ def run_infer(args, output: Path):
     loader = DataLoader(Stage1_InferDataset(str(Path(args.val_root) / "img"), img_size=224), batch_size=1,
                         shuffle=False, num_workers=args.num_workers, pin_memory=True)
     if len(loader) != 3418: raise AssertionError("Expected 3418 validation images")
-    hqmr = HQMRNet().cuda().eval(); hqmr.load_state_dict(load_state(hpath), strict=True)
-    sshr = SSHRCAM(4).cuda().eval(); sshr.load_state_dict(load_state(spath), strict=True)
+    hqmr = HQMRNet().cuda()
+    hqmr.load_state_dict(load_state(hpath), strict=True)
+    hqmr.eval()
+    sshr = SSHRCAM(4).cuda()
+    sshr.load_state_dict(load_state(spath), strict=True)
+    # The legacy ResNet38 implementation mutates training state but does not
+    # return self from eval(), so keep this deliberately non-chained.
+    sshr.eval()
     hist = {"hqmr": [], "sshr": []}; manifest = []
     for index, (names, image) in enumerate(loader):
         image_id = names[0]; original = np.asarray(Image.open(Path(args.val_root)/"img"/f"{image_id}.png").convert("RGB"))
