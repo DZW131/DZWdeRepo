@@ -90,7 +90,8 @@ def provenance(args, output: Path) -> None:
         sha256(output / "provenance/cirv_config.json") + "\n")
     (output / "provenance/cirv_source_commit.txt").write_text(git_commit() + "\n")
     (output / "provenance/cirv_git_diff.patch").write_text(
-        subprocess.check_output(["git", "diff", "--binary"], cwd=ROOT, text=True), encoding="utf-8")
+        subprocess.check_output(["git", "diff", "HEAD~3", "HEAD", "--binary"], cwd=ROOT, text=True),
+        encoding="utf-8")
     write_json(output / "provenance/false_component_audit_archive.json", {
         "path": str(m1_result.resolve()), "sha256": sha256(m1_result),
         "decision": json.loads(m1_result.read_text())["decision"]})
@@ -118,7 +119,8 @@ def build_bank(args, output: Path) -> None:
         raise AssertionError(f"Expected 23422 BCSS training images, got {len(dataset)}")
     loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers,
                         pin_memory=True, persistent_workers=args.num_workers > 0)
-    sources: list[dict] = []
+    source_metadata: list[dict] = []
+    source_embeddings: list[np.ndarray] = []
     started = time.perf_counter(); torch.cuda.reset_peak_memory_stats()
     for batch_index, (names, images) in enumerate(loader, 1):
         labels_np = np.stack([parse_label(name) for name in names])
@@ -137,18 +139,19 @@ def build_bank(args, output: Path) -> None:
             rows = select_source_regions(predictions[sample], labels_np[sample], anchors_np[sample], key4[sample])
             for row in rows:
                 embedding = row.pop("embedding")
-                sources.append({"image_id": name, **row,
-                                **{f"z_{index:03d}": float(value) for index, value in enumerate(embedding)}})
+                source_metadata.append({"image_id": name, **row})
+                source_embeddings.append(embedding)
         if batch_index % 100 == 0:
             print(json.dumps({"event": "train_source_progress", "batches": batch_index,
                               "images": min(batch_index * args.batch_size, len(dataset)),
-                              "sources": len(sources), "elapsed_s": time.perf_counter() - started}), flush=True)
-    frame = pd.DataFrame(sources)
-    if frame.empty:
+                              "sources": len(source_metadata), "elapsed_s": time.perf_counter() - started}), flush=True)
+    if not source_metadata:
         raise RuntimeError("No CIRV source regions selected")
+    z_columns = [f"z_{index:03d}" for index in range(256)]
+    frame = pd.concat((pd.DataFrame(source_metadata),
+                       pd.DataFrame(np.stack(source_embeddings), columns=z_columns)), axis=1)
     source_path = output / "phase0/train_source_regions.parquet"
     frame.to_parquet(source_path, index=False, compression="zstd")
-    z_columns = [f"z_{index:03d}" for index in range(256)]
     bank, reports = [], []
     for cls in range(4):
         values = frame.loc[frame.class_id == cls, z_columns].to_numpy(np.float32)
