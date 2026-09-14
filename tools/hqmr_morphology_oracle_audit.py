@@ -521,7 +521,8 @@ def run_audit(args, output: Path):
             for distance in (1,3,5): contacts.extend(boundary_contact_rows(image_id,model,base,truth,distance))
             for op in (3,4):
                 for radius in (1,5): robust[model][(op,radius)]+=confusion(truth,apply_operator(op,base,truth,radius)[0])
-            for kind in sanity: sanity[model][kind]+=confusion(truth,gt_free_transform(base,kind))
+            for kind in sanity[model]:
+                sanity[model][kind] += confusion(truth, gt_free_transform(base, kind))
         item["excess_full_gain_pp"]=item["hqmr_full_gain_pp"]-item["sshr_full_gain_pp"]
         item["hole_contribution_pp"]=operator_gains[("hqmr","M2")]; item["fragmentation_contribution_pp"]=operator_gains[("hqmr","M3")]
         item["boundary_contribution_pp"]=operator_gains[("hqmr","M4")]+operator_gains[("hqmr","M5")]
