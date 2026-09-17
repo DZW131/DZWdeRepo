@@ -530,12 +530,16 @@ def generate_visualizations(args, output: Path, hqmr: HQMRNet, best_policy: str)
     source = pd.read_csv(output / "source_evidence/source_table.csv")
     labels = pd.read_csv(output / "source_evidence/source_evaluation_labels.csv")
     best = pd.read_csv(output / f"policies/{best_policy.lower()}_results.csv")
+    relabel_candidates = {name: pd.read_csv(output / f"policies/{name.lower()}_results.csv") for name in POLICIES}
+    relabel_policy = max(POLICIES, key=lambda name: int((relabel_candidates[name].action == "RELABEL").sum()))
+    relabel_decision = relabel_candidates[relabel_policy]
     p3 = pd.read_csv(output / "policies/p3_results.csv")
     frame = source.merge(labels, on="source_index").merge(best, on="source_index", suffixes=("", "_decision"))
+    relabel_frame = source.merge(labels, on="source_index").merge(relabel_decision, on="source_index", suffixes=("", "_decision"))
     p3_frame = source.merge(labels, on="source_index").merge(p3, on="source_index", suffixes=("", "_decision"))
     categories = {
-        "successful_relabel": frame[(frame.action == "RELABEL") & (frame.final_class == frame.gt_class)].sort_values(["margin", "region_area"], ascending=False).head(20),
-        "harmful_relabel": frame[(frame.action == "RELABEL") & (frame.final_class != frame.gt_class)].sort_values(["margin", "region_area"], ascending=False).head(20),
+        "successful_relabel": relabel_frame[(relabel_frame.action == "RELABEL") & (relabel_frame.final_class == relabel_frame.gt_class)].sort_values(["margin", "region_area"], ascending=False).head(20),
+        "harmful_relabel": relabel_frame[(relabel_frame.action == "RELABEL") & (relabel_frame.final_class != relabel_frame.gt_class)].sort_values(["margin", "region_area"], ascending=False).head(20),
         "correct_keep": frame[(frame.action == "KEEP") & (frame.final_class == frame.gt_class)].sort_values(["agreement", "region_area"], ascending=False).head(20),
         "ambiguous_reject": p3_frame[p3_frame.action == "REJECT"].sort_values(["margin", "region_area"], ascending=[True, False]).head(20),
     }
@@ -576,6 +580,7 @@ def generate_visualizations(args, output: Path, hqmr: HQMRNet, best_policy: str)
                          "gt_class": int(row.gt_class), "margin": float(row.margin)})
     write_csv(output / "visualizations/visualization_manifest.csv", rows)
     summary = {name: int(len(value)) for name, value in categories.items()}
+    summary.update({"best_policy": best_policy, "relabel_case_source_policy": relabel_policy})
     write_json(output / "visualizations/visualization_summary.json", summary)
     return summary
 
@@ -781,7 +786,7 @@ C centroid distance={compat['C_distance']:.4f}；largest-GT D={compat['D_distanc
 
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--mode", required=True, choices=("extract", "source-evaluate", "target"))
+    parser.add_argument("--mode", required=True, choices=("extract", "source-evaluate", "target", "visualize"))
     parser.add_argument("--trainroot", required=True); parser.add_argument("--train-gt-root", required=True)
     parser.add_argument("--train-gt-audit", required=True); parser.add_argument("--val-root", required=True)
     parser.add_argument("--hqmr-checkpoint", required=True); parser.add_argument("--sshr-checkpoint", required=True)
@@ -795,7 +800,12 @@ def main():
     args = parse_args(); output = Path(args.output_dir).resolve()
     if args.mode == "extract": run_extract(args, output)
     elif args.mode == "source-evaluate": run_source_evaluate(args, output)
-    else: run_target(args, output)
+    elif args.mode == "target": run_target(args, output)
+    else:
+        result_path = output / "pscr_v1_result.json"; result = json.loads(result_path.read_text())
+        model = HQMRNet().cuda(); model.load_state_dict(load_state(Path(args.hqmr_checkpoint)), strict=True); model.eval()
+        result["visualizations"] = generate_visualizations(args, output, model, result["best_policy"])
+        write_json(result_path, result); write_report(output, result)
 
 
 if __name__ == "__main__": main()
