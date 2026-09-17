@@ -1,0 +1,35 @@
+audit: PSCR-v1
+dataset: BCSS
+seed: 42
+zero_training: true
+parameter_updates: 0
+source_prediction_grid: [56, 56]
+ring_dilation_iterations: 3
+ring_connectivity: 8
+cam_normalization: per_view_per_branch_per_class_spatial_minmax
+views: [original, horizontal_flip]
+candidate_classes: image_level_present_classes
+class_score: max_cosine_over_k4
+prototypes_per_class: 4
+spherical_kmeans_seed: 42
+policy_p1:
+  minimum_branch_agreement: 1.0
+  require_view_consistency: true
+  minimum_margin: null
+policy_p2:
+  minimum_branch_agreement: 0.75
+  require_view_consistency: true
+  minimum_margin: 0.20
+policy_p3:
+  keep_if_base_consensus_agreement: 0.75
+  relabel_minimum_branch_agreement: 0.75
+  relabel_require_view_consistency: true
+  relabel_minimum_margin: 0.20
+  otherwise: REJECT
+architecture_ready:
+  recovery_ratio: 0.75
+  changed_region_precision: 0.70
+  maximum_per_class_source_reduction: 0.80
+  minimum_positive_contribution_classes: 3
+  maximum_clean_tissue_identity_drop: 0.03
+gt_decision_firewall: GT is loaded only after policy outputs and banks are frozen
