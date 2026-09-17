@@ -432,7 +432,7 @@ def report_text(result: dict) -> str:
         ("3 Exact Question", "Locate failure at source labels, source spatial purity, representation, or whole-region target validity."),
         ("4 Reproduction Gate", f"PASS={result['reproduction']['pass']}; base={100*result['reproduction']['base_mIoU']:.4f}%; M1={result['reproduction']['m1_count']}; prototype-only={100*result['reproduction']['prototype_component_accuracy']:.3f}%."),
         ("5 Causal Hypotheses", "H1 source label; H2 source region; H3 K4; H4 target impurity; H5 mixed."),
-        ("6 Counterfactual Bank Design", "A weak-pred; B same masks GT relabel; C GT-clean intersection; D largest clean GT tissue; E class mean."),
+        ("6 Counterfactual Bank Design", "A weak-pred; B same masks GT relabel; C GT-clean intersection; D largest clean GT tissue; E class mean. The frozen-reference reproduction retains CIRV's image-level prior; all preregistered A-D and representation comparisons use max cosine only."),
         ("7 Bank A Weak-Pred", f"Area-weighted M1 accuracy={100*c['A']['area_weighted_accuracy']:.2f}%."),
         ("8 Bank B GT Relabel", f"Area-weighted M1 accuracy={100*c['B']['area_weighted_accuracy']:.2f}%."),
         ("9 Bank C GT-Clean Within Pred", f"Area-weighted M1 accuracy={100*c['C']['area_weighted_accuracy']:.2f}%."),
@@ -530,8 +530,9 @@ def run_evaluate(args, output: Path) -> None:
                           "R4_deep_backbone": pool_masks([mask], result["R4_deep_backbone"])[0]}
             row = {"image_id": image_id, "base_class": region["class_id"], "component_id": region["component_id"],
                    "area": region["area"], "gt_majority_class": majority, "purity": purity, "stratum": purity_stratum(purity)}
+            row["pred_A_reference_with_prior"] = classify(embeddings["R1_K4"], banks["A"], result["g"])[0]
             for name in BANK_NAMES:
-                pred, own, rival, margin, proto_id = classify(embeddings["R1_K4"], banks[name], result["g"]); row[f"pred_{name}"] = pred
+                pred, own, rival, margin, proto_id = classify(embeddings["R1_K4"], banks[name]); row[f"pred_{name}"] = pred
                 if pred == majority: oracle_prediction[name][mask] = pred
                 if name == "D":
                     anatomy = similarity_anatomy(embeddings["R1_K4"], banks[name], majority)
@@ -540,8 +541,8 @@ def run_evaluate(args, output: Path) -> None:
                                         "representation": "R1_K4", "class_id": majority,
                                         "area": row["area"], **anatomy})
             for rep in REPRESENTATIONS:
-                if rep == "R3_query_conditioned_H4": pred, candidate_z = classify_r3(mask, result["R1_K4"], result["qbar"], rep_banks[rep], result["g"])
-                else: pred, *_ = classify(embeddings[rep], rep_banks[rep], result["g"])
+                if rep == "R3_query_conditioned_H4": pred, candidate_z = classify_r3(mask, result["R1_K4"], result["qbar"], rep_banks[rep])
+                else: pred, *_ = classify(embeddings[rep], rep_banks[rep])
                 row[f"pred_{rep}"] = pred
             mean_score = class_mean @ embeddings["R1_K4"]; row["pred_E"] = int(np.argmax(mean_score))
             targets.append(row)
@@ -561,7 +562,7 @@ def run_evaluate(args, output: Path) -> None:
                 row["pred_E"] = int(np.argmax(class_mean @ rep_z["R1_K4"][item_index])); clean_regions.append(row)
         if index % 100 == 0: print(json.dumps({"event": "validation", "images": index, "m1": len(targets), "cache_mismatch": cache_mismatch, "elapsed_s": time.perf_counter() - started}), flush=True)
     target = pd.DataFrame(targets); clean = pd.DataFrame(clean_regions); base_hist = np.stack(base_hist)
-    reproduction_proto = float(np.mean(target.pred_A == target.gt_majority_class))
+    reproduction_proto = float(np.mean(target.pred_A_reference_with_prior == target.gt_majority_class))
     reproduction = {"images": len(base_hist), "base_mIoU": scores_from_confusion(base_hist.sum(0))["mIoU"],
                     "cache_mismatch": cache_mismatch, "m1_count": len(target), "m1_area": int(target.area.sum()),
                     "prototype_component_accuracy": reproduction_proto}
