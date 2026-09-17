@@ -3,6 +3,7 @@ import pandas as pd
 
 from tools.audit_cirv_prototype_embedding_failure import (
     classification_metrics,
+    classify,
     decide,
     gate_strength,
     gt_anatomy,
@@ -50,6 +51,15 @@ def test_similarity_anatomy_uses_true_class_margin():
     assert result["nearest_class"] == 1
     assert result["strongest_rival_class"] == 1
     assert result["prototype_margin"] < 0
+
+
+def test_classify_optional_prior_reproduces_cirv_semantics():
+    bank = np.zeros((4, 4, 4), np.float32)
+    for cls in range(4):
+        bank[cls, :, cls] = 1.0
+    embedding = np.array([.9, .8, 0, 0], np.float32)
+    assert classify(embedding, bank)[0] == 0
+    assert classify(embedding, bank, np.array([.01, .99, .01, .01], np.float32))[0] == 1
 
 
 def test_exact_decision_branches():

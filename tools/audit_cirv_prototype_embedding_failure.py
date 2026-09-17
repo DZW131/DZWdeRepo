@@ -319,8 +319,9 @@ def run_build(args, output: Path) -> None:
     print(json.dumps(marker, indent=2), flush=True)
 
 
-def classify(embedding: np.ndarray, bank: np.ndarray) -> tuple[int, float, float, float, int]:
-    score = np.einsum("d,ckd->ck", l2_normalize(embedding), l2_normalize(bank)).max(1)
+def classify(embedding: np.ndarray, bank: np.ndarray, prior: np.ndarray | None = None) -> tuple[int, float, float, float, int]:
+    similarity = np.einsum("d,ckd->ck", l2_normalize(embedding), l2_normalize(bank)).max(1)
+    score = similarity if prior is None else 5.0 * similarity + np.log(np.maximum(np.asarray(prior), EPS))
     prototype_ids = np.einsum("d,ckd->ck", l2_normalize(embedding), l2_normalize(bank)).argmax(1)
     pred = int(np.argmax(score)); order = np.argsort(-score)
     return pred, float(score[pred]), float(score[order[1]]), float(score[pred] - score[order[1]]), int(prototype_ids[pred])
@@ -339,9 +340,11 @@ def similarity_anatomy(embedding: np.ndarray, bank: np.ndarray, true_class: int)
             "strongest_rival_similarity": rival, "prototype_margin": own - rival}
 
 
-def classify_r3(mask: np.ndarray, key4: torch.Tensor, qbar: torch.Tensor, bank: np.ndarray) -> tuple[int, np.ndarray]:
+def classify_r3(mask: np.ndarray, key4: torch.Tensor, qbar: torch.Tensor, bank: np.ndarray,
+                prior: np.ndarray | None = None) -> tuple[int, np.ndarray]:
     embeddings = pool_query_conditioned([mask] * 4, list(range(4)), key4, qbar)
     scores = np.asarray([(embeddings[cls] @ bank[cls].T).max() for cls in range(4)])
+    if prior is not None: scores = 5.0 * scores + np.log(np.maximum(np.asarray(prior), EPS))
     return int(np.argmax(scores)), embeddings
 
 
@@ -365,7 +368,8 @@ def infer_representations(model: HQMRNet, image: torch.Tensor, original_hw: tupl
     scores = normalize_cam(torch.stack(full).mean(0).numpy()); g = torch.stack(gates).mean(0).numpy()[0]
     label = presence(g); prediction = prediction_from_cam(scores, label, np.empty(original_hw))
     result = {name: torch.stack(value).mean(0) for name, value in reps.items()}
-    result.update({"qbar": torch.stack(qbars).mean(0), "scores": scores, "prediction": prediction, "label": label})
+    result.update({"qbar": torch.stack(qbars).mean(0), "scores": scores, "prediction": prediction,
+                   "label": label, "g": g})
     return result
 
 
@@ -527,7 +531,7 @@ def run_evaluate(args, output: Path) -> None:
             row = {"image_id": image_id, "base_class": region["class_id"], "component_id": region["component_id"],
                    "area": region["area"], "gt_majority_class": majority, "purity": purity, "stratum": purity_stratum(purity)}
             for name in BANK_NAMES:
-                pred, own, rival, margin, proto_id = classify(embeddings["R1_K4"], banks[name]); row[f"pred_{name}"] = pred
+                pred, own, rival, margin, proto_id = classify(embeddings["R1_K4"], banks[name], result["g"]); row[f"pred_{name}"] = pred
                 if pred == majority: oracle_prediction[name][mask] = pred
                 if name == "D":
                     anatomy = similarity_anatomy(embeddings["R1_K4"], banks[name], majority)
@@ -536,8 +540,8 @@ def run_evaluate(args, output: Path) -> None:
                                         "representation": "R1_K4", "class_id": majority,
                                         "area": row["area"], **anatomy})
             for rep in REPRESENTATIONS:
-                if rep == "R3_query_conditioned_H4": pred, candidate_z = classify_r3(mask, result["R1_K4"], result["qbar"], rep_banks[rep])
-                else: pred, *_ = classify(embeddings[rep], rep_banks[rep])
+                if rep == "R3_query_conditioned_H4": pred, candidate_z = classify_r3(mask, result["R1_K4"], result["qbar"], rep_banks[rep], result["g"])
+                else: pred, *_ = classify(embeddings[rep], rep_banks[rep], result["g"])
                 row[f"pred_{rep}"] = pred
             mean_score = class_mean @ embeddings["R1_K4"]; row["pred_E"] = int(np.argmax(mean_score))
             targets.append(row)
