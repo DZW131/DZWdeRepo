@@ -463,7 +463,14 @@ def run_source_evaluate(args, output: Path) -> None:
         append_population(compatibility_meta, compatibility_z, "GT_CLEAN_HQMR_SHAPED_C", row.image_id,
                           truth_class[index], z, clean.mean(), geometry["aspect_ratio"], geometry["context_ratio"])
     for item in d_frame.itertuples():
-        key = (item.image_id, int(item.bank_class)); geometry, area_fraction = d_geometry[key]
+        key = (item.image_id, int(item.bank_class))
+        if key not in d_geometry:
+            truth_full = np.asarray(Image.open(Path(args.train_gt_root) / f"{item.image_id}.png"))
+            for mask, cls in zip(*largest_gt_regions(truth_full)):
+                mask56 = F.interpolate(torch.from_numpy(mask.copy())[None, None].float(), size=shape,
+                                       mode="area")[0, 0].numpy() >= .5
+                d_geometry[(item.image_id, cls)] = (bbox_geometry(mask56), float(mask.mean()))
+        geometry, area_fraction = d_geometry[key]
         z = np.asarray([getattr(item, col) for col in z_cols], np.float32)
         append_population(compatibility_meta, compatibility_z, "LARGEST_GT_TISSUE_D", item.image_id,
                           item.bank_class, z, area_fraction, geometry["aspect_ratio"], geometry["context_ratio"])
