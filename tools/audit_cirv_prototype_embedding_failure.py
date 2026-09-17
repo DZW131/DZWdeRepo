@@ -170,6 +170,7 @@ def provenance(args, output: Path) -> None:
               "trainroot": str(Path(args.trainroot).resolve()), "train_gt_root": str(Path(args.train_gt_root).resolve()),
               "train_gt_audit": str(Path(args.train_gt_audit).resolve()),
               "val_root": str(Path(args.val_root).resolve()), "k": 4, "kmeans_seed": 42,
+              "batch_size": args.batch_size, "num_workers": args.num_workers,
               "source_commit": git_commit(), "validation_firewall": "banks frozen before validation"}
     write_json(output / "provenance/proto_embed_audit_config.json", config)
     (output / "provenance/proto_embed_audit_source_commit.txt").write_text(git_commit() + "\n")
@@ -259,6 +260,11 @@ def run_build(args, output: Path) -> None:
     prior_bank = Path(args.phase0_output) / "phase0/static_prototype_bank.npy"
     shutil.copy2(prior_bank, output / "banks/bankA_K4.npy"); banks["A"] = np.load(prior_bank); hashes["A"] = sha256(output / "banks/bankA_K4.npy")
     recomputed_a, reports["A"] = build_bank(frames["A"].assign(bank_class=frames["A"].class_id), "bank_class", z_columns)
+    if not source_identity or embedding_diff is None or embedding_diff > 1.0e-6:
+        raise AssertionError(f"Bank A source recreation mismatch: identity={source_identity}, embedding_diff={embedding_diff}")
+    bank_a_diff = float(np.max(np.abs(recomputed_a - banks["A"])))
+    if bank_a_diff > 1.0e-6:
+        raise AssertionError(f"Bank A prototype recreation mismatch: max_abs_diff={bank_a_diff}")
     for name in ("B", "C", "D"):
         banks[name], reports[name] = build_bank(frames[name], "bank_class", z_columns)
         hashes[name] = save_bank(output / f"banks/bank{name}_K4.npy", banks[name])
@@ -304,7 +310,7 @@ def run_build(args, output: Path) -> None:
     (output / "representation/tensor_identity_report.md").write_text(identity_text + "\n")
     marker = {"status": "FROZEN", "validation_accessed": False, "hashes": hashes,
               "bankA_source_identity": source_identity, "bankA_embedding_max_abs_diff": embedding_diff,
-              "bankA_recomputed_max_abs_diff": float(np.max(np.abs(recomputed_a - banks["A"]))),
+              "bankA_recomputed_max_abs_diff": bank_a_diff,
               "source_counts": {name: len(frames[name]) for name in BANK_NAMES},
               "source_anatomy_summary": source_summary,
               "tensor_shapes": tensor_shapes, "reports": reports,
@@ -486,6 +492,8 @@ def run_evaluate(args, output: Path) -> None:
     if not marker_path.exists(): raise RuntimeError("Validation firewall: banks not frozen")
     marker = json.loads(marker_path.read_text())
     if marker["validation_accessed"]: raise RuntimeError("Validation already accessed")
+    if not marker["bankA_source_identity"] or marker["bankA_embedding_max_abs_diff"] > 1.0e-6:
+        raise RuntimeError("Validation firewall: Bank A source recreation did not pass")
     banks = {name: np.load(output / f"banks/bank{name}_K4.npy") for name in BANK_NAMES}
     rep_banks = {"R1_K4": banks["D"]}
     for rep in REPRESENTATIONS[1:]: rep_banks[rep] = np.load(output / f"banks/bankD_{rep}.npy")
