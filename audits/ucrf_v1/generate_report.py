@@ -107,11 +107,16 @@ def build(output: Path) -> Path:
         f"相应融合后仍错条件率 {pct(whole['direct4_proxy_CSR_area'])}。"
         "代理值不是可加的 class logit，因此主结论以真实融合反事实差为准。")
     quadrant_fields = [(f"Q{i}_area_rate", f"Q{i} 面积") for i in range(1, 5)]
+    effect_fields = [(f"E{i}_area_rate", f"E{i} 面积") for i in range(1, 5)]
     section(7, "logits5/direct4 Quadrant Analysis",
         cohort_table(summary, ["overall", "high_purity", "large_Q4", "high_purity_large"],
-                     quadrant_fields) + "\n\nQ1/Q2/Q3/Q4 分别是深层 margin 正/正/负/负 × "
-        "direct4 对**实际 class margin 的边际作用**正/负/正/负。"
-        "Q3 为可纠偏但深层已错。另见 `direct4_quadrants.csv`；不要按 query 名称将其当作原始四类 logits。")
+                     quadrant_fields) + "\n\nQ1/Q2/Q3/Q4 严格按方案定义：深层 margin 正/正/负/负 × "
+        "独立 `W·sigmoid(D4)` 代理 margin 正/负/正/负。Q3 表示独立代理支持真类且深层已错。"
+        "由于代理不可与深层 class map 相加，另列真正融合边际效应 E1–E4：\n\n"+
+        cohort_table(summary, ["overall", "high_purity", "large_Q4", "high_purity_large"],
+                     effect_fields) +
+        "\n\nE3 才是主文“深层已错且 direct4 实际提供正向纠偏作用”的集合。"
+        "两套标签均见 `direct4_quadrants.csv`，避免因 query 名称误当作原始四类 logits。")
     section(8, "logits4 Fusion Analysis",
         f"`L4=U(L5)+D4` 的 query-logit 算术逐样本严格成立。"
         f"实际类 margin 中，D4 作用的中位数 {whole['median_direct4_effect_margin']:+.5f}；"

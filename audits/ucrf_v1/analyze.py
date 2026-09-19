@@ -61,6 +61,7 @@ def flags_for(frame: pd.DataFrame) -> dict[str, np.ndarray]:
     mu4 = frame.margin_upsampled4.to_numpy()
     m3 = frame.margin_logits3.to_numpy()
     delta_d = frame.direct4_effect_margin.to_numpy()
+    proxy_d = frame.margin_direct4_standalone.to_numpy()
     confidence = frame.confidence_logits5.to_numpy()
     high_edge = frame.attrs["confidence_high_edge"]
     return {
@@ -71,10 +72,14 @@ def flags_for(frame: pd.DataFrame) -> dict[str, np.ndarray]:
         "F4": (mu5 > 0) & (m4 > 0),
         "F1_native": (m5 < 0) & (m4 < 0),
         "F2_native": (m5 > 0) & (m4 < 0),
-        "Q1": (m5 > 0) & (delta_d > 0),
-        "Q2": (m5 > 0) & (delta_d < 0),
-        "Q3": (m5 < 0) & (delta_d > 0),
-        "Q4": (m5 < 0) & (delta_d < 0),
+        "Q1": (m5 > 0) & (proxy_d > 0),
+        "Q2": (m5 > 0) & (proxy_d < 0),
+        "Q3": (m5 < 0) & (proxy_d > 0),
+        "Q4": (m5 < 0) & (proxy_d < 0),
+        "E1": (m5 > 0) & (delta_d > 0),
+        "E2": (m5 > 0) & (delta_d < 0),
+        "E3": (m5 < 0) & (delta_d > 0),
+        "E4": (m5 < 0) & (delta_d < 0),
         "corrective_available": (m5 < 0) & (delta_d > 0),
         "corrective_suppressed": (m5 < 0) & (delta_d > 0) & (m4 < 0),
         "direct4_proxy_true": frame.margin_direct4_standalone.to_numpy() > 0,
@@ -247,6 +252,9 @@ def run(output: Path) -> None:
                                   ["Q1_deep_true_direct_true", "Q2_deep_true_direct_rival",
                                    "Q3_deep_rival_direct_true", "Q4_deep_rival_direct_rival"],
                                   default="zero_margin")
+    frame["effect_quadrant"] = np.select([flags[key] for key in ("E1", "E2", "E3", "E4")],
+        ["E1_deep_true_effect_true", "E2_deep_true_effect_rival",
+         "E3_deep_rival_effect_true", "E4_deep_rival_effect_rival"], default="zero_margin")
     frame["stage3_event"] = np.select([flags[key] for key in ("stage3_repair", "stage3_flip", "stage3_amp")],
                                       ["Q_REPAIR", "Q_FLIP", "Q_AMP"], default="Q_STABLE_OR_OTHER")
     frame["confidence_tertile"] = np.searchsorted(edges, frame.confidence_logits5.to_numpy(), side="right")+1
@@ -260,7 +268,7 @@ def run(output: Path) -> None:
     frame[["image_id", "component_id", "cohort", "true_class", "predicted_class", "area",
            "flip_event", "quadrant", "stage3_event", "state5", "state4", "state3"]].to_csv(
         output / "metrics/flip_event_table.csv", index=False)
-    frame[["image_id", "component_id", "cohort", "area", "quadrant",
+    frame[["image_id", "component_id", "cohort", "area", "quadrant", "effect_quadrant",
            "margin_logits5", "direct4_effect_margin", "margin_logits4",
            "direct4_contribution_ratio"]].to_csv(output / "metrics/direct4_quadrants.csv", index=False)
     frame[["image_id", "component_id", "cohort", "area", "confidence_logits5",
