@@ -1,0 +1,37 @@
+experiment: UCRF_v1_Upstream_Class_Responsibility_Formation_Audit
+dataset: BCSS
+seed: 42
+checkpoint_sha256: 84dab82140eb79176bef3f518b6508b6167b328b6d55126d24efffa7467e4abb
+parameter_updates: 0
+expected_validation_images: 3418
+expected_miou: 0.6557244403737567
+expected_m1_components: 4440
+expected_m1_pixels: 8750254
+tta: [identity, horizontal_flip, vertical_flip]
+region_connectivity: 8
+class_evidence: frozen_stage3_query_weights_times_sigmoid_query_logits
+primary_competition: tta_mean_class_mixture_before_cam_normalization
+final_inference_audit: normalized_cam_plus_deep_gate
+direct4_effect: class_mixture_upsampled_logits5_plus_direct4_minus_class_mixture_upsampled_logits5
+query4_effect: fixed_key3_counterfactual_query4_vs_query5
+mask_projection: area_weighted
+core_normalized_edt_min: 0.50
+boundary_normalized_edt_max_exclusive: 0.25
+ambiguous_normalized_margin_abs_max: 0.05
+high_purity_min: 0.70
+large_area_quantile_min: 0.75
+tp_min_purity: 0.70
+tp_matching: [gt_true_class, area_quartile, purity_stratum, same_image_preferred]
+bootstrap_seed: 42
+bootstrap_resamples: 2000
+deep_misassignment_area_min: 0.60
+deep_misassignment_high_purity_large_min: 0.60
+deep_persistence_F1_area_min: 0.60
+deep_persistence_F2_area_max_exclusive: 0.15
+direct4_flip_F2_area_min: 0.30
+corrective_availability_area_min: 0.30
+correction_suppression_min: 0.60
+stage3_flip_area_min: 0.30
+stage3_amplification_ear_median_min_exclusive: 1.00
+confidence_tertiles: [0.33, 0.66]
+representatives_per_category: 20
