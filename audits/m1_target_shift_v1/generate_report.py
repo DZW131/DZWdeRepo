@@ -93,7 +93,9 @@ def figures(output: Path, val_root: Path, cache_root: Path,
     target = target.reset_index(drop=True)
     m1 = np.flatnonzero(target.cohort.to_numpy() == "M1")
     onset = k4.ood_percentile.to_numpy() - h5.ood_percentile.to_numpy()
-    candidate = m1[np.isfinite(onset[m1])]
+    candidate = m1[np.isfinite(onset[m1]) & (target.area.to_numpy()[m1] >= 100)]
+    if len(candidate) < 20:
+        candidate = m1[np.isfinite(onset[m1])]
     ranked = {
         "shift_onset": candidate[np.argsort(-onset[candidate])[:20]],
         "H5_normal_H4_logit_surrogate": candidate[np.argsort(-(
@@ -102,7 +104,8 @@ def figures(output: Path, val_root: Path, cache_root: Path,
         "boundary_contamination": candidate[np.argsort(-(
             k4.d_true.to_numpy()[candidate] - kcore.d_true.to_numpy()[candidate]))[:20]],
         "whole_region_corruption": candidate[np.argsort(-kcore.d_true.to_numpy()[candidate])[:20]],
-        "matched_TP": matches.drop_duplicates("tp_index").sort_values("log_area_difference").tp_index.to_numpy()[:20],
+        "matched_TP": matches[matches.tp_index.isin(target.index[target.area >= 100])].drop_duplicates(
+            "tp_index").sort_values("log_area_difference").tp_index.to_numpy()[:20],
     }
     summary = {}
     for category, indices in ranked.items():
@@ -118,10 +121,25 @@ def figures(output: Path, val_root: Path, cache_root: Path,
             shape = gt.shape
             unpacked = {kind: np.unpackbits(values[int(index)])[:gt.size].reshape(shape).astype(bool)
                         for kind, values in masks.items()}
+            points = np.argwhere(unpacked["whole"])
+            if not len(points):
+                continue
+            margin = max(16, int(np.sqrt(item.area) / 2))
+            y0 = max(0, int(points[:, 0].min()) - margin)
+            y1 = min(shape[0], int(points[:, 0].max()) + margin + 1)
+            x0 = max(0, int(points[:, 1].min()) - margin)
+            x1 = min(shape[1], int(points[:, 1].max()) + margin + 1)
+            def highlighted(kind, color):
+                view = rgb.copy().astype(np.float32)
+                selected = unpacked[kind]
+                view[selected] = .25 * view[selected] + .75 * np.array(color, np.float32)
+                return np.clip(view[y0:y1, x0:x1], 0, 255).astype(np.uint8)
             fig, axes = plt.subplots(2, 4, figsize=(15, 7), constrained_layout=True)
             panels = ((rgb, "Original"), (gt, "GT"), (pred, "Frozen HQMR"),
-                      (unpacked["whole"], "Component"), (unpacked["core"], "Core"),
-                      (unpacked["boundary"], "Boundary"), (unpacked["ring"], "Ring"))
+                      (highlighted("whole", (255, 32, 32)), "Component (zoom)"),
+                      (highlighted("core", (0, 255, 80)), "Core (zoom)"),
+                      (highlighted("boundary", (255, 215, 0)), "Boundary (zoom)"),
+                      (highlighted("ring", (30, 140, 255)), "Ring (zoom)"))
             for ax, (data, label) in zip(axes.flat, panels):
                 ax.imshow(data, cmap=None if data.ndim == 3 else "tab20", interpolation="nearest")
                 ax.set_title(label)
@@ -217,7 +235,7 @@ def report(output: Path, decision_result: dict, visual_counts: dict) -> str:
     sections = [
         ("1. Executive Decision", f"DECISION = **{decision_result['decision']}**；CONFIDENCE = **{decision_result['confidence']}**。" + " ".join(decision_result["reasons"])),
         ("2. Reproduction Gate", f"PASS={gate['pass']}；HQMR={100*gate['hqmr_miou']:.6f}%；M1={gate['m1_components']} components / {gate['m1_pixels']} pixels；checkpoint SHA256={gate['checkpoint_sha256']}；parameter updates=0。PSCR distance C={gate['distance_C']:.4f}、D={gate['distance_D']:.4f}、M1={gate['distance_M1']:.4f} 为冻结历史 anchor，非重新计算。"),
-        ("3. Hook Manifest", "S0=raw backbone F5；S1=CHPF(context_projection(F5))，它不是 CCRA-conditioned H5；S2=logits4（H5 logits 插值 + direct4），不是空间组织特征；S3=query4 向量，不是空间组织特征；S4=原 CIRV/PSCR K4。不存在可供 S2/S3 空间 region pooling 的张量。hook safety 见 hook_safety.json。"),
+        ("3. Hook Manifest", f"S0=raw backbone F5；S1=CHPF(context_projection(F5))，它不是 CCRA-conditioned H5；S2=logits4（H5 logits 插值 + direct4），不是空间组织特征；S3=query4 向量，不是空间组织特征；S4=原 CIRV/PSCR K4。不存在可供 S2/S3 空间 region pooling 的张量。样本 hook 前后 logits/CAM/输出最大差=0；全验证集 hook 调用 k5/k4/update4 各 {gate['full_validation_hook_calls']['k5']} 次，mIoU/M1 与无 hook 基线完全一致。"),
         ("4. Cohort Construction", f"M1={cohort['M1']}；TP candidates={cohort['TP_candidates']}；matched M1={cohort['matching']['m1_matched']}；同图匹配比例={cohort['matching']['same_image_fraction']:.3f}；同 area decile={cohort['matching']['same_decile_fraction']:.3f}；TRAIN clean={cohort['reference_clean']}；boundary fragment={cohort['reference_boundary_fragments']}。TP 可被多个 M1 复用，bootstrap 以 M1 为抽样单位。同图比例低，image/tissue context 残余混杂不可排除。"),
         ("5. Stage-Wise Representation Shift", common + "\n\n按真实 GT 类别而非预测类别匹配 TP 的敏感性检查：\n\n" + sensitivity_table + "\n\n每一 stage 独立 class/area-bin centroid；不同 stage 原始 cosine 不直接相减。主匹配按 predicted class，因 M1 true class 与 predicted class 不同，true-class sensitivity 是必要稳健性检查。"),
         ("6. H5 Analysis", f"S0 raw F5 与 S1 context F5 的独立 manifold 检验见上表。H5_context 并非 CCRA 后空间语义图，不能解释为 CCRA-conditioned H5。"),
@@ -254,6 +272,7 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--val-root", type=Path, required=True)
     parser.add_argument("--cache-root", type=Path, required=True)
+    parser.add_argument("--refresh-figures", action="store_true")
     args = parser.parse_args()
     output = args.output
     target = pd.read_parquet(output / "target_cohorts.parquet")
@@ -269,7 +288,7 @@ def main() -> None:
     (output / "metrics" / "decision_matrix.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
     _load_metric_cache[("H5_pre", "whole")] = _load_metric(output, "H5_pre", "whole")
     case_manifest = output / "visualizations" / "case_manifest.json"
-    if case_manifest.exists():
+    if case_manifest.exists() and not args.refresh_figures:
         counts = {key: len(value) for key, value in json.loads(case_manifest.read_text()).items()}
     else:
         counts = figures(output, args.val_root, args.cache_root, target, matches)
