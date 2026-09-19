@@ -1,0 +1,39 @@
+experiment: DLAG_Oracle_v1_Deep_Local_Arbitration_Presence_Gate_Ceiling
+dataset: BCSS
+seed: 42
+checkpoint_sha256: 84dab82140eb79176bef3f518b6508b6167b328b6d55126d24efffa7467e4abb
+parameter_updates: 0
+expected_validation_images: 3418
+expected_hqmr_miou: 0.6557244403737567
+expected_m1_components: 4440
+expected_m1_pixels: 8750254
+expected_ucrf_anchors:
+  deep_wrong_area: 0.9167845870531302
+  corrective_available_area: 0.5126954028991616
+  correction_suppression_area: 0.9376396360852077
+  gate_excluded_area: 0.367186826805256
+anchor_absolute_tolerance: 1.0e-12
+alpha_grid: [0.0, 0.25, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0]
+alpha_tie_preference: [1.0, 0.5, 1.5, 0.25, 2.0, 0.0, 3.0, 4.0]
+tta: [identity, horizontal_flip, vertical_flip]
+oracle_A_primary: component_support_label_oracle
+oracle_A2_ring_pixels: 8
+oracle_B_primary: m1_true_class_force_on_at_final_presence_gate
+oracle_B2_secondary: exact_image_level_gt_presence
+joint_alpha_selection: component_level_under_force_on_gate
+component_recovered_majority_min: 0.50
+bootstrap_seed: 42
+bootstrap_resamples: 2000
+decision_nogo_delta_pp_max_exclusive: 1.00
+decision_weak_go_delta_pp_max_exclusive: 1.50
+decision_architecture_go_delta_pp_max_exclusive: 2.00
+decision_strong_go_min_vs_sshr_pp: 0.50
+hqmr_reference: 0.6557244403737567
+sshr_reference: 0.666967
+representatives_per_category: 20
+visualization_categories:
+  - arbitration_only_recovered
+  - gate_only_recovered
+  - joint_only_recovered
+  - joint_unrecoverable
+  - tp_harmed_strong_alpha
