@@ -1,0 +1,39 @@
+experiment: M1_Target_Representation_Shift_Anatomy_Audit
+dataset: BCSS
+seed: 42
+checkpoint_sha256: 84dab82140eb79176bef3f518b6508b6167b328b6d55126d24efffa7467e4abb
+parameter_updates: 0
+validation_images: 3418
+expected_hqmr_miou: 0.6557244403737567
+expected_m1_components: 4440
+expected_m1_pixels: 8750254
+connectivity: 8
+tp_min_predicted_class_purity: 0.90
+max_tp_matches_per_m1: 3
+prefer_same_image: true
+area_matching: log_area_decile
+reference_images: 1500
+reference_selection: random_without_replacement_seed42
+reference_area_quantiles: [0.10, 0.30, 0.50, 0.70, 0.90]
+manifold_class_area_bin_min_count: 20
+manifold_small_bin_fallback: class_wide
+mask_projection: area_weighted
+core_normalized_edt_min: 0.50
+boundary_normalized_edt_max_exclusive: 0.25
+ring_equivalent_radius_fraction: 0.25
+ring_width_min_pixels: 2
+ring_width_max_pixels: 12
+bootstrap_seed: 42
+bootstrap_resamples: 2000
+strong_shift_auroc_min: 0.75
+strong_shift_distance_ratio_min: 1.50
+near_normal_auroc_max: 0.60
+near_normal_distance_ratio_max_exclusive: 1.20
+reconstruction_onset_auroc_delta_min: 0.12
+max_hook_abs_difference_exclusive: 0.000001
+observability:
+  H5_pre: spatial_F5
+  H5_cond: spatial_CHPF_F5_not_CCRA_conditioned
+  H4_recon: query_mask_logits_only_no_spatial_feature
+  H4_query: query_vector_only_no_spatial_feature
+  K4: spatial_scale4_key_identical_to_CIRV_PSCR
