@@ -216,4 +216,37 @@ The old `formal_4090_r1` directory is preserved. The user-authorized restart use
 launcher/protocol. Only the result-recording callback changed, not model,
 optimization, inference or metrics. Actual progress is in `formal_4090_r2.log`.
 
+## Phase-2B1.13 parameter-gradient attribution audit
+
+Phase-2B1.13 is a zero-step diagnostic built directly on the frozen
+Phase-2B1.12 evidence chain. It does not train or update SSHR. It replays
+training-manifest steps 1–128 exactly, attributes contextual/random gradients
+within the approved 39-parameter `b4..bn45` space, evaluates a GT-only
+raw-shallow oracle across all 3418 BCSS validation images, and applies the
+preregistered Gates A–F.
+
+Environment and data remain the frozen 4090 migration environment:
+
+- Python: `/home/duyanhong/miniconda3/envs/sshr5090/bin/python`
+- repository: `/home/duyanhong/DZWdeRepo-rddr-phase2b113`
+- BCSS: `/home/duyanhong/reseg-data/raw/BCSS-WSSS`
+- C0: `/home/duyanhong/sshr-official-25ep-final-retry2-20260815/runs/bcss_seed42/checkpoints/stage1_last.pth`
+- Phase-2B1.12 evidence: `/home/duyanhong/experiments/RDDR_PHASE2B112/formal_4090_r2`
+
+Formal command:
+
+```bash
+cd /home/duyanhong/DZWdeRepo-rddr-phase2b113
+nohup bash tools/execute_rddr_phase2b113.sh \
+  /home/duyanhong/experiments/RDDR_PHASE2B113/formal_4090_r1 \
+  > /home/duyanhong/experiments/RDDR_PHASE2B113/formal_4090_r1.log 2>&1 &
+```
+
+No separate training, inference, model-selection, or visualization command
+exists for this audit. The wrapper runs unit/control tests, zero-step gradient
+evaluation, 10k paired-minibatch bootstrap, independent verification, and
+report generation. See
+[`docs/rddr_phase2b113_execution_contract.md`](docs/rddr_phase2b113_execution_contract.md)
+for exact definitions and artifact names.
+
 ---
