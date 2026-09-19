@@ -21,6 +21,9 @@ Sources: `network/gcqm_net.py` and
 7. The binary presence label is applied **after** TTA averaging and **after**
    per-class CAM min-max normalization. Absent classes receive zero score;
    the final prediction is the per-pixel argmax over the remaining classes.
+   The sealed implementation uses zero rather than negative infinity, so an
+   absent low-index class can still win an exact all-zero tie. The audit keeps
+   this behavior unchanged; it is especially relevant when interpreting B2.
 
 Oracle B changes only the binary label after steps 1–6. It does not change
 the deep logits, gate scores, backbone features, query logits, class maps,

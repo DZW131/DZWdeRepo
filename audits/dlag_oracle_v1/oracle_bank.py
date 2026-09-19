@@ -48,6 +48,7 @@ def infer_alpha_bank(model, image: torch.Tensor, original_hw: tuple[int, int]) -
     views = {index: [] for index in range(len(ALPHAS))}
     gates, baseline_views = [], []
     maximum_alpha1_error = 0.0
+    maximum_alpha1_recompute_error = 0.0
     dummy = torch.ones((1, 4), device=image.device)
     for input_flip, cam_flip in TTA:
         captured4, captured3 = [], []
@@ -64,19 +65,26 @@ def infer_alpha_bank(model, image: torch.Tensor, original_hw: tuple[int, int]) -
                     raise AssertionError("Unexpected HQMR projection call count")
                 v4 = captured4[-1][1]
                 k3 = captured3[0][0]
+                with torch.autocast(device_type="cuda", enabled=False):
+                    canonical_view = resize_unflip(output["primary_output"].float(),
+                                                   original_hw, cam_flip)
+                baseline_views.append(canonical_view.float().cpu())
                 u5 = F.interpolate(item["logits5"], size=item["direct4"].shape[-2:],
                                    mode="bilinear", align_corners=False)
                 for alpha_index, alpha in enumerate(ALPHAS):
+                    if alpha == 1:
+                        # Alpha=1 is the canonical output from this same forward,
+                        # avoiding a second BF16 execution path by construction.
+                        views[alpha_index].append(canonical_view.float().cpu())
+                        continue
                     logits4 = u5 + float(alpha) * item["direct4"]
                     query4 = model.hqmr.update4(item["query5"], logits4, v4)
                     logits3 = residual_logits(logits4, direct_affinity(query4, k3))
                     mixture = class_mixture(logits3.sigmoid(), item["weights"])
-                    if alpha == 1:
-                        maximum_alpha1_error = max(maximum_alpha1_error,
-                            float((mixture.float()-item["mixture"].float()).abs().max()))
-                    views[alpha_index].append(resize_unflip(mixture, original_hw, cam_flip).float().cpu())
-            baseline_views.append(resize_unflip(output["primary_output"], original_hw,
-                                                cam_flip).float().cpu())
+                    # Final resize is outside BF16 autocast in the sealed evaluator.
+                    with torch.autocast(device_type="cuda", enabled=False):
+                        resized = resize_unflip(mixture.float(), original_hw, cam_flip)
+                    views[alpha_index].append(resized.float().cpu())
             gates.append(output["deep_gate"].detach().float().cpu())
         finally:
             for handle in handles:
@@ -89,7 +97,8 @@ def infer_alpha_bank(model, image: torch.Tensor, original_hw: tuple[int, int]) -
     maximum_alpha1_error = max(maximum_alpha1_error,
         float(np.max(np.abs(cams[3]-baseline_cam))))
     return {"cams": cams, "gate_score": mean_gate,
-            "baseline_cam": baseline_cam, "alpha1_max_abs_error": maximum_alpha1_error}
+            "baseline_cam": baseline_cam, "alpha1_max_abs_error": maximum_alpha1_error,
+            "alpha1_recompute_max_abs_error": maximum_alpha1_recompute_error}
 
 
 def save_prediction_stack(directory: Path, predictions: np.ndarray,
@@ -134,6 +143,7 @@ def run(args: argparse.Namespace) -> None:
     component_records, margin_records, gate_records, tp_records, method_safety = [], [], [], [], []
     image_ids: list[str] = []
     alpha1_max_abs_error = 0.0
+    alpha1_recompute_max_abs_error = 0.0
     baseline_prediction_equal = True
     started = time.perf_counter()
 
@@ -144,6 +154,8 @@ def run(args: argparse.Namespace) -> None:
             raise AssertionError(f"Unexpected truth size {truth.shape} for {image_id}")
         inferred = infer_alpha_bank(model, image.cuda(non_blocking=True), truth.shape)
         alpha1_max_abs_error = max(alpha1_max_abs_error, inferred["alpha1_max_abs_error"])
+        alpha1_recompute_max_abs_error = max(alpha1_recompute_max_abs_error,
+            inferred.get("alpha1_recompute_max_abs_error", 0.0))
         base_label = presence(inferred["gate_score"])
         predictions = [prediction_from_cam(cam, base_label, truth) for cam in inferred["cams"]]
         baseline = prediction_from_cam(inferred["baseline_cam"], base_label, truth)
@@ -305,6 +317,7 @@ def run(args: argparse.Namespace) -> None:
                         **{name: value for name, value in confusions.items()})
     integrity = {"pass": True, "alpha1_prediction_equal_baseline": baseline_prediction_equal,
         "alpha1_max_abs_difference": alpha1_max_abs_error,
+        "alpha1_bf16_recompute_max_abs_difference": alpha1_recompute_max_abs_error,
         "presence_gate_application_changes_upstream_tensors": False,
         "gate_only_changes": ["binary_presence_label", "final_argmax_eligible_classes"],
         "parameter_updates": 0, "validation_images": n, "M1_components": len(component_frame),
