@@ -26,7 +26,8 @@ def main():
     pred={}
     for v,d in (("C1","C1_VLM_LAST"),("C2","C2_STATIC_PDSR")):
         z=np.load(a.output/d/"e5_predictions.npz",allow_pickle=False)
-        pred[v]={str(name):z["predictions"][i] for i,name in enumerate(z["image_ids"].astype(str))}
+        names=z["image_ids"].astype(str); maps=z["predictions"]
+        pred[v]={str(name):maps[i] for i,name in enumerate(names)}
     bank_ids=np.load(a.umrf/"image_ids.npy",allow_pickle=False).astype(str)
     bank=np.load(a.umrf/"gt_free_prediction_maps.uint8.npy",mmap_mode="r")
     baseline={str(name):bank[0,i] for i,name in enumerate(bank_ids)}

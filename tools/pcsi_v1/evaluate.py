@@ -173,10 +173,17 @@ def main():
     c2_advantage=c2_advantage and scores["C2"]["mIoU"]>=scores["C1"]["mIoU"] and sum(scores["C2"]["class_iou"][str(c)]>=scores["C1"]["class_iou"][str(c)] for c in range(4))>=3
     strong=(100*(scores["C2"]["mIoU"]-scores["C0"]["mIoU"])>=.30 and
             (resp["C2"]["HRCR"]["component_rate"] or 0)>=.10 and safety["C2"]["nce"]>=1.5)
-    decision="PRE_CCRA_PDSR_STRONG_GO" if strong else ("PRE_CCRA_PDSR_MECHANISM_GO" if c1_min and c2_advantage else "PRE_CCRA_VLM_SEMANTIC_NOGO")
+    if strong: decision="PRE_CCRA_PDSR_STRONG_GO"
+    elif c2_advantage: decision="PRE_CCRA_PDSR_MECHANISM_GO"
+    elif c1_min: decision="PLIP_SOURCE_GO_PDSR_NOGO"
+    elif max(resp[v]["HRCR"]["component_rate"] or 0 for v in ("C1","C2"))<.05:
+        decision="PRE_CCRA_VLM_SEMANTIC_NOGO"
+    else: decision="MIXED_INCONCLUSIVE"
     compact_cohort={v:{k:{x:y for x,y in block.items() if x not in ("per_image","components_table")} for k,block in cohorts.items()} for v,cohorts in cohort.items()}
     compact_safety={v:{k:x for k,x in s.items() if k!="per_image"} for v,s in safety.items()}
     result={"FINAL_DECISION":decision,"FULL25_GO":False,"C1_MINIMUM_GO":c1_min,"C2_PDSR_GO":c2_advantage,
+            "PLIP_SEMANTIC_SOURCE":"GO" if c1_min else "NOGO_BY_C1_GATE",
+            "PDSR_DECISION":"GO" if c2_advantage else "NOGO",
             "C2_STRONG_GO":strong,"segmentation":scores,"responsibility":resp,"cohort":compact_cohort,
             "tp_safety":compact_safety,"bootstrap":ci,"runtime":runtime,"posttrain_tensor_drift":drift,
             "checkpoints":checkpoints,"exact_C0_bank":str(a.umrf/"gt_free_prediction_maps.uint8.npy"),
