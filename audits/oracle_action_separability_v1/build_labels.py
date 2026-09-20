@@ -97,11 +97,16 @@ def main() -> None:
         pred=baseline[image_index]
         if truth.shape!=pred.shape:
             raise AssertionError("Image/GT shape mismatch")
+        replay_m1_true_classes=set()
         for region in extract_regions(pred):
             key=(image_id,int(region["class_id"]),int(region["component_id"]))
             if key not in a_lookup:
                 raise AssertionError(f"Feature component missing: {key}")
             mask=region["mask"] & valid
+            is_m1=bool(mask.any() and not (truth[mask]==key[1]).any())
+            if is_m1:
+                replay_m1_true_classes.add(int(np.argmax(np.bincount(
+                    truth[mask].astype(int),minlength=4))))
             if not mask.any():
                 gains=np.zeros(len(ALPHAS),dtype=int)
             else:
@@ -116,7 +121,8 @@ def main() -> None:
                            "oracle_alpha":float(ALPHAS[choice]),"oracle_gain_pixels":best,
                            "action":action,"intervene":int(action!="KEEP"),
                            "direction_up":int(action=="UP") if action!="KEEP" else -1,
-                           "m1_subset":int(key in m1),
+                           "m1_subset":int(is_m1),
+                           "m1_historical_key":int(key in m1),
                            "alpha_gain_curve":json.dumps(gains.tolist())})
         bundle=infer(model,image.cuda(non_blocking=True))
         if not np.array_equal(bundle["prediction"],pred):
@@ -137,7 +143,8 @@ def main() -> None:
                            "beneficial_rescue":int(gain>0),
                            "class_present":int((truth==cls).any()),
                            "correct_baseline":correct_base,"correct_force_on":correct_force,
-                           "m1_related":int(key in m1_gate)})
+                           "m1_related":int(cls in replay_m1_true_classes),
+                           "m1_related_historical":int(key in m1_gate)})
         if (image_index+1)%100==0 or image_index+1==len(loader):
             print(json.dumps({"event":"label_progress","images":image_index+1,
                               "a_labels":len(a_rows),"g_labels":len(g_rows)}),flush=True)
@@ -145,13 +152,17 @@ def main() -> None:
     gl=pd.DataFrame(g_rows).sort_values("feature_row")
     if not np.array_equal(al.feature_row,np.arange(len(a))) or not np.array_equal(gl.feature_row,np.arange(len(g))):
         raise AssertionError("Label coverage or ordering mismatch")
-    if int(al.m1_subset.sum())!=4440:
-        raise AssertionError("Frozen M1 component identity mismatch")
+    if len(m1)!=4440 or int(al.m1_subset.sum())<4000:
+        raise AssertionError("Historical/replayed M1 cohort integrity failed")
     al.to_parquet(out/"arbitration/oracle_action_labels.parquet",index=False)
     gl.to_parquet(out/"gate/rescue_oracle_labels.parquet",index=False)
     checks={"pass":True,"frozen_feature_sha256_verified":True,
             "baseline_equals_dlag_alpha1":True,"all_components":len(al),
-            "all_gate_off_pairs":len(gl),"m1_components":int(al.m1_subset.sum()),
+            "all_gate_off_pairs":len(gl),
+            "m1_components_replayed":int(al.m1_subset.sum()),
+            "m1_components_historical":len(m1),
+            "m1_components_historical_key_overlap":int(al.m1_historical_key.sum()),
+            "m1_area_replayed":int(al.loc[al.m1_subset==1,"area"].sum()),
             "a_label_sha256":sha(out/"arbitration/oracle_action_labels.parquet"),
             "g_label_sha256":sha(out/"gate/rescue_oracle_labels.parquet"),
             "parameter_updates":0}

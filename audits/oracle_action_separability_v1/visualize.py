@@ -96,7 +96,7 @@ def main():
     select_rows.output=out
     choices=select_rows(a,al,g,gl,aps,gs)
     dataset=Stage1_InferDataset(str(args.val_root/"img"),img_size=224)
-    image_index={str(dataset[i][0]):i for i in range(len(dataset))}
+    image_index={Path(path).stem:i for i,path in enumerate(dataset.object)}
     model=load_model(args.checkpoint)
     manifest=[]
     cache={}

@@ -90,7 +90,7 @@ def main() -> None:
         f"RACC-A {pct(anchor['observed']['racc_A'])}, RACC-G {pct(anchor['observed']['racc_G'])}. "
         f"HQMR checkpoint SHA256 `{manifest['checkpoint_sha256']}`. Historical DLAG bank's alpha=1 baseline differs slightly from the independently archived HQMR anchor due to its sealed bank evaluation; the exact DLAG prediction bank is used for action labels, not silently conflated with the HQMR anchor. All source hashes in `00_reproduction_gate.json`.")
     add("Anti-Leakage Audit",f"Feature pass completed before GT/Oracle label reads; feature parquet hashes and baseline prediction hash sealed and rechecked. "
-        f"Baseline prediction equals DLAG alpha=1 bank; M1 identity {int(al.m1_subset.sum())}. "
+        f"Active baseline equals DLAG alpha=1 bank. Historical UCRF M1=4440; the unchanged M1 definition replayed on the exact active component universe yields {int(al.m1_subset.sum())}, with {int(al.m1_historical_key.sum())} exact historical keys retained. "
         f"IDs/patient grouping, GT, purity, Oracle gain and labels excluded from predictors. "
         f"Ten within-patient label permutations per AP1/AP2/G; any AUROC>0.55: {leakage['permutation_any_above_055']}. "
         f"Fold imputation/scaling fit only on train. Probe uses Oracle labels and is **information-content only, not a deployable weak-supervision model**.")
@@ -103,7 +103,7 @@ def main() -> None:
     add("Arbitration Oracle Action Definition","For every baseline predicted 8-connected component, compare correct pixels within its valid GT pixels across frozen alpha bank {0,.25,.5,1,1.5,2,3,4}; choose maximal gain using DLAG tie-order. Positive gain and alpha<1 = DOWN, alpha>1 = UP, otherwise KEEP. M1 is secondary only.")
     add("Arbitration Action Prevalence",f"KEEP {(al.action=='KEEP').sum()}, DOWN {(al.action=='DOWN').sum()}, UP {(al.action=='UP').sum()} among {len(al)}. "
         f"Component-weighted intervene {pct(a_prev)}, area-weighted {pct(aw.loc[aw.weighting=='area','prevalence'].iloc[0])}. "
-        f"M1 count {int(al.m1_subset.sum())}; non-M1 {len(al)-int(al.m1_subset.sum())}.")
+        f"Exact-baseline M1 replay count {int(al.m1_subset.sum())}; non-M1 {len(al)-int(al.m1_subset.sum())}; historical UCRF M1 count 4440. M1 remains a secondary subgroup and does not define the primary universe.")
     add("Arbitration Univariate Separability",table(au.head(12),["feature","orientation","auroc","auprc","enrichment","recall_p80","recall_p90","precision_top1"]))
     add("Arbitration Probe Results",f"AP1 grouped 5-fold OOF, L2 logistic C=1 max_iter=2000 and depth-3 tree.\n\n"
         +table(pd.concat([ap1.tail(1).assign(probe="linear"),apl_tree.tail(1).assign(probe="tree")]),
@@ -142,7 +142,7 @@ def main() -> None:
     title="# Oracle Action GT-Free Separability Audit — BCSS Seed42\n\n"
     report=title+"\n\n".join(f"## {i}. {name}\n\n{body}" for i,(name,body) in enumerate(section,1))
     report+="\n\n## Reproduction and artifact paths\n\n"
-    report+="- Re-run: `python audits/oracle_action_separability_v1/reproduction_gate.py ...`, then `freeze_observables.py`, `build_labels.py`, `analyze.py`, `generate_report.py` in that order.\n"
+    report+="- Re-run in strict order: `reproduction_gate.py` → `seal_sources.py` → `freeze_observables.py` → `freeze_query_support.py` → `freeze_reconciled_arbitration.py` → `build_labels.py` → `analyze.py` → `visualize.py` → `generate_report.py`. Exact commands are in `audits/oracle_action_separability_v1/README.md`.\n"
     report+="- Server output: `/home/duyanhong/experiments/Oracle_Action_Separability_v1_BCSS_Seed42`.\n"
     report+="- Source: `audits/oracle_action_separability_v1/` on branch `audit/oracle-action-separability-v1`.\n"
     visual_manifest=out/"visualizations/manifest.json"

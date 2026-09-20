@@ -282,7 +282,7 @@ def main() -> None:
                         ("gate_preserved",a.gate_preserved),("m1_subset",al.m1_subset)):
         a_sub.extend(subgroup(name,values,al.intervene.to_numpy(),a_score))
     pd.DataFrame(a_sub).to_csv(out/"arbitration/subgroup_metrics.csv",index=False)
-    gq=pd.qcut(g.g_gate_score,4,labels=["Q1","Q2","Q3","Q4"],duplicates="drop")
+    gq=pd.qcut(g.g_deep_score,4,labels=["Q1","Q2","Q3","Q4"],duplicates="drop")
     g_sub=[]
     for name,values in (("candidate_class",g.candidate_class),("deep_score_quartile",gq),
                         ("tta_any_above",g.g_tta_above>0),("m1_related",gl.m1_related)):
