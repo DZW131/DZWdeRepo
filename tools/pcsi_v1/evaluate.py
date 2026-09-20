@@ -72,9 +72,9 @@ def run_variant(model,loader,ids,truth_root,baseline_by_id,frame,variant,outdir)
                     responsibility.append({"image_id":image_id,"component_id":key[1],"baseline_class":key[0],
                                            "true_class":true,"evaluable":bool(row.evaluable),"hard_m1":bool(row.hard_m1),
                                            "m1":bool(row.m1),"area":int(row.area),"baseline_l5":base_l5,
-                                           "new_l5":new_class,"new_margin_true_rival":float(pooled[true]-pooled[key[0]]) if true>=0 else np.nan,
+                                           "new_l5":new_class,"new_margin_true_rival":float(pooled[true]-pooled[base_l5]) if true>=0 else np.nan,
                                            "new_true_probability":float(pooled[true]) if true>=0 else np.nan,
-                                           "new_rival_probability":float(pooled[key[0]])})
+                                           "new_rival_probability":float(pooled[base_l5])})
         image_count+=len(names)
         if image_count%400<len(names): print(json.dumps({"event":"PCSI_EVAL_PROGRESS","variant":variant,"images":image_count}),flush=True)
     if image_count!=len(ids): raise AssertionError("Validation count changed")
@@ -102,10 +102,10 @@ def responsibility_summary(table):
                 "area_weighted_rate":float(np.average(x,weights=rows.area))}
     wrong=evaluable[evaluable.baseline_l5!=evaluable.true_class]
     hard=evaluable[evaluable.hard_m1]
-    exit_=hard[hard.new_l5!=hard.baseline_class]
+    exit_=hard[hard.new_l5!=hard.baseline_l5]
     return {"RCR":rate(wrong,lambda x:x.new_l5==x.true_class),
             "HRCR":rate(hard,lambda x:x.new_l5==x.true_class),
-            "RER":rate(hard,lambda x:x.new_l5!=x.baseline_class),
+            "RER":rate(hard,lambda x:x.new_l5!=x.baseline_l5),
             "CorrectRER":rate(exit_,lambda x:x.new_l5==x.true_class),
             "true_rival_margin_hard_mean":float(hard.new_margin_true_rival.mean()) if len(hard) else None,
             "true_rival_margin_hard_median":float(hard.new_margin_true_rival.median()) if len(hard) else None,
