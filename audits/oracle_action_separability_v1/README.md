@@ -23,8 +23,10 @@ RACC=/home/duyanhong/experiments/RACC_v1_Phase0_BCSS_Seed42
 UCRF=/home/duyanhong/experiments/UCRF_v1_Upstream_Class_Responsibility_Formation_Audit_BCSS_Seed42
 
 $PY audits/oracle_action_separability_v1/reproduction_gate.py --checkpoint "$CKPT" --dlag "$DLAG" --racc "$RACC" --output "$OUT/00_reproduction_gate.json"
+$PY audits/oracle_action_separability_v1/seal_sources.py --dlag "$DLAG" --ucrf "$UCRF" --output "$OUT/source_manifest.json"
 $PY audits/oracle_action_separability_v1/freeze_observables.py --checkpoint "$CKPT" --val-root "$VAL" --output "$OUT" --num-workers 2
 $PY audits/oracle_action_separability_v1/freeze_query_support.py --checkpoint "$CKPT" --val-root "$VAL" --output "$OUT" --num-workers 2
+$PY audits/oracle_action_separability_v1/freeze_reconciled_arbitration.py --checkpoint "$CKPT" --val-root "$VAL" --dlag "$DLAG" --output "$OUT" --num-workers 2
 $PY audits/oracle_action_separability_v1/build_labels.py --checkpoint "$CKPT" --val-root "$VAL" --dlag "$DLAG" --ucrf "$UCRF" --output "$OUT" --num-workers 2
 $PY audits/oracle_action_separability_v1/analyze.py --output "$OUT"
 $PY audits/oracle_action_separability_v1/visualize.py --checkpoint "$CKPT" --val-root "$VAL" --output "$OUT"
@@ -39,8 +41,10 @@ The output directory is write-once. `freeze_observables.py` will refuse to overw
 | File | Role |
 |---|---|
 | `reproduction_gate.py` | Exact six-anchor and checkpoint SHA gate |
+| `seal_sources.py` | SHA-seal all eight DLAG alpha banks and UCRF manifest before Oracle label generation |
 | `freeze_observables.py` | HQMR inference, GT-free feature extraction, feature SHA seal |
 | `freeze_query_support.py` | A second still-GT-free pass for true `W(q,c)` and query-response features, with independent SHA seal |
+| `freeze_reconciled_arbitration.py` | GT-free FP32 re-freeze of all A components after discovering the original BF16-before-resize path differed numerically from DLAG alpha=1; retains original as forensic artifact |
 | `build_labels.py` | DLAG alpha component action and single-class force-on gate Oracle labels |
 | `analyze.py` | Fixed univariate metrics, 5-fold patient-grouped linear/tree probes, 10 within-patient permutations, ablations and decision rules |
 | `visualize.py` | 20 examples in each of eight error/success categories |
@@ -48,6 +52,6 @@ The output directory is write-once. `freeze_observables.py` will refuse to overw
 
 ## Key outputs
 
-`feature_manifest.json` records the first GT-free pass; `feature_manifest_final.json` and `feature_table_sha256_final.txt` seal both passes before GT. The original files remain unchanged. `arbitration/observable_features.parquet`, `gate/gate_off_pairs.parquet`, and `gate/gate_query_features.parquet` contain only model-observable features plus identifier/metadata columns that are explicitly excluded from probes. The two `*_labels.parquet` files, CV and ablation CSVs, subgroup/weighted metrics, leakage audit, decision JSONs, `visualizations/manifest.json`, and `Oracle_Action_GTFree_Separability_Audit_Report.md` complete the handoff.
+`feature_manifest.json` records the initial GT-free pass; `feature_manifest_final.json` seals true query support, and `feature_manifest_action.json` selects the corrected FP32 Track A table after an exact all-pixel comparison to the frozen DLAG alpha=1 bank. All original tables and hashes remain unchanged. Active A features are `arbitration/observable_features_fp32.parquet`; G features are `gate/gate_off_pairs.parquet` plus `gate/gate_query_features.parquet`. Identifier/metadata columns are excluded from probes. The two `*_labels.parquet` files, CV and ablation CSVs, subgroup/weighted metrics, leakage audit, decision JSONs, `visualizations/manifest.json`, and `Oracle_Action_GTFree_Separability_Audit_Report.md` complete the handoff.
 
 The Oracle-supervised probes are *not deployable models*. A GO says information is separable under the specified grouped-validation diagnostic, not that a weakly supervised controller has already been built.

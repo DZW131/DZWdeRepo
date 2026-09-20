@@ -158,11 +158,11 @@ def decision_a(ap1: dict, ap2: dict) -> str:
         return "ARBITRATION_ACTION_NOT_SEPARABLE"
     if (min(ap1["auroc"],ap2["auroc"])>=.88 and
         min(ap1["recall_p80"],ap2["recall_p80"])>=.35 and
-        min(ap1["enrichment"],ap2["enrichment"])>=2):
+        ap1["enrichment"]>=2):
         return "STRONG_ARBITRATION_GO"
     if (min(ap1["auroc"],ap2["auroc"])>=.80 and
         min(ap1["recall_p80"],ap2["recall_p80"])>=.20 and
-        min(ap1["enrichment"],ap2["enrichment"])>=2):
+        ap1["enrichment"]>=2):
         return "ARBITRATION_SEPARABLE"
     return "ARBITRATION_WEAK"
 
@@ -228,12 +228,12 @@ def analyze_track(features: pd.DataFrame, labels: pd.DataFrame, task: str,
 def main() -> None:
     parser=argparse.ArgumentParser();parser.add_argument("--output",type=Path,required=True)
     args=parser.parse_args();out=args.output
-    manifest=json.loads((out/"feature_manifest_final.json").read_text())
+    manifest=json.loads((out/"feature_manifest_action.json").read_text())
     leakage=json.loads((out/"leakage_audit.json").read_text())
     if not leakage["pass"]: raise AssertionError("Oracle label integrity failed")
     for relative,expected in manifest["sha256"].items():
         if sha(out/relative)!=expected: raise AssertionError(f"Feature hash changed: {relative}")
-    a=pd.read_parquet(out/"arbitration/observable_features.parquet")
+    a=pd.read_parquet(out/manifest["active_A_feature_table"])
     al=pd.read_parquet(out/"arbitration/oracle_action_labels.parquet")
     g=pd.read_parquet(out/"gate/gate_off_pairs.parquet")
     query=pd.read_parquet(out/"gate/gate_query_features.parquet")

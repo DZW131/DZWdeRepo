@@ -86,7 +86,8 @@ def main():
     for name in ("checkpoint","val-root","output"):
         p.add_argument(f"--{name}",type=Path,required=True)
     args=p.parse_args();out=args.output
-    a=pd.read_parquet(out/"arbitration/observable_features.parquet")
+    manifest=json.loads((out/"feature_manifest_action.json").read_text())
+    a=pd.read_parquet(out/manifest["active_A_feature_table"])
     al=pd.read_parquet(out/"arbitration/oracle_action_labels.parquet")
     g=pd.read_parquet(out/"gate/gate_off_pairs.parquet")
     gl=pd.read_parquet(out/"gate/rescue_oracle_labels.parquet")

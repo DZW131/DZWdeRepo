@@ -55,15 +55,19 @@ def main() -> None:
     if (out/"arbitration/oracle_action_labels.parquet").exists():
         raise FileExistsError("Oracle labels already exist")
     gate=json.loads((out/"00_reproduction_gate.json").read_text())
-    manifest=json.loads((out/"feature_manifest_final.json").read_text())
-    if not gate["pass"] or not manifest["feature_freeze_before_gt"]:
+    sources=json.loads((out/"source_manifest.json").read_text())
+    manifest=json.loads((out/"feature_manifest_action.json").read_text())
+    if not gate["pass"] or not sources["pass"] or not manifest["feature_freeze_before_gt"]:
         raise AssertionError("Reproduction/feature freeze gate failed")
+    for path,expected in {**sources["source_sha256"],**sources["anchor_source_sha256"]}.items():
+        if sha(Path(path))!=expected:
+            raise AssertionError(f"Sealed frozen source changed: {path}")
     for relative,expected in manifest["sha256"].items():
         if sha(out/relative)!=expected:
             raise AssertionError(f"Frozen feature hash mismatch: {relative}")
-    a=pd.read_parquet(out/"arbitration/observable_features.parquet")
+    a=pd.read_parquet(out/manifest["active_A_feature_table"])
     g=pd.read_parquet(out/"gate/gate_off_pairs.parquet")
-    with np.load(out/"baseline_predictions.npz") as pred_bank:
+    with np.load(out/manifest["active_baseline_predictions"]) as pred_bank:
         baseline=pred_bank["predictions"].copy()
         ids=pred_bank["image_ids"].copy()
     bank=load_predictions(args.dlag,ids)

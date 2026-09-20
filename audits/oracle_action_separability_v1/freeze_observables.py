@@ -36,7 +36,7 @@ def digest(path: Path) -> str:
 
 
 def spatial(value: torch.Tensor, hw: tuple[int, int], flip: tuple[int, ...]) -> np.ndarray:
-    return resize_unflip(value, hw, flip).detach().float().cpu().numpy()
+    return resize_unflip(value.float(), hw, flip).detach().cpu().numpy()
 
 
 def safe_stats(x: np.ndarray) -> tuple[float, float, float]:
@@ -86,8 +86,10 @@ def infer(model, image: torch.Tensor) -> dict:
             stacks[key].append(spatial(mapping, hw, cam_flip))
         stacks["cam"].append(spatial(output["primary_output"], hw, cam_flip))
         gates.append(output["deep_gate"].detach().float().cpu().numpy()[0])
-    maps = {key: np.mean(values, axis=0) for key, values in stacks.items()}
-    maps["cam"] = normalize_cam(maps["cam"])
+    maps = {key: np.mean(values, axis=0) for key, values in stacks.items() if key!="cam"}
+    # Match sealed DLAG: FP32 interpolation *before* resize, then torch mean.
+    # Resizing BF16 first changes weak-class CAM normalization and components.
+    maps["cam"] = normalize_cam(torch.stack([torch.from_numpy(v) for v in stacks["cam"]]).mean(0).numpy())
     gate_views = np.stack(gates)
     gate = gate_views.mean(0)
     label = presence(gate)

@@ -34,11 +34,11 @@ def main() -> None:
     p=argparse.ArgumentParser();p.add_argument("--output",type=Path,required=True);args=p.parse_args()
     out=args.output
     anchor=json.loads((out/"00_reproduction_gate.json").read_text())
-    manifest=json.loads((out/"feature_manifest_final.json").read_text())
+    manifest=json.loads((out/"feature_manifest_action.json").read_text())
     leakage=json.loads((out/"leakage_audit.json").read_text())
     ad=json.loads((out/"arbitration/decision.json").read_text())
     gd=json.loads((out/"gate/decision.json").read_text())
-    a=pd.read_parquet(out/"arbitration/observable_features.parquet")
+    a=pd.read_parquet(out/manifest["active_A_feature_table"])
     al=pd.read_parquet(out/"arbitration/oracle_action_labels.parquet")
     g=pd.read_parquet(out/"gate/gate_off_pairs.parquet")
     gl=pd.read_parquet(out/"gate/rescue_oracle_labels.parquet")
@@ -97,7 +97,9 @@ def main() -> None:
     add("Frozen Observable Manifest",f"{len(a)} baseline predicted components, {len(g)} deep-gate-OFF image-class pairs, 3418 BCSS validation images, "
         f"{image_groups}/{g_groups} patient groups (A/G). A features={len(manifest['features_A'])}; G features={len(manifest['features_G'])}; "
         f"fixed spatial support threshold={manifest['support_threshold']}. "
-        f"Feature table SHA256: `{manifest['sha256']}`. Full names in `feature_manifest.json`.")
+        f"Active FP32 A feature table `{manifest['active_A_feature_table']}`; original pass retained for drift audit. "
+        f"Original-to-active drift: {manifest['fp32_reconciliation']['old_pixel_drift']} pixels ({pct(manifest['fp32_reconciliation']['old_pixel_drift_fraction'])}); "
+        f"active baseline matches DLAG alpha=1 bank exactly. Full feature hashes in `feature_manifest_action.json`.")
     add("Arbitration Oracle Action Definition","For every baseline predicted 8-connected component, compare correct pixels within its valid GT pixels across frozen alpha bank {0,.25,.5,1,1.5,2,3,4}; choose maximal gain using DLAG tie-order. Positive gain and alpha<1 = DOWN, alpha>1 = UP, otherwise KEEP. M1 is secondary only.")
     add("Arbitration Action Prevalence",f"KEEP {(al.action=='KEEP').sum()}, DOWN {(al.action=='DOWN').sum()}, UP {(al.action=='UP').sum()} among {len(al)}. "
         f"Component-weighted intervene {pct(a_prev)}, area-weighted {pct(aw.loc[aw.weighting=='area','prevalence'].iloc[0])}. "
@@ -131,7 +133,7 @@ def main() -> None:
     add("Gate Subgroups",table(gsub,["subgroup","value","n","prevalence","auroc","auprc","recall_p80"]))
     add("RACC-v1 Failure Reinterpretation",f"Frozen RACC-A +0.0563 pp with nearly global alpha (mean≈1.258, SD≈0.051), RACC-G −4.6597 pp and rescue precision 6.37%. "
         f"This audit distinguishes weak original formulation from absent separable information. AP1/AP2/G OOF AUROCs are {number(ap1_final.auroc)}/{number(ap2_final.auroc)}/{number(gp_final.auroc)}; compare fixed ablation trajectories, not a post-hoc feature search.")
-    add("2×2 Decision Matrix",f"A={a_dec}; G={g_dec}; route={route}. Thresholds applied to **linear OOF**: A both AUROC≥.80, Recall@P80≥20%, AP enrichment≥2; G AUROC≥.88, enrichment≥3, Recall@P80≥20%, @P90≥10%. NOGO if A either AUROC<.70 or @P80<10%; G AUROC<.80 or @P80<10%. Weak is not training authorization.")
+    add("2×2 Decision Matrix",f"A={a_dec}; G={g_dec}; route={route}. Thresholds applied to **linear OOF**: A both AP1/AP2 AUROC≥.80 and Recall@P80≥20%, with intervention AP1 enrichment≥2 (AP2 enrichment is reported but not a gate because its positive base rate can exceed 50%); G AUROC≥.88, enrichment≥3, Recall@P80≥20%, @P90≥10%. NOGO if A either AUROC<.70 or @P80<10%; G AUROC<.80 or @P80<10%. Weak is not training authorization.")
     add("What Is Preserved","CCRA, HQMR E25, BCSS Seed42, UCRF mechanism, DLAG counterfactual/oracle results, all sealed checksums and GT-free tables remain preserved. No segmentation parameter updates and no new Full25/checkpoint.")
     add("What Is Closed",("Gate rescue" if not g_go else "No Gate route closed")+"; "+("dynamic-alpha learned arbitration" if not a_go else "No Arbitration route closed")+" under the predeclared operating requirements. A high Oracle ceiling alone is not evidence of GT-free action identifiability.")
     add("Exact Next Architecture Step",("Design the smallest action reliability target from the first ablation family that materially raises OOF precision; pre-register a separate weak-supervision mechanism before training." if a_go or g_go else "Do not train RACC-v2 or tune alpha/gate thresholds. Archive Oracle-to-RACC translation and investigate a different implementable mechanism.")
