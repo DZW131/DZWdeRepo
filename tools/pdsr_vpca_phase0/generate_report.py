@@ -26,7 +26,7 @@ def main():
     add("P1 VLM‑Last",f"mIoU {pct(s['P1']['mIoU'])}（P1−P0 {pp(d['P1-P0'])}），Hard‑M1 corrective rate {pct(hm['P1'])}，WRP {pct(r['cohort']['P1']['hard_m1']['wrong_rival_persistence'])}，γ abs mean {r['gamma']['P1']['abs_mean']:.6g}。")
     add("VLM Novel Semantic Evidence",f"Question A：P1>P0 = {d['P1-P0']>0}；Hard‑M1 correction 是否非零 = {hm['P1']>0}。这只说明 frozen PLIP last-layer 是否提供可利用的新信息，不归因于 PDSR。")
     add("P2 Static‑PDSR",f"mIoU {pct(s['P2']['mIoU'])}（P2−P1 {pp(d['P2-P1'])}），Hard‑M1={pct(hm['P2'])}，M1={pct(m1['P2'])}。")
-    add("PDSR Cross‑Layer Reconstruction",f"β mean={r['mechanism']['P2'].get('beta_mean')}，β>0.9 fractions={r['mechanism']['P2'].get('beta_gt_0_9_fraction')}，R/U ratios={r['mechanism']['P2'].get('reconstruction_visual_ratio_mean')}。")
+    add("PDSR Cross‑Layer Reconstruction",f"β mean={r['mechanism']['P2'].get('beta_mean')}，β>0.9 fractions={r['mechanism']['P2'].get('beta_gt_0_9_fraction')}，R/U ratios={r['mechanism']['P2'].get('reconstruction_visual_ratio_mean')}；per-class、Hard-M1 与 correct-control 分层统计：`{json.dumps(r['mechanism']['P2'].get('beta_subgroups',{}))}`。")
     add("PDSR Mechanism Metrics",f"P2−P1 Hard‑M1 gain={pct(r['pdsr_hmcr_gain'])}，M1 gain={pct(r['pdsr_m1cr_gain'])}；PDSR decision={r['PDSR_DECISION']}。")
     add("P3 VPCA‑PDSR",f"mIoU {pct(s['P3']['mIoU'])}（P3−P2 {pp(d['P3-P2'])}；P3−P0 {pp(d['P3-P0'])}），Hard‑M1={pct(hm['P3'])}，M1={pct(m1['P3'])}。")
     add("Concept Participation Analysis",f"P3 concept statistics: `{json.dumps(r['mechanism']['P3'].get('concept_per_class',{}))}`。VPCA 使用固定 Top20%、τ=0.1、无 hard gate/threshold。")

@@ -93,13 +93,14 @@ def cohort_metrics(frame,predictions,ids,truth_root,baseline_by_id,cohort_column
     index={str(x):i for i,x in enumerate(ids)}
     for image_id in ids:
         i=index[str(image_id)]; base=baseline_by_id[str(image_id)]; new=predictions[i]; truth=np.asarray(Image.open(truth_root/f"{image_id}.png")); valid=truth<4
+        ev=None
+        if mechanism is not None and len(mechanism.get("class_evidence",[])):
+            ev=F.interpolate(torch.from_numpy(mechanism["class_evidence"][i].astype(np.float32))[None],size=(224,224),mode="bilinear",align_corners=False)[0].numpy()
         corrected=denom=wrong_rival=0
         for r,mask in cohort_for_image(frame[frame[cohort_column]],str(image_id),base):
             wrong=mask&valid&(base!=truth); c=int((wrong&(new==truth)).sum()); d=int(wrong.sum()); corrected+=c; denom+=d; wrong_rival+=int((wrong&(new==int(r.baseline_class))).sum())
             component.append({"image_id":str(image_id),"class":int(r.true_class),"area":int(r.area),"corrected":c,"denom":d,"rate":c/max(d,1),"wrong_rival":int((wrong&(new==int(r.baseline_class))).sum())})
-            if mechanism is not None and len(mechanism.get("class_evidence",[])):
-                ev=torch.from_numpy(mechanism["class_evidence"][i].astype(np.float32))[None]
-                ev=F.interpolate(ev,size=(224,224),mode="bilinear",align_corners=False)[0].numpy()
+            if ev is not None:
                 margins.append(float((ev[int(r.true_class)]-ev[int(r.baseline_class)])[mask].mean()))
         image_rows.append({"image_id":str(image_id),"corrected":corrected,"denom":denom,"wrong_rival":wrong_rival})
     c=pd.DataFrame(component); im=pd.DataFrame(image_rows)
@@ -151,6 +152,29 @@ def mechanism_summary(mechanism,labels_by_id,ids):
         result["concept_per_class"]=per; result["concept_collapse"]=collapse
     return result
 
+def beta_subgroup_summary(mechanism,frame,ids,truth_root,baseline_by_id):
+    """Layer-weight health for required class/Hard-M1/correct-control strata."""
+    beta=mechanism["beta"].astype(np.float32); groups=("all","hard_m1","correct_controls","class_0","class_1","class_2","class_3")
+    acc={g:{"sum":np.zeros(3),"square":np.zeros(3),"gt09":np.zeros(3),"count":0} for g in groups}; by_image={str(k):v for k,v in frame[frame.hard_m1].groupby(frame.image_id.astype(str))}
+    def update(name,value,mask):
+        pixels=value[:,mask]; n=pixels.shape[1]
+        if not n:return
+        acc[name]["sum"]+=pixels.sum(1); acc[name]["square"]+=(pixels*pixels).sum(1); acc[name]["gt09"]+=(pixels>.9).sum(1); acc[name]["count"]+=n
+    for i,image_id in enumerate(ids):
+        value=F.interpolate(torch.from_numpy(beta[i])[None],size=(224,224),mode="bilinear",align_corners=False)[0].numpy(); truth=np.asarray(Image.open(truth_root/f"{image_id}.png")); base=baseline_by_id[str(image_id)]; valid=truth<4
+        update("all",value,valid); update("correct_controls",value,valid&(base==truth))
+        for c in range(4):update(f"class_{c}",value,truth==c)
+        hard=np.zeros_like(valid); rows=by_image.get(str(image_id))
+        if rows is not None:
+            regions={(int(x["class_id"]),int(x["component_id"])):x["mask"] for x in extract_regions(base)}
+            for _,row in rows.iterrows(): hard|=regions[(int(row.baseline_class),int(row.component_id))]
+        update("hard_m1",value,hard&valid)
+    result={}
+    for name,x in acc.items():
+        n=max(x["count"],1); mean=x["sum"]/n; variance=np.maximum(x["square"]/n-mean*mean,0)
+        result[name]={"pixels":int(x["count"]),"mean":mean.tolist(),"std":np.sqrt(variance).tolist(),"gt_0_9_fraction":(x["gt09"]/n).tolist()}
+    return result
+
 def main():
     p=argparse.ArgumentParser(); p.add_argument("--checkpoint",type=Path,required=True); p.add_argument("--plip",type=Path,required=True); p.add_argument("--val-root",type=Path,required=True)
     p.add_argument("--output",type=Path,required=True); p.add_argument("--umrf",type=Path,required=True); p.add_argument("--batch-size",type=int,default=8); p.add_argument("--num-workers",type=int,default=4); a=p.parse_args()
@@ -193,6 +217,7 @@ def main():
         safety[v]=tp_safety(predictions[v],ids,a.val_root/"mask",baseline_by_id)
     bootstrap=paired_bootstrap(hist,cohort,safety)
     mechanism={v:mechanism_summary(mechanisms[v],labels_by_id,ids) for v in ("P1","P2","P3")}
+    for v in ("P2","P3"): mechanism[v]["beta_subgroups"]=beta_subgroup_summary(mechanisms[v],frame,ids,a.val_root/"mask",baseline_by_id)
     gamma={}
     for v,d in VARIANT_DIR.items():
         state=torch.load(out/d/f"{v.lower()}_e5_adapter.pth",map_location="cpu",weights_only=False); g=state["gamma"].float(); gamma[v]={"mean":float(g.mean()),"std":float(g.std()),"abs_mean":float(g.abs().mean()),"min":float(g.min()),"max":float(g.max()),"vlm_ignored":bool(g.abs().mean()<1e-3)}
@@ -226,7 +251,7 @@ def main():
     pd.DataFrame([{"variant":v,"cohort":c,"wrong_rival_persistence":cohort[v][c]["wrong_rival_persistence"]} for v in ("P1","P2","P3") for c in ("hard_m1","m1")]).to_csv(out/"metrics/rival_persistence.csv",index=False)
     pd.DataFrame([{"variant":v,**{k:value for k,value in safety[v].items() if k!="per_image"}} for v in ("P1","P2","P3")]).to_csv(out/"metrics/tp_safety.csv",index=False)
     pd.DataFrame([{"variant":v,"class":c,"iou":scores[v]["class_iou"][str(c)],"dice":scores[v]["class_dice"][str(c)]} for v in ("P0","P1","P2","P3") for c in range(4)]).to_csv(out/"metrics/per_class.csv",index=False)
-    pd.DataFrame([{"variant":v,"layer":layer,"beta_mean":mechanism[v].get("beta_mean",[None]*3)[layer],"beta_std":mechanism[v].get("beta_std",[None]*3)[layer],"beta_gt_0_9_fraction":mechanism[v].get("beta_gt_0_9_fraction",[None]*3)[layer],"reconstruction_visual_ratio":mechanism[v].get("reconstruction_visual_ratio_mean",[None]*3)[layer]} for v in ("P2","P3") for layer in range(3)]).to_csv(out/"metrics/pdsr_mechanism.csv",index=False)
+    pd.DataFrame([{"variant":v,"group":group,"layer":layer,"beta_mean":values["mean"][layer],"beta_std":values["std"][layer],"beta_gt_0_9_fraction":values["gt_0_9_fraction"][layer],"pixels":values["pixels"],"reconstruction_visual_ratio":mechanism[v].get("reconstruction_visual_ratio_mean",[None]*3)[layer]} for v in ("P2","P3") for group,values in mechanism[v]["beta_subgroups"].items() for layer in range(3)]).to_csv(out/"metrics/pdsr_mechanism.csv",index=False)
     pd.DataFrame([{"class":int(c),**values} for c,values in mechanism["P3"].get("concept_per_class",{}).items()]).to_csv(out/"metrics/vpca_concepts.csv",index=False)
     pd.DataFrame([result["ccra_health"]|{"collapse":result["CCRA_COLLAPSE"]}]).to_csv(out/"metrics/ccra_health.csv",index=False)
     for v in ("P1","P2","P3"):
