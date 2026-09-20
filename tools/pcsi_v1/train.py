@@ -32,6 +32,8 @@ def main():
     p.add_argument("--smoke-effective-steps",type=int,default=0); a=p.parse_args()
     gate=json.loads((a.output/"phaseA_forward/phaseA_decision.json").read_text())
     if gate["PHASE_A_DECISION"]!="GO": raise AssertionError("Phase A GO required")
+    identity=json.loads((a.output/"phaseC/identity_pretrain.json").read_text())
+    if not identity[a.variant]["gamma0_identity"]: raise AssertionError("Pretraining identity gate missing")
     variant_dir=a.output/("C1_VLM_LAST" if a.variant=="C1" else "C2_STATIC_PDSR")
     variant_dir.mkdir(parents=True,exist_ok=True)
     if any(variant_dir.iterdir()): raise FileExistsError(f"Refusing populated output: {variant_dir}")
