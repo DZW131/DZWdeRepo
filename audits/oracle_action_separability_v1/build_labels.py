@@ -55,7 +55,7 @@ def main() -> None:
     if (out/"arbitration/oracle_action_labels.parquet").exists():
         raise FileExistsError("Oracle labels already exist")
     gate=json.loads((out/"00_reproduction_gate.json").read_text())
-    manifest=json.loads((out/"feature_manifest.json").read_text())
+    manifest=json.loads((out/"feature_manifest_final.json").read_text())
     if not gate["pass"] or not manifest["feature_freeze_before_gt"]:
         raise AssertionError("Reproduction/feature freeze gate failed")
     for relative,expected in manifest["sha256"].items():

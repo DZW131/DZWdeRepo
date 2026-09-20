@@ -24,6 +24,7 @@ UCRF=/home/duyanhong/experiments/UCRF_v1_Upstream_Class_Responsibility_Formation
 
 $PY audits/oracle_action_separability_v1/reproduction_gate.py --checkpoint "$CKPT" --dlag "$DLAG" --racc "$RACC" --output "$OUT/00_reproduction_gate.json"
 $PY audits/oracle_action_separability_v1/freeze_observables.py --checkpoint "$CKPT" --val-root "$VAL" --output "$OUT" --num-workers 2
+$PY audits/oracle_action_separability_v1/freeze_query_support.py --checkpoint "$CKPT" --val-root "$VAL" --output "$OUT" --num-workers 2
 $PY audits/oracle_action_separability_v1/build_labels.py --checkpoint "$CKPT" --val-root "$VAL" --dlag "$DLAG" --ucrf "$UCRF" --output "$OUT" --num-workers 2
 $PY audits/oracle_action_separability_v1/analyze.py --output "$OUT"
 $PY audits/oracle_action_separability_v1/visualize.py --checkpoint "$CKPT" --val-root "$VAL" --output "$OUT"
@@ -39,6 +40,7 @@ The output directory is write-once. `freeze_observables.py` will refuse to overw
 |---|---|
 | `reproduction_gate.py` | Exact six-anchor and checkpoint SHA gate |
 | `freeze_observables.py` | HQMR inference, GT-free feature extraction, feature SHA seal |
+| `freeze_query_support.py` | A second still-GT-free pass for true `W(q,c)` and query-response features, with independent SHA seal |
 | `build_labels.py` | DLAG alpha component action and single-class force-on gate Oracle labels |
 | `analyze.py` | Fixed univariate metrics, 5-fold patient-grouped linear/tree probes, 10 within-patient permutations, ablations and decision rules |
 | `visualize.py` | 20 examples in each of eight error/success categories |
@@ -46,6 +48,6 @@ The output directory is write-once. `freeze_observables.py` will refuse to overw
 
 ## Key outputs
 
-`feature_manifest.json` and `feature_table_sha256.txt` document the anti-leakage boundary. `arbitration/observable_features.parquet` and `gate/gate_off_pairs.parquet` contain only model-observable features plus identifier/metadata columns that are explicitly excluded from probes. The two `*_labels.parquet` files, CV and ablation CSVs, subgroup/weighted metrics, leakage audit, decision JSONs, `visualizations/manifest.json`, and `Oracle_Action_GTFree_Separability_Audit_Report.md` complete the handoff.
+`feature_manifest.json` records the first GT-free pass; `feature_manifest_final.json` and `feature_table_sha256_final.txt` seal both passes before GT. The original files remain unchanged. `arbitration/observable_features.parquet`, `gate/gate_off_pairs.parquet`, and `gate/gate_query_features.parquet` contain only model-observable features plus identifier/metadata columns that are explicitly excluded from probes. The two `*_labels.parquet` files, CV and ablation CSVs, subgroup/weighted metrics, leakage audit, decision JSONs, `visualizations/manifest.json`, and `Oracle_Action_GTFree_Separability_Audit_Report.md` complete the handoff.
 
 The Oracle-supervised probes are *not deployable models*. A GO says information is separable under the specified grouped-validation diagnostic, not that a weakly supervised controller has already been built.

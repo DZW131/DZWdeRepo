@@ -228,7 +228,7 @@ def analyze_track(features: pd.DataFrame, labels: pd.DataFrame, task: str,
 def main() -> None:
     parser=argparse.ArgumentParser();parser.add_argument("--output",type=Path,required=True)
     args=parser.parse_args();out=args.output
-    manifest=json.loads((out/"feature_manifest.json").read_text())
+    manifest=json.loads((out/"feature_manifest_final.json").read_text())
     leakage=json.loads((out/"leakage_audit.json").read_text())
     if not leakage["pass"]: raise AssertionError("Oracle label integrity failed")
     for relative,expected in manifest["sha256"].items():
@@ -236,6 +236,10 @@ def main() -> None:
     a=pd.read_parquet(out/"arbitration/observable_features.parquet")
     al=pd.read_parquet(out/"arbitration/oracle_action_labels.parquet")
     g=pd.read_parquet(out/"gate/gate_off_pairs.parquet")
+    query=pd.read_parquet(out/"gate/gate_query_features.parquet")
+    if not np.array_equal(g.image_id,query.image_id) or not np.array_equal(g.candidate_class,query.candidate_class):
+        raise AssertionError("GT-free query feature row identity mismatch")
+    g=pd.concat([g,query.drop(columns=["image_id","candidate_class"])],axis=1)
     gl=pd.read_parquet(out/"gate/rescue_oracle_labels.parquet")
     for frame,feature_names in ((a,manifest["features_A"]),(g,manifest["features_G"])):
         if any(name not in frame or not pd.api.types.is_numeric_dtype(frame[name]) for name in feature_names):
@@ -249,9 +253,20 @@ def main() -> None:
                      al.loc[actionable].reset_index(drop=True).assign(feature_row=np.arange(actionable.sum())),
                      "AP2",manifest["features_A"],A_ABLATIONS,
                      "direction_up","oracle_gain_pixels",out/"arbitration")
-    # Keep AP1 files primary; AP2 paths are renamed after analysis by task-aware code below.
     gate=analyze_track(g,gl,"G",manifest["features_G"],G_ABLATIONS,
                        "beneficial_rescue","gate_gain_pixels",out/"gate")
+    pd.DataFrame([{"probe":"linear",**a2["linear_final"]},
+                  {"probe":"shallow_tree",**a2["shallow_final"]}]).to_csv(
+                      out/"arbitration/action_direction.csv",index=False)
+    pd.DataFrame([{"probe":"linear",**gate["linear_final"]},
+                  {"probe":"shallow_tree",**gate["shallow_final"]},
+                  {"probe":"best_univariate",**gate["univariate_best"]}]).to_csv(
+                      out/"gate/operating_points.csv",index=False)
+    pd.DataFrame([{"task":"AP1",**a1["gain_ranking"]},
+                  {"task":"AP2",**a2["gain_ranking"]}]).to_csv(
+                      out/"arbitration/gain_ranking.csv",index=False)
+    pd.DataFrame([{"task":"G",**gate["gain_ranking"]}]).to_csv(
+                      out/"gate/gain_ranking.csv",index=False)
     a_score=a1["oof_score"];g_score=gate["oof_score"]
     pd.DataFrame([{"weighting":"component",**metrics(al.intervene,a_score)},
                   {"weighting":"area",**metrics(al.intervene,a_score,al.area)}]).to_csv(

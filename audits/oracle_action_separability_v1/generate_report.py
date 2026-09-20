@@ -34,7 +34,7 @@ def main() -> None:
     p=argparse.ArgumentParser();p.add_argument("--output",type=Path,required=True);args=p.parse_args()
     out=args.output
     anchor=json.loads((out/"00_reproduction_gate.json").read_text())
-    manifest=json.loads((out/"feature_manifest.json").read_text())
+    manifest=json.loads((out/"feature_manifest_final.json").read_text())
     leakage=json.loads((out/"leakage_audit.json").read_text())
     ad=json.loads((out/"arbitration/decision.json").read_text())
     gd=json.loads((out/"gate/decision.json").read_text())
@@ -143,6 +143,11 @@ def main() -> None:
     report+="- Re-run: `python audits/oracle_action_separability_v1/reproduction_gate.py ...`, then `freeze_observables.py`, `build_labels.py`, `analyze.py`, `generate_report.py` in that order.\n"
     report+="- Server output: `/home/duyanhong/experiments/Oracle_Action_Separability_v1_BCSS_Seed42`.\n"
     report+="- Source: `audits/oracle_action_separability_v1/` on branch `audit/oracle-action-separability-v1`.\n"
+    visual_manifest=out/"visualizations/manifest.json"
+    if visual_manifest.exists():
+        visual=json.loads(visual_manifest.read_text())
+        categories=pd.Series([v["category"] for v in visual]).value_counts().to_dict()
+        report+=f"- Qualitative visualizations: {len(visual)} PNGs across {categories}; see `visualizations/manifest.json`.\n"
     path=out/"Oracle_Action_GTFree_Separability_Audit_Report.md"
     path.write_text(report,encoding="utf-8")
     print(json.dumps({"report":str(path),"A":a_dec,"G":g_dec,"route":route,"sections":len(section)}),flush=True)
