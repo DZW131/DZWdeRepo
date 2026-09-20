@@ -14,9 +14,16 @@ class HQMRNet(GCQMNet):
         super().__init__()
         self.hqmr = HQMR(256)
 
-    def forward(self, image, labels, step=0, run_pmec=False, hqmr_mode="full", hqmr_arbitrator=None):
+    def forward(self, image, labels, step=0, run_pmec=False, hqmr_mode="full", hqmr_arbitrator=None,
+                h5_residual=None):
         output = super().forward(image, labels, step=step, run_pmec=run_pmec, gcqm_weights_only=True)
-        h5 = output["query_detail"]["context_feature"]
+        h5_morph = output["query_detail"]["context_feature"]
+        if h5_residual is not None:
+            if h5_residual.shape != h5_morph.shape:
+                raise ValueError(f"HQMR H5 residual shape mismatch: {h5_residual.shape} != {h5_morph.shape}")
+            h5 = h5_morph + h5_residual
+        else:
+            h5 = h5_morph
         h4 = output["pixel_detail"]["F4_context"]
         h3 = output["features"]["F3"]
         mask_losses = [output["losses"]["loss_mask_stage1"]]
@@ -39,6 +46,8 @@ class HQMRNet(GCQMNet):
             total = .50 * output["losses"]["loss_deep"] + .25 * output["losses"]["loss_pca"] + .25 * loss_mask
         output["base_primary_output"] = output["primary_output"]
         output["primary_output"] = output["stages"][-1]["hqmr"]["mixture"]
+        output["h5_morph"] = h5_morph
+        output["h5_fused"] = h5
         output["losses"].update({"loss": total, "loss_mask": loss_mask,
             "loss_mask_stage2": mask_losses[1], "loss_mask_stage3": mask_losses[2]})
         output["hqmr_configuration"] = {

@@ -1,0 +1,45 @@
+version: 1
+dataset: BCSS-WSSS
+class_index:
+  0: tumor
+  1: stroma
+  2: lymphocytic_infiltrate
+  3: necrosis
+concepts:
+  tumor:
+    - densely packed atypical epithelial nuclei
+    - pleomorphic hyperchromatic tumor nuclei
+    - irregular gland-forming malignant epithelium
+    - solid nests of malignant epithelial cells
+    - high nuclear-to-cytoplasmic ratio
+    - disorganized neoplastic tissue architecture
+    - frequent mitotic tumor cells
+    - invasive carcinoma cell clusters
+  stroma:
+    - collagen-rich fibrous matrix
+    - spindle-shaped fibroblast nuclei
+    - elongated stromal cells
+    - hypocellular eosinophilic connective tissue
+    - desmoplastic stromal reaction
+    - wavy collagen bundles
+    - loose myxoid extracellular matrix
+    - organized connective tissue septa
+  lymphocytic_infiltrate:
+    - dense aggregates of small lymphocytes
+    - dark round mononuclear inflammatory nuclei
+    - perivascular lymphocytic cuffing
+    - diffuse immune cell infiltration
+    - clustered plasma cells with eccentric nuclei
+    - mixed inflammatory cell infiltrate
+    - lymphoid follicle-like aggregation
+    - scattered leukocytes within stroma
+  necrosis:
+    - acellular eosinophilic necrotic debris
+    - karyorrhectic nuclear fragments
+    - ghost cell outlines
+    - amorphous granular tissue debris
+    - coagulative necrosis with lost nuclei
+    - comedo-like central necrosis
+    - pale devitalized tissue
+    - inflammatory debris with tissue breakdown
+

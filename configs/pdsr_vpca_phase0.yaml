@@ -1,0 +1,39 @@
+experiment: PDSR-VPCA-HQMR v1 Phase0
+dataset: BCSS-WSSS
+seed: 42
+model:
+  baseline: frozen HQMR-v1 E25
+  vlm:
+    name: vinid/plip
+    revision: 67ade53
+    frozen: true
+    layers: [4, 8, 12]
+  pdsr:
+    semantic_dim: 512
+    output_dim: 256
+    semantic_residual_scale_init: 0.0
+    tau_semantic: 0.1
+    tau_layer: 0.1
+  vpca:
+    concepts_per_class: 8
+    topk_ratio: 0.20
+    tau_concept: 0.1
+    tau_loss: 0.1
+loss:
+  semantic_weight: 0.20
+phase0:
+  variants: [P0, P1, P2, P3]
+  freeze_hqmr: true
+  freeze_vlm: true
+  epochs: 5
+  micro_batch_size: 5
+  gradient_accumulation: 4
+  effective_batch_size: 20
+  optimizer: PolyOptimizer_SGD
+  adapter_lr: 0.1
+  weight_decay: 0.0005
+  validation_during_training: false
+protocol_deviations:
+  fusion: identity-preserving H5 + gamma*Z; standard LayerNorm omitted because it violates gamma=0 identity
+  p1_gradient_audit: gamma must be nonzero at first backward; P_last must be nonzero after first gamma update
+
