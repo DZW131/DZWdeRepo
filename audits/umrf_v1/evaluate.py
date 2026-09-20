@@ -89,14 +89,17 @@ def main() -> None:
     labels=[]; image_rows=[]
     for image_index,image_id in enumerate(ids):
         truth=np.asarray(Image.open(args.val_root/"mask"/f"{image_id}.png")); prediction=maps[baseline_index,image_index]
-        sub=frame[frame.image_index==image_index].sort_values("component_id")
+        # extract_regions numbers connected components independently per class;
+        # preserve its class-major emission order and use the class in the key.
+        sub=frame[frame.image_index==image_index]
         regions=extract_regions(prediction)
         if len(sub)!=len(regions): raise AssertionError(f"Component replay mismatch: {image_id}")
         for (_,row),region in zip(sub.iterrows(),regions):
             valid=truth[region["mask"]]; valid=valid[valid<4]
             counts=np.bincount(valid.astype(np.int64),minlength=4) if len(valid) else np.zeros(4,np.int64)
             true_class=int(counts.argmax()); purity=float(counts.max()/max(counts.sum(),1))
-            labels.append({"image_id":image_id,"component_id":int(region["component_id"]),"true_class":true_class,
+            labels.append({"image_id":image_id,"baseline_class":int(region["class_id"]),
+                           "component_id":int(region["component_id"]),"true_class":true_class,
                            "purity":purity,"m1":bool(not np.any(valid==int(region["class_id"]))),
                            "baseline_correct":bool(int(region["class_id"])==true_class)})
         valid=truth<4; row={"image_id":image_id}
@@ -107,13 +110,13 @@ def main() -> None:
             row.update({f"{chain}_{k}":v for k,v in counts.items()})
         image_rows.append(row)
         if (image_index+1)%500==0: print(json.dumps({"event":"umrf_gt_progress","images":image_index+1}),flush=True)
-    label_frame=pd.DataFrame(labels); frame=frame.merge(label_frame,on=["image_id","component_id"],validate="one_to_one")
+    label_frame=pd.DataFrame(labels); frame=frame.merge(label_frame,on=["image_id","baseline_class","component_id"],validate="one_to_one")
     for chain in CHAINS: apply_component_rules(frame,chain)
     q4=float(frame.loc[frame.m1,"area"].quantile(.75)) if frame.m1.any() else float(frame.area.quantile(.75)); frame["m1_high_purity"]=frame.m1&(frame.purity>=.70); frame["m1_q4"]=frame.m1&(frame.area>=q4)
     historical={"expected_count":4440,"exact_replay_count":int(frame.m1.sum())}
     if args.historical_labels and args.historical_labels.exists():
-        old=pd.read_parquet(args.historical_labels); keys=set(zip(old.loc[old.m1_historical_key,"image_id"].astype(str),old.loc[old.m1_historical_key,"component_id"].astype(int))) if "m1_historical_key" in old else set()
-        now=set(zip(frame.loc[frame.m1,"image_id"].astype(str),frame.loc[frame.m1,"component_id"].astype(int)))
+        old=pd.read_parquet(args.historical_labels); keys=set(zip(old.loc[old.m1_historical_key,"image_id"].astype(str),old.loc[old.m1_historical_key,"predicted_class"].astype(int),old.loc[old.m1_historical_key,"component_id"].astype(int))) if "m1_historical_key" in old else set()
+        now=set(zip(frame.loc[frame.m1,"image_id"].astype(str),frame.loc[frame.m1,"baseline_class"].astype(int),frame.loc[frame.m1,"component_id"].astype(int)))
         historical.update({"historical_key_count":len(keys),"key_overlap":len(keys&now),"key_union":len(keys|now)})
     summaries={}; pixel={}
     for chain in CHAINS:

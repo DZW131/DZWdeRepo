@@ -34,7 +34,10 @@ def case_groups(frame: pd.DataFrame) -> dict[str,pd.DataFrame]:
 def render_case(row, val_root:Path, maps, output:Path) -> None:
     idx=int(row.image_index); image_id=str(row.image_id)
     image=np.asarray(Image.open(val_root/"img"/f"{image_id}.png").convert("RGB")); truth=np.asarray(Image.open(val_root/"mask"/f"{image_id}.png"))
-    baseline=maps[MAP_KEYS.index("baseline"),idx]; regions=extract_regions(baseline); region=regions[int(row.component_id)-1]; mask=region["mask"]
+    baseline=maps[MAP_KEYS.index("baseline"),idx]; regions=extract_regions(baseline)
+    matches=[region for region in regions if int(region["class_id"])==int(row.baseline_class) and int(region["component_id"])==int(row.component_id)]
+    if len(matches)!=1: raise AssertionError(f"Component key mismatch for {image_id}")
+    mask=matches[0]["mask"]
     panels=[("Image",image), ("GT",truth), ("HQMR final",baseline)]
     for chain in ("common","sequential"):
         for stage in ("5","4","3"): panels.append((f"{chain[:3].upper()} C{stage}",maps[MAP_KEYS.index(f"{chain}{stage}"),idx]))
