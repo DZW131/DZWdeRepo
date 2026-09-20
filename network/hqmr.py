@@ -77,7 +77,8 @@ class HQMR(nn.Module):
         self.update4 = QueryRegionUpdate(dim)
 
     def forward(self, query: torch.Tensor, h5: torch.Tensor, h4: torch.Tensor,
-                h3: torch.Tensor | None = None, mode: str = "full") -> dict:
+                h3: torch.Tensor | None = None, mode: str = "full",
+                arbitrator: nn.Module | None = None) -> dict:
         if mode not in self.MODES:
             raise ValueError(f"Unknown HQMR mode: {mode}")
         q0 = self.query_norm(query)
@@ -113,7 +114,11 @@ class HQMR(nn.Module):
                     "query0": q0, "query5": q5, "query4": q5, "value3": v3, "mode": mode}
 
         direct4 = direct_affinity(q5, k4)
-        logits4 = residual_logits(logits5, direct4)
+        alpha = None
+        if arbitrator is None:
+            logits4 = residual_logits(logits5, direct4)
+        else:
+            logits4, alpha = arbitrator(logits5, direct4)
         q4 = q5 if mode == "no_query_update" else self.update4(q5, logits4, v4)
         if h3 is None:
             final_logits, logits3 = logits4, None
@@ -128,7 +133,7 @@ class HQMR(nn.Module):
                 "logits5": logits5, "logits4": logits4, "logits3": logits3,
                 "direct4": direct4, "direct3": direct3 if h3 is not None and mode not in {"mid_final"} else None,
                 "query0": q0, "query5": q5, "query4": q4, "key4": k4,
-                "value3": v3, "mode": mode}
+                "value3": v3, "alpha4": alpha, "mode": mode}
 
 
 def class_mixture(basis: torch.Tensor, weights: torch.Tensor) -> torch.Tensor:

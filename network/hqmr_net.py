@@ -14,7 +14,7 @@ class HQMRNet(GCQMNet):
         super().__init__()
         self.hqmr = HQMR(256)
 
-    def forward(self, image, labels, step=0, run_pmec=False, hqmr_mode="full"):
+    def forward(self, image, labels, step=0, run_pmec=False, hqmr_mode="full", hqmr_arbitrator=None):
         output = super().forward(image, labels, step=step, run_pmec=run_pmec, gcqm_weights_only=True)
         h5 = output["query_detail"]["context_feature"]
         h4 = output["pixel_detail"]["F4_context"]
@@ -24,7 +24,8 @@ class HQMRNet(GCQMNet):
             if stage_index == 1:
                 stage["hqmr"] = None
                 continue
-            decoded = self.hqmr(stage["query"], h5, h4, h3 if stage_index == 3 else None, mode=hqmr_mode)
+            decoded = self.hqmr(stage["query"], h5, h4, h3 if stage_index == 3 else None,
+                                mode=hqmr_mode, arbitrator=hqmr_arbitrator)
             decoded["weights"] = stage["gcqm"]["weights"].detach()
             decoded["mixture"] = class_mixture(decoded["basis"], decoded["weights"])
             decoded["primary_output"] = decoded["mixture"]

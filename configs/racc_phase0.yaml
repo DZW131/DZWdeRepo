@@ -1,0 +1,25 @@
+experiment: RACC-v1 Phase0 BCSS Seed42
+epochs: 5
+seed: 42
+batch_size: 20
+image_size: 224
+precision: bf16
+optimizer: PolyOptimizer
+base_lr: 0.01
+decoder_lr_multiplier: 10
+bias_lr_multiplier: 20
+weight_decay: 0.0005
+poly_power: 0.9
+checkpoint_selection: fixed_epoch5_only
+racc:
+  enabled: true
+  arbitration:
+    enabled: true
+    alpha_max: 4.0
+    hidden_dim: 8
+  presence:
+    enabled: true
+    topk_ratio: 0.05
+    threshold: 0.5
+    hidden_dim: 8
+  presence_loss_weight: 1.0
