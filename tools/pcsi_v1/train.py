@@ -36,7 +36,8 @@ def main():
     if not identity[a.variant]["gamma0_identity"]: raise AssertionError("Pretraining identity gate missing")
     variant_dir=a.output/("C1_VLM_LAST" if a.variant=="C1" else "C2_STATIC_PDSR")
     variant_dir.mkdir(parents=True,exist_ok=True)
-    if any(variant_dir.iterdir()): raise FileExistsError(f"Refusing populated output: {variant_dir}")
+    if any(p.name!="process.log" for p in variant_dir.iterdir()):
+        raise FileExistsError(f"Refusing populated output: {variant_dir}")
     set_seed(42); dataset=CommonAugmentTrainDataset(a.train_root); generator=torch.Generator().manual_seed(42)
     loader=DataLoader(dataset,batch_size=MICRO_BATCH,shuffle=True,num_workers=a.num_workers,pin_memory=True,drop_last=True,
                       worker_init_fn=official.seed_worker,generator=generator,persistent_workers=a.num_workers>0)
