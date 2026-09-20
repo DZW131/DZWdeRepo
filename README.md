@@ -109,6 +109,39 @@ python train_sshr.py \
 
 The final checkpoint is saved as `stage1_last.pth`.
 
+### RACC-v1 Frozen-HQMR Phase0
+
+RACC-v1 adds two identity-initialized lightweight controllers to the frozen
+HQMR-v1 checkpoint: deep/local reliability arbitration (`RACC-A`) and a local
+class-presence rescue head (`RACC-G`). The Phase0 protocol trains P1, P2, and
+P3 independently for five epochs using image-level BCSS labels only. All HQMR
+parameters and running buffers remain frozen.
+
+```bash
+python tools/run_racc_phase0_bcss_seed42.py \
+  --mode train \
+  --trainroot /path/to/BCSS-WSSS/training \
+  --hqmr-checkpoint /path/to/hqmr_epoch25_final.pth \
+  --output-dir /path/to/RACC_v1_Phase0_BCSS_Seed42
+```
+
+Validate only the sealed Epoch-5 endpoints with:
+
+```bash
+python tools/eval_racc_phase0_bcss_seed42.py \
+  --val-root /path/to/BCSS-WSSS/val \
+  --hqmr-checkpoint /path/to/hqmr_epoch25_final.pth \
+  --experiment /path/to/RACC_v1_Phase0_BCSS_Seed42 \
+  --ucrf-components /path/to/component_event_table.parquet \
+  --ucrf-masks /path/to/whole.npz
+```
+
+The BCSS Seed42 Phase0 result is `NOGO`: P1 gained only `+0.0563 pp`, while
+P2 and P3 lost `4.6597 pp` and `4.3347 pp`; the gate was unsafe and alpha
+collapsed toward a global weight. Full25 must not be launched from this result.
+Rollback is code-only: switch back to `audit/dlag-oracle-v1` (or revert the
+RACC commits). The archived HQMR checkpoint is read-only and is never changed.
+
 ### Evaluation
 
 ```bash
