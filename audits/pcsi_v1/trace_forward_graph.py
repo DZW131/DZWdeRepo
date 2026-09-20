@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -14,17 +15,24 @@ from audits.ucrf_v1.gate import load_model
 from tools.pdsr_vpca_phase0.common import CommonEvalDataset, write_json
 
 
-def tensor_meta(value):
+def tensor_meta(value, name=""):
     if isinstance(value, torch.Tensor):
         shape = list(value.shape)
-        channels = shape[1] if value.ndim == 4 else shape[-1] if value.ndim >= 2 else None
-        spatial = list(shape[-2:]) if value.ndim == 4 else None
+        if value.ndim == 4 and "responsibility_class" in name:
+            channels = shape[-1]
+            side = math.isqrt(shape[2])
+            spatial = [side, side] if side * side == shape[2] else [shape[2]]
+            layout = "B,Q,spatial,C"
+        else:
+            channels = shape[1] if value.ndim == 4 else shape[-1] if value.ndim >= 2 else None
+            spatial = list(shape[-2:]) if value.ndim == 4 else None
+            layout = "B,C,H,W" if value.ndim == 4 else "other"
         return {"shape": shape, "dtype": str(value.dtype), "requires_grad": bool(value.requires_grad),
-                "channels": channels, "spatial_resolution": spatial}
+                "channels": channels, "spatial_resolution": spatial, "layout": layout}
     if isinstance(value, (tuple, list)):
-        return [tensor_meta(item) for item in value]
+        return [tensor_meta(item, name) for item in value]
     if isinstance(value, dict):
-        return {key: tensor_meta(item) for key, item in value.items() if isinstance(item, torch.Tensor)}
+        return {key: tensor_meta(item, key) for key, item in value.items() if isinstance(item, torch.Tensor)}
     return str(type(value).__name__)
 
 
@@ -72,7 +80,7 @@ def main():
     for key, module in modules.items():
         def capture(_module, _inputs, result, label=key):
             events.append({"order": len(events) + 1, "tensor_name": label, "producer_module": label,
-                           "runtime": tensor_meta(result)})
+                           "runtime": tensor_meta(result, label)})
         hooks.append(module.register_forward_hook(capture))
     try:
         with torch.inference_mode(), torch.autocast("cuda", dtype=torch.bfloat16):
@@ -82,21 +90,21 @@ def main():
             hook.remove()
     for stage_index, stage in enumerate(output["stages"], 1):
         events.append({"order": len(events) + 1, "tensor_name": f"stage{stage_index}_query",
-                       "producer_module": "GCQMNet.forward", "runtime": tensor_meta(stage["query"])})
+                       "producer_module": "GCQMNet.forward", "runtime": tensor_meta(stage["query"], f"stage{stage_index}_query")})
         if stage_index >= 2:
             for key in ("responsibility_class", "responsibility", "query_delta"):
                 events.append({"order": len(events) + 1, "tensor_name": f"stage{stage_index}_{key}",
-                               "producer_module": f"ccra{stage_index}", "runtime": tensor_meta(stage["detail"][key])})
+                               "producer_module": f"ccra{stage_index}", "runtime": tensor_meta(stage["detail"][key], key)})
             for key in ("query0", "logits5", "query5", "logits4", "query4", "logits3"):
                 value = stage["hqmr"].get(key)
                 if value is not None:
                     events.append({"order": len(events) + 1, "tensor_name": f"stage{stage_index}_hqmr_{key}",
-                                   "producer_module": "HQMR.forward", "runtime": tensor_meta(value)})
+                                   "producer_module": "HQMR.forward", "runtime": tensor_meta(value, key)})
     for name_in_output, key in (("context_raw", "context_raw"), ("context_feature", "context_feature")):
         events.append({"order": len(events) + 1, "tensor_name": key,
-                       "producer_module": "GCQMNet.forward", "runtime": tensor_meta(output["query_detail"][name_in_output])})
+                       "producer_module": "GCQMNet.forward", "runtime": tensor_meta(output["query_detail"][name_in_output], key)})
     events.append({"order": len(events) + 1, "tensor_name": "final_class_projection",
-                   "producer_module": "class_mixture", "runtime": tensor_meta(output["primary_output"])})
+                   "producer_module": "class_mixture", "runtime": tensor_meta(output["primary_output"], "primary_output")})
     edges = [
         ("backbone.F3", "pixel_decoder"), ("backbone.F4", "pixel_decoder"),
         ("backbone.F5.detach", "context_projection"), ("context_projection", "f5_chpf"),
@@ -133,11 +141,11 @@ def main():
              "The previous late residual enters only after `GCQMNet.forward` has completed `ccra2` and `ccra3`:", "",
              "`F5 → context_projection → CHPF/context_feature → CCRA2(K,V,responsibility,query2) → CCRA3 → return to HQMRNet.forward → old h5 + residual → HQMR.scale5(K,V) → L5 → q5 → L4 → q4 → L3 → class mixture`", "",
              "Thus `context_feature` immediately after `f5_chpf` is the common spatial visual source before both CCRA2 K/V and HQMR K/V. `decoder1/query1` is the frozen CCRA input query. HQMR's internally named `query0` is downstream of CCRA2 and may change under a valid pre-CCRA injection.", "",
-             "| Execution | Tensor/module | Shape | Channels | Spatial | Requires grad (frozen baseline) |", "|---:|---|---|---:|---|---|"]
+             "| Execution | Tensor/module | Shape | Layout | Channels | Spatial | Requires grad (frozen baseline) |", "|---:|---|---|---|---:|---|---|"]
     for event in events:
         runtime = event["runtime"]
         if isinstance(runtime, dict) and "shape" in runtime:
-            lines.append(f"| {event['order']} | `{event['tensor_name']}` | `{runtime['shape']}` | {runtime['channels']} | `{runtime['spatial_resolution']}` | {runtime['requires_grad']} |")
+            lines.append(f"| {event['order']} | `{event['tensor_name']}` | `{runtime['shape']}` | {runtime['layout']} | {runtime['channels']} | `{runtime['spatial_resolution']}` | {runtime['requires_grad']} |")
     lines.extend(["", "## Causal edge list", ""])
     lines.extend(f"- `{source}` → `{target}`" for source, target in edges)
     lines.extend(["", "## Detach boundary", "", "The CCRA diagnostic `responsibility_class` is returned detached. The internal CCRA pooled value/update that forms `query2` is not wrapped in `torch.no_grad`; frozen parameter tensors may still pass gradients to an injected input. This must be tested explicitly in the gradient audit.", ""])

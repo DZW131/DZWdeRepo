@@ -15,7 +15,11 @@ def collect(out):
             "context":out["query_detail"]["context_feature"],
             "ccra2_responsibility":out["stages"][1]["detail"]["responsibility_class"],
             "ccra3_responsibility":out["stages"][2]["detail"]["responsibility_class"],
+            "hqmr_query0":out["stages"][2]["hqmr"]["query0"],
             "hqmr5_logits":out["stages"][2]["hqmr"]["logits5"],
+            "hqmr_query5":out["stages"][2]["hqmr"]["query5"],
+            "hqmr4_logits":out["stages"][2]["hqmr"]["logits4"],
+            "hqmr_query4":out["stages"][2]["hqmr"]["query4"],
             "hqmr3_logits":out["stages"][2]["hqmr"]["logits3"],
             "final":out["primary_output"]}
 
