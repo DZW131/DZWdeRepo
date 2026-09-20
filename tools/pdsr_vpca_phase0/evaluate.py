@@ -164,11 +164,20 @@ def main():
     profile_raw=dataset[0][1][None].cuda(); compute={"P0":profile_p0(a.checkpoint,profile_raw)}
     bank=np.load(a.umrf/"gt_free_prediction_maps.uint8.npy",mmap_mode="r"); bank_ids=np.load(a.umrf/"image_ids.npy",allow_pickle=False).astype(str); baseline_by_id={x:bank[0,i] for i,x in enumerate(bank_ids)}
     p0=np.stack([baseline_by_id[x] for x in ids]); hist0=np.stack([foreground_confusion(np.asarray(Image.open(a.val_root/"mask"/f"{x}.png")),p0[i]) for i,x in enumerate(ids)])
-    predictions={"P0":p0}; hist={"P0":hist0}; mechanisms={}; runtimes={"P0":{"source":"exact UMRF replay"}}
+    predictions={"P0":p0}; hist={"P0":hist0}; mechanisms={}; runtimes={"P0":{"source":"exact UMRF replay"}}; ccra_identity=None
     for variant,directory in VARIANT_DIR.items():
         model=PDSRVPCAHQMR(a.checkpoint,a.plip,cache["embeddings"],variant).cuda().eval(); state=torch.load(out/directory/f"{variant.lower()}_e5_adapter.pth",map_location="cpu",weights_only=False); model.load_trainable_state_dict(state)
         labels=torch.ones((1,4),device=profile_raw.device)
         compute[variant]={"flops_per_view":counted_flops(lambda: model(profile_raw,labels)),"flops_note":"torch.profiler counted FLOPs; unsupported operators are not imputed"}; compute[variant]["gflops_per_view"]=compute[variant]["flops_per_view"]/1e9
+        if variant=="P3":
+            with torch.inference_mode(),torch.autocast("cuda",dtype=torch.bfloat16):
+                fused=model(profile_raw,labels); reference=model.base((profile_raw-model.hqmr_mean.to(profile_raw))/model.hqmr_std.to(profile_raw),labels,step=29275)
+            drifts=[]
+            for fs,rs in zip(fused["stages"],reference["stages"]):
+                if "detail" in fs and "responsibility_class" in fs["detail"]:
+                    drifts.append(float((fs["detail"]["responsibility_class"]-rs["detail"]["responsibility_class"]).abs().max()))
+            ccra_identity={"sample":str(ids[0]),"stage_max_abs_drift":drifts,"max_abs_drift":max(drifts,default=float("inf")),"exact_upstream_identity":bool(drifts) and all(x==0 for x in drifts)}
+            if not ccra_identity["exact_upstream_identity"]: raise AssertionError(f"CCRA upstream identity failed: {ccra_identity}")
         vid,vpred,vhist,mech,runtime=infer_variant(model,loader,a.val_root,variant)
         if not np.array_equal(vid,ids): raise AssertionError("Validation ordering changed")
         predictions[variant]=vpred; hist[variant]=vhist; mechanisms[variant]=mech; runtimes[variant]=runtime
@@ -194,7 +203,7 @@ def main():
     m2=cohort["P2"]["hard_m1"]["semantic_margin"]["positive_fraction"] or 0; m3=cohort["P3"]["hard_m1"]["semantic_margin"]["positive_fraction"] or 0
     vpca_gain=cohort["P3"]["hard_m1"]["pixel_area_weighted"]-cohort["P2"]["hard_m1"]["pixel_area_weighted"]
     vpca_go=vpca_gain>=.05 and m3-m2>=.05 and sum((scores["P3"]["class_iou"][str(c)]-scores["P2"]["class_iou"][str(c)])>=0 for c in range(4))>=3 and not mechanism["P3"].get("concept_collapse",False)
-    delta_p3=100*(scores["P3"]["mIoU"]-scores["P0"]["mIoU"]); class_damage=any(x< -1 for x in deltas["P3"].values()); ccra_collapse=False
+    delta_p3=100*(scores["P3"]["mIoU"]-scores["P0"]["mIoU"]); class_damage=any(x< -1 for x in deltas["P3"].values()); ccra_collapse=not ccra_identity["exact_upstream_identity"]
     full25=delta_p3>=.5 and pdsr_go and vpca_go and safety["P3"]["nce"]>1.5 and not class_damage and not ccra_collapse and not mechanism["P3"].get("concept_collapse",False)
     if full25: final="FULL25_GO"
     elif (pdsr_go or vpca_go) and .2<=delta_p3<.5: final="MECHANISM_GO"
@@ -205,7 +214,7 @@ def main():
             "cohort":compact_cohort,"tp_safety":compact_safety,"mechanism":mechanism,"gamma":gamma,"per_class_delta_vs_p0_pp":deltas,
             "PDSR_DECISION":"GO" if pdsr_go else "NOGO","VPCA_DECISION":"GO" if vpca_go else "NOGO","pdsr_hmcr_gain":pdsr_gain,"pdsr_m1cr_gain":pdsr_m1,"vpca_hmcr_gain":vpca_gain,"vpca_margin_gain":m3-m2,
             "LAYER_COLLAPSE":mechanism["P2"].get("layer_collapse",False) or mechanism["P3"].get("layer_collapse",False),"CONCEPT_COLLAPSE":mechanism["P3"].get("concept_collapse",False),
-            "CCRA_COLLAPSE":ccra_collapse,"ccra_health":{"effective_query_ratio":1.0,"responsibility_overlap_change":0.0,"query_peak_diversity_change":0.0,"reason":"CCRA is frozen and structurally upstream of the only H5 residual injection"},
+            "CCRA_COLLAPSE":ccra_collapse,"ccra_health":{"effective_query_ratio":1.0,"responsibility_overlap_change":0.0,"query_peak_diversity_change":0.0,"identity_audit":ccra_identity,"reason":"CCRA tensors are exactly identical because the frozen CCRA computation is structurally upstream of the only H5 residual injection"},
             "CLASS_DAMAGE":class_damage,"VLM_IGNORED":gamma["P3"]["vlm_ignored"],"bootstrap":bootstrap,"runtime":runtimes,"parameter_counts":json.loads((out/"manifests/parameter_counts.json").read_text()),
             "hard_m1":{"count":int(frame.hard_m1.sum()),"area":int(frame.loc[frame.hard_m1,"area"].sum())},"m1":{"historical":4440,"exact":int(frame.m1.sum())},"validation_only_after_e5":True}
     write_json(out/"metrics/final_result.json",result)
