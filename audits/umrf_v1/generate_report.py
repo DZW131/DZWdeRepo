@@ -25,7 +25,7 @@ def main():
     add("Evidence definitions","Sequential uses E5=L5, E4=L4, E3=L3. Common-Query uses q0×k5, q0×k4, q0×k3. The unchanged frozen W maps query evidence to four class channels; probabilities are softmax over classes at temperature 1.")
     add("Direct-branch proxies","D4 and D3 were preserved only as direct-branch class proxies in the component table. They were not promoted to an alternative architecture or decision rule.")
     add("GT-free freeze",f"Evidence and rule maps were sealed before any validation mask was opened. Map bank SHA-256: `{f['sha256']['gt_free_prediction_maps.uint8.npy']}`.")
-    add("Component universe",f"The primary universe contains {r['components']} exact-baseline 8-connected components. Component evidence is a uniform mean across the component pixels.")
+    add("Component universe",f"The frozen universe contains {r['components']} exact-baseline 8-connected components. {r['evaluable_components']} contain valid foreground GT and enter class-correctness metrics; {r['ignored_only_components']} lie entirely on label 4 and remain preserved but excluded from GT-class metrics. Component evidence is a uniform mean across component pixels.")
     add("Historical M1 reconciliation",f"Historical M1 anchor is 4440; exact active replay produces {r['historical_m1']['exact_replay_count']}. M1 remains a secondary subgroup and does not redefine the primary universe.")
     add("Fixed rules","R1 uses the H4/H3 consensus when it exists, otherwise H5. R2 uses a three-stage majority, with H5 retained when all differ. R3 averages the three class-probability vectors equally. No rule was tuned after GT exposure.")
     add("Common-Query primary results",f"Component-weighted: precision {pct(c['component']['precision'])}, coverage {pct(c['component']['coverage'])}, NCE {num(c['component']['nce'])}. Area-weighted: precision {pct(c['area']['precision'])}, coverage {pct(c['area']['coverage'])}, NCE {num(c['area']['nce'])}, harm {pct(c['area']['h5_correct_harm_rate'])}.")
@@ -47,4 +47,3 @@ def main():
     assert len([x for x in lines if x.startswith("## ")])==26
     report.write_text("\n".join(lines)+"\n",encoding="utf-8"); print(json.dumps({"event":"UMRF_REPORT_WRITTEN","path":str(report)}))
 if __name__=="__main__": main()
-

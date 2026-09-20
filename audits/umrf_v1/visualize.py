@@ -20,6 +20,7 @@ CMAP=ListedColormap(["#d73027","#1a9850","#4575b4","#984ea3","#f2f2f2"])
 
 
 def case_groups(frame: pd.DataFrame) -> dict[str,pd.DataFrame]:
+    frame=frame[frame.evaluable].copy()
     t=frame.true_class
     c5,c4,c3=(frame[f"common{s}_pred"] for s in ("5","4","3"))
     s4,s3=frame.sequential4_pred,frame.sequential3_pred

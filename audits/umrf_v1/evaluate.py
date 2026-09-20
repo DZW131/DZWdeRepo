@@ -100,8 +100,9 @@ def main() -> None:
             true_class=int(counts.argmax()); purity=float(counts.max()/max(counts.sum(),1))
             labels.append({"image_id":image_id,"baseline_class":int(region["class_id"]),
                            "component_id":int(region["component_id"]),"true_class":true_class,
-                           "purity":purity,"m1":bool(not np.any(valid==int(region["class_id"]))),
-                           "baseline_correct":bool(int(region["class_id"])==true_class)})
+                           "valid_area":int(len(valid)),"purity":purity,
+                           "m1":bool(len(valid)>0 and not np.any(valid==int(region["class_id"]))),
+                           "baseline_correct":bool(len(valid)>0 and int(region["class_id"])==true_class)})
         valid=truth<4; row={"image_id":image_id}
         for chain in CHAINS:
             h5=maps[MAP_KEYS.index(f"{chain}5"),image_index][valid]; h4=maps[MAP_KEYS.index(f"{chain}4"),image_index][valid]; h3=maps[MAP_KEYS.index(f"{chain}3"),image_index][valid]; t=truth[valid]
@@ -112,27 +113,32 @@ def main() -> None:
         if (image_index+1)%500==0: print(json.dumps({"event":"umrf_gt_progress","images":image_index+1}),flush=True)
     label_frame=pd.DataFrame(labels); frame=frame.merge(label_frame,on=["image_id","baseline_class","component_id"],validate="one_to_one")
     for chain in CHAINS: apply_component_rules(frame,chain)
-    q4=float(frame.loc[frame.m1,"area"].quantile(.75)) if frame.m1.any() else float(frame.area.quantile(.75)); frame["m1_high_purity"]=frame.m1&(frame.purity>=.70); frame["m1_q4"]=frame.m1&(frame.area>=q4)
-    historical={"expected_count":4440,"exact_replay_count":int(frame.m1.sum())}
+    frame["evaluable"]=frame.valid_area>0
+    analysis=frame[frame.evaluable].copy()
+    q4=float(analysis.loc[analysis.m1,"area"].quantile(.75)) if analysis.m1.any() else float(analysis.area.quantile(.75))
+    frame["m1_high_purity"]=frame.m1&(frame.purity>=.70); frame["m1_q4"]=frame.m1&(frame.area>=q4)
+    analysis=frame[frame.evaluable].copy()
+    historical={"expected_count":4440,"exact_replay_count":int(analysis.m1.sum())}
     if args.historical_labels and args.historical_labels.exists():
-        old=pd.read_parquet(args.historical_labels); keys=set(zip(old.loc[old.m1_historical_key,"image_id"].astype(str),old.loc[old.m1_historical_key,"predicted_class"].astype(int),old.loc[old.m1_historical_key,"component_id"].astype(int))) if "m1_historical_key" in old else set()
-        now=set(zip(frame.loc[frame.m1,"image_id"].astype(str),frame.loc[frame.m1,"baseline_class"].astype(int),frame.loc[frame.m1,"component_id"].astype(int)))
+        old=pd.read_parquet(args.historical_labels); selected=old.m1_historical_key.astype(bool) if "m1_historical_key" in old else np.zeros(len(old),bool)
+        keys=set(zip(old.loc[selected,"image_id"].astype(str),old.loc[selected,"predicted_class"].astype(int),old.loc[selected,"component_id"].astype(int)))
+        now=set(zip(analysis.loc[analysis.m1,"image_id"].astype(str),analysis.loc[analysis.m1,"baseline_class"].astype(int),analysis.loc[analysis.m1,"component_id"].astype(int)))
         historical.update({"historical_key_count":len(keys),"key_overlap":len(keys&now),"key_union":len(keys|now)})
     summaries={}; pixel={}
     for chain in CHAINS:
-        summaries[chain]={"component":block_from_frame(frame,chain),"area":block_from_frame(frame,chain,"area"),
-                          "baseline_correct_area":block_from_frame(frame[frame.baseline_correct],chain,"area"),
-                          "m1_area":block_from_frame(frame[frame.m1],chain,"area"),
-                          "m1_high_purity_area":block_from_frame(frame[frame.m1_high_purity],chain,"area"),
-                          "m1_q4_area":block_from_frame(frame[frame.m1_q4],chain,"area"),
-                          "rescue_matrix_area":rescue_matrix(frame,chain,"area"),
-                          "per_class_area":{str(c):block_from_frame(frame[frame.true_class==c],chain,"area") for c in range(4)}}
+        summaries[chain]={"component":block_from_frame(analysis,chain),"area":block_from_frame(analysis,chain,"area"),
+                          "baseline_correct_area":block_from_frame(analysis[analysis.baseline_correct],chain,"area"),
+                          "m1_area":block_from_frame(analysis[analysis.m1],chain,"area"),
+                          "m1_high_purity_area":block_from_frame(analysis[analysis.m1_high_purity],chain,"area"),
+                          "m1_q4_area":block_from_frame(analysis[analysis.m1_q4],chain,"area"),
+                          "rescue_matrix_area":rescue_matrix(analysis,chain,"area"),
+                          "per_class_area":{str(c):block_from_frame(analysis[analysis.true_class==c],chain,"area") for c in range(4)}}
         for rule in ("r1","r2","r3"):
-            gain=((frame[f"{chain}_{rule}_pred"]==frame.true_class).astype(int)-(frame[f"{chain}5_pred"]==frame.true_class).astype(int))
-            summaries[chain][f"{rule}_component_net_gain"]=int(gain.sum()); summaries[chain][f"{rule}_area_net_gain"]=float((gain*frame.area).sum())
+            gain=((analysis[f"{chain}_{rule}_pred"]==analysis.true_class).astype(int)-(analysis[f"{chain}5_pred"]==analysis.true_class).astype(int))
+            summaries[chain][f"{rule}_component_net_gain"]=int(gain.sum()); summaries[chain][f"{rule}_area_net_gain"]=float((gain*analysis.area).sum())
         total={k:sum(row[f"{chain}_{k}"] for row in image_rows) for k in ("total","trigger","correct_trigger","h5_wrong","corrected","h5_right","harmed","gain_r1","gain_r2","gain_r3")}
         pixel[chain]=metrics_from_counts(total); summaries[chain]["decision"]=decision(summaries[chain]["area"])
-        summaries[chain]["bootstrap_component_area"]=bootstrap_components(frame,chain); summaries[chain]["bootstrap_pixel_image"]=bootstrap_images(image_rows,chain)
+        summaries[chain]["bootstrap_component_area"]=bootstrap_components(analysis,chain); summaries[chain]["bootstrap_pixel_image"]=bootstrap_images(image_rows,chain)
     common=summaries["common"]["decision"]; sequential=summaries["sequential"]["decision"]
     if common in ("GO","STRONG_GO") and sequential=="NOGO": diagnosis="DEEP_CONDITIONING_ERASES_LOCAL_EVIDENCE"
     elif common in ("GO","STRONG_GO") and sequential in ("GO","STRONG_GO"): diagnosis="LOCAL_EVIDENCE_UNDERUTILIZED"
@@ -141,7 +147,8 @@ def main() -> None:
     labeled=out/"component_evidence_with_gt.parquet"; frame.to_parquet(labeled,index=False)
     pd.DataFrame(image_rows).to_parquet(out/"per_image_pixel_counts.parquet",index=False)
     result={"protocol":"UMRF-v1","feature_freeze_verified":True,"parameter_updates":0,"historical_m1":historical,"m1_q4_area_threshold":q4,
-            "components":len(frame),"summaries":summaries,"pixel":pixel,"primary_chain":"common","primary_decision":common,
+            "components":len(frame),"evaluable_components":len(analysis),"ignored_only_components":int((~frame.evaluable).sum()),
+            "summaries":summaries,"pixel":pixel,"primary_chain":"common","primary_decision":common,
             "secondary_decision":sequential,"final_diagnosis":diagnosis,
             "downstream_counterfactual":{"status":"SKIP","reason":"Frozen HQMR exposes no legal pre-decoder class-responsibility injection interface; adding one would redefine the model."},
             "labeled_table_sha256":sha256(labeled)}
