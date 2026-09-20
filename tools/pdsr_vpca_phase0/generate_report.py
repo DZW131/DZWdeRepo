@@ -7,7 +7,7 @@ def pct(x): return f"{100*float(x):.2f}%"
 def pp(x): return f"{float(x):+.3f} pp"
 def main():
     p=argparse.ArgumentParser(); p.add_argument("--output",type=Path,required=True); p.add_argument("--report",type=Path); a=p.parse_args(); o=a.output
-    r=json.loads((o/"metrics/final_result.json").read_text()); base=json.loads((o/"manifests/baseline.json").read_text()); plip=json.loads((o/"manifests/plip_runtime_manifest.json").read_text()); concept=json.loads((o/"manifests/concept_bank_manifest.json").read_text()); identity=json.loads((o/"manifests/identity_tests.json").read_text()); leakage=json.loads((o/"manifests/leakage_audit.json").read_text()); counts=json.loads((o/"manifests/parameter_counts.json").read_text()); deviations=json.loads((o/"manifests/protocol_deviations.json").read_text()); visuals=json.loads((o/"visualizations/visualization_manifest.json").read_text())
+    r=json.loads((o/"metrics/final_result.json").read_text()); base=json.loads((o/"manifests/baseline.json").read_text()); plip=json.loads((o/"manifests/plip_runtime_manifest.json").read_text()); concept=json.loads((o/"manifests/concept_bank_manifest.json").read_text()); identity=json.loads((o/"manifests/identity_tests.json").read_text()); leakage=json.loads((o/"manifests/leakage_audit.json").read_text()); counts=json.loads((o/"manifests/parameter_counts.json").read_text()); deviations=json.loads((o/"manifests/protocol_deviations.json").read_text()); visuals=json.loads((o/"visualizations/visualization_manifest.json").read_text()); cost=json.loads((o/"metrics/computational_cost.json").read_text())
     s=r["segmentation"]; d=r["delta_miou_pp"]; hm={v:r["cohort"][v]["hard_m1"]["pixel_area_weighted"] for v in ("P1","P2","P3")}; m1={v:r["cohort"][v]["m1"]["pixel_area_weighted"] for v in ("P1","P2","P3")}
     path=a.report or o/"PDSR_VPCA_HQMR_v1_Phase0_Final_Report.md"
     lines=["# PDSR‑VPCA‑HQMR v1 Phase0 Final Report","","> **FINAL_DECISION = %s**"%r["FINAL_DECISION"],f"> HQMR P0 = {pct(s['P0']['mIoU'])}",f"> VLM‑Last P1 = {pct(s['P1']['mIoU'])}",f"> Static‑PDSR P2 = {pct(s['P2']['mIoU'])}",f"> VPCA‑PDSR P3 = {pct(s['P3']['mIoU'])}","> SSHR = 66.6967%",f"> P1−P0 = {pp(d['P1-P0'])}; P2−P1 = {pp(d['P2-P1'])}; P3−P2 = {pp(d['P3-P2'])}; P3−P0 = {pp(d['P3-P0'])}",f"> PDSR_DECISION = {r['PDSR_DECISION']}; VPCA_DECISION = {r['VPCA_DECISION']}",f"> Hard‑M1 P0 = 0.00%; P1 = {pct(hm['P1'])}; P2 = {pct(hm['P2'])}; P3 = {pct(hm['P3'])}",f"> PDSR Hard‑M1 gain = {pct(r['pdsr_hmcr_gain'])}; VPCA Hard‑M1 gain = {pct(r['vpca_hmcr_gain'])}",f"> NCE = {r['tp_safety']['P3']['nce']:.3f}",f"> CLASS_DAMAGE = {r['CLASS_DAMAGE']}; LAYER_COLLAPSE = {r['LAYER_COLLAPSE']}; CONCEPT_COLLAPSE = {r['CONCEPT_COLLAPSE']}; CCRA_COLLAPSE = {r['CCRA_COLLAPSE']}; VLM_IGNORED = {r['VLM_IGNORED']}",f"> FULL25_GO = {r['FULL25_GO']}",""]
@@ -37,7 +37,7 @@ def main():
     add("TP Safety",f"P1/P2/P3 NCE={r['tp_safety']['P1']['nce']:.3f}/{r['tp_safety']['P2']['nce']:.3f}/{r['tp_safety']['P3']['nce']:.3f}；P3 TP harm={pct(r['tp_safety']['P3']['tp_harm'])}。")
     add("Per‑Class Results","IoU P0/P1/P2/P3："+"；".join(f"C{c} {pct(s['P0']['class_iou'][str(c)])}/{pct(s['P1']['class_iou'][str(c)])}/{pct(s['P2']['class_iou'][str(c)])}/{pct(s['P3']['class_iou'][str(c)])}" for c in range(4))+f"。CLASS_DAMAGE={r['CLASS_DAMAGE']}。")
     add("CCRA Health",f"{json.dumps(r['ccra_health'])}。注入点位于 CCRA 之后，且旧路径冻结，因此 CCRA responsibility 不随 P1/P2/P3 更新。")
-    add("Computational Cost",f"参数：`{json.dumps(counts)}`；E5 inference runtime：`{json.dumps(r['runtime'])}`；PLIP 虽冻结仍计入完整推理参数和 FPS/VRAM。")
+    add("Computational Cost",f"参数、profiler-counted FLOPs、E5 3-view FPS/peak VRAM：`{json.dumps(cost)}`。FLOPs 是 torch.profiler 可识别算子的保守计数；PLIP 虽冻结仍计入完整推理参数和 FPS/VRAM。")
     add("Bootstrap CI",f"2000 次 paired image bootstrap，seed42：`{json.dumps(r['bootstrap'])}`。")
     add("Representative Cases",f"案例库：`{json.dumps(visuals)}`；每组固定 recovered/unrecovered/harmed，P2/P3 另含 concept grounding。")
     add("PDSR GO/NOGO",f"PDSR={r['PDSR_DECISION']}。门槛：ΔHMCR≥5pp、ΔM1CR≥3pp、3/4 classes non‑negative、无 layer/CCRA collapse。")
@@ -47,4 +47,3 @@ def main():
     assert len([x for x in lines if x.startswith("## ")])==32
     path.write_text("\n".join(lines)+"\n",encoding="utf-8"); print(json.dumps({"event":"PDSR_REPORT_WRITTEN","path":str(path)}),flush=True)
 if __name__=="__main__": main()
-
