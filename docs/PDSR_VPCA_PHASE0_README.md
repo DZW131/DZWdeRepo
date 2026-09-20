@@ -35,10 +35,12 @@ Training never receives a validation or mask path. Evaluation refuses to run unt
 
 | Run | Frozen backbone/VLM | Trainable path | Epoch | mIoU | mDice | Decision |
 |---|---|---|---:|---:|---:|---|
-| P0 | HQMR | none | 0 | written after evaluation | written after evaluation | reproduction gate |
-| P1 | HQMR + PLIP | P_last + gamma | 5 | written after evaluation | written after evaluation | VLM evidence |
-| P2 | HQMR + PLIP | P4/P8/P12/Ps + gamma | 5 | written after evaluation | written after evaluation | PDSR gate |
-| P3 | HQMR + PLIP | same as P2 | 5 | written after evaluation | written after evaluation | VPCA/Full25 gate |
+| P0 | HQMR | none | 0 | 65.5727% | 78.9611% | paired frozen prediction bank |
+| P1 | HQMR + PLIP | P_last + gamma | 5 | 65.5726% | 78.9609% | no material gain |
+| P2 | HQMR + PLIP | P4/P8/P12/Ps + gamma | 5 | 65.5731% | 78.9613% | PDSR NOGO |
+| P3 | HQMR + PLIP | same as P2 | 5 | 65.5725% | 78.9608% | VPCA NOGO / Full Model NOGO |
+
+All three runs finished 5,855 optimizer steps without training-time validation access. The final report is [PDSR_VPCA_HQMR_v1_Phase0_Final_Report.md](PDSR_VPCA_HQMR_v1_Phase0_Final_Report.md). Full machine-readable metrics, E5 prediction/mechanism banks, 220 case visualizations, checkpoints, and logs remain under `/home/duyanhong/experiments/PDSR_VPCA_Phase0_BCSS_Seed42` on the server. The historical HQMR scalar (65.572444%) and the recomputed paired-bank P0 (65.572738%) differ by 0.000294 pp; the report preserves this caveat.
 
 ## Resume and failure handling
 
