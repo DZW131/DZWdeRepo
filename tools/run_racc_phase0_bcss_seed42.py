@@ -119,6 +119,9 @@ def train_group(args, dataset, output: Path, name: str, enable_a: bool, enable_g
                         drop_last=True, worker_init_fn=official.seed_worker, generator=generator)
     monitor = DataLoader(dataset, batch_size=8, shuffle=False, num_workers=2, pin_memory=True)
     model = load_racc(Path(args.hqmr_checkpoint)).cuda(); params = set_group(model, enable_a, enable_g)
+    model.eval()
+    frozen_buffers = {name: value.detach().cpu().clone() for name, value in model.named_buffers()
+                      if not name.startswith("racc.")}
     weights = [p for n, p in model.named_parameters() if p.requires_grad and not n.endswith("bias")]
     biases = [p for n, p in model.named_parameters() if p.requires_grad and n.endswith("bias")]
     optimizer = PolyOptimizer([{"params": weights, "lr": .1, "weight_decay": .0005},
@@ -126,7 +129,9 @@ def train_group(args, dataset, output: Path, name: str, enable_a: bool, enable_g
                               lr=.01, weight_decay=.0005, max_step=TOTAL_STEPS)
     rows, epochs = [], []; started = time.perf_counter(); target = 2 if smoke else TOTAL_STEPS
     for epoch in range(1, EPOCHS + 1):
-        model.train(); sums = {}; batches = 0; epoch_started = time.perf_counter()
+        # The entire archived HQMR, including BatchNorm running buffers, is frozen.
+        # RACC-v1 has no train/eval-dependent layers, so the complete module stays in eval mode.
+        model.eval(); sums = {}; batches = 0; epoch_started = time.perf_counter()
         for _, images, labels in loader:
             images, labels = images.cuda(non_blocking=True), labels.cuda(non_blocking=True)
             optimizer.zero_grad(set_to_none=True)
@@ -153,10 +158,14 @@ def train_group(args, dataset, output: Path, name: str, enable_a: bool, enable_g
         if smoke or optimizer.global_step >= target: break
     if smoke: return {"group": name, "steps": optimizer.global_step, "finite": True, "mechanism": epochs[-1]}
     if optimizer.global_step != TOTAL_STEPS: raise AssertionError(f"{name} incomplete")
+    changed_buffers = [name for name, value in model.named_buffers()
+                       if name in frozen_buffers and not torch.equal(value.detach().cpu(), frozen_buffers[name])]
+    if changed_buffers: raise AssertionError({"frozen_buffers_changed": changed_buffers})
     checkpoint = group_dir / "racc_epoch05_final.pth"; torch.save(model.state_dict(), checkpoint)
     seal = {"group": name, "epoch": 5, "steps": optimizer.global_step, "sha256": sha256(checkpoint),
             "checkpoint": str(checkpoint), "selection": "fixed Epoch5 only", "validation_accessed": False,
-            "seconds": time.perf_counter() - started, "trainable_parameters": sum(p.numel() for p in params)}
+            "seconds": time.perf_counter() - started, "trainable_parameters": sum(p.numel() for p in params),
+            "frozen_buffers_unchanged": True}
     write_json(group_dir / "seal.json", seal); return seal
 
 
@@ -196,7 +205,8 @@ def main():
               "batch_size": 20, "image_size": 224, "precision": "bf16", "optimizer": "PolyOptimizer",
               "new_weight_lr": .1, "new_bias_lr": .2, "weight_decay": .0005, "groups": GROUPS,
               "hqmr_checkpoint": str(checkpoint), "hqmr_sha256": sha256(checkpoint), "validation_during_training": False,
-              "image_level_labels_only": True, "fixed_epoch5": True, "threshold_sweep": False}
+              "image_level_labels_only": True, "fixed_epoch5": True, "threshold_sweep": False,
+              "hqmr_eval_mode_during_training": True, "frozen_buffers_checked_exactly": True}
     write_json(output / "provenance/racc_phase0_config.json", config)
     write_json(output / "provenance/protocol.json", {"protected_sources": protected_sources(ROOT), "old_parameters_frozen": True,
         "training_samples": len(dataset), "dataset_manifest_sha256": hashlib.sha256("\n".join(sorted(Path(x).name for x, _ in dataset.object)).encode()).hexdigest(),
