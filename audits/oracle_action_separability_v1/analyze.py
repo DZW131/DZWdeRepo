@@ -28,7 +28,7 @@ A_ABLATIONS={
 G_ABLATIONS={
     "G0": ["g_deep_score", "g_gate_threshold", "g_gate_margin", "g_abs_margin", "g_deep_rank"],
     "G1": ["g_tta_"],
-    "G2": ["g_c4_mean", "g_c4_max", "g_c4_q", "g_c4_top0", "g_c3_mean", "g_c3_max", "g_c3_q", "g_c3_top0", "g_support_", "g_largest_support", "g_spatial_entropy"],
+    "G2": ["g_c4_mean", "g_c4_max", "g_c4_q", "g_c4_top0", "g_c3_mean", "g_c3_max", "g_c3_q", "g_c3_top0", "g_c3_top10", "g_support_", "g_largest_support", "g_spatial_entropy"],
     "G3": ["g_c4_c3_", "g_c3_c4_", "g_c4_top_class_same", "g_c3_top_class_same", "g_contradiction", "g_local_deep_ratio"],
     "G4": ["g_query_"],
 }
