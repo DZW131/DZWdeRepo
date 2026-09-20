@@ -13,7 +13,8 @@ from network.momd import mixture_class_bce, pca_reference_envelope
 
 
 class GCQMNet(CQRFNet):
-    def forward(self,image,labels,step=0,run_pmec=False,gcqm_weights_only=False):
+    def forward(self,image,labels,step=0,run_pmec=False,gcqm_weights_only=False,
+                pre_ccra_semantic=None,pre_ccra_gamma=None):
         if labels is None: raise ValueError("GCQM Phase-0 requires train-split image labels")
         if run_pmec and gcqm_weights_only: raise ValueError("PMEC requires materialized legacy mask logits")
         features=self.backbone(image); deep_cam_logits=self.deep_head(features["FD"])
@@ -23,6 +24,11 @@ class GCQMNet(CQRFNet):
         kp1=sine_position_2d(image.shape[0],*semantic_feature.shape[-2:],256,image.device,semantic_feature.dtype)
         query1,attention1=self.decoder1(content0+base,self._memory(semantic_feature)+kp1); confidence1=self.pca_heads[0](query1)
         context_raw=self.context_projection(features["F5"].detach()); context_feature=self.f5_chpf(context_raw)
+        context_feature_pre=context_feature
+        if pre_ccra_semantic is not None:
+            if pre_ccra_gamma is None or pre_ccra_semantic.shape!=context_feature.shape or pre_ccra_gamma.shape!=(context_feature.shape[1],):
+                raise ValueError("Pre-CCRA semantic/gamma shape mismatch")
+            context_feature=context_feature+pre_ccra_gamma[None,:,None,None]*pre_ccra_semantic
         kp2=sine_position_2d(image.shape[0],*context_feature.shape[-2:],256,image.device,context_feature.dtype)
         query2,ccra2=self.ccra2(query1,base,self._memory(context_feature),kp2,confidence1["p_class"],deep_gate); confidence2=self.pca_heads[1](query2)
         pixel_feature,pixel_detail=self.pixel_decoder(features["F4"],features["F3"]); f4_memory=self.f4_memory_projection(pixel_detail["F4_context"].detach())
@@ -63,7 +69,7 @@ class GCQMNet(CQRFNet):
             total=.50*loss_deep+.25*loss_pca+.25*loss_mask
         output={"features":features,"deep_cam_logits":deep_cam_logits,"deep_logits":deep_logits,"deep_gate":deep_gate,
                 "normalized_cam":normalized_cam,"targets":targets,"target_detail":target_detail,"stages":stages,
-                "pixel_feature":pixel_feature,"pixel_detail":pixel_detail,"query_detail":{"B":base,"semantic_feature":semantic_feature,"context_raw":context_raw,"context_feature":context_feature,"f4_memory":f4_memory},
+                "pixel_feature":pixel_feature,"pixel_detail":pixel_detail,"query_detail":{"B":base,"semantic_feature":semantic_feature,"context_raw":context_raw,"context_feature_pre":context_feature_pre,"context_feature":context_feature,"f4_memory":f4_memory},
                 "radius":radius,"locality":locality,"primary_output":stages[-1]["gcqm"]["mixture"],
                 "losses":{"loss":total,"loss_deep":loss_deep,"loss_pca":loss_pca,"loss_mask":loss_mask,
                           **{f"loss_pca_stage{i+1}":v for i,v in enumerate(pca_losses)},**{f"loss_mask_stage{i+1}":v for i,v in enumerate(mask_losses)}}}

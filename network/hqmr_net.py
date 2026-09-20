@@ -15,8 +15,9 @@ class HQMRNet(GCQMNet):
         self.hqmr = HQMR(256)
 
     def forward(self, image, labels, step=0, run_pmec=False, hqmr_mode="full", hqmr_arbitrator=None,
-                h5_residual=None):
-        output = super().forward(image, labels, step=step, run_pmec=run_pmec, gcqm_weights_only=True)
+                h5_residual=None,pre_ccra_semantic=None,pre_ccra_gamma=None):
+        output = super().forward(image, labels, step=step, run_pmec=run_pmec, gcqm_weights_only=True,
+                                 pre_ccra_semantic=pre_ccra_semantic,pre_ccra_gamma=pre_ccra_gamma)
         h5_morph = output["query_detail"]["context_feature"]
         if h5_residual is not None:
             if h5_residual.shape != h5_morph.shape:
