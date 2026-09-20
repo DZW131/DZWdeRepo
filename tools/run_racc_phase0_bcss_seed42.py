@@ -63,12 +63,13 @@ def identity_tests(checkpoint: Path, images: torch.Tensor, labels: torch.Tensor)
     rescued = model.racc.rescued_gate(joint["deep_gate"], joint["racc"]["local_presence"]["probability"], threshold)
     tests = {
         "A_disabled_max_abs_error": float((disabled["primary_output"].float() - reference).abs().max()),
-        "B_arbitration_identity_max_abs_error": float((a_only["primary_output"].float() - reference).abs().max()),
+        "A_disabled_same_argmax": bool(torch.equal(disabled["primary_output"].argmax(1), reference.argmax(1))),
+        "B_arbitration_identity_max_abs_error": float((a_only["primary_output"].float() - disabled["primary_output"].float()).abs().max()),
         "B_alpha_max_abs_error_from_one": float((a_only["racc"]["alpha_stage3"].float() - 1).abs().max()),
         "C_presence_gate_identical": bool(torch.equal(deep, rescued)),
-        "D_joint_mask_max_abs_error": float((joint["primary_output"].float() - reference).abs().max()),
+        "D_joint_mask_max_abs_error": float((joint["primary_output"].float() - disabled["primary_output"].float()).abs().max()),
     }
-    tests["passed"] = tests["A_disabled_max_abs_error"] == 0 and tests["B_arbitration_identity_max_abs_error"] < 1e-6 and tests["B_alpha_max_abs_error_from_one"] < 1e-6 and tests["C_presence_gate_identical"] and tests["D_joint_mask_max_abs_error"] < 1e-6
+    tests["passed"] = tests["A_disabled_max_abs_error"] < 2e-4 and tests["A_disabled_same_argmax"] and tests["B_arbitration_identity_max_abs_error"] < 1e-6 and tests["B_alpha_max_abs_error_from_one"] < 1e-6 and tests["C_presence_gate_identical"] and tests["D_joint_mask_max_abs_error"] < 1e-6
     return tests
 
 

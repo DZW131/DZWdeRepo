@@ -39,6 +39,20 @@ def load_group(path: Path) -> RACCNet:
 
 
 @torch.no_grad()
+def infer_hqmr(model: HQMRNet, image: torch.Tensor, original_hw) -> dict:
+    maps, deep = [], []; dummy = torch.ones((1, 4), device=image.device)
+    for input_flip, cam_flip in TTA:
+        value = torch.flip(image, dims=input_flip) if input_flip else image
+        with torch.autocast("cuda", dtype=torch.bfloat16): output = model(value, dummy, step=29275)
+        maps.append(resize_unflip(output["primary_output"], original_hw, cam_flip).float().cpu())
+        deep.append(output["deep_gate"].float().cpu())
+    cam = normalize_cam(torch.stack(maps).mean(0).numpy()); deep_probability = torch.stack(deep).mean(0).numpy()[0]
+    label = presence(deep_probability)
+    return {"cam": cam, "deep_probability": deep_probability, "deep_label": label, "label": label,
+            "prediction": prediction_from_cam(cam, label, np.empty(original_hw))}
+
+
+@torch.no_grad()
 def infer(model: RACCNet, image: torch.Tensor, original_hw, enable_a: bool, enable_g: bool, detail=False) -> dict:
     maps, deep, local = [], [], []; canonical = None
     dummy = torch.ones((1, 4), device=image.device)
@@ -161,6 +175,7 @@ def main():
     for name,path in paths.items():
         if sha256(path)!=runtime["groups"][name]["sha256"]: raise AssertionError(name+" seal mismatch")
     models={name:load_group(path) for name,path in paths.items()}
+    baseline=HQMRNet().cuda();baseline.load_state_dict(load_state(hqmr),strict=True);baseline.eval()
     table=pd.read_parquet(args.ucrf_components); packed=np.load(args.ucrf_masks)["packed"]; mask_shape=tuple(np.load(args.ucrf_masks)["shape"].tolist())
     m1=table[table.cohort=="M1"].copy(); m1["source_index"]=m1.index; by_image=defaultdict(list)
     for row in m1.itertuples(): by_image[row.image_id].append(row)
@@ -172,8 +187,7 @@ def main():
     image_rows=[]; started=time.perf_counter()
     for index,(ids,image) in enumerate(loader,1):
         image_id=ids[0]; truth=np.asarray(Image.open(valroot/"mask"/f"{image_id}.png")); image=image.cuda(non_blocking=True); hw=truth.shape
-        p2=infer(models["P2_RACC_G"],image,hw,False,True,True); p1=infer(models["P1_RACC_A"],image,hw,True,False,True); p3=infer(models["P3_RACC_JOINT"],image,hw,True,True,True)
-        p0={**p2,"label":p2["deep_label"],"prediction":prediction_from_cam(p2["cam"],p2["deep_label"],np.empty(hw))}
+        p0=infer_hqmr(baseline,image,hw);p2=infer(models["P2_RACC_G"],image,hw,False,True,True); p1=infer(models["P1_RACC_A"],image,hw,True,False,True); p3=infer(models["P3_RACC_JOINT"],image,hw,True,True,True)
         bundle={"P0_HQMR":p0,"P1_RACC_A":p1,"P2_RACC_G":p2,"P3_RACC_JOINT":p3}; y=image_label(truth)
         for n,b in bundle.items(): hist[n].append(foreground_confusion(truth,b["prediction"])); predictions[n][image_id]=b["prediction"].astype(np.uint8)
         alpha["P1_RACC_A"].add(p1);alpha["P3_RACC_JOINT"].add(p3)
