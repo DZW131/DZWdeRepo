@@ -192,7 +192,9 @@ def main():
     for variant,directory in VARIANT_DIR.items():
         model=PDSRVPCAHQMR(a.checkpoint,a.plip,cache["embeddings"],variant).cuda().eval(); state=torch.load(out/directory/f"{variant.lower()}_e5_adapter.pth",map_location="cpu",weights_only=False); model.load_trainable_state_dict(state)
         labels=torch.ones((1,4),device=profile_raw.device)
-        compute[variant]={"flops_per_view":counted_flops(lambda: model(profile_raw,labels)),"flops_note":"torch.profiler counted FLOPs; unsupported operators are not imputed"}; compute[variant]["gflops_per_view"]=compute[variant]["flops_per_view"]/1e9
+        def profiled_forward():
+            with torch.autocast("cuda",dtype=torch.bfloat16): model(profile_raw,labels)
+        compute[variant]={"flops_per_view":counted_flops(profiled_forward),"flops_note":"BF16 torch.profiler counted FLOPs; unsupported operators are not imputed"}; compute[variant]["gflops_per_view"]=compute[variant]["flops_per_view"]/1e9
         if variant=="P3":
             with torch.inference_mode(),torch.autocast("cuda",dtype=torch.bfloat16):
                 fused=model(profile_raw,labels); reference=model.base((profile_raw-model.hqmr_mean.to(profile_raw))/model.hqmr_std.to(profile_raw),labels,step=29275)
