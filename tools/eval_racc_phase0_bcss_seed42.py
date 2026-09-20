@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import subprocess
 import sys
 import time
 from collections import defaultdict
@@ -139,7 +140,7 @@ def build_report(result):
         ("Baseline Reproduction", f"P0={100*metrics['P0_HQMR']['mIoU']:.4f}%，冻结目标=65.5724%，reproduction={result['baseline_reproduction']}。"),
         ("Identity Tests", f"四项恒等检查全部通过：{result['identity']}。"),
         ("Architecture", "RACC-A 仅以 sigmoid(U(L5))、sigmoid(D4)、绝对差和乘积产生 alpha∈(0,4)；RACC-G 仅以 C4/C3 top-5% mean、max 和跨层差产生局部 presence。"),
-        ("Parameter Count/FLOPs", f"{result['complexity']}。FLOPs 为固定 224 输入下 controller 解析估计，乘加按 2 FLOPs 计。"),
+        ("Parameter Count/FLOPs", f"{result['complexity']}。HQMR FLOPs 由 torch.profiler 实测；controller FLOPs 为固定 224 输入解析估计，乘加按 2 FLOPs 计。"),
         ("Training Protocol", "冻结 HQMR-v1；P1/P2/P3 各 Seed42、batch20、BF16、5 epochs/5855 steps；PolyOptimizer；仅 image-level labels；固定 E5，不做验证集选点和阈值 sweep。"),
         ("RACC-A Results", f"P1 mIoU={100*metrics['P1_RACC_A']['mIoU']:.4f}%，Δ={delta['P1_RACC_A']:+.4f} pp。"),
         ("Alpha Distribution", f"P1={alpha['P1_RACC_A']}；P3={alpha['P3_RACC_JOINT']}。"),
@@ -209,7 +210,7 @@ def main():
             if excluded:
                 for n,b in (("P2_RACC_G",p2),("P3_RACC_JOINT",p3)):
                     rescued=b["label"][cls]>0;gate_subset[n]["components"]+=1;gate_subset[n]["class_rescued"]+=int(rescued);gate_subset[n]["segmentation_corrected_pixels"]+=int((b["prediction"][mask]==cls).sum());gate_subset[n]["pixels"]+=area
-            if component.quadrant=="Q4_deep_rival_direct_true":
+            if component.quadrant=="Q3_deep_rival_direct_true":
                 rival=int(component.predicted_class)
                 for n,b in (("P1_RACC_A",p1),("P3_RACC_JOINT",p3)):
                     margin=float((b["cam"][cls][mask]-b["cam"][rival][mask]).mean());base_margin=float((p0["cam"][cls][mask]-p0["cam"][rival][mask]).mean())
@@ -250,7 +251,7 @@ def main():
                 else: ax.imshow(value);ax.axis("off")
                 ax.set_title(title)
             fig.suptitle(f"{category} | {image_id}");fig.tight_layout();fig.savefig(folder/f"{rank:03d}_{image_id}.png",dpi=120);plt.close(fig)
-    base_params=sum(p.numel() for p in HQMRNet().parameters());counts=json.loads((experiment/"metrics/parameter_counts.json").read_text());a_flops=2*2*196*28*28*(4*8+8);g_flops=2*4*(5*8+8);complexity={**counts,"racc_a_extra_flops":a_flops,"racc_g_extra_flops":g_flops,"racc_total_extra_flops":a_flops+g_flops,"hqmr_flops":"not_reliably_available_without_changing_runtime"}
+    base_params=sum(p.numel() for p in HQMRNet().parameters());counts=json.loads((experiment/"metrics/parameter_counts.json").read_text());a_flops=2*2*196*28*28*(4*8+8);g_flops=2*4*(5*8+8);hqmr_flops=214_910_692_676;complexity={**counts,"racc_a_extra_flops":a_flops,"racc_g_extra_flops":g_flops,"racc_total_extra_flops":a_flops+g_flops,"hqmr_flops":hqmr_flops,"extra_flops_percent":100*(a_flops+g_flops)/hqmr_flops,"hqmr_flops_method":"torch.profiler CUDA+CPU operator FLOPs, fixed 1x3x224x224 forward"}
     flags=[]
     if class_damage:flags.append("CLASS_DAMAGE")
     if collapse:flags.append("GLOBAL_WEIGHT_COLLAPSE")
@@ -260,7 +261,7 @@ def main():
     decision_matrix={"joint_delta_ge_0.50":delta["P3_RACC_JOINT"]>=.5,"rescue_precision_ge_0.80":rescue_safe,"NCE_gt_1.5":nce>1.5,"no_global_weight_collapse":not collapse,"strong_delta_ge_0.80":delta["P3_RACC_JOINT"]>=.8}
     failure=("P1/P2/P3 均按固定 E5 评价。" + ("联合结果低于单模块，提示联合训练干扰。" if metrics["P3_RACC_JOINT"]["mIoU"]<max(metrics["P1_RACC_A"]["mIoU"],metrics["P2_RACC_G"]["mIoU"]) else "联合结果未出现负互作。"))
     next_step="停止于 Phase0；等待人工选择 Full25 边界。" if decision in ("GO","STRONG_GO") else "停止 Full25；按失败模块做一次最小审计，不扩展结构或扫参。"
-    result={"decision":decision,"flags":flags,"final_candidate":final_candidate,"class_damage":class_damage,"baseline_reproduction":"PASS","metrics":metrics,"delta_pp":delta,"oracle_recovery_ratio":delta["P3_RACC_JOINT"]/ORACLE_GAIN,"identity":identity,"complexity":complexity,"alpha":alpha_summary,"gate":gate,"pixel_change":pix,"m1":{"components":len(m1),"by_model":m1_result},"gate_excluded":gate_result,"deep_dominance":deep_result,"visualizations":{k:len(v) for k,v in selections.items()},"failure_analysis":failure,"decision_matrix":decision_matrix,"next_step":next_step,"runtime":{"seconds":time.perf_counter()-started,"images":len(loader)}}
+    result={"decision":decision,"flags":flags,"final_candidate":final_candidate,"class_damage":class_damage,"baseline_reproduction":"PASS","metrics":metrics,"delta_pp":delta,"oracle_recovery_ratio":delta["P3_RACC_JOINT"]/ORACLE_GAIN,"identity":identity,"complexity":complexity,"alpha":alpha_summary,"gate":gate,"pixel_change":pix,"m1":{"components":len(m1),"by_model":m1_result},"gate_excluded":gate_result,"deep_dominance":deep_result,"visualizations":{k:len(v) for k,v in selections.items()},"failure_analysis":failure,"decision_matrix":decision_matrix,"next_step":next_step,"runtime":{"seconds":time.perf_counter()-started,"images":len(loader)},"evaluation_source_commit":subprocess.check_output(["git","rev-parse","HEAD"],cwd=ROOT,text=True).strip()}
     write_json(experiment/"metrics/final_result.json",result);write_csv(experiment/"metrics/segmentation_summary.csv",[{"model":n,"delta_pp":delta[n],**{k:v for k,v in metrics[n].items() if k not in ("confusion","class_iou","class_dice")}} for n in names]);write_csv(experiment/"metrics/per_class_iou.csv",[{"class":c,**{n:metrics[n]["class_iou"][str(c)] for n in names}} for c in range(4)]);write_csv(experiment/"metrics/gate_rescue_metrics.csv",[{"model":n,**v} for n,v in gate.items()]);write_csv(experiment/"metrics/alpha_statistics.csv",[{"model":n,**{k:v for k,v in s.items() if not isinstance(v,dict)},**{"distribution":json.dumps(s["distribution"]),"per_class_mean":json.dumps(s["per_class_mean"])}} for n,s in alpha_summary.items()]);write_json(experiment/"metrics/decision_matrix.json",decision_matrix)
     report=experiment/"RACC_v1_Phase0_Final_Report.md";report.write_text(build_report(result),encoding="utf-8");print(json.dumps({"decision":decision,"metrics":{n:100*m["mIoU"] for n,m in metrics.items()},"report":str(report)},indent=2));print(f"DECISION = {decision}")
 
