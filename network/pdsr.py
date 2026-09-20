@@ -34,12 +34,13 @@ class PathologyDenseSemanticReconstructor(nn.Module):
         residual=F.interpolate(self.semantic_projection(z_sem),size=(28,28),mode="bilinear",align_corners=False)
         semantic_evidence=torch.einsum("bdhw,kd->bkhw",F.normalize(z_sem,dim=1),concepts)
         flat=semantic_evidence.flatten(2); topk=max(1,int(flat.shape[-1]*.20)); concept_scores=flat.topk(topk,dim=-1).values.mean(-1)
+        layer_class_evidence=torch.stack([pi.reshape(z_sem.shape[0],4,8,*z_sem.shape[-2:]).sum(2) for pi in pis],1)
         class_evidence=(sum(beta[:,i:i+1]*pis[i] for i in range(3))).reshape(z_sem.shape[0],4,8,*z_sem.shape[-2:]).sum(2)
         aux={"concept_distributions":torch.stack(pis,1),"layer_js":divergences,"layer_weights":beta,
              "semantic_reconstruction":torch.stack(recon,1),"visual_projections":torch.stack(us,1),
              "semantic_embedding":z_sem,"semantic_evidence":semantic_evidence,"class_semantic_evidence":class_evidence,
+             "layer_class_evidence":layer_class_evidence,
              "concept_scores":concept_scores,
              "reconstruction_norm":torch.stack([x.float().norm(dim=1).mean((1,2)) for x in recon],1),
              "visual_norm":torch.stack([x.float().norm(dim=1).mean((1,2)) for x in us],1)}
         return residual,aux
-
