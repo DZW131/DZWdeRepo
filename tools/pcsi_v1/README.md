@@ -12,7 +12,7 @@ This is the BCSS seed-42 Phase0 test of semantic injection **before** CCRA. The 
 
 ## Environment
 
-The recorded server runtime is `/home/duyanhong/miniconda3/envs/sshr5090/bin/python` on RTX 4090D. The scripts need PyTorch, torchvision, Transformers/PLIP dependencies, NumPy, pandas, PyArrow, Pillow, PyYAML, Matplotlib, and this repository on `sys.path`. Exact library and GPU versions are saved in each `runtime.json`.
+The recorded server runtime is `/home/duyanhong/miniconda3/envs/sshr5090/bin/python` on RTX 4090D: PyTorch `2.11.0+cu128`, CUDA `12.8`. The scripts need PyTorch, torchvision, Transformers/PLIP dependencies, NumPy, pandas, PyArrow, Pillow, PyYAML, Matplotlib, and this repository on `sys.path`. Use the recorded Conda environment for exact replay; exact library and GPU versions are saved in each `runtime.json`.
 
 ## Run order
 
@@ -23,7 +23,36 @@ The recorded server runtime is `/home/duyanhong/miniconda3/envs/sshr5090/bin/pyt
 5. `tools/pcsi_v1/train.py --variant C1 ...` and then `--variant C2 ...`, each exactly five epochs, seed 42, micro-batch 5, accumulation 4, effective batch 20, BF16, original `PolyOptimizer` settings. This script refuses a nonempty result directory other than `process.log`.
 6. `tools/pcsi_v1/evaluate.py ...` only after **both** `runtime.json` files say `TRAINING_COMPLETE` and 5,855 optimizer steps. It uses the exact UMRF C0 bank and UMRF frozen component table.
 
-Run `python <script> --help` for required absolute input and output paths. The executed paths and input hashes are recorded in the final report and output manifests.
+Minimal server replay (the output directory must be new; do not overwrite the delivered run):
+
+```bash
+cd /home/duyanhong/DZWdeRepo-pcsi-v1
+PY=/home/duyanhong/miniconda3/envs/sshr5090/bin/python
+OUT=/home/duyanhong/experiments/PCSI_v1_BCSS_Seed42_REPLAY
+HQ=/home/duyanhong/experiments/CCRA_HQMR_Full25_BCSS_Seed42/checkpoints/hqmr_epoch25_final.pth
+PLIP=/home/duyanhong/models/vinid-plip
+TRAIN=/home/duyanhong/reseg-data/raw/BCSS-WSSS/training
+VAL=/home/duyanhong/reseg-data/raw/BCSS-WSSS/val
+PREV=/home/duyanhong/experiments/PDSR_VPCA_Phase0_BCSS_Seed42
+UMRF=/home/duyanhong/experiments/UMRF_v1_Upstream_MultiLevel_Responsibility_Formation_Audit_BCSS_Seed42
+CONCEPTS=configs/concepts/bcss_vpca_concepts_v1.yaml
+CACHE=$PREV/concept_bank/concept_embeddings.pt
+
+$PY audits/pcsi_v1/trace_forward_graph.py --checkpoint "$HQ" --images "$VAL/img" --output "$OUT/phaseA_forward"
+$PY audits/pcsi_v1/test_semantic_injection.py --checkpoint "$HQ" --plip "$PLIP" --p2-adapter "$PREV/P2_STATIC_PDSR/p2_e5_adapter.pth" --concepts "$CONCEPTS" --images "$VAL/img" --output "$OUT/phaseA_forward"
+$PY audits/pcsi_v1/audit_gradient_path.py --checkpoint "$HQ" --plip "$PLIP" --p2-adapter "$PREV/P2_STATIC_PDSR/p2_e5_adapter.pth" --concepts "$CONCEPTS" --training-images "$TRAIN" --output "$OUT/phaseA_forward"
+$PY audits/pcsi_v1/audit_vpca_collapse.py --plip "$PLIP" --p3-adapter "$PREV/P3_VPCA_PDSR/p3_e5_adapter.pth" --concepts "$CONCEPTS" --concept-cache "$CACHE" --training-images "$TRAIN" --output "$OUT/phaseB_vpca"
+$PY tools/pcsi_v1/identity.py --checkpoint "$HQ" --plip "$PLIP" --concept-cache "$CACHE" --val-images "$VAL/img" --output "$OUT/phaseC/identity_pretrain.json"
+$PY tools/pcsi_v1/train.py --variant C1 --checkpoint "$HQ" --plip "$PLIP" --concept-cache "$CACHE" --train-root "$TRAIN" --output "$OUT"
+$PY tools/pcsi_v1/train.py --variant C2 --checkpoint "$HQ" --plip "$PLIP" --concept-cache "$CACHE" --train-root "$TRAIN" --output "$OUT"
+$PY tools/pcsi_v1/parameter_audit.py --checkpoint "$HQ" --plip "$PLIP" --concept-cache "$CACHE" --output "$OUT"
+$PY tools/pcsi_v1/tensor_hash_audit.py --checkpoint "$HQ" --plip "$PLIP" --concept-cache "$CACHE" --val-images "$VAL/img" --output "$OUT"
+$PY tools/pcsi_v1/evaluate.py --checkpoint "$HQ" --plip "$PLIP" --concept-cache "$CACHE" --val-root "$VAL" --umrf "$UMRF" --output "$OUT"
+$PY tools/pcsi_v1/visualize.py --output "$OUT" --umrf "$UMRF" --val-root "$VAL"
+$PY tools/pcsi_v1/generate_report.py --root "$OUT" --output "$OUT/PCSI_v1_PreCCRA_VPCA_Collapse_Final_Report.md"
+```
+
+The `UMRF` bank is a required **read-only** input; replay it exactly, without regenerating a different C0. Verify input SHA-256 hashes against the report before comparing numbers.
 
 ## Output contract
 
