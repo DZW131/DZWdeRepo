@@ -1,0 +1,677 @@
+{
+  "FINAL_DECISION": "CLOSE_ZERO_SHOT_VLM_SEMANTIC_ROUTE",
+  "READY_SOURCES": [
+    "BiomedCLIP",
+    "PLIP",
+    "QuiltNet"
+  ],
+  "SKIPPED_SOURCES": {
+    "CONCH": "SKIP_ACCESS",
+    "CPLIP": "SKIP_INCOMPATIBLE",
+    "CPathCLIP": "SKIP_ACCESS"
+  },
+  "BEST_DEV_SOURCE": "BiomedCLIP",
+  "BEST_HOLDOUT_SOURCE": "BiomedCLIP",
+  "HOLDOUT_SELECTED": [
+    "BiomedCLIP",
+    "QuiltNet"
+  ],
+  "SEMANTIC_SOURCE_GO": false,
+  "ALL_TESTED_CANDIDATES_NOGO": true,
+  "STRONG_SEMANTIC_SOURCE_GO": false,
+  "DUAL_SOURCE_FOLLOWUP_JUSTIFIED": false,
+  "ZERO_SHOT_VLM_ROUTE": "CLOSED_BY_THIS_AUDIT",
+  "NEXT_ROUTE": "pathology visual foundation representation + image-level learned semantic head",
+  "JEV_SIDECAR": "SKIPPED_NO_API",
+  "DEV": {
+    "BiomedCLIP": {
+      "components": 3514,
+      "area": 16058881.0,
+      "HTRP_area": 0.6124209401638882,
+      "HTRP_component": 0.48520204894706886,
+      "HTop1": 0.24615822424587364,
+      "NRR_over_PLIP": 0.4362709395484341,
+      "mean_margin": -0.0010522569064050913,
+      "median_margin": -0.0013687387108802795,
+      "margin_q25": -0.027201484888792038,
+      "margin_q75": 0.022822320461273193,
+      "true_rank_mean": 2.531587933978372,
+      "rival_rank_mean": 2.487763232783153,
+      "rival_top1_rate": 0.1943653955606147,
+      "per_class_HTRP_area": {
+        "0": 0.8392254324749371,
+        "1": 0.17734384154686178,
+        "2": 0.8898353663304215,
+        "3": 0.4502539847162394
+      },
+      "class_breadth_ge55": 2,
+      "class_breadth_gt50": 2,
+      "ControlTop1": 0.3492647058823529,
+      "ControlMargin_mean": -0.013641174882650375,
+      "matched_control_count": 1632,
+      "prediction_frequency": {
+        "0": 0.3292544109277177,
+        "1": 0.05293113261240751,
+        "2": 0.20944792259533296,
+        "3": 0.40836653386454186
+      },
+      "true_frequency": {
+        "0": 0.2290836653386454,
+        "1": 0.5224815025611839,
+        "2": 0.17586795674445077,
+        "3": 0.07256687535571998
+      },
+      "bias_ratio": {
+        "0": 1.4372670807453416,
+        "1": 0.10130718954248365,
+        "2": 1.190938511326861,
+        "3": 5.627450980392156
+      },
+      "confusion_matrix": [
+        [
+          382,
+          35,
+          119,
+          269
+        ],
+        [
+          494,
+          138,
+          334,
+          870
+        ],
+        [
+          207,
+          10,
+          225,
+          176
+        ],
+        [
+          74,
+          3,
+          58,
+          120
+        ]
+      ],
+      "SOURCE_CLASS_COLLAPSE": false,
+      "SOURCE_NOGO": true,
+      "QUALIFIED_DEV": false,
+      "STRONG_DEV": false
+    },
+    "PLIP": {
+      "components": 3514,
+      "area": 16058881.0,
+      "HTRP_area": 0.569837213439716,
+      "HTRP_component": 0.6092771770062607,
+      "HTop1": 0.3346613545816733,
+      "NRR_over_PLIP": 0.0,
+      "mean_margin": 0.005020700860768557,
+      "median_margin": 0.004368007183074951,
+      "margin_q25": -0.005007974803447723,
+      "margin_q75": 0.016459286212921143,
+      "true_rank_mean": 2.1875355719977234,
+      "rival_rank_mean": 2.5839499146272056,
+      "rival_top1_rate": 0.24160500853727945,
+      "per_class_HTRP_area": {
+        "0": 0.8136908320974274,
+        "1": 0.23028468285613846,
+        "2": 0.7786684248825604,
+        "3": 0.28328570230953154
+      },
+      "class_breadth_ge55": 2,
+      "class_breadth_gt50": 2,
+      "ControlTop1": 0.41911764705882354,
+      "ControlMargin_mean": -0.002142731798812747,
+      "matched_control_count": 1632,
+      "prediction_frequency": {
+        "0": 0.4280022766078543,
+        "1": 0.292544109277177,
+        "2": 0.13545816733067728,
+        "3": 0.1439954467842914
+      },
+      "true_frequency": {
+        "0": 0.2290836653386454,
+        "1": 0.5224815025611839,
+        "2": 0.17586795674445077,
+        "3": 0.07256687535571998
+      },
+      "bias_ratio": {
+        "0": 1.8683229813664597,
+        "1": 0.5599128540305011,
+        "2": 0.7702265372168284,
+        "3": 1.984313725490196
+      },
+      "confusion_matrix": [
+        [
+          379,
+          300,
+          62,
+          64
+        ],
+        [
+          771,
+          560,
+          177,
+          328
+        ],
+        [
+          254,
+          99,
+          194,
+          71
+        ],
+        [
+          100,
+          69,
+          43,
+          43
+        ]
+      ],
+      "SOURCE_CLASS_COLLAPSE": false,
+      "SOURCE_NOGO": true,
+      "QUALIFIED_DEV": false,
+      "STRONG_DEV": false
+    },
+    "QuiltNet": {
+      "components": 3514,
+      "area": 16058881.0,
+      "HTRP_area": 0.591357704188729,
+      "HTRP_component": 0.5819578827546955,
+      "HTop1": 0.25668753557199775,
+      "NRR_over_PLIP": 0.33867443554260745,
+      "mean_margin": 0.002973556984215975,
+      "median_margin": 0.0025010257959365845,
+      "margin_q25": -0.004942871630191803,
+      "margin_q75": 0.011130698025226593,
+      "true_rank_mean": 2.3642572566875355,
+      "rival_rank_mean": 2.628912919749573,
+      "rival_top1_rate": 0.21883892999430848,
+      "per_class_HTRP_area": {
+        "0": 0.9416306791074945,
+        "1": 0.1709253886021503,
+        "2": 0.5968820768949229,
+        "3": 0.6388863928547942
+      },
+      "class_breadth_ge55": 3,
+      "class_breadth_gt50": 3,
+      "ControlTop1": 0.37683823529411764,
+      "ControlMargin_mean": -0.004083422943949699,
+      "matched_control_count": 1632,
+      "prediction_frequency": {
+        "0": 0.6878201479795105,
+        "1": 0.02618099032441662,
+        "2": 0.06488332384746727,
+        "3": 0.22111553784860558
+      },
+      "true_frequency": {
+        "0": 0.2290836653386454,
+        "1": 0.5224815025611839,
+        "2": 0.17586795674445077,
+        "3": 0.07256687535571998
+      },
+      "bias_ratio": {
+        "0": 3.0024844720496895,
+        "1": 0.05010893246187364,
+        "2": 0.3689320388349514,
+        "3": 3.0470588235294116
+      },
+      "confusion_matrix": [
+        [
+          677,
+          18,
+          30,
+          80
+        ],
+        [
+          1161,
+          68,
+          110,
+          497
+        ],
+        [
+          419,
+          4,
+          76,
+          119
+        ],
+        [
+          160,
+          2,
+          12,
+          81
+        ]
+      ],
+      "SOURCE_CLASS_COLLAPSE": false,
+      "SOURCE_NOGO": false,
+      "QUALIFIED_DEV": false,
+      "STRONG_DEV": false
+    }
+  },
+  "HOLDOUT": {
+    "PLIP": {
+      "components": 1523,
+      "area": 7102729.0,
+      "HTRP_area": 0.5771498532465479,
+      "HTRP_component": 0.6211424819435325,
+      "HTop1": 0.3368351936966513,
+      "NRR_over_PLIP": 0.0,
+      "mean_margin": 0.005669394042342901,
+      "median_margin": 0.005596756935119629,
+      "margin_q25": -0.00466272234916687,
+      "margin_q75": 0.017362229526042938,
+      "true_rank_mean": 2.171372291529875,
+      "rival_rank_mean": 2.6414970453053184,
+      "rival_top1_rate": 0.23768877216021012,
+      "per_class_HTRP_area": {
+        "0": 0.9250701268780419,
+        "1": 0.28630021725983557,
+        "2": 0.8330236490909948,
+        "3": 0.2585717477101795
+      },
+      "class_breadth_ge55": 2,
+      "class_breadth_gt50": 2,
+      "ControlTop1": 0.39098837209302323,
+      "ControlMargin_mean": -0.0034414089750498533,
+      "matched_control_count": 688,
+      "prediction_frequency": {
+        "0": 0.4891661195009849,
+        "1": 0.2843072882468812,
+        "2": 0.10505581089954039,
+        "3": 0.12147078135259357
+      },
+      "true_frequency": {
+        "0": 0.2087984241628365,
+        "1": 0.5863427445830598,
+        "2": 0.1818778726198293,
+        "3": 0.02298095863427446
+      },
+      "bias_ratio": {
+        "0": 2.342767295597484,
+        "1": 0.48488241881298993,
+        "2": 0.5776173285198556,
+        "3": 5.285714285714286
+      },
+      "confusion_matrix": [
+        [
+          156,
+          116,
+          21,
+          25
+        ],
+        [
+          450,
+          264,
+          54,
+          125
+        ],
+        [
+          118,
+          49,
+          84,
+          26
+        ],
+        [
+          21,
+          4,
+          1,
+          9
+        ]
+      ],
+      "SOURCE_CLASS_COLLAPSE": false,
+      "SOURCE_NOGO": true,
+      "QUALIFIED_DEV": false,
+      "STRONG_DEV": false,
+      "patient_CI95": {
+        "unit": "TCGA patient",
+        "patients": 9,
+        "resamples": 2000,
+        "seed": 42,
+        "HTRP_area": [
+          0.4256149976612681,
+          0.7241192720014851
+        ],
+        "HTop1": [
+          0.2981174260645259,
+          0.38507519930263273
+        ],
+        "NRR_over_PLIP": [
+          0.0,
+          0.0
+        ],
+        "mean_margin": [
+          0.004230470965410576,
+          0.007334259009320264
+        ],
+        "ControlTop1": [
+          0.3369342524828274,
+          0.4625629619568293
+        ]
+      },
+      "HOLDOUT_CONFIRMED": false,
+      "SEMANTIC_SOURCE_GO": false,
+      "STRONG_SEMANTIC_SOURCE_GO": false
+    },
+    "BiomedCLIP": {
+      "components": 1523,
+      "area": 7102729.0,
+      "HTRP_area": 0.5503119997961347,
+      "HTRP_component": 0.47866053841103084,
+      "HTop1": 0.20223243598161522,
+      "NRR_over_PLIP": 0.4194107452339688,
+      "mean_margin": -0.0019033957505598664,
+      "median_margin": -0.002624809741973877,
+      "margin_q25": -0.025215432047843933,
+      "margin_q75": 0.02111208438873291,
+      "true_rank_mean": 2.6112934996717008,
+      "rival_rank_mean": 2.5541694024950754,
+      "rival_top1_rate": 0.1871306631648063,
+      "per_class_HTRP_area": {
+        "0": 0.8012587120728476,
+        "1": 0.3317679373890541,
+        "2": 0.7293200660840762,
+        "3": 0.4342780549556929
+      },
+      "class_breadth_ge55": 2,
+      "class_breadth_gt50": 2,
+      "ControlTop1": 0.31540697674418605,
+      "ControlMargin_mean": -0.016145016998052597,
+      "matched_control_count": 688,
+      "prediction_frequency": {
+        "0": 0.39133289560078793,
+        "1": 0.06106369008535785,
+        "2": 0.1221273801707157,
+        "3": 0.42547603414313856
+      },
+      "true_frequency": {
+        "0": 0.2087984241628365,
+        "1": 0.5863427445830598,
+        "2": 0.1818778726198293,
+        "3": 0.02298095863427446
+      },
+      "bias_ratio": {
+        "0": 1.8742138364779874,
+        "1": 0.10414333706606943,
+        "2": 0.6714801444043321,
+        "3": 18.514285714285716
+      },
+      "confusion_matrix": [
+        [
+          165,
+          8,
+          42,
+          103
+        ],
+        [
+          299,
+          76,
+          83,
+          435
+        ],
+        [
+          116,
+          8,
+          55,
+          98
+        ],
+        [
+          16,
+          1,
+          6,
+          12
+        ]
+      ],
+      "SOURCE_CLASS_COLLAPSE": false,
+      "SOURCE_NOGO": true,
+      "QUALIFIED_DEV": false,
+      "STRONG_DEV": false,
+      "patient_CI95": {
+        "unit": "TCGA patient",
+        "patients": 9,
+        "resamples": 2000,
+        "seed": 42,
+        "HTRP_area": [
+          0.4480831998770053,
+          0.6544433691653951
+        ],
+        "HTop1": [
+          0.160387337049493,
+          0.25475244000970115
+        ],
+        "NRR_over_PLIP": [
+          0.35036004817026717,
+          0.49402795793569904
+        ],
+        "mean_margin": [
+          -0.006646124376840622,
+          0.0027922004062241566
+        ],
+        "ControlTop1": [
+          0.2255329401611047,
+          0.4226449697676113
+        ]
+      },
+      "HOLDOUT_CONFIRMED": false,
+      "SEMANTIC_SOURCE_GO": false,
+      "STRONG_SEMANTIC_SOURCE_GO": false
+    },
+    "QuiltNet": {
+      "components": 1523,
+      "area": 7102729.0,
+      "HTRP_area": 0.491133900786585,
+      "HTRP_component": 0.5778069599474721,
+      "HTop1": 0.23900196979645436,
+      "NRR_over_PLIP": 0.28596187175043325,
+      "mean_margin": 0.0023106003645807505,
+      "median_margin": 0.002234131097793579,
+      "margin_q25": -0.005494922399520874,
+      "margin_q75": 0.011076048016548157,
+      "true_rank_mean": 2.4103742613263295,
+      "rival_rank_mean": 2.706500328299409,
+      "rival_top1_rate": 0.20748522652659226,
+      "per_class_HTRP_area": {
+        "0": 0.9454869339297094,
+        "1": 0.21770958114040317,
+        "2": 0.5409426233562633,
+        "3": 0.4939221088688659
+      },
+      "class_breadth_ge55": 1,
+      "class_breadth_gt50": 2,
+      "ControlTop1": 0.34156976744186046,
+      "ControlMargin_mean": -0.006069685332477093,
+      "matched_control_count": 688,
+      "prediction_frequency": {
+        "0": 0.6815495732107683,
+        "1": 0.030860144451739988,
+        "2": 0.036769533814839134,
+        "3": 0.2508207485226527
+      },
+      "true_frequency": {
+        "0": 0.2087984241628365,
+        "1": 0.5863427445830598,
+        "2": 0.1818778726198293,
+        "3": 0.02298095863427446
+      },
+      "bias_ratio": {
+        "0": 3.264150943396227,
+        "1": 0.05263157894736842,
+        "2": 0.20216606498194944,
+        "3": 10.914285714285715
+      },
+      "confusion_matrix": [
+        [
+          282,
+          6,
+          4,
+          26
+        ],
+        [
+          549,
+          40,
+          27,
+          277
+        ],
+        [
+          191,
+          1,
+          24,
+          61
+        ],
+        [
+          16,
+          0,
+          1,
+          18
+        ]
+      ],
+      "SOURCE_CLASS_COLLAPSE": false,
+      "SOURCE_NOGO": true,
+      "QUALIFIED_DEV": false,
+      "STRONG_DEV": false,
+      "patient_CI95": {
+        "unit": "TCGA patient",
+        "patients": 9,
+        "resamples": 2000,
+        "seed": 42,
+        "HTRP_area": [
+          0.35790723223293214,
+          0.671692366424249
+        ],
+        "HTop1": [
+          0.16888682493098373,
+          0.32751516056736785
+        ],
+        "NRR_over_PLIP": [
+          0.22445019750186826,
+          0.3758163962267633
+        ],
+        "mean_margin": [
+          0.00022818367975489164,
+          0.004931505477020191
+        ],
+        "ControlTop1": [
+          0.2213201164345842,
+          0.5018744808289249
+        ]
+      },
+      "HOLDOUT_CONFIRMED": false,
+      "SEMANTIC_SOURCE_GO": false,
+      "STRONG_SEMANTIC_SOURCE_GO": false
+    }
+  },
+  "INDEPENDENCE": {
+    "pairs": [
+      {
+        "source_a": "BiomedCLIP",
+        "source_b": "PLIP",
+        "prediction_agreement": 0.41861126920887876,
+        "error_jaccard": 0.6623333333333333,
+        "error_phi": 0.31432421250219605,
+        "true_rival_agreement": 0.5350028457598178,
+        "rescue_jaccard": 0.40364963503649637,
+        "pair_oracle_positive_rate": 0.7797381900967558,
+        "pair_oracle_gain_over_best": 0.1704610130904951
+      },
+      {
+        "source_a": "BiomedCLIP",
+        "source_b": "QuiltNet",
+        "prediction_agreement": 0.5278884462151394,
+        "error_jaccard": 0.7548365577051368,
+        "error_phi": 0.4445892025222673,
+        "true_rival_agreement": 0.6089926010244735,
+        "rescue_jaccard": 0.4637002341920375,
+        "pair_oracle_positive_rate": 0.7290836653386454,
+        "pair_oracle_gain_over_best": 0.14712578258394993
+      },
+      {
+        "source_a": "PLIP",
+        "source_b": "QuiltNet",
+        "prediction_agreement": 0.4106431417188389,
+        "error_jaccard": 0.611328125,
+        "error_phi": 0.19347908531852726,
+        "true_rival_agreement": 0.7080250426863973,
+        "rescue_jaccard": 0.6062931696085956,
+        "pair_oracle_positive_rate": 0.7416050085372795,
+        "pair_oracle_gain_over_best": 0.1323278315310188
+      }
+    ],
+    "multi_source_oracle_positive_rate": 0.8303927148548662,
+    "unit": "Q_DEV Hard-M1",
+    "oracle_deployable": false
+  },
+  "SECONDARY": {
+    "BiomedCLIP": {
+      "MASKED_HTRP_area": 0.4939293092712998,
+      "BBOX15_HTRP_area": 0.6124209401638882,
+      "CONTEXT_DEPENDENT_SEMANTICS": false,
+      "area_quartile_HTRP": {
+        "Q1": 0.449344516319453,
+        "Q2": 0.5220282798326992,
+        "Q3": 0.6399758306722226,
+        "Q4": 0.600112389571117
+      },
+      "purity_HTRP": {
+        "lt_0.5": 0.42475169160096843,
+        "0.5_to_0.7": 0.5646429443540222,
+        "0.7_to_0.9": 0.7559809194875148,
+        "ge_0.9": 0.6015112397285222
+      }
+    },
+    "PLIP": {
+      "MASKED_HTRP_area": 0.4308051725397305,
+      "BBOX15_HTRP_area": 0.569837213439716,
+      "CONTEXT_DEPENDENT_SEMANTICS": false,
+      "area_quartile_HTRP": {
+        "Q1": 0.6572545933049659,
+        "Q2": 0.6298998148070238,
+        "Q3": 0.6265505078923014,
+        "Q4": 0.4989184523671879
+      },
+      "purity_HTRP": {
+        "lt_0.5": 0.30936743435346703,
+        "0.5_to_0.7": 0.5202561249605361,
+        "0.7_to_0.9": 0.6602368581308823,
+        "ge_0.9": 0.5879755790289757
+      }
+    },
+    "QuiltNet": {
+      "MASKED_HTRP_area": 0.48328354883506514,
+      "BBOX15_HTRP_area": 0.591357704188729,
+      "CONTEXT_DEPENDENT_SEMANTICS": false,
+      "area_quartile_HTRP": {
+        "Q1": 0.6723811397791278,
+        "Q2": 0.5456890043952572,
+        "Q3": 0.6010176975680933,
+        "Q4": 0.5887132341366745
+      },
+      "purity_HTRP": {
+        "lt_0.5": 0.5408234527282886,
+        "0.5_to_0.7": 0.5619793183283422,
+        "0.7_to_0.9": 0.7099029096827448,
+        "ge_0.9": 0.5667640876722216
+      }
+    }
+  },
+  "PANELS": {
+    "BiomedCLIP": {
+      "A_novel_rescue": 20,
+      "B_shared_failure": 20,
+      "C_control_harm": 20
+    },
+    "PLIP": {
+      "A_novel_rescue": 0,
+      "B_shared_failure": 20,
+      "C_control_harm": 20
+    },
+    "QuiltNet": {
+      "A_novel_rescue": 20,
+      "B_shared_failure": 20,
+      "C_control_harm": 20
+    }
+  },
+  "protocol_notes": [
+    "No model training or CCRA injection",
+    "Q-DEV all READY; Q-HOLDOUT top-2 non-PLIP plus strong DEV; PLIP holdout reference",
+    "Patient split frozen on GT-free predicted-class proxy; true-class balance disclosed only after source caches frozen",
+    "Dual-source follow-up conservatively requires two single-source GO decisions; theoretical oracle is not deployable"
+  ]
+}
