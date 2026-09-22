@@ -1,0 +1,35 @@
+experiment: RISA-v1 Phase-0 BCSS Seed42
+seed: 42
+epochs: 5
+epoch_selection: fixed_epoch_5_only
+image_size: 224
+effective_batch_size: 20
+micro_batch_size: 5
+gradient_accumulation: 4
+precision: bf16
+optimizer:
+  name: AdamW
+  learning_rate: 0.0003
+  weight_decay: 0.0001
+  gradient_clip: 1.0
+  scheduler: none
+model:
+  identity_dimension: 128
+  identity_temperature: 0.10
+  hard_gate_delta: 0.15
+  hard_gate_temperature: 0.05
+  topk_fraction: 0.20
+loss:
+  mil: 1.0
+  ranking: 0.2
+  hard_consistency: 0.05
+  ranking_margin: 0.2
+curriculum:
+  epoch_1: mean_only
+  epochs_2_to_5: full_risa
+frozen:
+  - backbone
+  - CCRA
+  - HQMR
+training_supervision: image_level_labels_only
+validation_during_training: false
