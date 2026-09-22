@@ -1,6 +1,6 @@
 # RISA-v1 Phase-0 reproducibility guide
 
-RISA is a 296,704-parameter adapter trained on image-level BCSS labels while the HQMR checkpoint, Backbone, CCRA, and HQMR remain frozen. The fixed run is one baseline replay, eight unit tests, a five-epoch train, E5-only B0/R1/R2/R3 evaluation, mechanism audits, figures, and a final report.
+RISA is a 296,704-parameter adapter trained on image-level BCSS labels while the HQMR checkpoint, Backbone, CCRA, and HQMR remain frozen. The fixed run is one baseline replay, nine unit tests, a five-epoch train, E5-only B0/R1/R2/R3 evaluation, mechanism audits, figures, and a final report.
 
 ## Environment
 
