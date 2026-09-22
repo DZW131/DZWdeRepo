@@ -68,3 +68,15 @@ def test_losses_finite():
     output = RISA()(*sample())
     losses = risa_losses(output, torch.tensor([[1, 0, 1, 0], [0, 1, 0, 1]]), True)
     assert all(torch.isfinite(value) for value in losses.values())
+
+
+def test_checkpoint_replay():
+    arguments = sample(batch=1, queries=3)
+    first = RISA().eval()
+    state = {name: value.detach().clone() for name, value in first.state_dict().items()}
+    second = RISA().eval()
+    second.load_state_dict(state, strict=True)
+    with torch.inference_mode():
+        expected = first(*arguments)["identity_prob"]
+        observed = second(*arguments)["identity_prob"]
+    torch.testing.assert_close(observed, expected, rtol=0, atol=0)
