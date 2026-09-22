@@ -141,26 +141,27 @@ class RISA(nn.Module):
 
 
 def risa_losses(output: dict, labels: torch.Tensor, hard_refinement: bool) -> dict:
-    labels = labels.float()
-    presence = output["presence_prob"].float().clamp(1.e-6, 1. - 1.e-6)
-    loss_mil = F.binary_cross_entropy(presence, labels)
-    logits = output["identity_logits"].float()
-    maximum = logits.max(dim=1).values
-    present = labels.bool()
-    absent = ~present
-    absent_max = maximum.masked_fill(~absent, -torch.inf).max(-1).values
-    valid = present.any(-1) & absent.any(-1)
-    ranking = F.relu(.2 - maximum + absent_max[:, None])
-    ranking = ranking.masked_fill(~present, 0.)
-    loss_rank = (ranking.sum(-1) / present.sum(-1).clamp_min(1)).masked_select(valid).mean() if valid.any() else maximum.sum() * 0.
-    if hard_refinement:
-        target = output["identity_prob"].detach().float()
-        hard_log_probability = output["hard_identity_logits"].float().log_softmax(-1)
-        divergence = F.kl_div(hard_log_probability, target, reduction="none").sum(-1)
-        loss_hard = (output["hard_gate"].float() * divergence).mean()
-    else:
-        loss_hard = logits.sum() * 0.
-    total = loss_mil + .2 * loss_rank + .05 * loss_hard
+    with torch.autocast(device_type=output["identity_logits"].device.type, enabled=False):
+        labels = labels.float()
+        presence = output["presence_prob"].float().clamp(1.e-6, 1. - 1.e-6)
+        loss_mil = F.binary_cross_entropy(presence, labels)
+        logits = output["identity_logits"].float()
+        maximum = logits.max(dim=1).values
+        present = labels.bool()
+        absent = ~present
+        absent_max = maximum.masked_fill(~absent, -torch.inf).max(-1).values
+        valid = present.any(-1) & absent.any(-1)
+        ranking = F.relu(.2 - maximum + absent_max[:, None])
+        ranking = ranking.masked_fill(~present, 0.)
+        loss_rank = (ranking.sum(-1) / present.sum(-1).clamp_min(1)).masked_select(valid).mean() if valid.any() else maximum.sum() * 0.
+        if hard_refinement:
+            target = output["identity_prob"].detach().float()
+            hard_log_probability = output["hard_identity_logits"].float().log_softmax(-1)
+            divergence = F.kl_div(hard_log_probability, target, reduction="none").sum(-1)
+            loss_hard = (output["hard_gate"].float() * divergence).mean()
+        else:
+            loss_hard = logits.sum() * 0.
+        total = loss_mil + .2 * loss_rank + .05 * loss_hard
     return {"loss": total, "loss_mil": loss_mil, "loss_rank": loss_rank, "loss_hard": loss_hard}
 
 
