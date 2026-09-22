@@ -29,7 +29,7 @@ from network.risa_v1 import RISAAdapter
 from tools.eval_gcqm_full25_bcss_seed42 import (
     TTA, foreground_confusion, normalize_cam, prediction_from_cam, presence, scores_from_confusion,
 )
-from tools.pdsr_vpca_phase0.common import CommonEvalDataset, label_from_name
+from tools.pdsr_vpca_phase0.common import CommonEvalDataset
 from tools.risa_v1_phase0.common import (
     CHECKPOINT_SHA256, CLASSES, REFERENCE_MIOU, sha256, write_csv, write_json,
 )
@@ -131,7 +131,9 @@ def infer(model: RISAAdapter, loader: DataLoader, ids: np.ndarray, truth_root: P
                 confusions[variant].append(foreground_confusion(truth, pred[variant]))
             deep_labels.append(hard_label.astype(np.uint8))
             soft_presence.append(psoft[batch_index])
-            image_labels.append(label_from_name(image_id + ".png").numpy())
+            # Validation segmentation is permitted only after fixed-E5 training;
+            # here it supplies the post-hoc image-level presence reference.
+            image_labels.append(np.asarray([(truth == class_id).any() for class_id in range(4)], dtype=np.float32))
             query_pi.append(pi[batch_index].astype(np.float16))
             query_margin.append(qmargin[batch_index].astype(np.float16))
             query_entropy.append(qentropy[batch_index].astype(np.float16))
